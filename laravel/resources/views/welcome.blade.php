@@ -78,18 +78,16 @@
             @endif
 
             <div class="content">
-                <div class="title m-b-md">
-                    Laravel
-                </div>
+                @if (Route::has('login'))
+                @auth
+                <h3>Welcome to BEC MIS.</h3>
+                <a href=""><h4>Access to Dashboard</h4></a>
+                @else
 
-                <div class="links">
-                    <a href="https://laravel.com/docs">Documentation</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://nova.laravel.com">Nova</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
-                </div>
+                <h3>Please Login to Access.</h3>
+                @endauth
+                @endif
+                
             </div>
         </div>
     </body>

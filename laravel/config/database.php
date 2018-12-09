@@ -54,6 +54,21 @@ return [
             'engine' => null,
         ],
 
+        'mysql2' => [
+            'driver' => 'mysql',
+            'host' => '194.55.13.171',
+            'port' => '3307',
+            'database' => 'becsyste_bss_system',
+            'username' => 'becsyste_root',
+            'password' => '}3m!f8$bc{9+',
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'host' => env('DB_HOST', '127.0.0.1'),

@@ -18,3 +18,12 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/ds', 'UserController@ds')->name('ds');
+Route::get('/users', 'UserController@index')->name('users');
+Route::post('userActivate', 'UserController@userActivate')->name('userActivate');
+Route::post('userDelete', 'UserController@userDelete')->name('userDelete');
+Route::post('changeRole', 'UserController@changeRole')->name('changeRole');
+Route::post('markAsRead', 'NotificationsController@markAsRead')->name('markAsRead');
+Gate::define('userList', 'App\Policies\userRoles@superAdmin');
+
+

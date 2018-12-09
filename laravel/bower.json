@@ -1,0 +1,27 @@
+{
+  "name": "becmis",
+  "description": "berendina employment center's MIS",
+  "main": "",
+  "authors": [
+    "info@bec.berendina.org"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/berendina",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+
+  "dependencies": {
+    "jquery": "^3.3.1",
+    "bootstrap": "^4.1.1",
+    "glyphicons": "^0.0.2",
+    "font-awesome": "latest",
+    "ionic": "latest"
+  }
+}
+
