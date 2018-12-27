@@ -54,6 +54,7 @@ class RegisterController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
+            'role' =>'required',
         ]);
         $data = $request->all();
 
@@ -67,11 +68,15 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        $user= User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'role_id'
         ]);
+
+        $user->roles()->attach($data['role']);
+        return $user;
 
     }
 
@@ -86,5 +91,11 @@ class RegisterController extends Controller
         $admin->notify(new notifyAdmin($user));
         return $this->registered($request, $user)
                         ?: redirect($this->redirectPath())->with('status', 'Register was successful!. Please contact admin to activate your account');
+    }
+
+    public function showRegistrationForm()
+    {
+        $roles=\App\Role::pluck('name','id')->except('id',1);
+        return view('auth.register',compact('roles'));
     }
 }

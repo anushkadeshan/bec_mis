@@ -29,13 +29,12 @@ class User extends Authenticatable
     ];
 
     //defining many to many relationship with roles table
-
-     public function roles()
+    public function roles()
     {
-        return $this->belongsToMany(Role::class, 'role_users');
+        return $this->belongsToMany(Role::class, 'roles_users');
     }
 
-    public function hasAccess(array $permissions) : bool
+    public function hasAccess(array $permissions) 
     {
        foreach($this->roles as $role){
             if($role->hasAccess($permissions)){
@@ -44,11 +43,21 @@ class User extends Authenticatable
        }
        return false;
     }
-    
-    public function inRole(string $roleSlug)
+    public function inRole($roleSlug)
     {
-        return $this->roles()->where('slug', $roleSlug)->count() == 1;
+        return $this->roles()->where('slug',$roleSlug)->count()==1;
     }
 
-    
+    public function is($roleName)
+    {
+        foreach ($this->roles()->get() as $role)
+        {
+            if ($role->name == $roleName)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

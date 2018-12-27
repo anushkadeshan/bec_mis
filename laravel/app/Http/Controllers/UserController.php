@@ -8,6 +8,7 @@ use DB;
 Use App\User;
 Use Auth;
 use App\Notifications\Activation;
+use App\Role;
 class UserController extends Controller
 {
     public function __construct()
@@ -17,9 +18,10 @@ class UserController extends Controller
 
     public function index(){
         if(Auth::user()->isAdmin==1){
-        $users = DB::table('users')->get();
+        $users = User::with('roles')->get(); 
         $roles = DB::table('roles')->get();
-        return view('users', ['users' => $users, 'roles' => $roles]);
+        return view('users')->with(['users'=> $users , 'roles' => $roles]);
+        
         }
     else{
         abort(403, 'Unauthorized action.');
@@ -45,7 +47,7 @@ class UserController extends Controller
 
             else{
                 $user->notify(new Activation($name));
-                echo "<script>console.log( 'Debug Objects: " . $name . "' );</script>";
+                
             }
             
         }
@@ -70,10 +72,15 @@ class UserController extends Controller
 
     public function changeRole(Request $request){
         if(Auth::user()->isAdmin==1){
-        $id = Input::get('id');
-        $isAdmin = Input::get('isAdmin');
-        echo("<script>console.log('PHP: ".$isAdmin."');</script>");
-        User::findOrFail($id)->update(['isAdmin'=>$isAdmin]);
+        $user_id = Input::get('user_id');
+        $role_id = Input::get('role_id');
+        echo "<script>console.log( 'Debug Objects: " . $role_id . "' );</script>";
+        $inputs = array(
+            'user_id' => $user_id,
+            'role_id' => $role_id,
+        );
+        $user = \App\User::find($user_id);
+        $user->roles()->sync($role_id);
 
         }
         else{

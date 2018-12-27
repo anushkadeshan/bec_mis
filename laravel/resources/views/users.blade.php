@@ -33,7 +33,11 @@
                                 <select class="form-control" data-id="{{$user->id}}" id="role" name="role">
                                     <option value="0">Select a Role</option>
                                     @foreach ($roles as $role)
-                                    <option @if($user->isAdmin==$role->id) selected @endif value="{{ $role->id }}">{{ $role->name }}</option>
+                                    <option  
+                                    @foreach($user->roles as $roleA)
+                                    @if($roleA->id==$role->id) selected @endif 
+                                    @endforeach
+                                    value="{{ $role->id }}">{{ $role->name }}</option>
                                     @endforeach
                                 </select>
                             </div>  
@@ -46,7 +50,7 @@
                             <form method="post" id="userActivate">
                             {{ csrf_field() }}
                             <label>
-                                <input type="checkbox" class="flat-red isActive" data-id="{{$user->id}}" @if ($user->isActive) checked @endif>
+                                <input type="checkbox" id="isActive" class="flat-red isActive" data-id="{{$user->id}}" @if ($user->isActive) checked @endif>
                             </label>
                             
                         </form>
@@ -67,6 +71,37 @@
     </div>  
     
 </div>
+
+@endsection
+@section('scripts')
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(document).on('ifClicked', '.isActive', function(){    
+        id = $(this).data('id');
+        $.ajax({
+            type: 'POST',
+            url: SITE_URL + '/userActivate',
+                      
+            data: {
+                '_token': $('input[name=_token]').val(),
+                'id': id
+            },
+                      
+            success: function(data) {
+                          
+            toastr.success('Status Successfully Changed ! ', 'Congratulations', {timeOut: 5000});
+                          
+            },
+  
+            error: function (jqXHR, exception) {    
+                console.log(jqXHR);
+                toastr.error('Something Error !', 'Status not Changed!')
+            },
+        });
+        });
+    });
+    
+</script>
 
 @endsection
 

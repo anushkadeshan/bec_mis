@@ -9,6 +9,11 @@ Use Auth;
 
 class NotificationsController extends Controller
 {
+    
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -92,7 +97,15 @@ class NotificationsController extends Controller
         $id = Input::get('id');
         echo("<script>console.log('PHP: ".$id."');</script>");
         $notification = Auth::user()->notifications()->findOrFail($id);
-        $notification->delete();
+        $notification->markAsRead();
+        return redirect()->back();
+        
+    }
+
+    public function markAllAsRead()
+    {
+        Auth::user()->unreadNotifications->markAsRead();
+        return redirect()->back();
     }
    
 }

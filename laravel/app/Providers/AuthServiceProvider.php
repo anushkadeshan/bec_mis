@@ -32,12 +32,45 @@ class AuthServiceProvider extends ServiceProvider
 
     public function registerPostPolicies()
     {
-        Gate::define('view-user', function($user, User $users){
-            $user->hasAccess(['view-user']);
+        Gate::define('create-Employer', function($user){
+            return $user->hasAccess(['create-Employer']);
         });
 
-        Gate::define('activate-user', function($user){
-            $user->hasAccess(['activate-user']);
+        Gate::define('view-Employer', function($user){
+            return $user->hasAccess(['view-Employer']);
         });
+
+        Gate::define('delete-Employer', function($user){
+            return $user->hasAccess(['delete-Employer']);
+        });
+
+        Gate::define('update-Employer', function($user){
+            return $user->hasAccess(['update-Employer']);
+        });
+
+        Gate::define('view-Employer-Profile', function($user){
+            return $user->hasAccess(['view-Employer-Profile']);
+        });
+
+        Gate::define('view-vacancies', function($user){
+            return $user->hasAccess(['view-vacancies']);
+        });
+        Gate::define('edit-vacancies', function($user){
+            return $user->hasAccess(['edit-vacancies']);
+        });
+
+        Gate::define('create-vacancies', function($user){
+            return $user->hasAccess(['create-vacancies']);
+        });
+
+        Gate::define('delete-vacancies', function($user){
+            return $user->hasAccess(['delete-vacancies']);
+        });
+
+        Gate::define('apply-vacancy', function($user){
+            return $user->hasAccess(['apply-vacancy']);
+        });
+        
+        
     }
 }

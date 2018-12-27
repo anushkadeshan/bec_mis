@@ -141,6 +141,20 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'name' => 'Name',
+        'employer_id' => 'Employer',
+        'title' => 'Title',
+        'description' => 'Job Description',
+        'job_type' =>'Job Type',
+        'gender' => 'Gender',
+        'dedline' => 'Closing Date',
+        'location' => 'Location',
+        'min_qualification' => 'Minimum Qualification',
+        'specializaion' => 'Educational Specialization',
+        'business_function' => 'Business Function'
+
+
+    ],
 
 ];

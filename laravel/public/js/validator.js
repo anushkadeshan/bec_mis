@@ -1,0 +1,6 @@
+bootstrapValidate('#name','min:5:At least enter 5 charactors')
+bootstrapValidate('#address','required:Please Enter the Address')
+bootstrapValidate('#phone','required: Telephone number can not be empty. |integer: Please Enter valid number|max:10: Please Enter only 10 numbers')
+bootstrapValidate('#email','required: Email can not be empty. |email: Please Enter a valid email')
+bootstrapValidate('#company_type','required: Type can not be empty.')
+bootstrapValidate('#industry','required: Type can not be empty.')
