@@ -12,9 +12,9 @@
         			
         		</div>
                 @can('create-Employer')
-        		<div class="col-md-3">
+        		<div class="col-md-3 text-right">
         			<!-- Button trigger modal -->
-					<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">Add Employer Information</button>
+					<button type="button" class="btn btn-primary btn-flat" data-toggle="modal" data-target="#exampleModalCenter">Add Employer Information</button>
         		</div>
                 @endcan
         	</div>
@@ -133,7 +133,7 @@
                      	<option>Agriculture &amp; Food Processing</option>
                      	<option>Automobiles</option>
                      	<option>Banking &amp; Financial Services</option>
-                     	<optio>BPO / KPO</option>
+                     	<option>BPO / KPO</option>
                      	<option>Civil &amp; Construction</option>
                      	<option>Consumer Goods &amp; Durables</option>
                      	<option>Consulting</option>

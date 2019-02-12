@@ -231,8 +231,10 @@
    		// add vacancy to database
    		$(document).ready(function(){
    			$(document).on('click', '#add-vacancy', function(){
-   				var form = $('#vacancy');
+          
 
+   				var form = $('#vacancy');
+   					alert( $("#vacancy").serialize() ); 
    				$.ajax({
    					type: 'POST',
             		url: SITE_URL + '/add-vacancy',

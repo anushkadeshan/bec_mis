@@ -25,6 +25,19 @@ class RolesSeeder extends Seeder
                 'create-vacancies' =>true,
                 'delete-vacancies' => true,
                 'apply-vacancy' => true,
+                'add-youth' => true,
+                'view-youth' => true,
+                'delete-youth'=>true,
+                'edit-youth' => true,
+                'add-institute'=> true,
+                'delete-institute'=> true,
+                'edit-institute'=> true,
+                'view-institute'=> true,
+                'add-course'=> true,
+                'delete-course'=> true,
+                'edit-course'=> true,
+                'view-course'=> true,
+                'view-activities' => true,
             ]),
         ]);
         $branch = Role::create([
@@ -38,6 +51,20 @@ class RolesSeeder extends Seeder
                 'edit-vacancies' =>true,
                 'create-vacancies' =>true,
                 'delete-vacancies' => true,
+                'add-youth' => true,
+                'view-youth' => true,
+                'delete-youth'=>true,
+                'edit-youth' => true,
+                'add-institute'=> true,
+                'delete-institute'=> true,
+                'edit-institute'=> true,
+                'view-institute'=> true,
+                'add-course'=> true,
+                'delete-course'=> true,
+                'edit-course'=> true,
+                'view-course'=> true,
+                'view-activities' => true,
+                
             ]),
         ]);
 
@@ -50,6 +77,8 @@ class RolesSeeder extends Seeder
                 'edit-vacancies' =>true,
                 'create-vacancies' =>true,
                 'delete-vacancies' => true,
+                'view-youth' => true,
+                
             ]),
         ]);
 
@@ -58,6 +87,15 @@ class RolesSeeder extends Seeder
             'slug'        => 'trainers',
             'permissions' => json_encode([         
                 'view-Employer' => true,
+                'view-youth' => true,
+                'add-institute'=> true,
+                'delete-institute'=> true,
+                'edit-institute'=> true,
+                'view-institute'=> true,
+                'add-course'=> true,
+                'delete-course'=> true,
+                'edit-course'=> true,
+                'view-course'=> true,
             ]),
         ]);
 
@@ -68,6 +106,10 @@ class RolesSeeder extends Seeder
                 'view-Employer' => true,
                 'view-vacancies' => true,
                 'apply-vacancy' => true,
+                'add-youth' => true,
+                'view-youth' => true,
+                'delete-youth'=>true,
+                'edit-youth' => true,
 
             ]),
         ]);

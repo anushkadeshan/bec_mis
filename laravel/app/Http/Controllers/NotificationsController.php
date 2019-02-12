@@ -19,9 +19,9 @@ class NotificationsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function all()
     {
-        //
+        return view('notifications');
     }
 
     /**
@@ -29,9 +29,10 @@ class NotificationsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function unread()
     {
-        //
+        return view('unreadNotifications');
+        
     }
 
     /**

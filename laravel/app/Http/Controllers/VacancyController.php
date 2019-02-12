@@ -41,6 +41,7 @@ class VacancyController extends Controller
         }
         else{
             $vacancies = Vacancy::with('employer')->get();
+            //dd($vacancy->toArray());
             return view('Employer.vacancies')->with('vacancies', $vacancies);
         }
 
@@ -63,7 +64,7 @@ class VacancyController extends Controller
           foreach($data as $row)
           {
            $output .= '
-           <li><a href="#">'.$row->name_en.'</a></li>
+           <li><a href="#" id="">'.$row->name_en.'</a></li>
            ';
           }
           $output .= '</ul>';
@@ -183,8 +184,10 @@ class VacancyController extends Controller
      */
     public function edit($id)
     {
-        $vacancy = Vacancy::with('employers')->where('id', $id)->first();
-        return view('Employer.edit-vacancy')->with('vacancy', $vacancy);
+        $vacancy = Vacancy::with('employer')->where('id', $id)->first();
+        $employers = Employer::get();
+        //dd($vacancy->toArray());
+        return view('Employer.edit-vacancy')->with(['vacancy'=> $vacancy, 'employers' => $employers]);
 
     }
 
@@ -230,5 +233,9 @@ class VacancyController extends Controller
         $vacancy = Vacancy::where('id', $id)->with('employer')->first();
         //dd($vacancy->toArray());
         return view('Employer.view-vacancy')->with('vacancy', $vacancy);
+    }
+
+    public function apply(){
+        
     }
 }

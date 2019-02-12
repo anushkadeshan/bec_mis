@@ -70,6 +70,54 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('apply-vacancy', function($user){
             return $user->hasAccess(['apply-vacancy']);
         });
+
+        Gate::define('view-youth', function($user){
+            return $user->hasAccess(['view-youth']);
+        });
+
+        Gate::define('add-youth', function($user){
+            return $user->hasAccess(['add-youth']);
+        });
+        Gate::define('delete-youth', function($user){
+            return $user->hasAccess(['delete-youth']);
+        });
+        Gate::define('edit-youth', function($user){
+         return $user->hasAccess(['edit-youth']);
+         });
+        Gate::define('view-institute', function($user){
+            return $user->hasAccess(['view-institute']);
+        });
+
+        Gate::define('add-institute', function($user){
+            return $user->hasAccess(['add-institute']);
+        });
+        Gate::define('delete-institute', function($user){
+            return $user->hasAccess(['delete-institute']);
+        });
+        Gate::define('edit-institute', function($user){
+         return $user->hasAccess(['edit-institute']);
+         });
+
+        Gate::define('view-course', function($user){
+            return $user->hasAccess(['view-course']);
+        });
+
+        Gate::define('add-course', function($user){
+            return $user->hasAccess(['add-course']);
+        });
+        Gate::define('delete-course', function($user){
+            return $user->hasAccess(['delete-course']);
+        });
+        Gate::define('edit-course', function($user){
+         return $user->hasAccess(['edit-course']);
+         });
+
+        Gate::define('view-activities', function($user){
+         return $user->hasAccess(['view-activities']);
+         });
+
+
+
         
         
     }

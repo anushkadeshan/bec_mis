@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -13,6 +14,7 @@
     <link href="{{asset('vendors/bootstrap/dist/css/bootstrap.min.css')}}" rel="stylesheet">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.3/css/bootstrapValidator.css"/>
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <link href="{{asset('css/bootstrap-select.min.css')}}" rel="stylesheet">
 
     <!-- Theme style -->
     <link href="{{asset('vendors/adminLTE/css/adminlte.min.css')}}" rel="stylesheet">
@@ -22,11 +24,47 @@
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <!-- icheck checkboxes -->
     <link rel="stylesheet" href="{{ asset('vendors/iCheck/skins/all.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendors/iCheck/skins/square/green.css') }}">
     <!-- toastr notifications -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">
+    <link href="{{asset('vendors/font-awesome-animation/dist/font-awesome-animation.min.css')}}" rel="stylesheet">
+    
+    <style>
+      /*----------------------- Preloader -----------------------*/
+      body.preloader-site {
+          overflow: hidden;
+      }
 
+      .preloader-wrapper {
+          height: 100%;
+          width: 100%;
+          background: #FFF;
+          position: fixed;
+          top: 0;
+          left: 0;
+          z-index: 9999999;
+      }
+
+      .preloader-wrapper .preloader {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+          width: 120px;
+
+      }
+
+    </style>
     </head>
-<body class="hold-transition sidebar-mini">
+    <body class="hold-transition sidebar-mini">
+    <div class="preloader-wrapper">
+      <div class="preloader">
+          <img src="{{ URL::asset('images/preloader.svg')}}" alt="NILA">
+      </div>
+    </div>
+
     <div class="wrapper">
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand bg-white navbar-light border-bottom">
@@ -34,6 +72,20 @@
             <ul class="navbar-nav">
             <li class="nav-item">
                 <a class="nav-link" data-widget="pushmenu" href="#"><i class="fa fa-bars"></i></a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <?php $hour = date('H');
+                if ($hour >= 20) {
+                    $greetings = "Good Night";
+                } elseif ($hour > 17) {
+                    $greetings = "Good Evening";
+                } elseif ($hour > 11) {
+                    $greetings = "Good Afternoon";
+                } elseif ($hour < 12) {
+                  $greetings = "Good Morning";
+                }
+                    echo $greetings;  ?>!   {{ Auth::user()->name }} </a> 
             </li>
             <li class="nav-item d-none d-sm-inline-block">
                 <a href="index3.html" class="nav-link">Home</a>
@@ -43,17 +95,6 @@
             </li>
             </ul>
 
-            <!-- SEARCH FORM -->
-            <form class="form-inline ml-3">
-            <div class="input-group input-group-sm">
-                <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-                <div class="input-group-append">
-                <button class="btn btn-navbar" type="submit">
-                    <i class="fa fa-search"></i>
-                </button>
-                </div>
-            </div>
-            </form>
 
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
@@ -61,12 +102,12 @@
             @if(Auth::check())
             <li class="nav-item dropdown">
                 <a class="nav-link" data-toggle="dropdown" href="#">
-                <i class="fa fa-bell"></i>
+                <i class="fa fa-bell fa-lg faa-ring animated"></i>
                 <span class="badge badge-danger navbar-badge">{{Auth::user()->unreadNotifications->count()}}</span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                 @if(Auth::user()->unreadNotifications->count())
-                @foreach(auth()->user()->unreadNotifications as $notification)
+                @foreach(auth()->user()->unreadNotifications()->take(4)->get() as $notification)
                 @switch($notification->type)
                 @case('App\Notifications\notifyAdmin')
                 <a href="#" id="read" class="dropdown-item" data-id="{{ $notification->id }}">
@@ -87,7 +128,7 @@
                 </a>
                 @break
                 @case('App\Notifications\EmployerAdd')
-                <a href="{{Route('vacancies')}}" id="read" class="dropdown-item" data-id="{{ $notification->id }}">
+                <a href="{{Route('employers')}}" id="read" class="dropdown-item" data-id="{{ $notification->id }}">
 
                     <!-- Message Start -->
                     <div class="media">
@@ -105,7 +146,7 @@
                 </a>
                 @break
                 @case('App\Notifications\vacancyAdd')
-                <a href="" id="read" class="dropdown-item" data-id="{{ $notification->id }}">
+                <a href="{{Route('vacancies')}}" id="read" class="dropdown-item" data-id="{{ $notification->id }}">
 
                     <!-- Message Start -->
                     <div class="media">
@@ -121,11 +162,67 @@
                     </div>
                     <!-- Message End -->
                 </a>
+                @break
+                @case('App\Notifications\instituteAdd')
+                <a href="{{Route('institutes/view')}}" id="read" class="dropdown-item" data-id="{{ $notification->id }}">
+
+                    <!-- Message Start -->
+                    <div class="media">
+                    <img src="{{ URL::asset('images/institute.png')}}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                    <div class="media-body">
+                        <h3 class="dropdown-item-title">
+                        {{ $notification->data['institute']['name'] }}
+                        <span class="float-right text-sm text-muted"><i class="fa fa-star"></i></span>
+                        </h3>
+                        <p class="text-sm">A Training Institute was added.</p>
+                        <p class="text-sm text-muted"><i class="fas fa-clock"></i> {{ $notification->data['institute']['created_at'] }}</p>
+                    </div>
+                    </div>
+                    <!-- Message End -->
+                </a>
+                @break
+                @case('App\Notifications\courseAdd')
+                <a href="{{Route('courses/view')}}" id="read" class="dropdown-item" data-id="{{ $notification->id }}">
+
+                    <!-- Message Start -->
+                    <div class="media">
+                    <img src="{{ URL::asset('images/institute.png')}}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                    <div class="media-body">
+                        <h3 class="dropdown-item-title">
+                        {{ $notification->data['course']['name'] }}
+                        <span class="float-right text-sm text-muted"><i class="fa fa-star"></i></span>
+                        </h3>
+                        <p class="text-sm">A course was added by {{ $notification->data['course']['added_by'] }}.</p>
+                        <p class="text-sm text-muted"><i class="fas fa-clock"></i> {{ $notification->data['course']['created_at'] }}</p>
+                    </div>
+                    </div>
+                    <!-- Message End -->
+                </a>
+                @break
+                @case('App\Notifications\youthAdd')
+                <a href="{{Route('youth/view')}}" id="read" class="dropdown-item" data-id="{{ $notification->id }}">
+
+                    <!-- Message Start -->
+                    <div class="media">
+                    <img src="{{ URL::asset('images/young.png')}}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                    <div class="media-body">
+                        <h3 class="dropdown-item-title">
+                        {{ $notification->data['youth']['name'] }}
+                        <span class="float-right text-sm text-muted"><i class="fa fa-star"></i></span>
+                        </h3>
+                        <p class="text-sm">A youth profile was added by {{ $notification->data['youth']['added_by'] }}.</p>
+                        <p class="text-sm text-muted"><i class="fas fa-clock"></i> {{ $notification->data['youth']['created_at'] }}</p>
+                    </div>
+                    </div>
+                    <!-- Message End -->
+                </a>
                 @endswitch
                 @endforeach
+                <a style="background-color: #D6DBDF" id="all" href="{{ route('unreadNotifications') }}" class="dropdown-item dropdown-footer">ALL Notifications</a>
                 <form>
+
                   {{csrf_field()}}
-                <a href="{{ route('markAllAsRead') }}"  class="dropdown-item dropdown-footer">Mark all as Read</a>
+                <a href="{{ route('markAllAsRead') }}" id="read"  class="dropdown-item dropdown-footer">Mark all as Read</a>
                 </form>
                 @else
                 <div class="dropdown-divider"></div>
@@ -138,11 +235,10 @@
            
             
             {{-- Notification finish--}}
-            <li></li>
             <li>
                 <a class="nav-link" href="{{ route('logout') }}" onclick="event.preventDefault();
                 document.getElementById('logout-form').submit();">
-                    <i class="fas fa-sign-out-alt"></i>
+                    <i class="fa-lg fas fa-sign-out-alt"></i>
                 </a>
 
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -155,7 +251,7 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
+    <a href="{{ROUTE('home')}}" class="brand-link">
       <img src="{{ URL::asset('images/logo.jpg')}}" alt="AdminLTE Logo" class="brand-image elevation-3"
            style="opacity: .8">
       <span class="brand-text font-weight-light">Welcome to BEC MIS</span>
@@ -164,14 +260,7 @@
     <!-- Sidebar -->
     <div class="sidebar">
       <!-- Sidebar user panel (optional) -->
-      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image">
-          <img src="{{ URL::asset('images/user2-160x160.jpg')}}" class="img-circle elevation-2" alt="User Image">
-        </div>
-        <div class="info">
-          <a href="#" class="d-block">{{ Auth::user()->name }}</a>
-        </div>
-      </div>
+      
 
       <!-- Sidebar Menu -->
       <n av class="mt-2">
@@ -215,17 +304,50 @@
           <li class="nav-item">
             <a href="{{Route('vacancies')}}" class="nav-link">
              <i class="nav-icon fas fa-briefcase"></i>
-              <p> All vacancies</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{Route('new-vacancy')}}" class="nav-link">
-             <i class="nav-icon fas fa-plus"></i>
-              <p> Add New vacancy</p>
+              <p> View Vacancies</p>
             </a>
           </li>
           @endcan
-          
+          <li class="nav-header">Youth</li>
+          @can('view-youth')
+            <li class="nav-item">
+                <a href="{{Route('youth/view')}}" class="nav-link">
+                  <i class="fas fa-child nav-icon"></i>
+                  <p>View Youths</p>
+                </a>
+              </li>
+          @endcan
+          @can('view-institute')
+              <li class="nav-header">Skill Developments</li>
+          <li class="nav-item">
+                <a href="{{Route('institutes/view')}}" class="nav-link">
+                  <i class="fas fa-school nav-icon"></i>
+                  <p>Institutes</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{Route('courses/view')}}" class="nav-link">
+                  <i class="fas fa-graduation-cap nav-icon"></i>
+                  <p>Courses</p>
+                </a>
+            </li>
+          @endcan 
+
+          @can('view-activities')
+              <li class="nav-header">BEC Activities</li>
+          <li class="nav-item">
+                <a href="{{Route('activities/cg/view')}}" class="nav-link">
+                  <i class="fas fa-chalkboard-teacher"></i>
+                  <p>&nbsp; Career Guidance</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{Route('courses/view')}}" class="nav-link">
+                  <i class="fas fa-graduation-cap nav-icon"></i>
+                  <p>Courses</p>
+                </a>
+            </li>
+          @endcan  
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
@@ -236,20 +358,24 @@
     @yield('content')    
   </div>
 </div>
+
     <!-- REQUIRED SCRIPTS -->
+
     <!-- jquery -->
     <script src="{{ asset('vendors/jquery/dist/jquery.min.js') }}"></script>
-
-    <!-- Bootstrap 4 -->
+    <!-- iCheck 1.0.1 -->
+    <script src="{{ asset('vendors/iCheck/icheck.js') }}"></script>
+    <!-- Bootstrap 4 --> 
     <script src="{{ asset('vendors/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+
     <script src="{{ asset('vendors/bootstrap/dist/js/bootstrap-validate.js') }}"></script>
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
-    
+    <script src="{{ asset('js/bootstrap-select.min.js') }}"></script>
     
     <!-- AdminLTE App -->
     <script src="{{ asset('vendors/adminLTE/js/adminlte.js') }}"></script>
-    <!-- iCheck 1.0.1 -->
-    <script src="{{ asset('vendors/iCheck/icheck.min.js') }}"></script>
+    
     <!-- OPTIONAL SCRIPTS -->
     <script src="{{ asset('vendors/adminLTE/js/demo.js') }}"></script>
     <!-- Data Tables -->
@@ -271,23 +397,32 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <!-- PAGE SCRIPTS -->
     <script src="{{ asset('vendors/adminLTE/js/dashboard2.js') }}"></script>
+    <script type="text/javascript"  src="{{ asset('js/popover.js') }}"></script>
+    <script type="text/javascript"  src="{{ asset('js/bootstrap-confirmation.min.js') }}"></script>
+    
     <script>
-      $(document).ready(function (){
-         var table = $('#example1').DataTable({
-           "scrollX": true,
-         });
-      });
+      
+      $(document).ready(function() {
+        $('#example1').DataTable( {
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        } );
+      } );
+
 
         //Flat red color scheme for iCheck
         $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
           checkboxClass: 'icheckbox_flat-green',
           radioClass   : 'iradio_flat-green'
         });
-      </script>
+</script>
       <script>
         var SITE_URL = "{{URL::to('/')}}";
       </script>
       <script type="text/javascript"  src="{{ asset('js/ajax.js') }}"></script>
+      
       <script>
       // Example starter JavaScript for disabling form submissions if there are invalid fields
       (function() {
@@ -308,8 +443,22 @@
         }, false);
       })();
       </script>
-    
-      <script type="text/javascript"  src="{{ asset('js/validator.js') }}"></script>
+  <script type="text/javascript">
+
+        window.onload = function () {
+      $('.preloader-wrapper').fadeOut(500, function(){ $('.preloader-wrapper').hide(); } );
+    }
+
+</script>
+<script type="text/javascript"  src="{{ asset('js/validator.js') }}"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.flash.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
+
 @yield('scripts')
 </body>
 </html>

@@ -152,7 +152,8 @@ return [
         'location' => 'Location',
         'min_qualification' => 'Minimum Qualification',
         'specializaion' => 'Educational Specialization',
-        'business_function' => 'Business Function'
+        'business_function' => 'Business Function',
+        'nic_head_of_household'=>'NIC number of Head of Household'
 
 
     ],

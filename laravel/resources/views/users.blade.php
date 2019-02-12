@@ -14,16 +14,16 @@
                         <th>Name</th>
                         <th>Email</th>
                         <th>Role</th>
-                        <th>Created At</th>
-                        <th>updated At</th>
+                        <th>Branch</th>
                         <th>Activate</th>
                         <th>Action</th>
                     </tr>
                 </thead> 
                 <tbody>
+                    <?php $no=1 ?>
                     @foreach ($users as $user)
                     <tr>
-                        <td>{{ $user->id }}</td>
+                        <td>{{ $no++ }}</td>
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
                         <td>
@@ -43,8 +43,21 @@
                             </div>  
                             </form>          
                         </td>
-                        <td>{{ $user->created_at }}</td>
-                        <td>{{ $user->updated_at }}</td>
+                        <td>
+                            <form method="post">
+                            {{ csrf_field() }}
+                            <div class="form-group"> 
+                                <select class="form-control" data-id="{{$user->id}}" id="branch" name="branch">
+                                    <option value="0">Assign</option>
+                                    @foreach ($branches as $branch)
+                                    <option  
+                                    @if($user->branch==$branch->id) selected @endif 
+                                    value="{{ $branch->id }}">{{ $branch->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            </form>    
+                        </td>
                         
                         <td><div class="form-group">
                             <form method="post" id="userActivate">
@@ -98,6 +111,36 @@
                 toastr.error('Something Error !', 'Status not Changed!')
             },
         });
+        });
+
+
+        //Assign A branch
+        $(document).on('change' , '#branch', function (){
+            var user_id = $(this).attr('data-id');
+            var branch = $(this).children("option:selected").val();
+            //alert(role);
+            $.ajax({
+                type: 'POST',
+                url: SITE_URL + '/branch',
+                          
+                data: {
+                    '_token': $('input[name=_token]').val(),
+                    'user_id': user_id,
+                    'branch': branch
+                    
+                },
+                cache: false,          
+                success: function(data) {              
+                toastr.success('Branch Successfully Assigned ! ', 'Congratulations', {timeOut: 5000});
+                //$('#example1').DataTable().ajax.reload();           
+                },
+
+                error: function (jqXHR, exception) {    
+                    console.log(jqXHR);
+                    toastr.error('Something Error !', 'Status not Changed!');
+                    
+                },
+            });
         });
     });
     

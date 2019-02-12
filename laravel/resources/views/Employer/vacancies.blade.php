@@ -11,7 +11,7 @@
         			
         		</div>
                 @can('create-vacancies')
-        		<div class="col-md-2">
+        		<div class="col-md-2 text-right">
         			<!-- Button trigger modal -->
 					<a href="{{ROUTE('new-vacancy')}}"><button type="button" class="btn btn-primary btn-flat" data-toggle="modal" data-target="#updateModel">Add Vacancy</button></a>
         		</div>

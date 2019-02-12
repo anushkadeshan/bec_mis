@@ -182,8 +182,8 @@
 			          		<label for="gender">Employer</label>
 			          		<select name="employer_id" id="employer_id" class="form-control">
 			          			<option value="">Select Option</option>
-			          			@foreach($employers as $employer)
-			          			<option @if($employer->id == $vacancy->employer_id) selected="selected" @endif value="{{ $employer->id }}">{{ $employer->name }}</option>
+			          			@foreach($employers as $emp)
+			          			<option @if($emp->id == $vacancy->employer->id) selected="selected" @endif value="{{ $emp->id }}">{{ $emp->name }}</option>
 			          			@endforeach
 			          		</select>
 		          		</div>

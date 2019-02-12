@@ -10327,13 +10327,13 @@
    * -------------------------
    */
   .dropdown-item-title {
-    font-size: 1rem;
+    font-size: 0.75rem;
     margin: 0;
   }
   
   .dropdown-menu-lg {
-    min-width: 280px;
-    max-width: 300px;
+    min-width: 380px;
+    max-width: 400px;
     padding: 0;
   }
   

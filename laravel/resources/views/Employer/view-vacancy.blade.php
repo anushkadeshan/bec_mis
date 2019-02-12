@@ -150,4 +150,31 @@
 </div>
 @endsection
 @section('scripts')
+<script>
+  $(document).ready(function(){
+     $(document).on('click' , '#apply-vacancy' ,function (){
+        var id = $(this).data('id');
+        $.ajax({
+            type: 'POST',
+            url: SITE_URL + '/vacancy/apply',
+                      
+            data: {
+                '_token': $('input[name=_token]').val(),
+                'id': id
+            },
+                      
+            success: function(data) {              
+            toastr.success('Vacancy Successfully Deleted ! ', 'Congratulations', {timeOut: 5000});
+            $('.vacancy' +id).remove();
+            //$('#example1').DataTable().ajax.reload();           
+            },
+
+            error: function (jqXHR, exception) {    
+                console.log(jqXHR);
+                toastr.error('Error !', 'You Do not have permission to delete employer')
+            },
+        });
+    });
+  });
+</script>
 @endsection

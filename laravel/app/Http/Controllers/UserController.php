@@ -9,6 +9,7 @@ Use App\User;
 Use Auth;
 use App\Notifications\Activation;
 use App\Role;
+use App\Branch;
 class UserController extends Controller
 {
     public function __construct()
@@ -20,7 +21,8 @@ class UserController extends Controller
         if(Auth::user()->isAdmin==1){
         $users = User::with('roles')->get(); 
         $roles = DB::table('roles')->get();
-        return view('users')->with(['users'=> $users , 'roles' => $roles]);
+        $branches = DB::table('branches')->get();
+        return view('users')->with(['users'=> $users , 'roles' => $roles, 'branches' => $branches]);
         
         }
     else{
@@ -74,13 +76,29 @@ class UserController extends Controller
         if(Auth::user()->isAdmin==1){
         $user_id = Input::get('user_id');
         $role_id = Input::get('role_id');
-        echo "<script>console.log( 'Debug Objects: " . $role_id . "' );</script>";
+        //echo "<script>console.log( 'Debug Objects: " . $role_id . "' );</script>";
         $inputs = array(
             'user_id' => $user_id,
             'role_id' => $role_id,
         );
         $user = \App\User::find($user_id);
         $user->roles()->sync($role_id);
+
+        }
+        else{
+        abort(403, 'Unauthorized action.');
+    }
+    }
+
+    public function changeBranch(Request $request){
+        if(Auth::user()->isAdmin==1){
+        $user_id = Input::get('user_id');
+        $branch = Input::get('branch');
+        //echo "<script>console.log( 'Debug Objects: " . $role_id . "' );</script>";
+        
+        $user = \App\User::find($user_id);
+        $user->branch = $branch;
+        $user->save();
 
         }
         else{
