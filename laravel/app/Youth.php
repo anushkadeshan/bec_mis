@@ -6,12 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use App\Course;
 use App\CareerGuidance;
 use App\Vacancy;
+use App\Employer;
 
 class Youth extends Model
 {
     public $timestamps = true;
     
-    protected $fillable = ['name', 'full_name',	'gender', 'nic'	,'birth_date','driving_licence','maritial_status',	'nationality', 'disability','reason','highest_qualification','family_id','added_by','branch_id'];
+    protected $fillable = ['name', 'full_name',	'gender', 'nic'	,'phone','email','birth_date','driving_licence','maritial_status',	'nationality', 'disability','reason','highest_qualification','family_id','added_by','branch_id','user_id'];
 
     public function family(){
     	return $this->belongsTo('App\Family');
@@ -43,6 +44,10 @@ class Youth extends Model
 
     public function vacancies(){
         return $this-> belongsToMany(Vacancy::class,'youths_vacancies');
+    }
+
+    public function employers(){
+        return $this-> belongsToMany(Employer::class,'employers_follow_youths');
     }
 
 }

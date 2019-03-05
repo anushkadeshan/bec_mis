@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Input;
 use App\Youth;
 use DB;
 use Illuminate\Support\Facades\Validator;
+use App\CareerGuidance;
 
 
 class ProgressController extends Controller
@@ -54,7 +55,21 @@ class ProgressController extends Controller
     public function view($id){
 
     	$youth = Youth::with('family')->where('id',$id)->first();
-    	return view('Progress.view-progress')->with('youth',$youth);
+      $cg = DB::table('youths_career_guidances')->where('youth_id',$id)->get();
+      $soft = DB::table('youths_courses')
+            ->join('courses','courses.id','=','youths_courses.course_id')
+            ->where('courses.course_type','Soft Skills')
+            ->where('youths_courses.youth_id',$id)
+            ->where('youths_courses.provided_by_bec',1)
+            ->get();
+      $vt = DB::table('youths_courses')
+            ->join('courses','courses.id','=','youths_courses.course_id')
+            ->where('courses.course_type','Vocational Training')
+            ->where('youths_courses.youth_id',$id)
+            ->where('youths_courses.provided_by_bec',1)
+            ->get();
+      $jobs = DB::table('jobs_details')->where('youth_id',$id)->where('provided_by','BEC')->get();
+    	return view('Progress.view-progress')->with(['youth'=>$youth,'cg'=>$cg,'soft'=>$soft,'vt'=>$vt,'jobs'=>$jobs]);
     }
 
     public function cgList(Request $request){
@@ -165,6 +180,25 @@ public function vtCourseList(Request $request){
               if(!$vt){
                 return response()->json(['error' => 'mysql_error()']);
               }
+        }
+
+        else{
+               return response()->json(['error' => $validator->errors()->all()]);
+        }
+    }
+
+    public function add_job(Request $request){
+        $validator = Validator::make($request->all(),[
+                'title' => 'required',
+                'employer_name' => 'required',
+            ]);
+        if($validator->passes()){
+
+              $title = $request->title;
+              $employer_name = $request->employer_name;
+              $provided_by = $request->provided_by;              
+              $youth_id = $request->youth_id;
+              $job = DB::table('jobs_details')->insert(['title' => $title, 'youth_id' => $youth_id, 'employer_name'=> $employer_name,'provided_by'=> $provided_by ]);
         }
 
         else{

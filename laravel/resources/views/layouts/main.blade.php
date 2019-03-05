@@ -29,7 +29,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">
     <link href="{{asset('vendors/font-awesome-animation/dist/font-awesome-animation.min.css')}}" rel="stylesheet">
-    
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <style>
       /*----------------------- Preloader -----------------------*/
       body.preloader-site {
@@ -53,6 +53,8 @@
           -webkit-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
           width: 120px;
+
+
 
       }
 
@@ -85,7 +87,7 @@
                 } elseif ($hour < 12) {
                   $greetings = "Good Morning";
                 }
-                    echo $greetings;  ?>!   {{ Auth::user()->name }} </a> 
+                    echo $greetings;  ?>!  <strong class="text-primary">  {{ Auth::user()->name }} </strong> </a> 
             </li>
             <li class="nav-item d-none d-sm-inline-block">
                 <a href="index3.html" class="nav-link">Home</a>
@@ -216,6 +218,44 @@
                     </div>
                     <!-- Message End -->
                 </a>
+                @break
+                @case('App\Notifications\applyVacancy')
+                <a href="{{Route('youth/applications')}}" id="read" class="dropdown-item" data-id="{{ $notification->id }}">
+
+                    <!-- Message Start -->
+                    <div class="media">
+                    <img src="{{ URL::asset('images/application.png')}}" alt="User Avatar" class="img-size-50 mr-3">
+                    <div class="media-body">
+                      <p class="text-sm">Application recived for</p>
+                        <h3 class="dropdown-item-title">
+                        {{ $notification->data['vacancy']['title'] }}
+                        <span class="float-right text-sm text-muted"><i class="fa fa-star"></i></span>
+                        </h3>
+                        
+                        <p class="text-sm text-muted"><i class="fas fa-clock"></i> {{ $notification->data['vacancy']['created_at'] }}</p>
+                    </div>
+                    </div>
+                    <!-- Message End -->
+                </a>
+                @break
+                @case('App\Notifications\FollowYouth')
+                <a href="{{Route('youth/applications')}}" id="read" class="dropdown-item" data-id="{{ $notification->id }}">
+
+                    <!-- Message Start -->
+                    <div class="media">
+                    <img src="{{ URL::asset('images/Feed-icon.png')}}" alt="User Avatar" class="img-size-50 mr-3">
+                    <div class="media-body">
+                        <h3 class="dropdown-item-title">
+                        {{ $notification->data['employer']['name'] }}
+                        <span class="float-right text-sm text-muted"><i class="fa fa-star"></i></span>
+                        </h3>
+                        <p class="text-sm">Selected a youth to hire.</p>
+                        
+                        <p class="text-sm text-muted"><i class="fas fa-clock"></i> {{ $notification->data['employer']['created_at'] }}</p>
+                    </div>
+                    </div>
+                    <!-- Message End -->
+                </a>
                 @endswitch
                 @endforeach
                 <a style="background-color: #D6DBDF" id="all" href="{{ route('unreadNotifications') }}" class="dropdown-item dropdown-footer">ALL Notifications</a>
@@ -249,7 +289,7 @@
         </nav>
   
   <!-- Main Sidebar Container -->
-  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+  <aside class="main-sidebar sidebar-dark-primary elevation-4 ">
     <!-- Brand Logo -->
     <a href="{{ROUTE('home')}}" class="brand-link">
       <img src="{{ URL::asset('images/logo.jpg')}}" alt="AdminLTE Logo" class="brand-image elevation-3"
@@ -260,10 +300,8 @@
     <!-- Sidebar -->
     <div class="sidebar">
       <!-- Sidebar user panel (optional) -->
-      
-
       <!-- Sidebar Menu -->
-      <n av class="mt-2">
+      <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
@@ -279,15 +317,91 @@
             </a>
           </li>
           @endcan
-          
+          @can('view-activities')
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link active">
+              <i class="nav-icon fa fa-cogs"></i>
+              <p>
+                BEC Activities
+                <i class="right fa fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{url('/education')}}" class="nav-link">
+                  <i class="fas fa-graduation-cap nav-icon"></i>
+                  <p>Education</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{url('career-guidance')}}" class="nav-link">
+                  <i class="fas fa-chalkboard-teacher"></i>
+                  <p>&nbsp; Career Guidance</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{url('skill-development')}}" class="nav-link">
+                  <i class="fa fa-award nav-icon"></i>
+                  <p>Skill Development</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{url('job-linking')}}" class="nav-link">
+                  <i class="fa fa-briefcase nav-icon"></i>
+                  <p>Job Linking</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          @endcan
+          @can('view-youth-profile')
+          <li class="nav-header">Profile Details</li>
+          <li class="nav-item">
+            <a href="{{Route('youth/profile-add')}}" class="nav-link">
+              <i class="nav-icon fas fa-user-circle"></i>
+              <p>
+                Create Profile
+                <span class="badge badge-info right"></span>
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{Route('youth/profile-view')}}" class="nav-link">
+              <i class="nav-icon fas fa-eye"></i>
+              <p>
+                View Profile
+                <span class="badge badge-info right"></span>
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{Route('youth/profile-edit')}}" class="nav-link">
+              <i class="nav-icon fas fa-edit"></i>
+              <p>
+                Edit Profile
+                <span class="badge badge-info right"></span>
+              </p>
+            </a>
+          </li>
+          @endcan
           @can('view-Employer')
           <li class="nav-header">Employment</li>
           @endcan
+
           @can('view-Employer')  
               <li class="nav-item">
                 <a href="{{Route('employers')}}" class="nav-link">
                   <i class="fas fa-building nav-icon"></i>
                   <p>View Employers</p>
+                </a>
+              </li>
+      
+          @endcan
+          @can('view-youth-followers')  
+              <li class="nav-item">
+                <a href="{{Route('youth/followers')}}" class="nav-link">
+                    <i class="fas fa-rss-square nav-icon"></i>
+                  <p>View Youth Followers</p>
                 </a>
               </li>
       
@@ -300,6 +414,9 @@
             </a>
           </li>
           @endcan
+          @can('apply-vacancy')
+          <li class="nav-header">Employment</li>
+          @endcan
           @can('view-vacancies')
           <li class="nav-item">
             <a href="{{Route('vacancies')}}" class="nav-link">
@@ -308,17 +425,36 @@
             </a>
           </li>
           @endcan
+          @can('view-applications')
           <li class="nav-header">Youth</li>
-          @can('view-youth')
+            @can('view-youth')
             <li class="nav-item">
                 <a href="{{Route('youth/view')}}" class="nav-link">
                   <i class="fas fa-child nav-icon"></i>
                   <p>View Youths</p>
                 </a>
-              </li>
+            </li>
+            @endcan
+            @can('search-youth')
+            <li class="nav-item">
+                <a href="{{Route('youth/view')}}" class="nav-link">
+                  <i class="fas fa-child nav-icon"></i>
+                  <p>Search Youths</p>
+                </a>
+            </li>
+            @endcan
           @endcan
+          @can('view-applications')
+            <li class="nav-item">
+                <a href="{{Route('youth/applications')}}" class="nav-link">
+                  <i class="fas fa-file-alt nav-icon"></i>
+                  <p>Job Applications</p>
+                </a>
+            </li>
+          @endcan
+          
           @can('view-institute')
-              <li class="nav-header">Skill Developments</li>
+          <li class="nav-header">Skill Developments</li>
           <li class="nav-item">
                 <a href="{{Route('institutes/view')}}" class="nav-link">
                   <i class="fas fa-school nav-icon"></i>
@@ -332,19 +468,29 @@
                 </a>
             </li>
           @endcan 
+          @can('view-reports')
+          <li class="nav-header">Reports</li>
 
-          @can('view-activities')
-              <li class="nav-header">BEC Activities</li>
+            <li class="nav-item">
+                <a href="{{Route('reports/index')}}" class="nav-link active">
+                  <i class="fas fa-file-invoice nav-icon"></i>
+                  <p>View Reports</p>
+                </a>
+            </li>
+
+          @endcan
+          @can('youth-search-menu')
+          <li class="nav-header">Skill Developments</li>
           <li class="nav-item">
-                <a href="{{Route('activities/cg/view')}}" class="nav-link">
-                  <i class="fas fa-chalkboard-teacher"></i>
-                  <p>&nbsp; Career Guidance</p>
+                <a href="{{Route('reports/institutes')}}" class="nav-link">
+                  <i class="fas fa-school nav-icon"></i>
+                  <p>Search Training Institutes</p>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{Route('courses/view')}}" class="nav-link">
+                <a href="{{Route('reports/courses')}}" class="nav-link">
                   <i class="fas fa-graduation-cap nav-icon"></i>
-                  <p>Courses</p>
+                  <p>Search Courses</p>
                 </a>
             </li>
           @endcan  
@@ -391,8 +537,7 @@
     <script src="{{ asset('vendors/adminLTE/js/jquery-jvectormap-world-mill-en.js') }}"></script>
     <!-- SlimScroll 1.3.0 -->
     <script src="{{ asset('vendors/adminLTE/js/jquery.slimscroll.min.js') }}"></script>
-    <!-- ChartJS 1.0.2 -->
-    <script src="{{ asset('vendors/adminLTE/js/Chart.min.js') }}"></script>
+    
     <!-- toastr notifications -->
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <!-- PAGE SCRIPTS -->
@@ -450,7 +595,6 @@
     }
 
 </script>
-<script type="text/javascript"  src="{{ asset('js/validator.js') }}"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.flash.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
@@ -458,7 +602,9 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
 
 @yield('scripts')
+
 </body>
 </html>

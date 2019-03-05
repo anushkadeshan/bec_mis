@@ -32,6 +32,27 @@ class AuthServiceProvider extends ServiceProvider
 
     public function registerPostPolicies()
     {
+
+        Gate::define('admin', function($user){
+            return $user->hasAccess(['admin']);
+        });
+
+        Gate::define('branch', function($user){
+            return $user->hasAccess(['branch']);
+        });
+
+        Gate::define('employer', function($user){
+            return $user->hasAccess(['employer']);
+        });
+
+        Gate::define('youth', function($user){
+            return $user->hasAccess(['youth']);
+        });
+
+        Gate::define('guest', function($user){
+            return $user->hasAccess(['guest']);
+        });
+
         Gate::define('create-Employer', function($user){
             return $user->hasAccess(['create-Employer']);
         });
@@ -116,9 +137,77 @@ class AuthServiceProvider extends ServiceProvider
          return $user->hasAccess(['view-activities']);
          });
 
+        Gate::define('view-youth-profile', function($user){
+         return $user->hasAccess(['view-youth-profile']);
+         });
 
+        Gate::define('follow-youth', function($user){
+         return $user->hasAccess(['follow-youth']);
+         });
 
+        Gate::define('follow-employer', function($user){
+         return $user->hasAccess(['follow-employer']);
+         });
+
+        Gate::define('view-applications', function($user){
+         return $user->hasAccess(['view-applications']);
+         });
+
+        Gate::define('change-job-status', function($user){
+         return $user->hasAccess(['change-job-status']);
+         });
+
+        Gate::define('search-youth', function($user){
+         return $user->hasAccess(['search-youth']);
+         });
         
+        Gate::define('view-youths-profile', function($user){
+         return $user->hasAccess(['view-youths-profile']);
+         });
+
+        Gate::define('view-youth-followers', function($user){
+         return $user->hasAccess(['view-youth-followers']);
+         });
+        Gate::define('view-reports', function($user){
+         return $user->hasAccess(['view-reports']);
+         });
+
+        Gate::define('view-youth-contacts', function($user){
+         return $user->hasAccess(['view-youth-contacts']);
+         });
+        
+        Gate::define('search-institutes', function($user){
+         return $user->hasAccess(['search-institutes']);
+         });
+
+        Gate::define('youth-search-menu', function($user){
+         return $user->hasAccess(['youth-search-menu']);
+         });
+
+        Gate::define('admin-dashboard', function($user){
+         return $user->hasAccess(['admin-dashboard']);
+         });
+
+        Gate::define('branch-dashboard', function($user){
+         return $user->hasAccess(['branch-dashboard']);
+         });
+
+        Gate::define('employer-dashboard', function($user){
+         return $user->hasAccess(['employer-dashboard']);
+         });
+
+        Gate::define('trainers-dashboard', function($user){
+         return $user->hasAccess(['trainers-dashboard']);
+         });
+
+        Gate::define('youth-dashboard', function($user){
+         return $user->hasAccess(['youth-dashboard']);
+         });
+
+        Gate::define('guest-dashboard', function($user){
+         return $user->hasAccess(['guest-dashboard']);
+         });
+
         
     }
 }

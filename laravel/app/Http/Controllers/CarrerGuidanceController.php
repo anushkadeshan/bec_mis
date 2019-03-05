@@ -19,9 +19,20 @@ class CarrerGuidanceController extends Controller
 
     public function index(){
         $districts = DB::table('districts')->get();
+        $activities = DB::table('activities')->get();
+        $branch_id = auth()->user()->branch;
 
-    	$career_guidances = CareerGuidance::with('branches')->get();
-    	return view('Activities.career_guidances')->with(['career_guidances'=> $career_guidances, 'districts' => $districts]);
+        if(is_null($branch_id)){
+           $career_guidances = CareerGuidance::with('branches')->get();
+        }
+        else{
+            $career_guidances =  DB::table('branches_careerGuidances')
+                             ->join('career_guidances','career_guidances.id','=','branches_careerGuidances.career_guidance_id')
+                             ->where('branches_careerGuidances.branch_id',$branch_id)
+                             ->get();
+        }
+    	
+    	return view('Activities.career-guidance.youth-career-guidance')->with(['career_guidances'=> $career_guidances, 'districts' => $districts,'activities'=>$activities]);
     }
 
     public function insert(Request $request){
@@ -31,6 +42,7 @@ class CarrerGuidanceController extends Controller
                 'time' => 'required',
                 'male' => 'required',
                 'female' => 'required',
+                'activity_id' =>'required'
             ]);
         if($validator->passes()){
 
@@ -45,7 +57,8 @@ class CarrerGuidanceController extends Controller
         	  	'female' => $request->female,
         	  	'venue' => $request->venue,
         	  	'resourse_person' => $request->resourse_person,
-        	  	'district' => $request->district
+        	  	'district' => $request->district,
+                'activity_id' => $request->activity_id,
 
         	  );
               $branch_id = auth()->user()->branch;

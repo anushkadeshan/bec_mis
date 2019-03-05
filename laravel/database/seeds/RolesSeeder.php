@@ -106,10 +106,8 @@ class RolesSeeder extends Seeder
                 'view-Employer' => true,
                 'view-vacancies' => true,
                 'apply-vacancy' => true,
-                'add-youth' => true,
-                'view-youth' => true,
-                'delete-youth'=>true,
-                'edit-youth' => true,
+                'view-youth-profile' => true,
+                'edit-profile' => true,
 
             ]),
         ]);

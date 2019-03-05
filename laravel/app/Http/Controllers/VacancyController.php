@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Notifications\Notification;
+use Illuminate\Notifications\Notifiable;
 use App\Vacancy;
 use Illuminate\Http\Request;
 use DB;
@@ -9,6 +11,12 @@ use App\Notifications\vacancyAdd;
 use Illuminate\Support\Facades\Validator;
 use App\User;
 use App\Employer;
+use Auth;
+use Noifiable;
+use App\Youth;
+use App\Notifications\applyVacancy;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Gate;
 
 class VacancyController extends Controller
 {
@@ -32,17 +40,29 @@ class VacancyController extends Controller
                 return redirect()->route('e-profile')->withErrors(['msg', 'Please complete the profile before add vacancies']);
             }
             else{
+
                $employer_id = $employer->id;
-               $vacancies = Vacancy::with('employer')->where('employer_id', $employer_id)->get();
+               $vacancies = Vacancy::with('employer')
+                            ->where('employer_id', $employer_id)
+                            ->get();
                return view('Employer.vacancies')->with('vacancies', $vacancies);
 
             }
             
         }
         else{
-            $vacancies = Vacancy::with('employer')->get();
-            //dd($vacancy->toArray());
-            return view('Employer.vacancies')->with('vacancies', $vacancies);
+           
+               if (Gate::allows('apply-vacancy')) {
+                    $vacancies = Vacancy::with('employer')->where('dedline', '>', Carbon::now())->get();
+               } 
+
+               else{
+                  $vacancies = Vacancy::with('employer')->get();
+               }
+                
+                //dd($vacancy->toArray());
+                return view('Employer.vacancies')->with('vacancies', $vacancies);
+            
         }
 
         
@@ -230,12 +250,83 @@ class VacancyController extends Controller
     }
 
     public function view($id){
+
         $vacancy = Vacancy::where('id', $id)->with('employer')->first();
-        //dd($vacancy->toArray());
         return view('Employer.view-vacancy')->with('vacancy', $vacancy);
+            
     }
 
-    public function apply(){
-        
+    public function apply(Request $request){
+      $user_id = Auth::id();
+      if (Youth::where('user_id', $user_id)->exists()) {
+        $roleName = 'Youth';
+        $user = auth()->user();
+        if($user->is($roleName)){
+            $user_id = Auth::id();
+            $youth = Youth::where('user_id',$user_id)->first();
+            $youth_id =  $youth->id;
+            if (DB::table('youths_vacancies')->where('vacancy_id', '=', $request->id)
+                ->where('youth_id','=',$youth_id)
+                ->exists()) {
+                return response()->json(['error' => 'You have already apply for this vacancy.']);
+            }
+            else{
+                $data = array(
+                'youth_id' => $youth_id,
+                'vacancy_id' => $request->id,
+                'applied_on' => date("Y-m-d"),
+                );
+
+                $vacancy = Vacancy::findOrFail($request->id);
+                $vacancy->youths()->attach($youth_id);
+
+                //$vacancy = DB::table('youths_vacancies')->insert($data);
+
+                //notify to releven employer
+                $vacancies = DB::table('vacancies')
+                ->join('employers','employers.id','=','vacancies.employer_id')
+                ->where('vacancies.id',$request->id)->first();
+                $employer_id = $vacancies->employer_id;
+
+                $employer = DB::table('employers')
+                            ->join('users','users.email','=','employers.email')
+                            ->where('employers.id',$employer_id)
+                            ->select('users.id as user_id')
+                            ->first();
+                $user = User::where('id',$employer->user_id)->first();
+
+                $user->notify(new applyVacancy($vacancy));
+
+                //notify to relevent branch
+
+                $youth_table = DB::table('youths')
+                               ->join('users','users.branch','=','youths.branch_id')
+                               ->where('youths.id', $youth_id)
+                               ->select('users.id as user_id')
+                               ->first(); 
+                $notify_branch_id = $youth_table->user_id;               
+                $notify_branch = User::where('id',$notify_branch_id)->first();
+
+                $notify_branch->notify(new applyVacancy($vacancy));
+
+                //notify to admin
+                $notifyToAdmin = User::whereHas('roles', function($q){$q->whereIn('slug', ['admin']);})->get();
+                foreach ($notifyToAdmin as $notifyUser) {
+                    $notifyUser->notify(new applyVacancy($vacancy));
+                }
+
+            }
+
+        }
+        else{
+            return response()->json(['error' => 'You are not authorize to apply job vacancies.']);
+        }
+
+      }
+      else{
+         return response()->json(['error' => 'Please create your profile before apply vacancies.']);
+            
+      }
+
     }
 }

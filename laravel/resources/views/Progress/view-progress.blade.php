@@ -26,7 +26,20 @@
 	          <div class="col-md-6">
 	            <div class="card card-info card-outline">
 	              <div class="card-header">
-	                <h3 class="card-title">Career Guidance</h3>
+	              	<div class="row">
+	              		<div class="col-11">
+	              			<h3 class="card-title">Career Guidance </h3>
+	              		</div>
+	              		<div class="col-1">
+	              			@if(!is_null($cg))
+	              			<h5>
+	              			<span style="cursor: pointer" data-toggle="tooltip" data-placement="top" title="Youth has participated for {{$cg->count()}} CG program/s" class="badge badge-success">{{$cg->count()}}</span>
+	              			</h5>
+	              			@endif
+	              		</div>
+	              		
+	              	</div>
+	                
 
 	              </div>
 	              <!-- /.card-header -->
@@ -34,7 +47,7 @@
 	               		<form id="cg">
 	               		
 		                	<div class="form-group">
-		                		<label for="cg_fid">Select CG</label>
+		                		<label for="cg_fid">Select CG </label>
 										      
 		                        <div class="input-group">
 		                        <input type="text" id="cg_id"class="form-control" placeholder="Search Date">
@@ -66,7 +79,20 @@
 	          <div class="col-md-6">
 	            <div class="card card-success card-outline">
 	              <div class="card-header">
-	                <h3 class="card-title">Soft Skills <small class="text-muted">(Berendina Provided)</small></h3>
+	              	<div class="row">
+	              		<div class="col-11">
+	              			<h3 class="card-title">Soft Skills <small class="text-muted">(Berendina Provided)</small></h3>
+	              		</div>
+	              		<div class="col-1">
+	              			@if(!is_null($soft))
+	              			<h5>
+	              			<span style="cursor: pointer" data-toggle="tooltip" data-placement="top" title="Youth has involved with {{$soft->count()}} Soft Skills course/s provided by BEC." class="badge badge-success">{{$soft->count()}}</span>
+	              			</h5>
+	              			@endif
+	              		</div>
+	              		
+	              	</div>
+	                
 
 	              </div>
 	              <!-- /.card-header -->
@@ -93,6 +119,8 @@
 	                     			<option value="">Select Option</option>
 	                     			<option>Following</option>
 	                     			<option>Followed</option>
+	                     			<option>OJT</option>
+	                     			<option>Drop Out</option>
 								</select>
 	                     	</div>
 	                     	<div class="form-group col-md-6">
@@ -118,7 +146,20 @@
 	          <div class="col-md-6">
 	            <div class="card card-warning card-outline">
 	              <div class="card-header">
-	                <h3 class="card-title">Vocational\Professional Training <small class="text-muted">(Berendina Provided)</small></h3>
+	              	<div class="row">
+	              		<div class="col-11">
+	                		<h3 class="card-title">Vocational\Professional Training <small class="text-muted">(Berendina Provided)</small></h3>
+	              			
+	              		</div>
+	              		<div class="col-1">
+	              			@if(!is_null($vt))
+	              			<h5>
+	              			<span style="cursor: pointer" data-toggle="tooltip" data-placement="top" title="Youth has involved with {{$vt->count()}} VT/Prof. course/s provided by BEC." class="badge badge-success">{{$vt->count()}}</span>
+	              			</h5>
+	              			@endif
+	              		</div>
+	              		
+	              	</div>
 
 	                <!-- /.card-tools -->
 	              </div>
@@ -171,25 +212,34 @@
 	          <div class="col-md-6">
 	            <div class="card card-danger card-outline">
 	              <div class="card-header">
-	                <h3 class="card-title">Jobs</h3>
+	              	<div class="row">
+	              		<div class="col-11">
+	                		<h3 class="card-title">Jobs <small class="text-muted">(Berendina Provided)</small></h3>
+	              		</div>
+	              		<div class="col-1">
+	              			@if(!is_null($jobs))
+	              			<h5>
+	              			<span style="cursor: pointer" data-toggle="tooltip" data-placement="top" title="Youth has been directed to {{$jobs->count()}} Job/s." class="badge badge-success">{{$jobs->count()}}</span>
+	              			</h5>
+	              			@endif
+	              		</div>
+	              		
+	              	</div>
 	              </div>
 	              <div class="card-body">
-	                <form action="" method="get" accept-charset="utf-8">
+	                <form id="jobs">
 	                	<div class="form-group">
 	                		<label>Job Title</label>
-	                		input
 	                		<input type="text" name="title" class="form-control">
 	                	</div>
 	                	<div class="form-group">
                         <label for="course_name">Employer </label>
-                            <div class="input-group">
-                                <input class="form-control" type="text" name="employer_name" id="employer_name" placeholder="Search Employer">
-                                <div style="cursor: pointer" onclick="window.open('{{Route('employers')}}', '_blank');" class="input-group-prepend">
-                                	<span data-toggle="tooltip" data-placement="top" title="Add an employer to list" class="input-group-text"><i style="color: blue;" class="fa fa-plus"></i></span>
-                                </div>  
-                            </div>
-              			<div id="employerList"></div>
-                    </div>
+							<input class="form-control" type="text" name="employer_name" id="employer_name">
+                    	</div>
+                    	<input type="hidden" name="provided_by" value="BEC">
+                    	{{csrf_field()}}
+                    	<input type="hidden" id="youth_id1" name="youth_id" value="{{request()->route('id')}}">
+                    	<button type="button" id="add-job" class="btn btn-primary btn-flat">Add</button>
 	                </form>
 	              </div>
 	              <!-- /.card-body -->
@@ -379,6 +429,61 @@ $(document).ready(function(){
    				});
    			});
 	});
+
+	$(document).ready(function(){
+//serahc course id
+			 $('#course_name').keyup(function(){ 
+			        var query = $(this).val();
+			        if(query != '')
+			        {
+			         var _token = $('input[name="_token"]').val();
+			         $.ajax({
+			          url: SITE_URL + '/softCourseList',
+			          method:"POST",
+			          data:{query:query, _token:_token},
+			          success:function(data){
+			           $('#courseList').fadeIn();  
+			           $('#courseList').html(data);
+			          }
+			         });
+			        }
+			    });
+
+			    $(document).on('click', '#autocomplete1 li', function(){  
+			    	$('#courseList').fadeOut(); 
+			        $('#course_name').val($(this).text()); 
+			        var course_id = $(this).attr('id');
+			        $('#course_id').val(course_id);
+			         
+			    });  
+		});
+
+$(document).ready(function(){
+		$(document).on('click', '#add-job', function(){
+   				var form = $('#jobs');
+
+   				$.ajax({
+   					type: 'POST',
+            		url: SITE_URL + '/job/add',
+            		data: form.serialize(),
+            		success:function(data){
+            			if($.isEmptyObject(data.error)){
+			                toastr.success('Data Successfully Added ! ', 'Congratulations', {timeOut: 5000});
+			                $("#jobs")[0].reset();
+            			}
+			            else{
+			                printValidationErrors(data.error);
+
+			            }
+            		},
+            		error:function(data,jqXHR){
+            			console.log(jqXHR);
+            			
+            		}
+
+   				});
+   			});
+	});	
 </script>
 
 <style type="text/css" media="screen">

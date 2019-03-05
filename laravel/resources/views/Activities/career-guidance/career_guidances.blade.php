@@ -78,7 +78,7 @@
 	  <div class="modal-dialog modal-lg" role="document">
 	    <div class="modal-content">
 	      <div class="modal-header">
-	        <h5 class="modal-title" id="exampleModalLongTitle">Add Career Guidance Details</h5>
+	        <h5 class="modal-title" id="exampleModalLongTitle">Add Career Guidance Details </h5>
 	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 	          <span aria-hidden="true">&times;</span>
 	        </button>
@@ -86,7 +86,20 @@
 	      <div class="modal-body">
               <!-- form start -->
               <form action="" id="career" method="post" accept-charset="utf-8">
-              {{ csrf_field() }}  
+              {{ csrf_field() }}
+              <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="title">Activity</label>
+                  <select name="activity_id" id="activity_id" class="form-control" data-dependent="ds_division">
+                    <option value="">Select Option</option>
+                    @foreach($activities as $activity)
+                    <option value="{{ $activity->id}}">{{ $activity->code }} | {{ $activity->activity }}</option>
+                    @endforeach
+                </select>
+              </div> 
+              </div>
+             </div>  
              <div class="row">
              	<div class="col-md-6">
              		<div class="form-group">
@@ -140,20 +153,54 @@
                  </div>  
               </div>
              </div>
-             <div class="row">
-             	<div class="col-md-6">
-             		<div class="form-group">
-             		 	<label for="male">Number of Male Youths</label>
-             		 	<input type="number" name="male" class="form-control" id="male">
-             		 </div> 
-             	</div>
-             	<div class="col-md-6">
-             		<div class="form-group">
-             		 	<label for="female">Number of Female Youths</label>
-             		 	<input type="number" name="female" class="form-control" id="female">
-             		 </div>
-		          	</div> 
-             	</div> 
+              
+              <div  class="row" >
+                  <table class="table table-bordered"> 
+                    <thead>
+                      <tr>
+                        <th>Organization</th>
+                        <th>No of Male</th>
+                        <th>No of Male</th>
+                        <th>No of PWD Male</th>
+                        <th>No of PWD Female</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>BEC</td>
+                        <td><input type="text" name="male" class="form-control"></td>
+                        <td><input type="text" name="female" class="form-control"></td>
+                        <td><input type="text" name="pdw_male" class="form-control"></td>
+                        <td><input type="text" name="pdw_female" class="form-control"></td>
+                       
+                      </tr>
+                      <tr>
+                        <td>GVT. Officials</td>
+                        <td><input type="text" name="male" class="form-control"></td>
+                        <td><input type="text" name="female" class="form-control"></td>
+                        <td><input type="text" name="pdw_male" class="form-control"></td>
+                        <td><input type="text" name="pdw_female" class="form-control"></td>
+                       
+                      </tr>
+                      <tr>
+                        <td>GVT. Training Institutes</td>
+                        <td><input type="text" name="male" class="form-control"></td>
+                        <td><input type="text" name="female" class="form-control"></td>
+                        <td><input type="text" name="pdw_male" class="form-control"></td>
+                        <td><input type="text" name="pdw_female" class="form-control"></td>
+                       
+                      </tr>
+                      <tr>
+                        <td>PVT. Training Institutes</td>
+                        <td><input type="text" name="male" class="form-control"></td>
+                        <td><input type="text" name="female" class="form-control"></td>
+                        <td><input type="text" name="pdw_male" class="form-control"></td>
+                        <td><input type="text" name="pdw_female" class="form-control"></td>
+                       
+                      </tr>
+                    </tbody>
+                  </table>
+              </div>  
               </form>             
              </div>
              {{csrf_field()}}
@@ -268,4 +315,14 @@ $(document).ready(function(){
     });
 });
 </script>
+<style type="">
+  tr td input[type=text] {
+  width: 100%;
+  box-sizing: border-box;
+  -webkit-box-sizing:border-box;
+  -moz-box-sizing: border-box;
+  background:transparent !important;
+  border: 0px;
+}
+</style>
 @endsection

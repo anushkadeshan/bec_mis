@@ -13,6 +13,9 @@ use App\Employer;
 use App\User; 
 use App\Role;
 use Illuminate\Support\Facades\Validator;
+use DB;
+use Auth;
+use App\Notifications\FollowYouth;
 
 class EmployerController extends Controller
 {
@@ -102,7 +105,13 @@ class EmployerController extends Controller
         
        $employer = Employer::where('email',$email)->orWhere('user_id', auth()->user()->id)->first();
        $vacancies = Employer::with('vacancies')->count();
-       return view('Employer.profile')->with(['employer'=> $employer , 'vacancies_count' => $vacancies]);
+
+       $applications = DB::table('youths_vacancies')
+                       ->join('vacancies','vacancies.id','=','youths_vacancies.vacancy_id')
+                       ->join('employers','employers.id','=','vacancies.employer_id')
+                       ->where('employers.email',$email)
+                       ->count();
+       return view('Employer.profile')->with(['employer'=> $employer , 'vacancies_count' => $vacancies,'applications_count'=> $applications]);
     }
 
     public function profileUpdate(Request $request)
@@ -199,6 +208,76 @@ class EmployerController extends Controller
         $id = Input::get('id');
         $employer = Employer::find($id);
         $employer->delete();
+
+    }
+
+    public function select(Request $request){
+        $employer_id = Auth::id();   
+        $employer = Employer::findOrFail($employer_id);
+        $employer->youths()->sync($request->youth_id);
+
+        //notify to relevent branch
+        $youth_table = DB::table('youths')
+                       ->join('users','users.branch','=','youths.branch_id')
+                        ->where('youths.id', $request->youth_id)
+                        ->select('users.id as user_id')
+                        ->first(); 
+        $notify_branch_id = $youth_table->user_id;               
+        $notify_branch = User::where('id',$notify_branch_id)->first();
+
+        $notify_branch->notify(new FollowYouth($employer));
+
+        //notify to admin
+        $notifyToAdmin = User::whereHas('roles', function($q){$q->whereIn('slug', ['admin']);})->get();
+        foreach ($notifyToAdmin as $notifyUser) {
+        $notifyUser->notify(new FollowYouth($employer));
+        } 
+    }
+
+    public function followers(){
+        $branch = auth()->user()->branch;
+
+        if(is_null($branch)){
+        $followers = DB::table('employers_follow_youths')
+                     ->join('youths','youths.id','=','employers_follow_youths.youth_id')
+                     ->join('employers','employers.id','=','employers_follow_youths.employer_id')
+                     ->join('families','families.id','=','youths.family_id')
+                     ->select('employers_follow_youths.*','employers_follow_youths.id as employers_follow_youths_id','youths.*','youths.name as youth_name','youths.phone as youth_phone','youths.email as youth_email','employers.*','employers.name as employer_name','employers.address as employer_address','employers.phone as employer_phone','employers.email as employer_email','families.*','families.address as family_address')
+                     ->orderBy('employers_follow_youths_id', 'DESC')
+                     ->get();   
+        $new_count = DB::table('employers_follow_youths')->where('status', null)->count();
+        }
+        else{
+            $followers = DB::table('employers_follow_youths')
+                     ->join('youths','youths.id','=','employers_follow_youths.youth_id')
+                     ->join('employers','employers.id','=','employers_follow_youths.employer_id')
+                     ->join('families','families.id','=','youths.family_id')
+                     ->select('employers_follow_youths.*','employers_follow_youths.id as employers_follow_youths_id','youths.*','youths.name as youth_name','youths.phone as youth_phone','youths.email as youth_email','employers.*','employers.name as employer_name','employers.address as employer_address','employers.phone as employer_phone','employers.email as employer_email','families.*','families.address as family_address')
+                     ->where('youths.branch_id',$branch)
+                     ->orderBy('employers_follow_youths_id', 'DESC')
+                     ->get();   
+        $new_count = DB::table('employers_follow_youths')
+                     ->join('youths','youths.id','=','employers_follow_youths.youth_id')
+                     ->where('youths.branch_id',$branch)
+                     ->where('status', null)->count();
+        }
+        return view('Youth.view-youth-followers')->with(['followers'=> $followers,'new_count'=>$new_count]);
+    }
+
+    public function application_status(Request $request){
+        $id = Input::get('id');
+        $status = Input::get('status');
+        $change_date = date('Y-m-d');
+
+        //echo "<script>console.log( 'Debug Objects: " . $role_id . "' );</script>";
+        
+
+        $data = array(
+            'status' => $status,
+            'status_change_date' => $change_date
+        );
+
+        $application = DB::table('employers_follow_youths')->whereid($id)->update($data);
 
     }
 }

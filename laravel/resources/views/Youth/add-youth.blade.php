@@ -28,15 +28,19 @@
 	                  		<div class="col-md-4">
 	                  			
 	                  			<div class="form-group">
-                   					<label for="name">Name with initials: &nbsp;&nbsp;</label>
+                   					<label for="name">1. Name with initials: &nbsp;&nbsp;</label>
                    					<input type="text" id="name" name="name" class="form-control">
                    				</div>
                    				<div class="form-group">
-                   					<label for="nic">NIC: &nbsp;&nbsp;</label>
+                   					<label for="nic">4. NIC: &nbsp;&nbsp;</label>
                    					<input type="text" id="nic" name="nic" class="form-control">
                    				</div>
+                          <div class="form-group">
+                            <label for="nic">7. Phone Numbers: &nbsp;&nbsp; <small>(seperete with comma)</small></label>
+                            <input type="text" id="phone" name="phone" class="form-control">
+                          </div> 
                    				<div class="form-group">
-                   					<label for="maritial_status">Marital Status &nbsp;&nbsp;</label>
+                   					<label for="maritial_status">10. Marital Status &nbsp;&nbsp;</label>
                    					<select name="maritial_status" id="maritial_status" class="form-control">
                    						<option value="">Select Option</option>
                    						<option>Single</option>
@@ -47,17 +51,10 @@
                    						<option>Widow</option>
                    					</select>
                    				</div>
-                   				<div class="form-group">
-                   					<label for="disability">Are you differtnly abled? &nbsp;&nbsp;</label>
-                   					<select name="disability" id="disability" class="form-control">
-                   						<option value="">Select Option</option>
-                   						<option>Yes</option>
-                   						<option>No</option>
-                   					</select>
-                   				</div>
+                   				
 
                           <div class="form-group">
-                            <label for="branch_id">Branch &nbsp;&nbsp;</label>
+                            <label for="branch_id">13. Select Branch &nbsp;&nbsp;</label>
                             <select class="form-control" id="branch_id" name="branch_id">
                                 <option value="0">Select a Option </option>
                                 @foreach ($branches as $branch) 
@@ -68,15 +65,19 @@
 	                  		</div>
 	                  		<div class="col-md-4">
 	                  			<div class="form-group">
-                   					<label for="full_name">Full Name: &nbsp; &nbsp;</label>
+                   					<label for="full_name">2. Full Name: &nbsp; &nbsp;</label>
                    					<input type="text" name="full_name" id="full_name" class="form-control">
                    				</div>
                    				<div class="form-group">
-                   					<label for="birth_date">Birth Date: &nbsp; &nbsp;</label>
+                   					<label for="birth_date">5. Birth Date: &nbsp; &nbsp;</label>
                    					<input type="date" name="birth_date" id="birth_date" class="form-control">
                    				</div>
+                          <div class="form-group">
+                            <label for="birth_date">8. Email Address: &nbsp; &nbsp;</label>
+                            <input type="email" name="email" id="email" class="form-control">
+                          </div>
                    				<div class="form-group">
-                   					<label for="nationality">Nationility: &nbsp;&nbsp;</label>
+                   					<label for="nationality">11. Nationility: &nbsp;&nbsp;</label>
                    					<select name="nationality" id="nationality" class="form-control">
                    						<option value="">Select Option</option>
                    						<option>Sinhala</option>
@@ -86,14 +87,19 @@
                    						<option>Other</option>
                    					</select>
                    				</div>
-                   				<div class="form-group">
-                   					<label for="reason">if Yes Explian</label>
-                   					<textarea class="form-control" id="reason" placeholder="optional" name="reason"></textarea>
-                   				</div>	
+                          <div class="form-group">
+                            <label for="disability">14. Are you differtnly abled? &nbsp;&nbsp;</label>
+                            <select name="disability" id="disability" class="form-control">
+                              <option value="">Select Option</option>
+                              <option>Yes</option>
+                              <option>No</option>
+                            </select>
+                          </div>
+                   					
 	                  		</div>
 	                  		<div class="col-md-4">
                    				<div class="form-group">
-                   					<label for="gender">Gender: &nbsp;&nbsp;</label>
+                   					<label for="gender">3. Gender: &nbsp;&nbsp;</label>
                    					<select name="gender" id="gender" class="form-control">
                    						<option value="">Select Option</option>
                    						<option value="Male">Male</option>
@@ -102,7 +108,7 @@
                    					</select>
                    				</div>
                    				<div class="form-group">
-                   					<label for="gender">Driving Licence &nbsp;&nbsp;</label>
+                   					<label for="gender">6. Driving Licence &nbsp;&nbsp;</label>
                    					<select name="driving_licence" id="driving_licence" class="form-control">
                    						<option value="">Select Option</option>
                    						<option>No Licence</option>
@@ -122,7 +128,7 @@
                    					</select>
                    				</div>
                    				<div class="form-group">
-			          				<label for="highest_qualification">Highest Educational Qualification:</label>
+			          				<label for="highest_qualification">9. Highest Educational Qualification:</label>
 			          				<select name="highest_qualification" id="highest_qualification" class="form-control">
 			          					<option value="">Select Option</option>
 			          					<option>Ordinary Level</option>
@@ -138,11 +144,11 @@
 		          				</div>
 		          				<div class="form-group">
 
-									     <label for="family_id">Select Family</label>
+									     <label for="family_id">12. Select Family</label>
 										      
                         <div class="input-group">
                         
-                        <input type="text" id="fam_id" name="fam_id" class="form-control" placeholder="Enter Name of Household">
+                        <input data-toggle="tooltip" data-placement="bottom" title="Add family details before search and select. Click on add button" type="text" id="fam_id" name="fam_id" class="form-control" placeholder="Enter Name of Household">
                         <div style="cursor: pointer" onclick="window.open('{{Route('youth/family/add')}}', '_blank');" class="input-group-prepend">
                           <span data-toggle="tooltip" data-placement="top" title="Add family to list" class="input-group-text"><i style="color: blue;" class="fa fa-plus"></i></span>
                         </div>  
@@ -150,9 +156,14 @@
                       <div id="familyList"></div>
                           <input type="hidden" id="family_id" name="family_id" value="">
 								      </div>
-	                  		</div>
+                      <div class="form-group">
+                            <label for="reason">15. if Yes Explian</label>
+                            <textarea class="form-control" id="reason" placeholder="optional" name="reason"></textarea>
+                          </div>
+	                  	</div>
 	                  	</div>	
-                    
+                      <input type="hidden" id="user_id" name="user_id" value="{{Auth::id()}}">
+                      
                    
                    		<button type="button" id="personal_info" class="btn btn-success btn-flat">Next &nbsp;&nbsp;<i class="fas fa-forward"></i></button>
                    	</form>

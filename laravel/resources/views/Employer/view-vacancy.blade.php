@@ -29,7 +29,8 @@
         		<div class="col-md-6 ">
         			<div class="col text-right">
         				<div class="form-group"	>
-        					<button class="btn btn-primary btn-flat"> <i class="fas fa-calendar-check nav-icon"> </i>&nbsp;&nbsp; Apply for this Job</button>
+                  {{csrf_field()}}
+        					<i style="display:none" id="loading" class="fa fa-spinner fa-lg faa-spin animated"></i> &nbsp;&nbsp;<button class="btn btn-primary btn-flat" data-id="{{$vacancy->id}}" id="apply-job"> <i class="fas fa-calendar-check nav-icon"> </i>&nbsp;&nbsp; Apply for this Job</button>
         				</div>
         			</div>
         		</div>
@@ -152,7 +153,7 @@
 @section('scripts')
 <script>
   $(document).ready(function(){
-     $(document).on('click' , '#apply-vacancy' ,function (){
+     $(document).on('click' , '#apply-job' ,function (){
         var id = $(this).data('id');
         $.ajax({
             type: 'POST',
@@ -162,19 +163,33 @@
                 '_token': $('input[name=_token]').val(),
                 'id': id
             },
-                      
-            success: function(data) {              
-            toastr.success('Vacancy Successfully Deleted ! ', 'Congratulations', {timeOut: 5000});
-            $('.vacancy' +id).remove();
-            //$('#example1').DataTable().ajax.reload();           
+            beforeSend: function(){
+              $('#loading').show();
             },
+            complete: function(){
+              $('#loading').hide();
+            },          
+            success: function(data) {
+              if($.isEmptyObject(data.error)){              
+              toastr.success('Succesfully apply for the vacancy ! ', 'Congratulations', {timeOut: 5000});
+            }
+            else{
+            toastr.error('Error !', ""+data.error+"");
+              
+            }         
+        },
 
             error: function (jqXHR, exception) {    
                 console.log(jqXHR);
-                toastr.error('Error !', 'You Do not have permission to delete employer')
+                toastr.error('Error !', 'Something Error')
             },
         });
     });
   });
+
+  @if (session('error'))
+  toastr.error('{{session('error')}}')
+  @endif
+
 </script>
 @endsection

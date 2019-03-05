@@ -90,12 +90,12 @@ class RegisterController extends Controller
 
         $admin->notify(new notifyAdmin($user));
         return $this->registered($request, $user)
-                        ?: redirect($this->redirectPath())->with('status', 'Register was successful!. Please contact admin to activate your account');
+                        ?: redirect($this->redirectPath())->with('status', 'Register was successful!. Please check the email in few minutes to access BEC MIS');
     }
 
     public function showRegistrationForm()
     {
-        $roles=\App\Role::pluck('name','id')->except('id',1);
+        $roles=\App\Role::pluck('name','id')->except(['id'=>1,7,2]);
         return view('auth.register',compact('roles'));
     }
 }

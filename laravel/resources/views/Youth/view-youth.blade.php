@@ -22,16 +22,56 @@
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-        	<table id="example" class="table table-bordered table-striped" style="width:100%">
+            @can('search-youth')
+            <div class="row container" style="background-color: #5E6971; color: white; padding: 15px">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="title">District</label>
+                        <select name="district" id="district" class="form-control" data-dependent="ds_division">
+                            <option value="">All</option>
+                            @foreach($districts as $district)
+                            <option value="{{ $district->name_en}}">{{ $district->name_en }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="highest_qualification">Highest Educational Qualification:</label>
+                        <select name="highest_qualification" id="highest_qualification" class="form-control">
+                            <option value="">All</option>
+                            <option>Ordinary Level</option>
+                            <option>Advanced Level</option>
+                            <option>Certificate</option>
+                            <option>Diploma</option>
+                            <option>Higher Diploma</option>
+                            <option>Degree</option>
+                            <option>Masters</option>
+                            <option>Doctorate</option>
+                            <option>Skilled Apprentice</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <br>    
+            @endcan
+        	<table id="example" class="table row-border table-hover" style="width:100%">
         		<thead>
         			<tr>
         				<th>#</th>
         				<th>Name</th>
         				<th>Gender</th>
+                        @can('add-youth')
         				<th>NIC</th>
         				<th>Current Status</th>
         				<th>Progress</th>
         				<th>Action</th>
+                        @endcan
+                        @can('search-youth')
+                        <th>District</th>
+                        <th>Highest Edu. Qulification</th>
+                        <th>Action</th>
+                        @endcan
         			</tr>
         		</thead>
         		<tbody>
@@ -41,6 +81,7 @@
         				<td>{{$no++}}</td>
         				<td>{{ $youth->name }}</td>
         				<td>{{ $youth->gender }}</td>
+                        @can('add-youth')
         				<td>{{ $youth->nic }}</td>
         				<td>{{ $youth->current_status }}</td>
         				<td width="180">
@@ -89,8 +130,6 @@
                                 <a href="{{ URL::to('youth/' . $youth->id . '/view') }}">
                                     <button type="button" id="view-youth" data-id="{{$youth->id}}" class="btn btn-block btn-warning btn-flat btn-sm" ><i class="fas fa-eye"></i> </button>
                                 </a>
-
-                                
                             
                             @endcan
                             @can('edit-youth')
@@ -107,6 +146,16 @@
                             </div>
                             @endcan
         				</td>
+                        @endcan
+                        @can('search-youth')
+                        <td>{{$youth->family->district}}</td>
+                        <td>{{$youth->highest_qualification}}</td>
+                        <td>
+                            <a href="{{ URL::to('youth/' . $youth->id . '/view') }}">
+                                    <button type="button" id="view-youth" data-id="{{$youth->id}}" class="btn btn-block btn-warning btn-flat btn-sm" ><i class="fas fa-eye"></i> Profile </button>
+                                </a>
+                        </td>
+                        @endcan
         			</tr>
         			@endforeach
         		</tbody>
@@ -297,6 +346,19 @@ $(document).ready(function(){
             },
         });
     });
+});
+
+$(document).ready(function() {
+    var table =  $('#example').DataTable();
+
+    $('#district').on('change', function () {
+        table.columns(3).search( this.value ).draw();
+    } );
+
+    $('#highest_qualification').on('change', function () {
+        table.columns(4).search( this.value ).draw();
+    } );
+
 });
 </script>
 

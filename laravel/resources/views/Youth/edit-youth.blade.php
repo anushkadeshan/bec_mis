@@ -27,15 +27,19 @@
 	                  		<div class="col-md-4">
 	                  			
 	                  			<div class="form-group">
-                   					<label for="name">Name with initials: &nbsp;&nbsp;</label>
+                   					<label for="name">1. Name with initials: &nbsp;&nbsp;</label>
                    					<input type="text" id="name" name="name" class="form-control" value="{{$youth->name}}">
                    				</div>
                    				<div class="form-group">
-                   					<label for="nic">NIC: &nbsp;&nbsp;</label>
+                   					<label for="nic">4. NIC: &nbsp;&nbsp;</label>
                    					<input type="text" id="nic" name="nic" class="form-control" value="{{$youth->nic}}" disabled>
                    				</div>
+                           <div class="form-group">
+                            <label for="nic">7. Phone Numbers: &nbsp;&nbsp; <small>(seperete with comma)</small></label>
+                            <input type="text" id="phone" name="phone" class="form-control" value="{{$youth->phone}}">
+                          </div>
                    				<div class="form-group">
-                   					<label for="maritial_status">Marital Status &nbsp;&nbsp;</label>
+                   					<label for="maritial_status">10. Marital Status &nbsp;&nbsp;</label>
                    					<select name="maritial_status" id="maritial_status" class="form-control">
                    						<option value="">Select Option</option>
                    						<option @if($youth->maritial_status=='Single') selected @endif>Single</option>
@@ -46,18 +50,11 @@
                    						<option @if($youth->maritial_status=='Widow') selected @endif>Widow</option>
                    					</select>
                    				</div>
-                   				<div class="form-group">
-                   					<label for="disability">Are you differtnly abled? &nbsp;&nbsp;</label>
-                   					<select name="disability" id="disability" class="form-control">
-                   						<option value="">Select Option</option>
-                   						<option @if($youth->disability=='Yes') selected @endif>Yes</option>
-                   						<option @if($youth->disability=='No') selected @endif>No</option>
-                   					</select>
-                   				</div>
+                   				
 
                           <div class="form-group">
-                            <label for="branch_id">Branch &nbsp;&nbsp;</label>
-                            <select class="form-control" id="branch_id" name="branch_id" @if(!is_null(Auth::user()->branch)) disabled @endif>
+                            <label for="branch_id">13. Branch &nbsp;&nbsp;</label>
+                            <select class="form-control" id="branch_id" name="branch_id" >
                                 <option value="0">Select a Option </option>
                                 @foreach ($branches as $branch) 
                                 <option @if(Auth::user()->branch == $branch->id || $youth->branch_id==$branch->id) selected @endif  value="{{ $branch->id }}">{{ $branch->name }}</option>
@@ -67,15 +64,19 @@
 	                  		</div>
 	                  		<div class="col-md-4">
 	                  			<div class="form-group">
-                   					<label for="full_name">Full Name: &nbsp; &nbsp;</label>
+                   					<label for="full_name">2. Full Name: &nbsp; &nbsp;</label>
                    					<input type="text" name="full_name" id="full_name" class="form-control" value="{{$youth->full_name}}">
                    				</div>
                    				<div class="form-group">
-                   					<label for="birth_date">Birth Date: &nbsp; &nbsp;</label>
+                   					<label for="birth_date">5. Birth Date: &nbsp; &nbsp;</label>
                    					<input type="date" name="birth_date" id="birth_date" class="form-control" value="{{$youth->birth_date}}">
                    				</div>
+                          <div class="form-group">
+                            <label for="birth_date">8. Email Address: &nbsp; &nbsp;</label>
+                            <input type="email" name="email" id="email" class="form-control" value="{{$youth->email}}">
+                          </div>
                    				<div class="form-group">
-                   					<label for="nationality">Nationility: &nbsp;&nbsp;</label>
+                   					<label for="nationality">11. Nationility: &nbsp;&nbsp;</label>
                    					<select name="nationality" id="nationality" class="form-control">
                    						<option value="">Select Option</option>
                    						<option @if($youth->nationality=='Sinhala') selected @endif>Sinhala</option>
@@ -85,14 +86,19 @@
                    						<option @if($youth->nationality=='Other') selected @endif>Other</option>
                    					</select>
                    				</div>
-                   				<div class="form-group">
-                   					<label for="reason">if Yes Explian</label>
-                   					<textarea class="form-control" id="reason" placeholder="optional" name="reason">{{$youth->reason}}</textarea>
-                   				</div>	
+                          <div class="form-group">
+                            <label for="disability">14. Are you differtnly abled? &nbsp;&nbsp;</label>
+                            <select name="disability" id="disability" class="form-control">
+                              <option value="">Select Option</option>
+                              <option @if($youth->disability=='Yes') selected @endif>Yes</option>
+                              <option @if($youth->disability=='No') selected @endif>No</option>
+                            </select>
+                          </div>
+                   					
 	                  		</div>
 	                  		<div class="col-md-4">
                    				<div class="form-group">
-                   					<label for="gender">Gender: &nbsp;&nbsp;</label>
+                   					<label for="gender">3. Gender: &nbsp;&nbsp;</label>
                    					<select name="gender" id="gender" class="form-control">
                    						<option value="">Select Option</option>
                    						<option @if($youth->gender=='Male') selected @endif value="Male">Male</option>
@@ -101,7 +107,7 @@
                    					</select>
                    				</div>
                    				<div class="form-group">
-                   					<label for="gender">Driving Licence &nbsp;&nbsp;</label>
+                   					<label for="gender">6. Driving Licence &nbsp;&nbsp;</label>
                    					<select name="driving_licence" id="driving_licence" class="form-control">
                    						<option value="">Select Option</option>
                    						<option @if($youth->driving_licence=='No Licence') selected @endif>No Licence</option>
@@ -121,7 +127,7 @@
                    					</select>
                    				</div>
                    				<div class="form-group">
-			          				<label for="highest_qualification">Highest Educational Qualification:</label>
+			          				<label for="highest_qualification">9. Highest Educational Qualification:</label>
 			          				<select name="highest_qualification" id="highest_qualification" class="form-control">
 			          					<option value="">Select Option</option>
 			          					<option @if($youth->highest_qualification=='Ordinary Level') selected @endif>Ordinary Level</option>
@@ -137,7 +143,7 @@
 		          				</div>
 		          				<div class="form-group">
 
-									     <label for="family_id">Select Family</label>
+									     <label for="family_id">12. Select Family</label>
 										      
                         <div class="input-group">
                         
@@ -149,7 +155,11 @@
                       <div id="familyList"></div>
                           <input type="hidden" id="family_id" name="family_id" value="{{ $youth->family_id}}">
 								      </div>
-	                  		</div>
+                      <div class="form-group">
+                            <label for="reason">15. if Yes Explian</label>
+                            <textarea class="form-control" id="reason" placeholder="optional" name="reason">{{$youth->reason}}</textarea>
+                      </div>
+	                  	</div>
 	                  	</div>	
                     
                       <input type="hidden" id="youth_id" name="id" value="{{$youth->id}}">
@@ -170,18 +180,18 @@
                               <div class="card-body">
                               <div class="form-group">
                                 <label for="ol_year">O\L Year</label>
-                                <input class="form-control" maxlength="4" type="number" name="ol_year" id="ol_year" value="{{ $results->ol_year}}">
+                                <input class="form-control" maxlength="4" type="number" name="ol_year" id="ol_year" value="@if(!is_null($results)){{$results->ol_year}}@endif">
                               </div> 
                               <div class="form-group">
                                 <label for="ol_attempt">O\L Attempt</label>
-                                <input class="form-control" maxlength="2" step="1" type="number" name="ol_attempt" id="ol_attempt" value="{{ $results->ol_attempt}}">
+                                <input class="form-control" maxlength="2" step="1" type="number" name="ol_attempt" id="ol_attempt" value="@if(!is_null($results)){{$results->ol_attempt}}@endif">
                               </div> 
                               <div class="form-group">
                                 <label for="ol_pass_or_fail">O\L pass or fail ?</label>
                                   <select class="form-control" name="ol_pass_or_fail">
                                     <option value="">Select Option</option>
-                                    <option @if($results->ol_pass_or_fail=='Pass') selected @endif>Pass</option>
-                                    <option @if($results->ol_pass_or_fail=='Fail') selected @endif>Fail</option>
+                                    <option @if(!is_null($results)) @if($results->ol_pass_or_fail=='Pass') selected @endif @endif>Pass</option>
+                                    <option @if(!is_null($results)) @if($results->ol_pass_or_fail=='Fail') selected @endif @endif>Fail</option>
                                   </select>
                               </div>
                             </div>
@@ -197,11 +207,11 @@
                                 <div class="form-group">
                                     <div class="form-group">
                                 <label for="al_year">A\L Year</label>
-                                <input class="form-control" maxlength="4" type="number" name="al_year" id="al_year" value="{{ $results->al_year}}">
+                                <input class="form-control" maxlength="4" type="number" name="al_year" id="al_year" value="@if(!is_null($results)){{ $results->al_year}}@endif">
                                 </div> 
                                 <div class="form-group">
                                   <label for="al_attempt">A\L Attempt</label>
-                                  <input class="form-control" maxlength="2" step="1" type="number" name="al_attempt" id="al_attempt" value="{{$results->al_attempt}}">
+                                  <input class="form-control" maxlength="2" step="1" type="number" name="al_attempt" id="al_attempt" value="@if(!is_null($results)){{$results->al_attempt}}@endif">
                                 </div>
                                 <div class="row">
                                    <div class="col-sm-6">
@@ -209,8 +219,8 @@
                                         <label for="al_pass_or_fail">A\L pass or fail ?</label>
                                         <select class="form-control" name="al_pass_or_fail" id="al_pass_or_fail">
                                           <option value="">Select Option</option>
-                                          <option @if($results->al_pass_or_fail=='Pass') selected @endif>Pass</option>
-                                          <option @if($results->al_pass_or_fail=='Fail') selected @endif>Fail</option>
+                                          <option @if(!is_null($results)) @if($results->al_pass_or_fail=='Pass') selected @endif @endif>Pass</option>
+                                          <option @if(!is_null($results)) @if($results->al_pass_or_fail=='Fail') selected @endif @endif>Fail</option>
                                         </select>
                                     </div>
                                    </div>
@@ -219,11 +229,11 @@
                                       <label for="stream">Stream</label>
                                       <select class="form-control" name="stream" id="stream">
                                         <option value="">Select Option</option>
-                                        <option @if($results->stream=='Commerce') selected @endif>Commerce</option>
-                                        <option @if($results->stream=='Art') selected @endif>Art</option>
-                                        <option @if($results->stream=='Maths') selected @endif>Maths</option>
-                                        <option @if($results->stream=='Science') selected @endif>Science</option>
-                                        <option @if($results->stream=='Technology') selected @endif>Technology</option>
+                                        <option @if(!is_null($results)) @if($results->stream=='Commerce') selected @endif  @endif>Commerce</option>
+                                        <option @if(!is_null($results)) @if($results->stream=='Art') selected @endif  @endif>Art</option>
+                                        <option @if(!is_null($results)) @if($results->stream=='Maths') selected @endif  @endif>Maths</option>
+                                        <option @if(!is_null($results)) @if($results->stream=='Science') selected  @endif @endif>Science</option>
+                                        <option @if(!is_null($results)) @if($results->stream=='Technology') selected @endif  @endif>Technology</option>
                                       </select>
                                   </div>
                                    </div>
@@ -243,31 +253,31 @@
                               <div class="card-body">
                                 <div class="form-group">
                                     <label for="degree">Degree Name</label>
-                                    <input type="text" name="degree" id="degree" class="form-control" value="{{ $results->degree}}">
+                                    <input type="text" name="degree" id="degree" class="form-control" value="@if(!is_null($results)){{$results->degree}} @endif ">
                                 </div>
                                 <div class="row">
                                   <div class="col-sm-6">
                                     <div class="form-group">
                                       <label for="pass_out_year">Pass out Year</label>
-                                      <input type="number" name="pass_out_year" id="pass_out_year" class="form-control" value="{{ $results->pass_out_year}}">
+                                      <input type="number" name="pass_out_year" id="pass_out_year" class="form-control" value="@if(!is_null($results)){{$results->pass_out_year}}@endif">
                                     </div>
                                   </div>
                                   <div class="col-sm-6">
                                      
                                     <div class="form-group">
                                         <label for="medium">Medium</label>
-                                        <input type="text" name="medium" id="medium" class="form-control" value="{{ $results->medium}}">
+                                        <input type="text" name="medium" id="medium" class="form-control" value="@if(!is_null($results)){{ $results->medium}} @endif ">
                                     </div>
                                   </div>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label for="grade">Grade</label>
-                                    <input type="text" name="grade" id="grade" class="form-control" value="{{ $results->grade}}">
+                                    <input type="text" name="grade" id="grade" class="form-control" value="@if(!is_null($results)){{ $results->grade}} @endif ">
                                 </div>
                                 <div class="form-group">
                                     <label for="university">University</label>
-                                    <input type="text"  name="university" id="university" class="form-control" value="{{ $results->university}}">
+                                    <input type="text"  name="university" id="university" class="form-control" value="@if(!is_null($results)){{ $results->university}} @endif ">
                                 </div> 
                             </div>
                           </div>
@@ -282,7 +292,7 @@
                                 
                               <div class="card-body">
                                 <div class="form-group">
-                                    <textarea class="form-control" id="other_professional_qualifications" name="other_professional_qualifications">{{ $results->other_professional_qualifications}}</textarea>
+                                    <textarea class="form-control" id="other_professional_qualifications" name="other_professional_qualifications">@if(!is_null($results)){{ $results->other_professional_qualifications}} @endif </textarea>
                                 </div>
                                  
                             </div>
@@ -292,7 +302,8 @@
                       </div>
                       {{ csrf_field() }}
                       
-                          <input type="hidden" id="result_id" name="id" value="{{$results->id}}">
+                          <input type="hidden" id="result_id" name="id" value="@if(!is_null($results)){{$results->id}} @endif ">
+                          <input type="hidden" id="youth_id" name="youth_id" value="{{$youth->id}}">
                       <div class="form-group">
                         <button type="button" id="update-education" class="btn btn-success btn-flat">Update Changes</button>
                       </div>
@@ -645,7 +656,7 @@
                                       <select name="intresting_courses[]" id="intresting_courses"  class="form-control" multiple>
                                         <option value="">Select Option</option>
                                         @foreach($course_categories as $cc)
-                                           <option  @if(!is_null($intresting_jobs)) @if(in_array($cc->id,$intresting_jobs->intresting_courses)) selected @endif @endif value="{{$cc->id}}">{{$cc->course_category}}</option>
+                                           <option @if(!is_null($intresting_jobs)) @if(in_array($cc->id,$intresting_jobs->intresting_courses)) selected @endif @endif value="{{$cc->id}}">{{$cc->course_category}}</option>
                                         @endforeach
                                       </select>
                                     </div>
@@ -1218,7 +1229,7 @@
                   </div>
                   <center>
                     <h4>Successfully updated data to database</h4>
-                    <a href="{{Route('youth/view')}}" title=""><button type="button" class="btn btn-success btn-flat">Update Another</button></a>
+                    
                   </center>
                 </div>
               </div><!-- /.card-body -->

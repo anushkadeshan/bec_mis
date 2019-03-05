@@ -25,7 +25,7 @@
 
         		</div>
         		<div class="col-md-6 text-right">
-        			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addModel">Add institutes to course</button>
+        		@cannot('youth')	<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addModel">Add institutes to course</button> @endcan
         		</div>
         	</div>
         </div>

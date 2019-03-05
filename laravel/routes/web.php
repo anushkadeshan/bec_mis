@@ -38,6 +38,9 @@ Route::post('employerInsert', 'EmployerController@create')->name('employerInsert
 Route::post('/employerUpdate', 'EmployerController@update')->name('employerUpdate')->middleware('can:update-Employer');
 Route::get('/e-profile', 'EmployerController@profile')->name('e-profile')->middleware('can:view-Employer-Profile');
 Route::post('/e-profile-update', 'EmployerController@profileUpdate')->name('e-profile-update')->middleware('can:view-Employer-Profile');
+Route::post('/youth/select', 'EmployerController@select')->name('youth/select')->middleware('can:follow-youth');
+Route::get('/youth/followers', 'EmployerController@followers')->name('youth/followers')->middleware('can:view-youth-followers');
+Route::post('/youth/followers/status', 'EmployerController@application_status')->name('/youth/followers/status')->middleware('can:view-youth-followers');
 
 //vacancies route
 Route::get('/vacancies', 'VacancyController@index')->name('vacancies')->middleware('can:view-vacancies');
@@ -47,13 +50,17 @@ Route::post('/add-vacancy', 'VacancyController@store')->name('add-vacancy')->mid
 Route::get('/vacancy/{id}/edit', 'VacancyController@edit')->name('edit-vacancy')->middleware('can:edit-vacancies'); 
 Route::post('/vacancy/update', 'VacancyController@update')->name('update-vacancy')->middleware('can:edit-vacancies'); 
 Route::post('/vacancy/delete', 'VacancyController@delete')->name('delete-vacancy')->middleware('can:delete-vacancies'); 
-Route::post('/vacancy/apply', 'VacancyController@apply')->name('apply-vacancy')->middleware('can:apply-vacancies'); 
+Route::post('/vacancy/apply', 'VacancyController@apply')->name('apply-vacancy')->middleware('can:apply-vacancy'); 
 Route::get('/vacancy/{id}/view', 'VacancyController@view')->name('view-vacancy')->middleware('can:view-vacancies'); 
 
 //youth routes
 Route::get('/youth/family/add', 'FamilyController@index')->name('youth/family/add')->middleware('can:add-youth');
-Route::get('/youth/view', 'YouthController@index')->name('youth/view')->middleware('can:view-youth');
+Route::get('/youth/view', 'YouthController@index')->name('youth/view')->middleware('can:view-applications');
+Route::get('/youth/applications', 'YouthController@applications')->name('youth/applications')->middleware('can:view-applications');
 Route::get('/youth/add', 'YouthController@create')->name('youth/add')->middleware('can:add-youth');
+Route::get('/youth/profile-add', 'YouthController@profile_add')->name('youth/profile-add')->middleware('can:add-youth');
+Route::get('/youth/profile-view', 'YouthController@profile_view')->name('youth/profile-view')->middleware('can:add-youth');
+Route::get('/youth/profile-edit', 'YouthController@profile_edit')->name('youth/profile-edit')->middleware('can:add-youth');
 Route::post('/youth/add-personal', 'YouthController@create_personal')->name('youth/add-personal')->middleware('can:add-youth');
 Route::post('/familyList', 'YouthController@familyList')->name('familyList');
 Route::post('/courseList', 'ResultController@courseList')->name('courseList');
@@ -67,6 +74,7 @@ Route::post('/youth/add-self', 'YouthController@create_self')->name('youth/add-s
 Route::post('/youth/add-feedback', 'YouthController@create_feedback')->name('youth/add-feedback')->middleware('can:add-youth');
 Route::post('youth/add-language', 'YouthController@create_language')->name('youth/add-language')->middleware('can:add-youth');
 Route::get('/youth/{id}/edit', 'YouthController@edit')->name('edit-youth')->middleware('can:edit-youth'); 
+Route::get('/youth/{id}/view', 'YouthController@profile_view_by_branch')->name('view-youth')->middleware('can:view-youths-profile'); 
 Route::post('/youth/update-personal', 'YouthController@update_personal')->name('youth/update-personal')->middleware('can:edit-youth');
 Route::post('/youth/update-results', 'ResultController@update_results')->name('youth/update-results')->middleware('can:edit-youth');
 Route::post('/youth/update-language', 'YouthController@update_language')->name('youth/update-language')->middleware('can:edit-youth');
@@ -77,7 +85,11 @@ Route::post('/youth/update-following-course', 'YouthController@update_following_
 Route::post('/youth/update-no-jobs', 'YouthController@update_no_jobs')->name('youth/update-no-jobs')->middleware('can:edit-youth');
 Route::post('/youth/update-self', 'YouthController@update_self')->name('youth/update-self')->middleware('can:edit-youth');
 
-Route::post('/youth/delete-youth', 'YouthController@delete')->name('/youth/delete-youth')->middleware('can:delete-youth'); 
+Route::post('/youth/delete-youth', 'YouthController@delete')->name('/youth/delete-youth')->middleware('can:delete-youth');  
+Route::post('/youth/application/status', 'YouthController@application_status')->name('/youth/application/status'); 
+ 
+Route::post('/youth/search', 'YouthController@search')->name('/youth/search')->middleware('can:search-youth'); 
+
 
 //family routes
 Route::post('/districts', 'FamilyController@get_districts')->name('districts'); 
@@ -130,6 +142,7 @@ Route::post('progress-jobs', 'ProgressController@jobs')->name('progress-jobs');
 Route::get('/youth/{id}/view-progress', 'ProgressController@view')->name('view-progress')->middleware('can:view-youth');
 Route::post('/cgList', 'ProgressController@cgList')->name('cgList');
 Route::post('/cg/add', 'ProgressController@add')->name('cg/add')->middleware('can:view-activities');
+Route::post('/job/add', 'ProgressController@add_job')->name('job/add')->middleware('can:view-activities');
 Route::post('/soft_skills/add', 'ProgressController@add_soft')->name('soft_skills/add')->middleware('can:view-activities');
 Route::post('/vt/add', 'ProgressController@add_vt')->name('vt/add')->middleware('can:view-activities');
 Route::post('/softCourseList', 'ProgressController@softCourseList')->name('softCourseList');
@@ -140,7 +153,42 @@ Route::get('/activities/cg/view', 'CarrerGuidanceController@index')->name('activ
 Route::post('/activities/add-cg', 'CarrerGuidanceController@insert')->name('activities/cg-add')->middleware('can:view-activities');
 Route::post('/activities/cg/delete', 'CarrerGuidanceController@delete')->name('activities/cg/delete')->middleware('can:view-activities');
 
+//reports routs
+
+Route::get('/reports/index', 'ReportController@index')->name('reports/index')->middleware('can:view-reports');
+Route::get('/reports/personal', 'ReportController@personal_reports')->name('reports/personal')->middleware('can:view-reports');
+Route::get('/reports/location', 'ReportController@location')->name('reports/location')->middleware('can:view-reports');
+Route::get('/reports/status', 'ReportController@status')->name('reports/status')->middleware('can:view-reports');
+Route::get('/reports/jobs', 'ReportController@jobs')->name('reports/jobs')->middleware('can:view-reports');
+Route::get('/reports/business', 'ReportController@business')->name('reports/business')->middleware('can:view-reports');
+Route::get('/reports/common', 'ReportController@common')->name('reports/common')->middleware('can:view-reports');
+Route::get('/reports/youth_courses', 'ReportController@youth_courses')->name('reports/youth_courses')->middleware('can:view-reports');
+Route::get('/reports/employers', 'ReportController@employers')->name('reports/employers')->middleware('can:view-reports');
+Route::get('/reports/vacancies', 'ReportController@vacancies')->name('reports/vacancies')->middleware('can:view-reports');
+Route::get('/reports/institutes', 'ReportController@institutes')->name('reports/institutes')->middleware('can:search-institutes');
+Route::get('/reports/training_courses', 'ReportController@training_courses')->name('reports/courses')->middleware('can:search-institutes');
+Route::get('/reports/courses', 'ReportController@courses')->name('reports/courses')->middleware('can:search-institutes');
 
 
+//dashboard routes
+Route::get('/home/admin', 'DashboardController@admin')->name('home/admin')->middleware('can:admin-dashboard');
 
+
+//M&E
+Route::get('/education', function () {
+    return view('Activities.education.landing-page');
+});
+
+
+Route::get('/career-guidance', function () {
+    return view('Activities.career-guidance.landing-page');
+});
+
+Route::get('/skill-development', function () {
+    return view('Activities.skill-development.landing-page');
+});
+
+Route::get('/job-linking', function () {
+    return view('Activities.job-linking.landing-page');
+});
 

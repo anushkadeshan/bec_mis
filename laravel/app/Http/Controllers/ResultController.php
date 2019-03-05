@@ -27,9 +27,7 @@ class ResultController extends Controller
                 $results = Result::create($data+['added_by'=> $added_by]);
 
                 $youth_id = $results->youth_id;
-                return response()->json(['youth_id' => $youth_id]);
-
-                
+                return response()->json(['youth_id' => $youth_id]);  
 
             }
             else{
@@ -102,7 +100,7 @@ class ResultController extends Controller
 
             if($validator->passes()){
 
-              $results = Result::find($request->id);
+              $results = Result::firstOrNew(['youth_id'=>$request->youth_id]);
               $results->ol_year = $request->ol_year;
               $results->ol_attempt = $request->ol_attempt;
               $results->ol_pass_or_fail = $request->ol_pass_or_fail;
@@ -115,6 +113,7 @@ class ResultController extends Controller
               $results->medium = $request->medium;
               $results->grade = $request->grade;
               $results->university = $request->university;
+              $results->added_by = auth()->user()->name;
               $results->other_professional_qualifications = $request->other_professional_qualifications;
               $results->save();
 

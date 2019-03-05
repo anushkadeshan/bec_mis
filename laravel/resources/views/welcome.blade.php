@@ -5,7 +5,8 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>BEC BIS</title>
+        <link href="{{asset('vendors/bootstrap/dist/css/bootstrap.min.css')}}" rel="stylesheet">
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet" type="text/css">
@@ -67,12 +68,12 @@
     <body>
         <div class="flex-center position-ref full-height">
             @if (Route::has('login'))
-                <div class="top-right links">
+                <div class="top-right">
                     @auth
-                        <a href="{{ url('/home') }}">Home</a>
+                        <a href="{{ url('/home') }}"><button type="button" class="btn btn-primary btn-flat">Dashboard</button></a>
                     @else
-                        <a href="{{ route('login') }}">Login</a>
-                        <a href="{{ route('register') }}">Register</a>
+                        <a href="{{ route('login') }}"><button type="button" class="btn btn-primary btn-flat">Login</button></a>
+                        <a href="{{ route('register') }}"><button type="button" class="btn btn-success btn-flat">Register</button></a>
                     @endauth
                 </div>
             @endif
@@ -83,7 +84,7 @@
                 <h3>Welcome to BEC MIS.</h3>
                 <a href=""><h4>Access to Dashboard</h4></a>
                 @else
-
+                <img src="{{asset('images/homepage.png')}}" class="img img-responsive" alt="">
                 <h3>Please Login to Access.</h3>
                 @endauth
                 @endif

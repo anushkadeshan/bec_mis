@@ -3,6 +3,7 @@
 namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
+use App\Youth;
 
 class Employer extends Model
 {
@@ -17,6 +18,10 @@ class Employer extends Model
 
     public function vacancies(){
     	return $this->hasMany('App\Vacancy');
+    }
+
+    public function youths(){
+        return $this-> belongsToMany(Youth::class,'employers_follow_youths');
     }
 
 }
