@@ -103,7 +103,10 @@ Route::get('/gn-division', function(){
 	$ds_division = Input::get('ds_division');
 	$gn_divisions = DB::table('gn_office')->where('DSD_ID','=', $ds_division)->get();
 	return Response::json($gn_divisions);
+
+
 });
+
 Route::post('/gn-division', 'FamilyController@get_gn')->name('gn-division')->middleware('can:view-vacancies'); 
 Route::post('/youth/add-family', 'FamilyController@create')->name('family/add')->middleware('can:add-youth');
 
@@ -148,9 +151,8 @@ Route::post('/vt/add', 'ProgressController@add_vt')->name('vt/add')->middleware(
 Route::post('/softCourseList', 'ProgressController@softCourseList')->name('softCourseList');
 Route::post('/vtCourseList', 'ProgressController@vtCourseList')->name('vtCourseList');
 
-//Bec Activities Routes
-Route::get('/activities/cg/view', 'CarrerGuidanceController@index')->name('activities/cg/view')->middleware('can:view-activities');
-Route::post('/activities/add-cg', 'CarrerGuidanceController@insert')->name('activities/cg-add')->middleware('can:view-activities');
+
+
 Route::post('/activities/cg/delete', 'CarrerGuidanceController@delete')->name('activities/cg/delete')->middleware('can:view-activities');
 
 //reports routs
@@ -192,3 +194,26 @@ Route::get('/job-linking', function () {
     return view('Activities.job-linking.landing-page');
 });
 
+
+Route::get('/activities/education/regional-meeting', 'RegionalMeetingController@index')->name('activities/education/regional-meeting')->middleware('can:add-M&E-reports');
+Route::post('/activity/education/add-meeting', 'RegionalMeetingController@add')->name('activity/education/add-meeting')->middleware('can:add-M&E-reports');
+Route::get('/activities/resourse-person', 'ResoursePersonController@index')->name('activities/resourse-person')->middleware('can:add-M&E-reports');
+Route::post('/activity/add-resourse', 'ResoursePersonController@store')->name('activity/add-resourse')->middleware('can:add-M&E-reports');
+Route::get('/activities/education/mentoring', 'MentoringController@index')->name('activities/education/mentoring')->middleware('can:add-M&E-reports');
+Route::post('/resoursePersonList', 'MentoringController@resoursePersonList')->name('resoursePersonList')->middleware('can:add-M&E-reports');
+Route::post('/activity/education/add-mentoring', 'MentoringController@add')->name('activity/education/add-mentoring')->middleware('can:add-M&E-reports');
+Route::get('/activities/career-guidance/stake-holder-meeting', 'StakeHolderMeetingController@index')->name('activities/career-guidance/stake-holder-meeting')->middleware('can:add-M&E-reports');
+Route::post('/activity/cg/add-stake-holder', 'StakeHolderMeetingController@add')->name('activity/cg/add-stake-holder')->middleware('can:add-M&E-reports');
+Route::get('/activities/career-guidance/kick-off', 'KickOffController@index')->name('activities/career-guidance/kick-off')->middleware('can:add-M&E-reports');
+Route::post('/activities/career-guidance/kick-off-add', 'KickOffController@add')->name('activities/career-guidance/kick-off-add')->middleware('can:add-M&E-reports');
+Route::get('/activities/career-guidance/tot-cg', 'CarrerGuidanceController@add_tot')->name('activities/career-guidance/tot-cg')->middleware('can:add-M&E-reports');
+Route::post('/activities/career-guidance/tot-cg-add', 'CarrerGuidanceController@insert_tot')->name('activities/career-guidance/tot-cg-add')->middleware('can:add-M&E-reports');
+Route::get('/activities/cg/view', 'CarrerGuidanceController@index')->name('activities/cg/view')->middleware('can:add-M&E-reports');
+Route::post('/activities/add-cg', 'CarrerGuidanceController@insert')->name('activities/cg-add')->middleware('can:add-M&E-reports');
+Route::get('/activities/career-guidance/pes', 'PesUnitController@index')->name('activities/career-guidance/pes')->middleware('can:add-M&E-reports');
+Route::post('/activities/career-guidance/pes-add', 'PesUnitController@insert')->name('activities/career-guidance/pes-add')->middleware('can:add-M&E-reports');
+Route::get('/activities/career-guidance/pes-support', 'PesUnitSupportController@index')->name('activities/career-guidance/pes-support')->middleware('can:add-M&E-reports');
+Route::post('/pes_list', 'PesUnitSupportController@pes_List')->name('pes_list');
+Route::post('/activities/career-guidance/pes-support-add', 'PesUnitSupportController@insert')->name('activities/career-guidance/pes-support-add')->middleware('can:add-M&E-reports');
+Route::get('/activities/career-guidance/cg-training', 'CGtrainingController@index')->name('activities/career-guidance/cg-training')->middleware('can:add-M&E-reports');
+Route::post('/activities/career-guidance/cg-training-add', 'CGtrainingController@insert')->name('activities/career-guidance/cg-training-add')->middleware('can:add-M&E-reports');

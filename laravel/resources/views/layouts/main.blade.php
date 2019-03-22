@@ -30,6 +30,9 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">
     <link href="{{asset('vendors/font-awesome-animation/dist/font-awesome-animation.min.css')}}" rel="stylesheet">
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <link href="{{asset('css/bootstrap3-wysihtml5.min.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/dropdown.css" />
+
     <style>
       /*----------------------- Preloader -----------------------*/
       body.preloader-site {
@@ -544,15 +547,18 @@
     <script src="{{ asset('vendors/adminLTE/js/dashboard2.js') }}"></script>
     <script type="text/javascript"  src="{{ asset('js/popover.js') }}"></script>
     <script type="text/javascript"  src="{{ asset('js/bootstrap-confirmation.min.js') }}"></script>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/dropdown.js"></script>
     <script>
       
       $(document).ready(function() {
+        
         $('#example1').DataTable( {
             dom: 'Bfrtip',
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
-            ]
+            ],
+
+        
         } );
       } );
 

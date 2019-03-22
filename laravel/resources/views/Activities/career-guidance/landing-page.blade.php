@@ -30,7 +30,7 @@
                 			<ul	class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 				
                 				<li class="nav-item">
-            						<a href="{{Route('reports/personal')}}" class="nav-link">
+            						<a href="{{Route('activities/career-guidance/stake-holder-meeting')}}" class="nav-link">
 	              						<p>
 	              							Stakeholder meetings 
 	                						<i class="fa fa-angle-right right"></i>
@@ -38,7 +38,7 @@
             						</a>
           						</li>
                       <li class="nav-item">
-                        <a href="{{Route('reports/personal')}}" class="nav-link">
+                        <a href="{{Route('activities/career-guidance/kick-off')}}" class="nav-link">
                             <p>
                               Kick of events  
                               <i class="fa fa-angle-right right"></i>
@@ -46,7 +46,7 @@
                         </a>
                       </li>
                       <li class="nav-item">
-                        <a href="{{Route('reports/personal')}}" class="nav-link">
+                        <a href="{{Route('activities/career-guidance/tot-cg')}}" class="nav-link">
                             <p>
                               ToT on Career guidance 
                               <i class="fa fa-angle-right right"></i>
@@ -54,7 +54,7 @@
                         </a>
                       </li>
                       <li class="nav-item">
-                        <a href="{{Route('reports/personal')}}" class="nav-link">
+                        <a href="{{Route('activities/cg/view')}}" class="nav-link">
                             <p>
                               Career Guidance & Career fair workshop
                               <i class="fa fa-angle-right right"></i>
@@ -74,7 +74,7 @@
                 		<div class="card-body">
                 			<ul	class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 				<li class="nav-item">
-                        <a href="{{Route('reports/personal')}}" class="nav-link">
+                        <a href="{{Route('activities/career-guidance/pes')}}" class="nav-link">
                             <p>
                               Gap identification of PES unit
                               <i class="fa fa-angle-right right"></i>
@@ -82,7 +82,7 @@
                         </a>
                         </li>
           						  <li class="nav-item">
-                        <a href="{{Route('reports/personal')}}" class="nav-link">
+                        <a href="{{Route('activities/career-guidance/pes-support')}}" class="nav-link">
                             <p>
                               Material support for PES units
                               <i class="fa fa-angle-right right"></i>
@@ -90,7 +90,7 @@
                         </a>
                         </li>
                         <li class="nav-item">
-                        <a href="{{Route('reports/personal')}}" class="nav-link">
+                        <a href="{{Route('activities/career-guidance/cg-training')}}" class="nav-link">
                             <p>
                               Training on Career counselling for GND level officers 
                               <i class="fa fa-angle-right right"></i>

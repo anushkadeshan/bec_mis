@@ -67,7 +67,7 @@
                     @foreach ($applications as $application)
                     <tr class="application{{$application->id}}">
                         <td>{{ $no++ }}</td>
-                        <td><a data-toggle="tooltip" data-placement="top" title="{{$application->phone}}" href="{{ URL::to('youth/' . $application->youth_id . '/view') }}">{{ $application->youth_name }}</a></td>
+                        <td><a @cannot('employer') data-toggle="tooltip" data-placement="top" title="{{$application->phone}}" @endcan href="{{ URL::to('youth/' . $application->youth_id . '/view') }}">{{ $application->youth_name }}</a></td>
                         <td><a href="{{ URL::to('vacancy/' . $application->vacancy_id . '/view') }}">{{ $application->title }}</a></td>
                         <td>
                         	<?php 

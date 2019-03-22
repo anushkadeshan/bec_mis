@@ -8,7 +8,7 @@ use App\Youth;
 class Employer extends Model
 {
 	use Notifiable;
-
+    public $timestamps = true;
     protected $fillable=['name','address','company_type', 'industry','user_id','phone' , 'email'];
 
     public function user()

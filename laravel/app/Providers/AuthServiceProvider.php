@@ -208,6 +208,24 @@ class AuthServiceProvider extends ServiceProvider
          return $user->hasAccess(['guest-dashboard']);
          });
 
+        Gate::define('view-M&E-reports', function($user){
+         return $user->hasAccess(['view-M&E-reports']);
+         });
+
+        Gate::define('edit-M&E-reports', function($user){
+         return $user->hasAccess(['edit-M&E-reports']);
+         });
+
+        Gate::define('add-M&E-reports', function($user){
+         return $user->hasAccess(['add-M&E-reports']);
+         });
+
+        Gate::define('delete-M&E-reports', function($user){
+         return $user->hasAccess(['delete-M&E-reports']);
+         });
+
+
+
         
     }
 }

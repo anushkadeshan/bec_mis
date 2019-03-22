@@ -30,7 +30,7 @@
                 			<ul	class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 				
                 				<li class="nav-item">
-            						<a href="{{Route('reports/personal')}}" class="nav-link">
+            						<a href="{{Route('activities/education/regional-meeting')}}" class="nav-link">
 	              						<p>
 	              							Attending BMIC regional meeting 
 	                						<i class="fa fa-angle-right right"></i>
@@ -50,7 +50,7 @@
                 		<div class="card-body">
                 			<ul	class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 				<li class="nav-item">
-                        <a href="{{Route('reports/personal')}}" class="nav-link">
+                        <a href="{{Route('activities/education/mentoring')}}" class="nav-link">
                             <p>
                               Mentoring program 
                               <i class="fa fa-angle-right right"></i>

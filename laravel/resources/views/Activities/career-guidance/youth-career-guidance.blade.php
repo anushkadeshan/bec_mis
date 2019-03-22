@@ -1,184 +1,383 @@
 @extends('layouts.main')
 @section('content')
 <div class="container">
-	<div class="card">
-        <div class="card-header">
-        	<div class="row">
-        		<div class="col-md-4">
-        			<h3 class="card-title">Career Guidances</h3> 
-        		</div>
-        		<div class="col-md-6">
-        			
-        		</div> 
-                @can('view-activities')
-        		<div class="col-md-2">
-        			<!-- Button trigger modal -->
-		        	<div class="text-right">
-					<button type="button" class="btn btn-primary btn-flat" data-toggle="modal" data-target="#addModel">Add New</button>
-					</div>
-        		</div>
-                @endcan
-        	</div>
-        </div>
-        <!-- /.card-header -->
-        <div class="card-body">  
-            <table id="example1" class="table table-bordered table-striped" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>District</th>
-                        <th>DS Division</th>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Venue</th>
-                        <th>Male</th>
-                        <th>Female</th>
-                        <th>Resourse Person</th>
-                        @can('view-activities')
-                        <th>Action</th>
-                        @endcan
-                    </tr>
-                </thead> 
-                <tbody>
-                    <?php  $no=1; ?>
-                    @foreach ($career_guidances as $cg)
-                    <tr class="cg{{$cg->id}}">
-                        <td>{{ $no++ }}</td>
-                        <td>{{ $cg->district }}</td>
-                        <td>{{ $cg->ds_division }}</td>
-                        <td>{{ $cg->date }}</td>
-                        <td>{{ $cg->time }}</td>
-                        <td>{{ $cg->venue }}</td>
-                        <td>{{ $cg->male }}</td>
-                        <td>{{ $cg->female }}</td>
-                        <td>{{ $cg->resourse_person }}</td>
-                        
-                        <td>
-
-                        	@can('view-activities')
-                        	<div class="btn-group">
-                        	
-                             <form id="userDelete" method="post" >
-                                {{ csrf_field() }}
-                                    <button type="button" id="delete-cg" data-id="{{$cg->id}}" class="btn btn-block btn-danger btn-flat btn-sm" ><i class="fas fa-trash-alt"></i> </button>
-                                </form>
-                            </div>
-                            @endcan
-                        </td>
-                    </tr>
-                    @endforeach
-                <tbody>        
-            </table>      
-            
-        </div>
-
-    </div>
-</div>
-<div class="modal fade" id="addModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-	  <div class="modal-dialog modal-lg" role="document">
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <h5 class="modal-title" id="exampleModalLongTitle">Add Career Guidance Details</h5>
-	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-	          <span aria-hidden="true">&times;</span>
-	        </button>
-	      </div>
-	      <div class="modal-body">
-              <!-- form start -->
-              <form action="" id="career" method="post" accept-charset="utf-8">
-              {{ csrf_field() }}
-               <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="title">Activity</label>
-                  <select name="activity_id" id="activity_id" class="form-control" data-dependent="ds_division">
-                    <option value="">Select Option</option>
-                    @foreach($activities as $activity)
-                    <option value="{{ $activity->id}}">{{ $activity->code }} | {{ $activity->activity }}</option>
-                    @endforeach
+<div class="row">
+    <div class="col-12">
+      <!-- Custom Tabs -->
+      <div class="card">
+        <div class="card-header d-flex p-0">
+          <h3 class="card-title p-3">Career Guidance & Career fair workshop</h3>
+          <ul class="nav nav-pills ml-auto p-2" id="tabs">
+            <li class="nav-item"><a class="nav-link active" href="#tab_1" data-toggle="tab">Genaral</a></li>
+            <li class="nav-item"><a class="nav-link" href="#tab_2" data-toggle="tab">Resourse Person</a></li>
+            <li class="nav-item"><a class="nav-link" href="#tab_3" data-toggle="tab">Participants</a></li>
+            <li class="nav-item"><a class="nav-link" href="#tab_4" data-toggle="tab">Youth Identified</a></li>
+            <li class="nav-item"><a class="nav-link" href="#tab_5" data-toggle="tab">Career Test</a></li>
+            <li class="nav-item"><a class="nav-link" href="#tab_6" data-toggle="tab">Attachments</a></li>
+          </ul>
+        </div><!-- /.card-header -->
+        <div class="card-body">
+          <form name="cg" id="cg" method="post" enctype="multipart/form-data">
+          <div class="tab-content">
+            <div class="tab-pane active" id="tab_1">
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="form-group">
+                <label for="district">1. District</label>
+                <select name="district" id="district" class="form-control" data-dependent="dsd">
+                <option value="">Select Option</option>
+                @foreach($districts as $district)
+                <option value="{{ $district->name_en}}">{{ $district->name_en }}</option>
+                @endforeach
+                 </select>
+            </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                <label for="dsd">2. DSD (Leave blank if not relevant)</label>
+                <select name="dsd" id="dsd" class="form-control">
+                <option value="">Select Option</option>
+                
+                 </select>
+            </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="gn_division">3. GN Divisions Covered</label>
+                <select name="gnd[]" id="gn_division" class="form-control" multiple>
+                  <option value="">Select Option</option>
                 </select>
-              </div> 
               </div>
-             </div>   
-             <div class="row">
-             	<div class="col-md-6">
-             		<div class="form-group">
-	          			<label for="title">District</label>
-        					<select name="district" id="district" class="form-control" data-dependent="ds_division">
-        						<option value="">Select Option</option>
-         						@foreach($districts as $district)
-         						<option value="{{ $district->name_en}}">{{ $district->name_en }}</option>
-         						@endforeach
-        				</select>
-       				</div> 
-             	</div>
-             	<div class="col-md-6">
-             		<div class="form-group">
-	          			<label for="ds_division">DS Division</label>
-    					<select name="ds_division" id="ds_division" class="form-control">
-     						<option value="">Select Option</option>
-    					</select>
-   					</div>
-             	</div>
-             </div>
-             <div class="row">
-             	<div class="col-md-6">
-             		<div class="form-group">
-	          			<label for="date">Date</label>
-    					<input type="date" name="date" id="date" class="form-control">
-   					</div>
-             		 
-             	</div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="time">Time</label>
-                  <input type="time" name="time" id="time" class="form-control">
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                <label for="dm_name">4. District Manager</label>
+                <select name="dm_name" id="dm_name" class="form-control">
+                <option value="">Select Option</option>
+                @foreach($managers as $manager)
+                <option value="{{ $manager->manager}}">{{ $manager->manager }}</option>
+                @endforeach
+                 </select>
+            </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-8">
+                  <div class="form-group">
+                <label for="dm_name">5. Title of the Action</label>
+                <select name="title_of_action" id="title_of_action" class="form-control">
+                <option value="">Select Option</option>
+                @foreach($activities as $activity)
+                <option value="{{ $activity->activity}}">{{ $activity->activity }}</option>
+                @endforeach
+                 </select>
+            </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                <label for="dm_name">6. Activity code as per the Logframe</label>
+                <select name="activity_code" id="activity_code" class="form-control">
+                <option value="">Select Option</option>
+                @foreach($activities as $activity)
+                <option value="{{ $activity->code}}">{{ $activity->code }}</option>
+                @endforeach
+                 </select>
+            </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="form-group">
+                <label for="dm_name">7. Meeting Date</label>
+                <input type="date" name="meeting_date" id="meeting_date" class="form-control">
+            </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                <label for="dm_name">8. Time Start</label>
+                <input type="time" name="time_start" id="time_start" class="form-control">
+            </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                <label for="dm_name">9. Time End</label>
+                <input type="time" name="time_end" id="time_end" class="form-control">
+            </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                <label for="dm_name">10. Venue</label>
+                <input type="text" name="venue" id="venue" class="form-control">
+            </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                <label for="dm_name">11. Program Cost</label>
+                <input type="text" name="program_cost" id="program_cost" class="form-control">
+            </div>
+                </div>
+              </div>
+              <div style="width: 100%; height: 20px; border-bottom: 1px solid blue; text-align: center;padding-bottom: 10px">
+                    <span class="badge badge-info" style="font-size: 20px; padding: 0 10px; ">
+                      No of Youth Participated
+                    </span>
+                </div>
+                <br>    
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="form-group">
+                <label for="dm_name">12. Total Male</label>
+                <input type="number" name="total_male" id="total_male" class="form-control">
+            </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                <label for="dm_name">13. Total Female</label>
+                <input type="number" name="total_female" id="total_female" class="form-control">
+            </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                <label for="dm_name">14. PWD Male</label>
+                <input type="number" name="pwd_male" id="pwd_male" class="form-control">
+            </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                <label for="dm_name">15. PWD Female</label>
+                <input type="number" name="pwd_female" id="pwd_female" class="form-control">
+            </div>
                 </div>
                 
+              </div>  
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                <label for="dm_name">16. Mode of Conduct</label>
+                <textarea class="textarea" name="mode_of_conduct" placeholder="Place some text here"
+                          style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
+            </div>
+                </div>                
               </div>
-             </div>
-             <div class="row">
-             	
-             	<div class="col-md-6">
-             		<div class="form-group">
-             		 	<label for="venue">Venue</label>
-             		 	<input type="text" id="venue" name="venue" class="form-control">
-             		 </div> 
-             		
-             	</div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="resourse_person">Resourse Person's Name</label>
-                  <input type="text" id="resourse_person" name="resourse_person" class="form-control">
-                 </div>  
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                <label for="dm_name">17. Topics Discussed </label>
+                <textarea class="textarea" name="topics" placeholder="Place some text here"
+                          style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
+            </div>
+                </div>                
               </div>
-             </div>
-             <div class="row">
-             	<div class="col-md-6">
-             		<div class="form-group">
-             		 	<label for="male">Number of Male Youths</label>
-             		 	<input type="number" name="male" class="form-control" id="male">
-             		 </div> 
-             	</div>
-             	<div class="col-md-6">
-             		<div class="form-group">
-             		 	<label for="female">Number of Female Youths</label>
-             		 	<input type="number" name="female" class="form-control" id="female">
-             		 </div>
-		          	</div> 
-             	</div> 
-              </form>             
-             </div>
-             {{csrf_field()}}
-             
-	      	
-		      <div class="modal-footer">
-		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-		        <button type="button" id="add-cg" class="btn btn-primary">Save changes</button>
-		      </div>
-	    </div>
-	 </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                <label for="dm_name">18. Deliverables</label>
+                <textarea class="textarea" name="deliverables" placeholder="Place some text here"
+                          style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
+            </div>
+                </div>                
+              </div>
+             <button type="button" class="btn btn-primary" id="gvt">Next</button>
+            </div>
+
+            <div class="tab-pane" id="tab_2">
+              <div class="row">
+                <div class="form-group col-md-6">
+
+            <label for="family_id">Resourse Person</label>
+                          
+                        <div class="input-group">
+                        
+                        <input data-toggle="tooltip" data-placement="top" title="Search Resorse Person name and select" type="text" id="res_name" name="res_id" class="form-control" placeholder="Search Name of Resourse Person">
+                        <div style="cursor: pointer" onclick="window.open('{{Route('activities/resourse-person')}}', '_blank');" class="input-group-prepend">
+                          <span data-toggle="tooltip" data-placement="top" title="Add Resourse Person to list" class="input-group-text"><i style="color: blue;" class="fa fa-plus"></i></span>
+                        </div>  
+                      </div>
+                      <div id="res_list"></div>
+                          <input type="hidden" id="resourse_person_id" name="resourse_person_id" value="">
+          </div>
+          <div class="form-group col-md-2">
+
+            
+          </div>  
+              </div>
+              <button type="button" id="part" class="btn btn-info btn-flat">Next</button>  
+            </div>
+            <div class="tab-pane" id="tab_3">
+              <div class="form-group">
+  
+                  <table class="table table-borderless" id="dynamic_field">
+              <thead>
+                <tr>
+                  <th scope="col">Name of the institute/company</th>
+                  <th scope="col">Type of institute/company (Private or Government)</th>
+                  <th scope="col">Business Address of the institute/company</th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th><input type="text" name="name[]" class="form-control name-list"></th>
+                  <td><select name="type[]" class="form-control"><option value="Private">Private</option><option value="Government">Government</option></select></td>
+                  <td><input type="text" name="address[]" class="form-control branch-list"></td>
+                  
+                  <td><button type="button" class="btn btn-success btn-flat" id="add">Add More</button></td>
+                </tr>
+                
+              </tbody>
+            </table>
+            
+              </div>
+              <button type="button" id="youth" class="btn btn-info btn-flat">Next</button>  
+            </div>
+            <div class="tab-pane" id="tab_4">
+              <h5 class="text-muted"> No. of youth identified to support on VT/Professional education</h5>
+              <div class="form-group">
+  
+                  <table class="table table-bordered" id="dynamic_field">
+              <thead>
+                <tr>
+                  <th scope="col">Identified requirement</th>
+                  <th scope="col">Male</th>
+                  <th scope="col">Female</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th><label>No. of youth in immediate job search</label>
+                  <input type="hidden" name="requirement[]"  value="No. of youth in immediate job search" class="form-control name-list"></th>
+                  <td><input type="number" name="male[]" class="form-control branch-list"></td>
+                  <td><input type="number" name="female[]" class="form-control branch-list"></td>
+                </tr>
+                <tr>
+                  <th><label>No. of youth need soft skill training prior to job placement/VT/professional training</label>
+                  <input type="hidden" name="requirement[]"  value="No. of youth need soft skill training prior to job placement/VT/professional training" class="form-control name-list"></th>
+                  <td><input type="number" name="male[]" class="form-control branch-list"></td>
+                  <td><input type="number" name="female[]" class="form-control branch-list"></td>
+                </tr>
+                <tr>
+                  <th><label>No. of youth identified to support on VT courses</label>
+                  <input type="hidden" name="requirement[]"  value="No. of youth identified to support on VT courses" class="form-control name-list"></th>
+                  <td><input type="number" name="male[]" class="form-control branch-list"></td>
+                  <td><input type="number" name="female[]" class="form-control branch-list"></td>
+                </tr>
+                <tr>
+                  <th><label>No. of youth identified to support on professional courses</label>
+                  <input type="hidden" name="requirement[]"  value="No. of youth identified to support on professional courses" class="form-control name-list"></th>
+                  <td><input type="number" name="male[]" class="form-control branch-list"></td>
+                  <td><input type="number" name="female[]" class="form-control branch-list"></td>
+                </tr>
+                <tr>
+                  <th><label>Youth who need further assistance in identifying a career</label>
+                  <input type="hidden" name="requirement[]"  value="Youth who need further assistance in identifying a career" class="form-control name-list"></th>
+                  <td><input type="number" name="male[]" class="form-control branch-list"></td>
+                  <td><input type="number" name="female[]" class="form-control branch-list"></td>
+                </tr>
+                
+              </tbody>
+            </table>
+              <button type="button" id="test" class="btn btn-info btn-flat">Next</button>  
+            
+              </div>
+            </div>
+            <div class="tab-pane" id="tab_5">
+              <h5 class="text-muted">Summary of the career test(Refer the career test format)</h5>
+
+              <div class="form-group">
+                  <table class="table table-bordered" id="dynamic_field">
+              <thead>
+                <tr>
+                  <th scope="col">Career Field</th>
+                  <th scope="col">Male</th>
+                  <th scope="col">Female</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th><label>Field work</label>
+                  <input type="hidden" name="career_field[]"  value="Field work" class="form-control name-list"></th>
+                  <td><input type="number" name="male1[]" class="form-control branch-list"></td>
+                  <td><input type="number" name="female1[]" class="form-control branch-list"></td>
+                </tr>
+                <tr>
+                  <th><label>Skill work</label>
+                  <input type="hidden" name="career_field[]"  value="Skill work" class="form-control name-list"></th>
+                  <td><input type="number" name="male1[]" class="form-control branch-list"></td>
+                  <td><input type="number" name="female1[]" class="form-control branch-list"></td>
+                </tr>
+                <tr>
+                  <th><label>Scientific service</label>
+                  <input type="hidden" name="career_field[]"  value="Scientific service" class="form-control name-list"></th>
+                  <td><input type="number" name="male1[]" class="form-control branch-list"></td>
+                  <td><input type="number" name="female1[]" class="form-control branch-list"></td>
+                </tr>
+                <tr>
+                  <th><label>Arts & Communication</label>
+                  <input type="hidden" name="career_field[]"  value="Arts & Communication" class="form-control name-list"></th>
+                  <td><input type="number" name="male1[]" class="form-control branch-list"></td>
+                  <td><input type="number" name="female1[]" class="form-control branch-list"></td>
+                </tr>
+                <tr>
+                  <th><label>Management, Business & Finance</label>
+                  <input type="hidden" name="career_field[]"  value="Management, Business & Finance" class="form-control name-list"></th>
+                  <td><input type="number" name="male1[]" class="form-control branch-list"></td>
+                  <td><input type="number" name="female1[]" class="form-control branch-list"></td>
+                </tr>
+                <tr>
+                  <th><label>Office related</label>
+                  <input type="hidden" name="career_field[]"  value="Office related" class="form-control name-list"></th>
+                  <td><input type="number" name="male1[]" class="form-control branch-list"></td>
+                  <td><input type="number" name="female1[]" class="form-control branch-list"></td>
+                </tr>
+                <tr>
+                  <th><label>Public relations</label>
+                  <input type="hidden" name="career_field[]"  value="Public relations" class="form-control name-list"></th>
+                  <td><input type="number" name="male1[]" class="form-control branch-list"></td>
+                  <td><input type="number" name="female1[]" class="form-control branch-list"></td>
+                </tr>
+                <tr>
+                  <th><label>Youth in dilemma</label>
+                  <input type="hidden" name="career_field[]"  value="Youth in dilemma" class="form-control name-list"></th>
+                  <td><input type="number" name="male1[]" class="form-control branch-list"></td>
+                  <td><input type="number" name="female1[]" class="form-control branch-list"></td>
+                </tr>
+              </tbody>
+            </table>
+              <button type="button" id="att" class="btn btn-info btn-flat">Next</button>  
+            
+              </div>
+            </div>
+            <div class="tab-pane" id="tab_6">
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Attendance Sheet(scan as a one file)</label>
+                    <input type="file" name="attendance" class="form-control">
+                  </div>  
+                </div>
+                
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Photos</label>
+                    <input type="file" name="images[]" class="form-control" multiple>
+                  </div>  
+                </div>
+              </div>  
+              {{csrf_field()}}
+        <button type="submit" name="button" id="submit" class="btn btn-info btn-flat"><i style="display:none" id="loading" class="fa fa-spinner fa-lg faa-spin animated"></i> &nbsp;&nbsp;Submit</button>
+            </div>
+
+          </div>
+          </form>
+          <!-- /.tab-content -->
+        </div><!-- /.card-body -->
+      </div>
+      <!-- ./card -->
+    </div>
+    <!-- /.col -->
+  </div>
 </div>
+
 @endsection
 @section('scripts')
 <script>
@@ -191,16 +390,16 @@
    	  		$.get('/ds-division?district=' +district, function(data){
    	  			//success
    	  			console.log(data);
-   	  			$('#ds_division').empty();
-   	  			$('#gn_division').empty();
+   	  			$('#dsd').empty();
+   	  			$('#gnd').empty();
    	  			$.each(data, function(index, dsObj){
-   	  				$('#ds_division').append('<option value="'+dsObj.ID+'">'+dsObj.DSD_Name+'</option>');
+   	  				$('#dsd').append('<option value="'+dsObj.ID+'">'+dsObj.DSD_Name+'</option>');
 
    	  			});
    	  		});
    	  });
 
-   	  $(document).on('change','#ds_division',function(e){
+   	  $(document).on('change','#dsd',function(e){
    	  		
    	  		var ds_division = e.target.value;
    	  		
@@ -215,70 +414,135 @@
    	  			});
    	  		});
    	  });
-   	});
 
- $(document).ready(function(){
-  // add career guidance to database
-      $(document).ready(function(){
-        $(document).on('click', '#add-cg', function(){
-          var form = $('#career');
-
-          $.ajax({
-            type: 'POST',
-                url: SITE_URL + '/activities/add-cg',
-                data: form.serialize(),
-                success:function(data){
-                  if($.isEmptyObject(data.error)){
-                      toastr.success('Successfull Added information ! ', 'Congratulations', {timeOut: 5000});
-                      $("#career")[0].reset();
-                      
-                  }
-                  else{
-                      printValidationErrors(data.error);
-
-                  }
-                },
-                error:function(data, jqXHR){
-                  console.log(jqXHR);
-                }
-
-          });
-        });
+      $(document).on('click','#gvt', function(){
+        $('#tabs a[href="#tab_2"]').tab('show');
+      });
+      $(document).on('click','#part', function(){
+        $('#tabs a[href="#tab_3"]').tab('show');
+      });
+      $(document).on('click','#youth', function(){
+        $('#tabs a[href="#tab_4"]').tab('show');
+      });
+      $(document).on('click','#test', function(){
+        $('#tabs a[href="#tab_5"]').tab('show');
       });
 
+      $(document).on('click','#att', function(){
+        $('#tabs a[href="#tab_6"]').tab('show');
+      });
+   	});
 
-      function printValidationErrors(msg){
-        $.each(msg, function(key,value){
-          toastr.error('Validation Error !', ""+value+"");
-        });
-      }
-});
+  $(document).ready(function(){
+//search resourse Person
+       $('#res_name').keyup(function(){ 
+              var query = $(this).val();
+              if(query != '')
+              {
+               var _token = $('input[name="_token"]').val();
+               $.ajax({
+                url: SITE_URL + '/resoursePersonList',
+                method:"POST",
+                data:{query:query, _token:_token},
+                success:function(data){
+                 $('#res_list').fadeIn();  
+                 $('#res_list').html(data);
+                }
+               });
+              }
+          });
 
- //delete cg
+          $(document).on('click', '#resourse_person li', function(){  
+            $('#res_list').fadeOut(); 
+              $('#res_name').val($(this).text()); 
+              var res_id = $(this).attr('id');
+              $('#resourse_person_id').val(res_id);
+               
+          });  
+    });
+  @if (session('error'))
+  toastr.error('{{session('error')}}')
+  @endif 
+
+$(document).ready(function(){  
+      var i=1;  
+      $('#add').click(function(){  
+           i++;  
+           $('#dynamic_field').append('<tr id="row'+i+'"><td><input type="text" name="name[]" class="form-control name_list" /></td><td><select name="type[]" class="form-control"><option value="Private">Private</option><option value="Government">Government</option></select></td><td><input type="text" name="address[]" class="form-control branch-list"></td><td><button type="button" name="remove" id="'+i+'" class="btn btn-danger btn-flat btn_remove">X</button></td></tr>');  
+      });  
+      $(document).on('click', '.btn_remove', function(){  
+           var button_id = $(this).attr("id");   
+           $('#row'+button_id+'').remove();  
+      });   
+ });
+
 $(document).ready(function(){
-    $(document).on('click' , '#delete-cg' ,function (){
-        var id = $(this).data('id');
+     $("#cg").on('submit' ,function (e){
+        e.preventDefault();
         $.ajax({
             type: 'POST',
-            url: SITE_URL + '/activities/cg/delete',
-                      
-            data: {
-                '_token': $('input[name=_token]').val(),
-                'id': id
+            url: SITE_URL + '/activities/add-cg',   
+            data: new FormData(this),
+            contentType: false,
+            cache: false,
+            processData:false,
+
+            beforeSend: function(){
+              $('#loading').show();
             },
-                      
-            success: function(data) {              
-            toastr.success('Details Successfully Deleted ! ', 'Congratulations', {timeOut: 5000});
-            $('.cg' +id).remove();
-            //$('#example1').DataTable().ajax.reload();           
-            },
+            complete: function(){
+              $('#loading').hide();
+            },          
+            success: function(data) {
+              if($.isEmptyObject(data.error)){              
+              toastr.success('Succesfully Add Career guidance and career fair Details ! ', 'Congratulations', {timeOut: 5000});
+        $("#cg")[0].reset();
+
+            }
+            else{
+             printValidationErrors(data.error);
+              
+            }         
+        },
 
             error: function (jqXHR, exception) {    
                 console.log(jqXHR);
-                toastr.error('Error !', 'You Do not have permission to delete employer')
+                toastr.error('Error !', 'Something Error')
             },
         });
     });
-});
+  });
+ function printValidationErrors(msg){
+        $.each(msg, function(key,value){
+          toastr.error('Validation Error !', ""+value+"");
+        });
+    } 
 </script>
+<style type="text/css" media="screen">
+  #autocomplete, #resourse_person {
+    position: absolute;
+    z-index: 1000;
+    cursor: default;
+    padding: 0;
+    margin-top: 2px;
+    list-style: none;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    -webkit-border-radius: 5px;
+       -moz-border-radius: 5px;
+            border-radius: 5px;
+    -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+       -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+#autocomplete,  #resourse_person > li {
+  padding: 3px 20px;
+}
+#autocomplete, #resourse_person > li.ui-state-focus {
+  background-color: #DDD;
+}
+.ui-helper-hidden-accessible {
+  display: none;
+}
+</style>
 @endsection

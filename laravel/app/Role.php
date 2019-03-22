@@ -7,6 +7,7 @@ use App\User;
 
 class Role extends Model
 {
+    public $timestamps = true;
     protected $fillable=[ 'name','slug','permissions'];
 
     public function users()
