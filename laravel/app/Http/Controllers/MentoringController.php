@@ -61,8 +61,10 @@ class MentoringController extends Controller
             if($validator->passes()){
                 $branch_id = auth()->user()->branch;
                 $input = $request->all();
-            	$input['attendance'] = time().'.'.$request->file('attendance')->getClientOriginalExtension();
-            	$request->attendance->move(storage_path('activities/files/mentoring/attendance'), $input['attendance']);
+                if($request->hasFile('attendance')){
+                	$input['attendance'] = time().'.'.$request->file('attendance')->getClientOriginalExtension();
+                	$request->attendance->move(storage_path('activities/files/mentoring/attendance'), $input['attendance']);
+                }
                 $data1 = array(
                 	'district' => $request->district,
                 	'dsd' => json_encode($request->dsd),
@@ -96,12 +98,13 @@ class MentoringController extends Controller
 
                  //insert images
                 $input = $request->all();
-                foreach ($request->file('image') as $key => $value) {
-            	$imageName = time(). $key . '.' . $value->getClientOriginalExtension();
-            	$value->move(storage_path('activities/files/mentoring/images'), $imageName);
-            	$images = DB::table('mentoring_images')->insert(['image'=>$imageName,'mentoring_id'=>$mentoring_id]);
-        		}
-
+                if($request->hasFile('image')){
+                    foreach ($request->file('image') as $key => $value) {
+                	$imageName = time(). $key . '.' . $value->getClientOriginalExtension();
+                	$value->move(storage_path('activities/files/mentoring/images'), $imageName);
+                	$images = DB::table('mentoring_images')->insert(['image'=>$imageName,'mentoring_id'=>$mentoring_id]);
+            		}
+                }
                 $number = count($request->name);
                 if($number>0){
                 	for($i=0; $i<$number; $i++){

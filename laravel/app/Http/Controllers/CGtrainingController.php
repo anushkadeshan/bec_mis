@@ -42,11 +42,14 @@ class CGtrainingController extends Controller
             if($validator->passes()){
                 $branch_id = auth()->user()->branch;
                 $input = $request->all();
-            	$input['attendance'] = time().'.'.$request->file('attendance')->getClientOriginalExtension();
-            	$request->attendance->move(storage_path('activities/files/cg_training/attendance'), $input['attendance']);
-
-            	$input['test'] = time().'.'.$request->file('test')->getClientOriginalExtension();
-            	$request->test->move(storage_path('activities/files/cg_training/pre-pro-test'), $input['test']);
+                if($request->hasFile('attendance')){
+	            	$input['attendance'] = time().'.'.$request->file('attendance')->getClientOriginalExtension();
+	            	$request->attendance->move(storage_path('activities/files/cg_training/attendance'), $input['attendance']);
+            	}
+            	if($request->hasFile('test')){
+	            	$input['test'] = time().'.'.$request->file('test')->getClientOriginalExtension();
+	            	$request->test->move(storage_path('activities/files/cg_training/pre-pro-test'), $input['test']);
+                }
                 $data1 = array(
                 	'district' => $request->district,
                 	'dsd' => $request->dsd,
@@ -78,11 +81,13 @@ class CGtrainingController extends Controller
 
                  //insert images
                 $input = $request->all();
-                foreach ($request->file('images') as $key => $value) {
-            	$imageName = time(). $key . '.' . $value->getClientOriginalExtension();
-            	$value->move(storage_path('activities/files/cg_training/images'), $imageName);
-            	$images = DB::table('cg_trainings_photos')->insert(['images'=>$imageName,'cg_trainings_id'=>$cg_trainings_id]);
-        		} 
+                if($request->hasFile('images')){
+	                foreach ($request->file('images') as $key => $value) {
+	            	$imageName = time(). $key . '.' . $value->getClientOriginalExtension();
+	            	$value->move(storage_path('activities/files/cg_training/images'), $imageName);
+	            	$images = DB::table('cg_trainings_photos')->insert(['images'=>$imageName,'cg_trainings_id'=>$cg_trainings_id]);
+	        		} 
+	        	}
 
             }
             else{

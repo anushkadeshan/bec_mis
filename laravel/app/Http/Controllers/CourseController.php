@@ -32,11 +32,10 @@ class CourseController extends Controller
                 'course_type' => 'required',
                 'course_time' => 'required',
                 'medium' => 'required',
-                'standard' => 'required',
                 'min_qualification' => 'required'
             ]);
     	if($validator->passes()){
-              $added_by = auth()->user()->name;
+              $added_by = auth()->user()->id;
               $medium = json_encode($request->medium);
               if($request->course_type=="Vocational Training"){
               	$standard = "NVQ Level ".$request->standard;
@@ -54,6 +53,7 @@ class CourseController extends Controller
               	'medium' => $medium,
               	'min_qualification' => $request->min_qualification,
                 'course_catogery' => $request->course_catogery,
+                'embeded_softs_skills' => $request->embeded_softs_skills,
               	'added_by' => $added_by
               );
 
@@ -92,7 +92,7 @@ class CourseController extends Controller
         ]);
 
         if($validator->passes()){
-            $added_by = auth()->user()->name;
+            $added_by = auth()->user()->id;
 
               $medium = json_encode($request->medium);
               if($request->course_type=="Vocational Training"){
@@ -111,6 +111,8 @@ class CourseController extends Controller
             $course->medium = $medium;
             $course->standard = $standard;
             $course->min_qualification = $request->min_qualification;
+            $course->course_catogery = $request->course_catogery;
+            $course->embeded_softs_skills = $request->embeded_softs_skills;
             $course->added_by = $added_by;
 
             $course->save(); 
@@ -123,9 +125,10 @@ class CourseController extends Controller
 
       public function view($id){
         $course = Course::where('id',$id)->with('institutes')->first();
+        $course_catogery = DB::table('course_categories')->whereid($course->course_catogery)->first();
         //dd($course->toArray());
         $institutes = Institute::get();
-        return view('Courses.view-course')->with(['course'=>$course, 'institutes' => $institutes]);
+        return view('Courses.view-course')->with(['course'=>$course, 'institutes' => $institutes,'course_catogery'=>$course_catogery]);
       }
 
       public function update_institutes(Request $request){

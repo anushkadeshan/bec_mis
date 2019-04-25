@@ -25,14 +25,14 @@
 
         		</div>
             <div class="col-md-6 text-right">
-                <button type="button" class="btn btn-primary btn-flat" data-toggle="modal" data-target="#addModel">Add Courses Provided</button>
+                <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#addModel">Add Courses Provided</button>
             </div>
         	</div>
         </div>
         <!-- /.card-header --> 
         <div class="card-body">  
            <div class="row">
-           		<div class="col-md-3 text-dark-grey">
+           		<div class="col-md-2 text-dark-grey">
            			<div class="nav-item">
            				Institute Name
            			</div>
@@ -60,7 +60,7 @@
                   @endif
                 </div>	
            		</div>
-           		<div class="col-md-3 text-muted">
+           		<div class="col-md-5 text-muted">
            			<div class="nav-item">
            				{{ $institute->name }}
            			</div>
@@ -96,7 +96,7 @@
            				
            			</div>	
            		</div>
-           		<div class="col-md-2">
+           		<div class="col-md-1">
            			<div class="nav-item">
            				Courses
            			</div>
@@ -104,7 +104,7 @@
            		</div>
            		<div class="col-md-4 text-muted">
                 @foreach($institute->courses as $course)
-           			<a href="">
+           			<a href="{{URL::to('courses/'.$course->id.'/view')}}">
                    <div class="nav-item">
                       {{$course->name}}
                     </div>

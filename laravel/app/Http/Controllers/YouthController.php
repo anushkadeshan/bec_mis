@@ -71,7 +71,6 @@ class YouthController extends Controller
                 'full_name' => 'required|unique:youths',
                 'gender' => 'required',
                 'phone' => 'required',
-                'email' => 'email',
                 'nic' => 'required|unique:youths',
                 'birth_date' => 'required',
                 'maritial_status' => 'required',
@@ -83,7 +82,7 @@ class YouthController extends Controller
 
             if($validator->passes()){
                 $data = $request->all();
-                $added_by = auth()->user()->name;
+                $added_by = auth()->user()->id;
                 $youth = Youth::create($data+['added_by'=> $added_by]);
 
                 $data1 = array(
@@ -193,7 +192,6 @@ class YouthController extends Controller
 
     public function create_following_course(Request $request){
       $validator = Validator::make($request->all(),[
-                'industry' => 'required',
                 'location' => 'required',
                 'min_salary' => 'required',
                 'youth_id' => 'required',
@@ -251,9 +249,7 @@ class YouthController extends Controller
 
     public function create_no_jobs(Request $request){
       $validator = Validator::make($request->all(),[
-                'industry' => 'required',
                 'location' => 'required',
-                'intresting_courses' => 'required',
                 'min_salary' => 'required',
                 'youth_id' => 'required',
             ]);
@@ -273,9 +269,7 @@ class YouthController extends Controller
 
               );
               $data1 = array(
-                'industry' => $industry,
                 'location' => $location,
-                'intresting_courses' => $intresting_courses,
                 'min_salary' => $request->min_salary,
                 'youth_id' => $request->youth_id,
                 'experience' => $request->experience,
@@ -489,6 +483,7 @@ class YouthController extends Controller
             ]);
 
             if($validator->passes()){
+              $added_by = auth()->user()->id;
 
               $youth = Youth::find($request->id);
               $youth->name = $request->name;
@@ -505,6 +500,7 @@ class YouthController extends Controller
               $youth->disability = $request->disability;
               $youth->branch_id = $request->branch_id;
               $youth->reason = $request->reason;
+              $youth->added_by = $added_by;
               $youth->save();
 
             }
@@ -600,9 +596,7 @@ public function update_followed_course(Request $request){
 
 public function update_tempory_jobs(Request $request){
       $validator = Validator::make($request->all(),[
-                'industry' => 'required',
                 'location' => 'required',
-                'intresting_courses' => 'required',
                 'youth_id' => 'required',
             ]);
 
@@ -672,7 +666,6 @@ public function update_tempory_jobs(Request $request){
 
 public function update_following_course(Request $request){
       $validator = Validator::make($request->all(),[
-                'industry' => 'required',
                 'location' => 'required',
                 'min_salary' => 'required',
                 'course_id' => 'required',
@@ -761,9 +754,7 @@ public function update_following_course(Request $request){
 
     public function update_no_jobs(Request $request){
       $validator = Validator::make($request->all(),[
-                'industry' => 'required',
                 'location' => 'required',
-                'intresting_courses' => 'required',
                   'youth_id' => 'required',
 
             ]);

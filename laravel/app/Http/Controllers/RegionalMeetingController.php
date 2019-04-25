@@ -23,15 +23,13 @@ class RegionalMeetingController extends Controller
     public function add(Request $request){
     	$validator = Validator::make($request->all(),[
                 'district' => 'required',
-                'dm_name' =>'required',
-                'title_of_action' =>'required',	
-                'activity_code' =>'required',	
+                'dm_name' =>'required',	
                 'meeting_date'	=>'required',
                 'time_start'=>'required',
                 'time_end' =>'required',
                 'venue'	=>'required',
                 'matters' =>'required',
-                'image' => 'mimes:jpeg,jpg,png,gif,svg|max:6000',
+                
             ]);
 
             if($validator->passes()){

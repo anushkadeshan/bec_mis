@@ -123,10 +123,11 @@
         				<td>
         					@can('view-youth')
                         	<div class="btn-group">
+                                @can('admin')
                         		<a href="{{ URL::to('youth/' . $youth->id . '/view-progress') }}">
                                     <button type="button" id="view-progress" data-id="{{$youth->id}}" class="btn btn-block btn-primary btn-flat btn-sm" ><i class="fas fa-tasks"></i> </button>
                                 </a>
-                                
+                                @endcan
                                 <a href="{{ URL::to('youth/' . $youth->id . '/view') }}">
                                     <button type="button" id="view-youth" data-id="{{$youth->id}}" class="btn btn-block btn-warning btn-flat btn-sm" ><i class="fas fa-eye"></i> </button>
                                 </a>

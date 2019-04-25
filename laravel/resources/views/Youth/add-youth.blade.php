@@ -148,7 +148,7 @@
 										      
                         <div class="input-group">
                         
-                        <input data-toggle="tooltip" data-placement="bottom" title="Add family details before search and select. Click on add button" type="text" id="fam_id" name="fam_id" class="form-control" placeholder="Enter Name of Household">
+                        <input data-toggle="tooltip" data-placement="top" title="Add family details before search and select. Click on add button" type="text" id="fam_id" name="fam_id" class="form-control" placeholder="Enter Name of Household">
                         <div style="cursor: pointer" onclick="window.open('{{Route('youth/family/add')}}', '_blank');" class="input-group-prepend">
                           <span data-toggle="tooltip" data-placement="top" title="Add family to list" class="input-group-text"><i style="color: blue;" class="fa fa-plus"></i></span>
                         </div>  
@@ -452,7 +452,7 @@
                               </div>
                               <input type="hidden" name="status" id="status" value="Followed">
                               <div  class="col-md-4 form-group">
-                                <label>is This course provied by Berendina ?</label>
+                                <label>is supported by Berendina ?</label>
 
                                 <select name="provided_by_bec" class="form-control">
                                   <option value="">Select Option</option>

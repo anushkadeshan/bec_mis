@@ -15,7 +15,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes(['verify' => true]);
+Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/ds', 'UserController@ds')->name('ds');
@@ -217,3 +217,19 @@ Route::post('/pes_list', 'PesUnitSupportController@pes_List')->name('pes_list');
 Route::post('/activities/career-guidance/pes-support-add', 'PesUnitSupportController@insert')->name('activities/career-guidance/pes-support-add')->middleware('can:add-M&E-reports');
 Route::get('/activities/career-guidance/cg-training', 'CGtrainingController@index')->name('activities/career-guidance/cg-training')->middleware('can:add-M&E-reports');
 Route::post('/activities/career-guidance/cg-training-add', 'CGtrainingController@insert')->name('activities/career-guidance/cg-training-add')->middleware('can:add-M&E-reports');
+Route::get('/activities/skill-development/course-support', 'CourseSupportController@index')->name('skill-development/course-support')->middleware('can:add-M&E-reports');
+Route::post('/institutesList', 'CourseSupportController@instituesList')->name('institutesList')->middleware('can:add-M&E-reports');
+Route::post('/support-courseList', 'CourseSupportController@courseList')->name('support-courseList')->middleware('can:add-M&E-reports');
+Route::post('/youthList', 'CourseSupportController@youthList')->name('youthList')->middleware('can:add-M&E-reports');
+Route::post('/activity/skill/add-course-support', 'CourseSupportController@insert')->name('activity/skill/add-course-support')->middleware('can:add-M&E-reports');
+Route::get('/activities/skill-development/provide-softskill', 'ProvideSoftskillController@index')->name('skill-development/provide-softskill')->middleware('can:add-M&E-reports');
+Route::post('/activity/skill/add-provide-soft', 'ProvideSoftskillController@insert')->name('activity/skill/add-provide-soft')->middleware('can:add-M&E-reports');
+Route::get('/activities/skill-development/finacial-support', 'FinancialSupportController@index')->name('skill-development/finacial-support')->middleware('can:add-M&E-reports');
+Route::post('/activity/skill/add-finacial-support', 'FinancialSupportController@insert')->name('activity/skill/add-finacial-support')->middleware('can:add-M&E-reports');
+Route::get('/activities/skill-development/partnership', 'PartnershipTrainingController@index')->name('skill-development/partnership')->middleware('can:add-M&E-reports');
+Route::post('/activity/skill/add-partner-support', 'PartnershipTrainingController@insert')->name('activity/skill/add-partner-support')->middleware('can:add-M&E-reports');
+Route::get('/activities/skill-development/institute-review', 'InstituteReviewController@index')->name('skill-development/institute-review')->middleware('can:add-M&E-reports');
+Route::post('/activity/skill/add-institute-review', 'InstituteReviewController@insert')->name('activity/skill/add-institute-review')->middleware('can:add-M&E-reports');
+Route::get('/activities/skill-development/incoperate-soft-skills', 'IncoperationSoftSkillController@index')->name('skill-development/incoperate-soft-skills')->middleware('can:add-M&E-reports');
+Route::post('/activity/skill/add-incoperation', 'IncoperationSoftSkillController@insert')->name('activity/skill/add-incoperation')->middleware('can:add-M&E-reports');
+

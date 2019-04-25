@@ -56,13 +56,15 @@ class EmployerController extends Controller
             $data = $request->all();
             $roleName = 'Employer';
             $user = auth()->user();
+            $added_by = auth()->user()->id;
+
             if($user->is($roleName)){ 
                 $email = auth()->user()->email;
-                $employer = Employer::create($data +['email' => $email]);
+                $employer = Employer::create($data +['email' => $email,'added_by'=>$added_by]);
             }
 
             else{
-                $employer = Employer::create($data);
+                $employer = Employer::create($data+['added_by'=>$added_by]);
 
             }
                 $dataAddUser = $request->user_id;
@@ -176,6 +178,8 @@ class EmployerController extends Controller
         ]);
 
         if($validator->passes()){
+            $added_by = auth()->user()->id;
+
             $employer = Employer::find($request->id);
             $employer->name = $request->name;
             $employer->phone = $request->phone;
@@ -183,6 +187,7 @@ class EmployerController extends Controller
             $employer->address = $request->address;
             $employer->company_type = $request->company_type;
             $employer->industry = $request->industry;
+            $employer->added_by = $added_by;
 
             $employer->save();
         }

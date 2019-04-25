@@ -66,7 +66,7 @@
     <body class="hold-transition sidebar-mini">
     <div class="preloader-wrapper">
       <div class="preloader">
-          <img src="{{ URL::asset('images/preloader.svg')}}" alt="NILA">
+          <img src="{{ URL::asset('images/preloader.svg')}}">
       </div>
     </div>
 
@@ -93,7 +93,7 @@
                     echo $greetings;  ?>!  <strong class="text-primary">  {{ Auth::user()->name }} </strong> </a> 
             </li>
             <li class="nav-item d-none d-sm-inline-block">
-                <a href="index3.html" class="nav-link">Home</a>
+                <a href="{{ROUTE('home')}}" class="nav-link">Home</a>
             </li>
             <li class="nav-item d-none d-sm-inline-block">
                 <a href="#" class="nav-link">Contact</a>
@@ -197,7 +197,7 @@
                         {{ $notification->data['course']['name'] }}
                         <span class="float-right text-sm text-muted"><i class="fa fa-star"></i></span>
                         </h3>
-                        <p class="text-sm">A course was added by {{ $notification->data['course']['added_by'] }}.</p>
+                        <p class="text-sm">A course was added.</p>
                         <p class="text-sm text-muted"><i class="fas fa-clock"></i> {{ $notification->data['course']['created_at'] }}</p>
                     </div>
                     </div>
@@ -215,7 +215,7 @@
                         {{ $notification->data['youth']['name'] }}
                         <span class="float-right text-sm text-muted"><i class="fa fa-star"></i></span>
                         </h3>
-                        <p class="text-sm">A youth profile was added by {{ $notification->data['youth']['added_by'] }}.</p>
+                        <p class="text-sm">A youth profile was added. }}.</p>
                         <p class="text-sm text-muted"><i class="fas fa-clock"></i> {{ $notification->data['youth']['created_at'] }}</p>
                     </div>
                     </div>
@@ -320,6 +320,7 @@
             </a>
           </li>
           @endcan
+          @cannot('branch')
           @can('view-activities')
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link active">
@@ -356,6 +357,7 @@
               </li>
             </ul>
           </li>
+          @endcan
           @endcan
           @can('view-youth-profile')
           <li class="nav-header">Profile Details</li>
@@ -455,7 +457,7 @@
                 </a>
             </li>
           @endcan
-          
+          @cannot('youth')
           @can('view-institute')
           <li class="nav-header">Skill Developments</li>
           <li class="nav-item">
@@ -471,6 +473,7 @@
                 </a>
             </li>
           @endcan 
+          @endcan
           @can('view-reports')
           <li class="nav-header">Reports</li>
 
@@ -491,7 +494,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{Route('reports/courses')}}" class="nav-link">
+                <a href="{{URL::to('reports/training_courses')}}" class="nav-link">
                   <i class="fas fa-graduation-cap nav-icon"></i>
                   <p>Search Courses</p>
                 </a>
@@ -548,6 +551,8 @@
     <script type="text/javascript"  src="{{ asset('js/popover.js') }}"></script>
     <script type="text/javascript"  src="{{ asset('js/bootstrap-confirmation.min.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/dropdown.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+
     <script>
       
       $(document).ready(function() {

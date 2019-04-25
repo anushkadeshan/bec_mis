@@ -63,7 +63,7 @@
     <body class="hold-transition sidebar-mini">
     <div class="preloader-wrapper">
       <div class="preloader">
-          <img src="{{ URL::asset('images/preloader.svg')}}" alt="NILA">
+          <img src="{{ URL::asset('images/preloader.svg')}}">
       </div>
     </div>
 

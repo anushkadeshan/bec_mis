@@ -21,11 +21,11 @@
         	<div class="row">
         		
         		<div class="col-md-6">
-        			<h2 class="card-title">{{$course->name}} </h2> 
+        			<h2 class="card-title">{{$course->name}} | <small class="text-muted">{{$course_catogery->course_category}} </small></h2> 
 
         		</div>
         		<div class="col-md-6 text-right">
-        		@cannot('youth')	<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addModel">Add institutes to course</button> @endcan
+        		@cannot('youth')	<button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#addModel">Add institutes to course</button> @endcan
         		</div>
         	</div>
         </div>
@@ -57,6 +57,9 @@
            			<div class="nav-item">
            				Minimum Qualification
            			</div>
+                <div class="nav-item">
+                 is Softskill embeded to course ?
+                </div>
                 	
            		</div>
            		<div class="col-md-3 text-muted">
@@ -88,7 +91,11 @@
            			<div class="nav-item">
            				{{ $course->min_qualification }}
            				
-           			</div>	
+           			</div>
+                <div class="nav-item">
+                  {{ $course->embeded_softs_skills }}
+                  
+                </div>	
            		</div>
            		<div class="col-md-2">
            			<div class="nav-item">
@@ -98,7 +105,7 @@
            		</div>
            		<div class="col-md-4 text-muted">
                 @foreach($course->institutes as $institue)
-           			<a href="">
+           			<a href="{{URL::to('institute/'.$institue->id.'/view')}}">
                    <div class="nav-item">
                       {{$institue->name}}
                     </div>

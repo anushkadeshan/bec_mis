@@ -65,10 +65,15 @@
                 <div class="col-md-8">
                   <div class="form-group">
                 <label for="dm_name">5. Title of the Action</label>
-                <select name="title_of_action" id="title_of_action" class="form-control">
+                <select name="title_of_action[]" id="title_of_action" class="form-control" multiple>
+                  <?php 
+                  $activitiess = array('Conducting career guidance programs to facilitate youth in identifying suitable career options','Organizing & conducting career fairs just after the CG training','Identification of youth who need financial support for vocational / professional educations -soft skills, job linkages as well');
+
+                  $codes = array('2.1.6','2.1.7','2.1.8');
+                 ?>
                 <option value="">Select Option</option>
                 @foreach($activities as $activity)
-                <option value="{{ $activity->activity}}">{{ $activity->activity }}</option>
+                <option @if(in_array($activity->activity,$activitiess)) selected @endif value="{{ $activity->activity}}">{{ $activity->activity }}</option>
                 @endforeach
                  </select>
             </div>
@@ -76,10 +81,10 @@
                 <div class="col-md-4">
                   <div class="form-group">
                 <label for="dm_name">6. Activity code as per the Logframe</label>
-                <select name="activity_code" id="activity_code" class="form-control">
+                <select name="activity_code[]" id="activity_code" class="form-control" multiple>
                 <option value="">Select Option</option>
                 @foreach($activities as $activity)
-                <option value="{{ $activity->code}}">{{ $activity->code }}</option>
+                <option @if(in_array($activity->code,$codes)) selected @endif value="{{ $activity->code}}">{{ $activity->code }}</option>
                 @endforeach
                  </select>
             </div>

@@ -27,9 +27,10 @@ class InstituteController extends Controller
                 'phone' => 'required|numeric',
                 'location' => 'required',
                 'is_registerd' => 'required',
+                'type' => 'required',
             ]);
     	if($validator->passes()){
-              $added_by = auth()->user()->name;
+              $added_by = auth()->user()->id;
               $data = $request->all();
               $institute = Institute::create($data+['added_by'=>$added_by]);
 
@@ -54,10 +55,12 @@ class InstituteController extends Controller
             'phone' => 'required|numeric',
             'location' => 'required',
             'is_registerd' => 'required',
+            'type' => 'required',
+
         ]);
 
         if($validator->passes()){
-            $added_by = auth()->user()->name;
+            $added_by = auth()->user()->id;
 
             $institute = Institute::find($request->id);
             $institute->name = $request->name;
@@ -66,6 +69,7 @@ class InstituteController extends Controller
             $institute->address = $request->address;
             $institute->contact_person = $request->contact_person;
             $institute->is_registerd = $request->is_registerd;
+            $institute->type = $request->type;
             $institute->reg_no = $request->reg_no;
             $institute->added_by = $added_by;
 

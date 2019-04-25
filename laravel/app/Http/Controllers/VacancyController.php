@@ -329,4 +329,10 @@ class VacancyController extends Controller
       }
 
     }
+
+    public function vacancies_api(){
+      $vacancies = Vacancy::with('employer')->get();
+
+      return response()->json($vacancies);
+    }
 }

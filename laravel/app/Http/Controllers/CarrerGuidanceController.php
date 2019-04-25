@@ -45,15 +45,17 @@ class CarrerGuidanceController extends Controller
         if($validator->passes()){
                 $branch_id = auth()->user()->branch;
                 $input = $request->all();
-                $input['attendance'] = time().'.'.$request->file('attendance')->getClientOriginalExtension();
-                $request->attendance->move(storage_path('activities/files/career-guidance/attendance'), $input['attendance']);
+                if($request->hasFile('attendance')){
+                    $input['attendance'] = time().'.'.$request->file('attendance')->getClientOriginalExtension();
+                    $request->attendance->move(storage_path('activities/files/career-guidance/attendance'), $input['attendance']);
+                }
         	  $data = array(
         	  	    'district' => $request->district,
                     'dsd' => $request->dsd,
                     'gnd' => json_encode($request->gnd),
                     'dm_name' =>$request->dm_name,
-                    'title_of_action' =>$request->title_of_action,  
-                    'activity_code' =>$request->activity_code,  
+                    'title_of_action' =>json_encode($request->title_of_action),  
+                    'activity_code' =>json_encode($request->activity_code),  
                     'meeting_date'  =>$request->meeting_date,
                     'time_start'=>$request->time_start,
                     'time_end' =>$request->time_end,
@@ -112,10 +114,12 @@ class CarrerGuidanceController extends Controller
 
                 //insert images
                 $input = $request->all();
-                foreach ($request->file('images') as $key => $value) {
-                $imageName = time(). $key . '.' . $value->getClientOriginalExtension();
-                $value->move(storage_path('activities/files/career-guidance/images'), $imageName);
-                $images = DB::table('cg_images')->insert(['images'=>$imageName,'career_guidances_id'=>$career_guidances_id]);
+                if($request->hasFile('images')){
+                    foreach ($request->file('images') as $key => $value) {
+                    $imageName = time(). $key . '.' . $value->getClientOriginalExtension();
+                    $value->move(storage_path('activities/files/career-guidance/images'), $imageName);
+                    $images = DB::table('cg_images')->insert(['images'=>$imageName,'career_guidances_id'=>$career_guidances_id]);
+                    }
                 }
 
         }

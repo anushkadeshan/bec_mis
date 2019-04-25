@@ -25,7 +25,7 @@
                   <select name="title_of_action" id="title_of_action" class="form-control" data-dependent="ds_division">
                     <option value="">Select Option</option>
                     @foreach($activities as $activity)
-                    <option value="{{ $activity->id}}">{{ $activity->code }} | {{ $activity->activity }}</option>
+                    <option @if($activity->activity=='Developing training module to aware parents and youth on existing career context/career guidance') selected @endif value="{{ $activity->id}}">{{ $activity->code }} | {{ $activity->activity }}</option>
                     @endforeach
                 </select>
               </div> 
@@ -36,7 +36,7 @@
 						    <select name="activity_code" id="activity_code" class="form-control">
 								<option value="">Select Option</option>
 								@foreach($activities as $activity)
-								<option value="{{ $activity->code}}">{{ $activity->code }}</option>
+								<option  @if($activity->code=='2.1.3') selected @endif value="{{ $activity->code}}">{{ $activity->code }}</option>
 								@endforeach
     					   </select>
 						</div>

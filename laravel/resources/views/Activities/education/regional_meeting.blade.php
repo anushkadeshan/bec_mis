@@ -24,7 +24,7 @@
 						    <select name="district" id="district" class="form-control" data-dependent="dsd">
 								<option value="">Select Option</option>
 								@foreach($districts as $district)
-								<option value="{{ $district->name_en}}">{{ $district->name_en }}</option>
+								<option  value="{{ $district->name_en}}">{{ $district->name_en }}</option>
 								@endforeach
     					   </select>
 						</div>
@@ -54,10 +54,10 @@
 	            	<div class="col-md-8">
 	            		<div class="form-group">
 						    <label for="dm_name">4. Title of the Action</label>
-						    <select name="title_of_action" id="title_of_action" class="form-control">
+						    <select name="title_of_action" id="title_of_action" class="form-control" readonly>
 								<option value="">Select Option</option>
 								@foreach($activities as $activity)
-								<option value="{{ $activity->activity}}">{{ $activity->activity }}</option>
+								<option @if($activity->activity=='BMIC Cluster level awareness of BSS program and awareness through schools') selected @endif value="{{ $activity->activity}}">{{ $activity->activity }}</option>
 								@endforeach
     					   </select>
 						</div>
@@ -65,10 +65,10 @@
 	            	<div class="col-md-4">
 	            		<div class="form-group">
 						    <label for="dm_name">5. Activity code as per the Logframe</label>
-						    <select name="activity_code" id="activity_code" class="form-control">
+						    <select name="activity_code" id="activity_code" class="form-control" readonly>
 								<option value="">Select Option</option>
 								@foreach($activities as $activity)
-								<option value="{{ $activity->code}}">{{ $activity->code }}</option>
+								<option @if($activity->code=='1.1.1') selected @endif value="{{ $activity->code}}">{{ $activity->code }}</option>
 								@endforeach
     					   </select>
 						</div>

@@ -40,9 +40,9 @@ class FamilyController extends Controller
                 'district' => 'required',
                 'ds_division' => 'required',
                 'gn_division' => 'required',
-                'head_of_household' => 'required',
+                'head_of_household' => 'required|unique:families',
                 'address' => 'required',
-                'nic_head_of_household' => 'required|unique:families',
+
                 'family_type' => 'required',
             ]);
         if($validator->passes()){

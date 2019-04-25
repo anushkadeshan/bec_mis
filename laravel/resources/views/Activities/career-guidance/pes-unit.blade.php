@@ -64,7 +64,7 @@
 						    <select name="title_of_action" id="title_of_action" class="form-control">
 								<option value="">Select Option</option>
 								@foreach($activities as $activity)
-								<option value="{{ $activity->activity}}">{{ $activity->activity }}</option>
+								<option @if($activity->activity=='Identification of existing gaps in Public employment services unit in respective DSs') selected @endif value="{{ $activity->activity}}">{{ $activity->activity }}</option>
 								@endforeach
     					   </select>
 						</div>
@@ -75,7 +75,7 @@
 						    <select name="activity_code" id="activity_code" class="form-control">
 								<option value="">Select Option</option>
 								@foreach($activities as $activity)
-								<option value="{{ $activity->code}}">{{ $activity->code }}</option>
+								<option @if($activity->code=='2.2.1') selected @endif value="{{ $activity->code}}">{{ $activity->code }}</option>
 								@endforeach
     					   </select>
 						</div>

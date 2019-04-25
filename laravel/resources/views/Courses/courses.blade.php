@@ -68,8 +68,8 @@
                             @endcan
                             @can('edit-institute')
                             
-                                    <button type="submit" id="edit-course" data-id="{{$course->id}}" data-name="{{ $course->name }}" data-duration="{{ $course->duration }}" data-fee="{{ $course->course_fee }}" data-type="{{ $course->course_type }}" data-standard="{{ $course->standard }}" data-time="{{ $course->course_time }}" data-medium="{{ $course->medium }}" data-min_qul="{{ $course->min_qualification }}" class="btn btn-block btn-success btn-flat btn-sm"><i class="fas fa-edit"></i></button>
-                                                    	@endcan
+                                    <button type="submit" id="edit-course" data-id="{{$course->id}}" data-name="{{ $course->name }}" data-duration="{{ $course->duration }}" data-fee="{{ $course->course_fee }}" data-type="{{ $course->course_type }}" data-standard="{{ $course->standard }}" data-time="{{ $course->course_time }}" data-medium="{{ $course->medium }}" data-min_qul="{{ $course->min_qualification }}" data-c_cat="{{ $course->course_catogery }}" data-embeded="{{ $course->embeded_softs_skills }}" class="btn btn-block btn-success btn-flat btn-sm"><i class="fas fa-edit"></i></button>
+                            @endcan
                         	@can('delete-institute')
                             
                                 <form id="userDelete" method="post" >
@@ -104,7 +104,7 @@
              <div class="row">
              	<div class="col-md-6">
              		<div class="form-group">
-             		 	<label for="name">Name</label>
+             		 	<label for="name">Course Name</label>
              		 	<input type="text" name="name" id="name" class="form-control">
              		 </div> 
              	</div>
@@ -210,6 +210,17 @@
                         </select>
                     </div> 
                 </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="embeded_softs_skills" id="em_label">Is this course embedded with softskilles?</label>
+                        <select name="embeded_softs_skills" id="embeded_softs_skills" class="form-control">
+                            <option value="">Select Option</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        
+                        </select>
+                    </div> 
+                </div>
              </div>
              </form>
 	      </div>
@@ -239,7 +250,7 @@
              <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="name">Name</label>
+                        <label for="name">Course Name</label>
                         <input type="text" name="name" id="name1" class="form-control">
                      </div> 
                 </div>
@@ -266,7 +277,7 @@
                             <option value="">Select Option</option>
                             <option value="Vocational Training">Vocational Training</option>
                             <option value="Proffessional Training">Proffessional Training</option>
-                            <option value="Other">Other</option>
+                            <option value="Soft Skills">Soft Skills</option>
                         </select>
                      </div> 
                 </div>
@@ -318,6 +329,20 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
+                        <label for="course_catogery">Course Category</label>
+                        <select name="course_catogery" id="course_catogery1" class="form-control">
+                            <option value="">Select Option</option>
+                             @foreach($course_categories as $cc)
+                                <option value="{{$cc->id}}">{{$cc->course_category}}</option>
+                            @endforeach
+                        </select>
+                    </div> 
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
                         <label for="min_qualification">Minimum Qualification</label>
                         <select name="min_qualification" id="min_qualification1" class="form-control">
                             <option value="">Select Option</option>
@@ -333,6 +358,19 @@
                         </select>
                     </div> 
                 </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="embeded_softs_skills" id="em_label1">Is this course embedded with softskilles?</label>
+                        <select name="embeded_softs_skills" id="embeded_softs_skills1" class="form-control">
+                            <option value="">Select Option</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        
+                        </select>
+                    </div> 
+                </div>
+            
+                
              </div>
              <input type="hidden" id="id" name="id">
              </form>
@@ -376,6 +414,38 @@
                 $('#standard-label').text('Standard');
 
                 $("#standard_edit1").prop("type", "text");                      
+
+                    
+            }
+        });
+
+        $(document).on('change' , '#course_type', function (){
+
+            if(this.value=='Soft Skills'){
+                $("#embeded_softs_skills").hide();
+                $("#em_label").hide();
+
+            }
+
+            else{
+                $("#embeded_softs_skills").show(); 
+                $("#em_label").show();
+
+                    
+            }
+        });
+
+        $(document).on('change' , '#course_type1', function (){
+
+            if(this.value=='Soft Skills'){
+                $("#embeded_softs_skills1").hide();
+                $("#em_label1").hide();
+                                                                            
+            }
+
+            else{
+                $("#embeded_softs_skills1").show(); 
+                $("#em_label1").show();
 
                     
             }
@@ -471,8 +541,10 @@ $(document).on('click', '#edit-course', function(){
         $('#course_fee1').val($(this).data('fee'));
         
         $('#medium1').val($(this).data('medium'));
+        $('#embeded_softs_skills1').val($(this).data('embeded'));
 
         $('#min_qualification1').val($(this).data('min_qul'));
+        $('#course_catogery1').val($(this).data('c_cat'));
         $('#update-model').modal('show');
         
     });

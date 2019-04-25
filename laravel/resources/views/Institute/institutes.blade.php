@@ -22,7 +22,7 @@
         </div>
         <!-- /.card-header -->
         <div class="card-body">  
-            <table id="example1" class="table row-border table-hover" style="width:100%">
+            <table id="example1" class="table row-border table-hover table-responsive" style="width:100%">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -61,7 +61,7 @@
                             @endcan
                             @can('edit-institute')
                             
-                                    <button type="submit" id="edit-institute" data-id="{{$institute->id}}" data-name="{{ $institute->name }}" data-location="{{ $institute->location }}" data-address="{{ $institute->address }}" data-contact="{{ $institute->contact_person }}" data-email="{{ $institute->email }}" data-phone="{{ $institute->phone }}" data-is_registerd="{{ $institute->is_registerd }}" data-reg_no="{{ $institute->reg_no }}" class="btn btn-block btn-success btn-flat btn-sm"><i class="fas fa-edit"></i></button>
+                                    <button type="submit" id="edit-institute" data-id="{{$institute->id}}" data-name="{{ $institute->name }}" data-location="{{ $institute->location }}" data-address="{{ $institute->address }}" data-contact="{{ $institute->contact_person }}" data-email="{{ $institute->email }}" data-phone="{{ $institute->phone }}" data-is_registerd="{{ $institute->is_registerd }}" data-reg_no="{{ $institute->reg_no }}" data-type="{{ $institute->type }}" class="btn btn-block btn-success btn-flat btn-sm"><i class="fas fa-edit"></i></button>
                         	@endcan
                         	@can('delete-institute')
                             
@@ -156,6 +156,17 @@
              		 	<input type="text" name="reg_no" id="reg_no" class="form-control">
              		 </div> 
              	</div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="reg_no">Institute Type</label>
+                        <select class="form-control" name="type" id="type">
+                            <option value="">Select Option</option>
+                            <option value="Government">Government</option>
+                            <option value="Non Government">Non Government</option>
+                            <option value="Private">Private</option>
+                        </select>
+                     </div> 
+                </div>
              </div>
              </form>
 	      </div>
@@ -242,6 +253,17 @@
              		 	<input type="text" name="reg_no" id="reg_no1" class="form-control">
              		 </div> 
              	</div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="reg_no">Institute Type</label>
+                        <select class="form-control" name="type" id="type1">
+                            <option value="">Select Option</option>
+                            <option value="Government">Government</option>
+                            <option value="Non Government">Non Government</option>
+                            <option value="Private">Private</option>
+                        </select>
+                     </div> 
+                </div>
              </div>
              <input type="hidden" name="id" id="id">
              </form>
@@ -359,6 +381,7 @@ $('#addModel').on('hidden.bs.modal', function () {
         $('#email1').val($(this).data('email'));
         $('#address1').val($(this).data('address'));
         $('#contact_person1').val($(this).data('contact'));
+        $('#type1').val($(this).data('type'));
         
         $('#is_registerd1').val($(this).data('is_registerd'));
 

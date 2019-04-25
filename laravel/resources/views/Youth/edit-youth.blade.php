@@ -444,7 +444,7 @@
                                       <th>#</th>
                                       <th>Course Name</th>
                                       <th>Status</th>
-                                      <th>Provieded By</th>
+                                      <th>supported By</th>
                                       <th>Completed At</th>
                                       <th>Edit</th>
                                     </tr>
@@ -499,7 +499,7 @@
                               </div>
                               <input type="hidden" name="status" id="status" value="Followed">
                               <div  class="col-md-6 form-group">
-                                <label>is This course provied by Berendina ?</label>
+                                <label>is supported by Berendina ?</label>
 
                                 <select name="provided_by_bec" class="form-control" id="provided_by_bec">
                                   <option value="">Select Option</option>

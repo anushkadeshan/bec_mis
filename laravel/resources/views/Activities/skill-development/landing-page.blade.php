@@ -30,15 +30,15 @@
                 			<ul	class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 				
                 				<li class="nav-item">
-            						<a href="{{Route('reports/personal')}}" class="nav-link">
+            						<a href="{{URL::to('activities/skill-development/course-support')}}" class="nav-link">
 	              						<p>
-	              							Support for course enrollment 
+	              							Support for course enrollment & Directing to follow VT/Professional <br> courses at govt. institutions
 	                						<i class="fa fa-angle-right right"></i>
 	              						</p>
             						</a>
           						</li>
                       <li class="nav-item">
-                        <a href="{{Route('reports/personal')}}" class="nav-link">
+                        <a href="{{URL::to('activities/skill-development/provide-softskill')}}" class="nav-link">
                             <p>
                               Soft Skill training  
                               <i class="fa fa-angle-right right"></i>
@@ -46,7 +46,7 @@
                         </a>
                       </li>
                       <li class="nav-item">
-                        <a href="{{Route('reports/personal')}}" class="nav-link">
+                        <a href="{{URL::to('activities/skill-development/finacial-support')}}" class="nav-link">
                             <p>
                               Financial assistance to follow VT/Professional courses  
                               <i class="fa fa-angle-right right"></i>
@@ -54,15 +54,7 @@
                         </a>
                       </li>
                       <li class="nav-item">
-                        <a href="{{Route('reports/personal')}}" class="nav-link">
-                            <p>
-                              Directing to follow VT/Professional courses at govt. institutions
-                              <i class="fa fa-angle-right right"></i>
-                            </p>
-                        </a>
-                      </li>
-                      <li class="nav-item">
-                        <a href="{{Route('reports/personal')}}" class="nav-link">
+                        <a href="{{URL::to('activities/skill-development/partnership')}}" class="nav-link">
                             <p>
                               Partnership Training
                               <i class="fa fa-angle-right right"></i>
@@ -81,7 +73,7 @@
                 		<div class="card-body">
                 			<ul	class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 				<li class="nav-item">
-                        <a href="{{Route('reports/personal')}}" class="nav-link">
+                        <a href="{{URL::to('activities/skill-development/institute-review')}}" class="nav-link">
                             <p>
                               Review of institutions
                               <i class="fa fa-angle-right right"></i>
@@ -89,7 +81,7 @@
                         </a>
                         </li>
           						  <li class="nav-item">
-                        <a href="{{Route('reports/personal')}}" class="nav-link">
+                        <a href="{{URL::to('activities/skill-development/incoperate-soft-skills')}}" class="nav-link">
                             <p>
                               Incorporation of soft skill component
                               <i class="fa fa-angle-right right"></i>

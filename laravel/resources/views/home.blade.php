@@ -212,6 +212,7 @@
               <!-- /.card-header -->
               <div class="card-body p-0">
                   <ul class="nav nav-pills flex-column">
+                  
                   @foreach($last_activities as $activity)	
                   <li class="nav-item">
                     <a href="" class="nav-link">
@@ -340,6 +341,52 @@
               <!-- /.card-body -->
             </div>
         	</div>
+        </div>
+        <div class="row">
+
+          <div class="col-12 col-sm-6 col-md-12">
+            <!-- MAP & BOX PANE -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">User Activities</h3>
+                <div class="card-tools">
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body p-0">
+                <table class="table table-striped" id="example1">
+                
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Action</th>
+                      <th>Table</th>
+                      <th>by</th>
+                      <th>Relevent ID</th>
+                      <th>at</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php $i=1; ?>
+                    @foreach($audits as $audit) 
+                      <tr>
+                        <td>{{$i++}}</td>
+                        <td>{{$audit->action}}</td>
+                        <td>{{$audit->relevent_table}}</td>
+                        <td>{{$audit->name}}</td>
+                        <td>{{$audit->relevent_id}}</td>
+                        <td>{{date('F j, Y, g:i a',strtotime($audit->time_stamp))}}</td>
+                      </tr>
+                    @endforeach
+                    
+                  </tbody>
+                </table>
+                  
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
         </div>
         </div>
     </section>

@@ -234,7 +234,6 @@
           
 
    				var form = $('#vacancy');
-   					alert( $("#vacancy").serialize() ); 
    				$.ajax({
    					type: 'POST',
             		url: SITE_URL + '/add-vacancy',

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Http\Request; 
 use DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -41,8 +41,10 @@ class KickOffController extends Controller
             if($validator->passes()){
                 $branch_id = auth()->user()->branch;
                 $input = $request->all();
-            	$input['attendance'] = time().'.'.$request->file('attendance')->getClientOriginalExtension();
-            	$request->attendance->move(storage_path('activities/files/kick-off/attendance'), $input['attendance']);
+                if($request->hasFile('attendance')){
+                	$input['attendance'] = time().'.'.$request->file('attendance')->getClientOriginalExtension();
+                	$request->attendance->move(storage_path('activities/files/kick-off/attendance'), $input['attendance']);
+                }
                 $data1 = array(
                 	'district' => $request->district,
                 	'dsd' => $request->dsd,
@@ -73,12 +75,13 @@ class KickOffController extends Controller
 
                  //insert images
                 $input = $request->all();
-                foreach ($request->file('image') as $key => $value) {
-            	$imageName = time(). $key . '.' . $value->getClientOriginalExtension();
-            	$value->move(storage_path('activities/files/kick-off/images'), $imageName);
-            	$images = DB::table('kickoff_photos')->insert(['images'=>$imageName,'kickoff_id'=>$kick_off_id]);
-        		}
-
+                if($request->hasFile('image')){
+                    foreach ($request->file('image') as $key => $value) {
+                	$imageName = time(). $key . '.' . $value->getClientOriginalExtension();
+                	$value->move(storage_path('activities/files/kick-off/images'), $imageName);
+                	$images = DB::table('kickoff_photos')->insert(['images'=>$imageName,'kickoff_id'=>$kick_off_id]);
+            		}
+                }
                 $number = count($request->name);
                 if($number>0){
                 	for($i=0; $i<$number; $i++){

@@ -25,39 +25,36 @@
                   <div class="tab-pane active" id="tab_1"> 
                   	<form id="youth" name="youth">
 	                  	<div class="row">
-	                  		<div class="col-md-4">
-	                  			
-	                  			<div class="form-group">
-                   					<label for="name">Name with initials: &nbsp;&nbsp;</label>
-                   					<input type="text" id="name" name="name" class="form-control">
-                   				</div>
-                   				<div class="form-group">
-                   					<label for="nic">NIC: &nbsp;&nbsp;</label>
-                   					<input type="text" id="nic" name="nic" class="form-control">
-                   				</div>
-                   				<div class="form-group">
-                   					<label for="maritial_status">Marital Status &nbsp;&nbsp;</label>
-                   					<select name="maritial_status" id="maritial_status" class="form-control">
-                   						<option value="">Select Option</option>
-                   						<option>Single</option>
-                   						<option>Married</option>
-                   						<option>Divorced</option>
-                   						<option>Seperated</option>
-                   						<option>Dependent</option>
-                   						<option>Widow</option>
-                   					</select>
-                   				</div>
-                   				<div class="form-group">
-                   					<label for="disability">Are you differtnly abled? &nbsp;&nbsp;</label>
-                   					<select name="disability" id="disability" class="form-control">
-                   						<option value="">Select Option</option>
-                   						<option>Yes</option>
-                   						<option>No</option>
-                   					</select>
-                   				</div>
+                        <div class="col-md-4">
+                          
+                          <div class="form-group">
+                            <label for="name">1. Name with initials: &nbsp;&nbsp;</label>
+                            <input type="text" id="name" name="name" class="form-control">
+                          </div>
+                          <div class="form-group">
+                            <label for="nic">4. NIC: &nbsp;&nbsp;</label>
+                            <input type="text" id="nic" name="nic" class="form-control">
+                          </div>
+                          <div class="form-group">
+                            <label for="nic">7. Phone Numbers: &nbsp;&nbsp; <small>(seperete with comma)</small></label>
+                            <input type="text" id="phone" name="phone" class="form-control">
+                          </div> 
+                          <div class="form-group">
+                            <label for="maritial_status">10. Marital Status &nbsp;&nbsp;</label>
+                            <select name="maritial_status" id="maritial_status" class="form-control">
+                              <option value="">Select Option</option>
+                              <option>Single</option>
+                              <option>Married</option>
+                              <option>Divorced</option>
+                              <option>Seperated</option>
+                              <option>Dependent</option>
+                              <option>Widow</option>
+                            </select>
+                          </div>
+                          
 
                           <div class="form-group">
-                            <label for="branch_id">Select Nearest Branch &nbsp;&nbsp;</label>
+                            <label for="branch_id">13. Select Branch &nbsp;&nbsp;</label>
                             <select class="form-control" id="branch_id" name="branch_id">
                                 <option value="0">Select a Option </option>
                                 @foreach ($branches as $branch) 
@@ -65,81 +62,90 @@
                                 @endforeach
                             </select>
                           </div>
-	                  		</div>
-	                  		<div class="col-md-4">
-	                  			<div class="form-group">
-                   					<label for="full_name">Full Name: &nbsp; &nbsp;</label>
-                   					<input type="text" name="full_name" id="full_name" class="form-control">
-                   				</div>
-                   				<div class="form-group">
-                   					<label for="birth_date">Birth Date: &nbsp; &nbsp;</label>
-                   					<input type="date" name="birth_date" id="birth_date" class="form-control">
-                   				</div>
-                   				<div class="form-group">
-                   					<label for="nationality">Nationility: &nbsp;&nbsp;</label>
-                   					<select name="nationality" id="nationality" class="form-control">
-                   						<option value="">Select Option</option>
-                   						<option>Sinhala</option>
-                   						<option>Tamil</option>
-                   						<option>Muslim</option>
-                   						<option>Burger</option>
-                   						<option>Other</option>
-                   					</select>
-                   				</div>
-                   				<div class="form-group">
-                   					<label for="reason">if Yes Explian</label>
-                   					<textarea class="form-control" id="reason" placeholder="optional" name="reason"></textarea>
-                   				</div>	
-	                  		</div>
-	                  		<div class="col-md-4">
-                   				<div class="form-group">
-                   					<label for="gender">Gender: &nbsp;&nbsp;</label>
-                   					<select name="gender" id="gender" class="form-control">
-                   						<option value="">Select Option</option>
-                   						<option value="Male">Male</option>
-                   						<option value="Female">Female</option>
-                   						
-                   					</select>
-                   				</div>
-                   				<div class="form-group">
-                   					<label for="gender">Driving Licence &nbsp;&nbsp;</label>
-                   					<select name="driving_licence" id="driving_licence" class="form-control">
-                   						<option value="">Select Option</option>
-                   						<option>No Licence</option>
-                   						<option>A1,A,D</option>
-                   						<option>B1,E,F</option>
-                   						<option>B,C,C1</option>
-                   						<option>C1,B1</option>
-                   						<option>C,B</option>
-                   						<option>CE,B</option>
-                   						<option>D1,A1</option>
-                   						<option>D,A</option>
-                   						<option>DE</option>
-                   						<option>G1</option>
-                   						<option>G</option>
-                   						<option>J</option>
-                   						
-                   					</select>
-                   				</div>
-                   				<div class="form-group">
-			          				<label for="highest_qualification">Highest Educational Qualification:</label>
-			          				<select name="highest_qualification" id="highest_qualification" class="form-control">
-			          					<option value="">Select Option</option>
-			          					<option>Ordinary Level</option>
-			          					<option>Advanced Level</option>
-			          					<option>Certificate</option>
-			          					<option>Diploma</option>
-			          					<option>Higher Diploma</option>
-			          					<option>Degree</option>
-			          					<option>Masters</option>
-			          					<option>Doctorate</option>
-			          					<option>Skilled Apprentice</option>
-			          				</select>
-		          				</div>
-		          				<div class="form-group">
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label for="full_name">2. Full Name: &nbsp; &nbsp;</label>
+                            <input type="text" name="full_name" id="full_name" class="form-control">
+                          </div>
+                          <div class="form-group">
+                            <label for="birth_date">5. Birth Date: &nbsp; &nbsp;</label>
+                            <input type="date" name="birth_date" id="birth_date" class="form-control">
+                          </div>
+                          <div class="form-group">
+                            <label for="birth_date">8. Email Address: &nbsp; &nbsp;</label>
+                            <input type="email" name="email" id="email" class="form-control">
+                          </div>
+                          <div class="form-group">
+                            <label for="nationality">11. Nationility: &nbsp;&nbsp;</label>
+                            <select name="nationality" id="nationality" class="form-control">
+                              <option value="">Select Option</option>
+                              <option>Sinhala</option>
+                              <option>Tamil</option>
+                              <option>Muslim</option>
+                              <option>Burger</option>
+                              <option>Other</option>
+                            </select>
+                          </div>
+                          <div class="form-group">
+                            <label for="disability">14. Are you differtnly abled? &nbsp;&nbsp;</label>
+                            <select name="disability" id="disability" class="form-control">
+                              <option value="">Select Option</option>
+                              <option>Yes</option>
+                              <option>No</option>
+                            </select>
+                          </div>
+                            
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label for="gender">3. Gender: &nbsp;&nbsp;</label>
+                            <select name="gender" id="gender" class="form-control">
+                              <option value="">Select Option</option>
+                              <option value="Male">Male</option>
+                              <option value="Female">Female</option>
+                              
+                            </select>
+                          </div>
+                          <div class="form-group">
+                            <label for="gender">6. Driving Licence &nbsp;&nbsp;</label>
+                            <select name="driving_licence" id="driving_licence" class="form-control">
+                              <option value="">Select Option</option>
+                              <option>No Licence</option>
+                              <option>A1,A,D</option>
+                              <option>B1,E,F</option>
+                              <option>B,C,C1</option>
+                              <option>C1,B1</option>
+                              <option>C,B</option>
+                              <option>CE,B</option>
+                              <option>D1,A1</option>
+                              <option>D,A</option>
+                              <option>DE</option>
+                              <option>G1</option>
+                              <option>G</option>
+                              <option>J</option>
+                              
+                            </select>
+                          </div>
+                          <div class="form-group">
+                        <label for="highest_qualification">9. Highest Educational Qualification:</label>
+                        <select name="highest_qualification" id="highest_qualification" class="form-control">
+                          <option value="">Select Option</option>
+                          <option>Ordinary Level</option>
+                          <option>Advanced Level</option>
+                          <option>Certificate</option>
+                          <option>Diploma</option>
+                          <option>Higher Diploma</option>
+                          <option>Degree</option>
+                          <option>Masters</option>
+                          <option>Doctorate</option>
+                          <option>Skilled Apprentice</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
 
-									     <label for="family_id">Select Family</label>
-										      
+                       <label for="family_id">12. Select Family</label>
+                          
                         <div class="input-group">
                         
                         <input data-toggle="tooltip" data-placement="bottom" title="Add family details before search and select. Click on add button" type="text" id="fam_id" name="fam_id" class="form-control" placeholder="Enter Name of Household">
@@ -149,13 +155,17 @@
                       </div>
                       <div id="familyList"></div>
                           <input type="hidden" id="family_id" name="family_id" value="">
-								      </div>
-	                  		</div>
-	                  	</div>	
+                      </div>
+                      <div class="form-group">
+                            <label for="reason">15. if Yes Explian</label>
+                            <textarea class="form-control" id="reason" placeholder="optional" name="reason"></textarea>
+                          </div>
+                      </div>
+                      </div>  
                       <input type="hidden" id="user_id" name="user_id" value="{{Auth::id()}}">
                       
                    
-                   		<button type="button" id="personal_info" class="btn btn-success btn-flat">Next &nbsp;&nbsp;<i class="fas fa-forward"></i></button>
+                      <button type="button" id="personal_info" class="btn btn-success btn-flat">Next &nbsp;&nbsp;<i class="fas fa-forward"></i></button>
                    	</form>
                   </div>
                   <!-- /.tab-pane -->
