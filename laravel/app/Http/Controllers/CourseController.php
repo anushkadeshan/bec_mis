@@ -26,7 +26,7 @@ class CourseController extends Controller
 
     public function insert(Request $request){
    			$validator = Validator::make($request->all(),[
-                'name' => 'required|unique:courses',
+                'name' => 'required',
                 'duration' => 'required|numeric',
                 'course_fee' => 'required|numeric',
                 'course_type' => 'required',

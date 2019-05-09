@@ -32,6 +32,7 @@ Gate::define('userList', 'App\Policies\userRoles@superAdmin');
 Route::get('markAllAsRead', 'NotificationsController@markAllAsRead')->name('markAllAsRead');
 //Employer Routes
 Route::get('newEmployer', 'EmployerController@create')->name('newEmployer')->middleware('can:create-Employer');
+Route::post('employerList', 'AssesmentController@employerList');
 Route::get('employers', 'EmployerController@index')->name('employers')->middleware('can:view-Employer');
 Route::post('employerDelete', 'EmployerController@delete')->name('employerDelete')->middleware('can:delete-Employer');
 Route::post('employerInsert', 'EmployerController@create')->name('employerInsert')->middleware('can:create-Employer');
@@ -232,4 +233,13 @@ Route::get('/activities/skill-development/institute-review', 'InstituteReviewCon
 Route::post('/activity/skill/add-institute-review', 'InstituteReviewController@insert')->name('activity/skill/add-institute-review')->middleware('can:add-M&E-reports');
 Route::get('/activities/skill-development/incoperate-soft-skills', 'IncoperationSoftSkillController@index')->name('skill-development/incoperate-soft-skills')->middleware('can:add-M&E-reports');
 Route::post('/activity/skill/add-incoperation', 'IncoperationSoftSkillController@insert')->name('activity/skill/add-incoperation')->middleware('can:add-M&E-reports');
+Route::get('/activities/skill-development/tvec-meeting', 'TvecMeetingController@index')->name('skill-development/tvec-meeting')->middleware('can:add-M&E-reports');
+Route::post('/activity/skill/add-tvec', 'TvecMeetingController@insert')->name('activity/skill/add-tvec')->middleware('can:add-M&E-reports');
+Route::get('/activities/job-linking/assesment', 'AssesmentController@index')->name('job-linking/assesment')->middleware('can:add-M&E-reports');
+Route::post('/activity/job-linking/add-assesment', 'AssesmentController@insert')->name('job-linking/add-assesment')->middleware('can:add-M&E-reports');
+Route::get('/activities/job-linking/awareness', 'AwarenessController@index')->name('job-linking/awareness')->middleware('can:add-M&E-reports');
+Route::post('/activity/job-linking/add-awareness', 'AwarenessController@insert')->name('job-linking/add-awareness')->middleware('can:add-M&E-reports');
+Route::get('/activities/job-linking/placements', 'PlacementController@index')->name('job-linking/placements')->middleware('can:add-M&E-reports');
+Route::post('/employerList', 'PlacementController@employerList')->name('employerList');
+Route::post('/activity/job-linking/add-placement', 'PlacementController@insert')->name('job-linking/add-placement')->middleware('can:add-M&E-reports');
 

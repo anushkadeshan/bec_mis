@@ -64,7 +64,8 @@ class FinancialSupportController extends Controller
 	                'pwd_female'=>$request->pwd_female,
 	                'review_report' => $input['review_report'],
 	                'mou_report' => $input['mou_report'],
-	                'branch_id'	=> $branch_id
+	                'branch_id'	=> $branch_id,
+                    'created_at' => date('Y-m-d H:i:s')
                 );
 
                 //insert general data 

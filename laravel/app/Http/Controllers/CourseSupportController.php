@@ -57,11 +57,15 @@ class CourseSupportController extends Controller
     }
 
     public function youthList(Request $request){
+      $branch_id = auth()->user()->branch;
+
     	if($request->get('query')){
           $query = $request->get('query');
           $data = DB::table('youths')
+            ->where('branch_id', '=',$branch_id)
             ->where('name', 'LIKE', "%{$query}%")
             ->orWhere('nic', 'LIKE', "%{$query}%")
+            
             ->get();
           $output = '<ul class="dropdown-menu" id="youths" style="display:block; position:relative">';
           foreach($data as $row)
@@ -111,7 +115,8 @@ class CourseSupportController extends Controller
 	                'pwd_female'=>$request->pwd_female,
 	                'course_id'=>$request->course_id,
 	                'review_report' => $input['review_report'],
-	                'branch_id'	=> $branch_id
+	                'branch_id'	=> $branch_id,
+                  'created_at' => date('Y-m-d H:i:s')
                 );
 
                 //insert general data 

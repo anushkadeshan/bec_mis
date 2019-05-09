@@ -61,7 +61,8 @@ class StakeHolderMeetingController extends Controller
 	                'total_female'=>$request->total_female,
 	                'decisions'=>$request->decisions,
 	                'attendance' => $input['attendance'],
-	                'branch_id'	=> $branch_id
+	                'branch_id'	=> $branch_id,
+                    'created_at' => date('Y-m-d H:i:s')
                 );
 
                 //insert general data 

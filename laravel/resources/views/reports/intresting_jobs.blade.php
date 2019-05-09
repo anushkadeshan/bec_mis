@@ -103,10 +103,10 @@
     <div class="col-md-9">
       <div class="card card-success card-outline">
                 <div class="card-header">
-                  <h3 class="card-title">Youth Details</h3>
+                  <h3 class="card-title">Youth Details <span  class="badge badge-success float-right" id="row_count"></span></h3>
                 </div>
                 <div class="card-body">
-                   <table id="example" class="table table-bordered table-striped" style="width:100%">
+                   <table id="example" class="table table-bordered table-striped table-responsive" style="width:100%">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -131,13 +131,17 @@
                         @if(!is_null($youth->email))({{$youth->email}}) @endif
                     </td>
                     <td>
-                    <?php   $industries = json_decode($youth->industry) ?>
-                      {{implode(', ', $industries)}}
-
+                      <?php $industries = json_decode($youth->industry) ?>
+                      @if(!empty($industries))
+                      {{ implode(', ', $industries)}}
+                      @endif
+                      
                     </td>
                     <td>
-                      <?php   $locations = json_decode($youth->location) ?>
-                      {{implode(', ', $locations)}}
+                      <?php $locations = json_decode($youth->location) ?>
+                      @if(!empty($locations))
+                      {{ implode(', ', $locations)}}
+                      @endif
                     </td>
                     <td>{{$youth->industry}}</td>
                     <td>{{$youth->location}}</td>
@@ -212,19 +216,27 @@ $(document).ready(function() {
 
       $('#industry').on('change', function () {
           table.columns(5).search( this.value ).draw();
+          var info = $('#example').DataTable().page.info();
+          $('#row_count').text(info.recordsDisplay+ ' youths filtered out of  ' +info.recordsTotal);
       } );
 
       $('#location').on('change', function () {
           table.columns(6).search( this.value ).draw();
+          var info = $('#example').DataTable().page.info();
+          $('#row_count').text(info.recordsDisplay+ ' youths filtered out of  ' +info.recordsTotal);
       } );
 
       // Event listener to the two range filtering inputs to redraw on input
     $('#min_salary').keyup( function() {
         table.draw();
+        var info = $('#example').DataTable().page.info();
+          $('#row_count').text(info.recordsDisplay+ ' youths filtered out of  ' +info.recordsTotal);
     } );
 
     $('#branch_id').on('change', function () {
           table.columns(8).search( this.value ).draw();
+          var info = $('#example').DataTable().page.info();
+          $('#row_count').text(info.recordsDisplay+ ' youths filtered out of  ' +info.recordsTotal);
       } );
 
 

@@ -78,18 +78,23 @@ class ReportController extends Controller
     public function courses(){
         $branch = auth()->user()->branch;
         $course_categories = DB::table('course_categories')->get();
+
         if(is_null($branch)){
             $branches = DB::table('branches')->get();
             $youths = DB::table('youths')
                       ->join('intresting_jobs','intresting_jobs.youth_id','=','youths.id')
-                      ->join('families','families.id','=','youths.family_id')   
+                      ->join('families','families.id','=','youths.family_id')
+                      ->where('intresting_jobs.intresting_courses','!=','[""]')  
+                      ->where('intresting_jobs.intresting_courses','!=','null')  
                       ->get();  
         }
         else{
             $branches = null;
             $youths = DB::table('youths')
                       ->join('intresting_jobs','intresting_jobs.youth_id','=','youths.id')
-                      ->join('families','families.id','=','youths.family_id')   
+                      ->join('families','families.id','=','youths.family_id')
+                      ->where('intresting_jobs.intresting_courses','!=','[""]')  
+                      ->where('intresting_jobs.intresting_courses','!=','null')   
                       ->where('youths.branch_id',$branch)
                       ->get();
 
@@ -124,22 +129,26 @@ class ReportController extends Controller
     public function business(){
         $branch = auth()->user()->branch;
         $business = DB::table('intresting_business')
-                    ->distinct('intresting_business')
-                    ->get();
+                    ->whereNotNull('intresting_business')
+                    ->where('intresting_business','!=','-')
+                    ->distinct()
+                    ->get(['intresting_business']);
         if(is_null($branch)){
             $branches = DB::table('branches')->get();
 
-            $youths = DB::table('youths')
-                      ->join('intresting_business','intresting_business.youth_id','=','youths.id')
+            $youths = DB::table('intresting_business')
+                      ->join('youths','youths.id','=','intresting_business.youth_id')
                       ->join('families','families.id','=','youths.family_id')
-                      ->select('youths.*','youths.id as youth_id','intresting_business.*','families.*')   
+                      ->select('youths.*','youths.id as youth_id','intresting_business.*','families.*')
+                      ->whereNotNull('intresting_business')   
                       ->get();  
         }
         else{
-            $youths = DB::table('youths')
-                      ->join('intresting_business','intresting_business.youth_id','=','youths.id')
-                      ->join('families','families.id','=','youths.family_id') 
-                      ->select('youths.*','youths.id as youth_id','intresting_business.*','families.*')   
+            $youths = DB::table('intresting_business')
+                      ->join('youths','youths.id','=','intresting_business.youth_id')
+                      ->join('families','families.id','=','youths.family_id')
+                      ->select('youths.*','youths.id as youth_id','intresting_business.*','families.*')
+                      ->whereNotNull('intresting_business')   
                       ->where('youths.branch_id',$branch)
                       ->get();
             $branches = null;
@@ -232,7 +241,9 @@ class ReportController extends Controller
         $institutes = DB::table('institutes')
                    ->select('institutes.name')
                    ->get(); 
-        $standards = DB::table('courses')->select('courses.standard')->distinct()->get();             
+        $standards = DB::table('courses')->select('courses.standard')
+                    ->whereNotNull('standard')
+                    ->distinct()->get();             
         $courses = Course::with('institutes')->get();
         //dd($institutes->toArray());
 

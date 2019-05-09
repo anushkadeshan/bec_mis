@@ -89,7 +89,8 @@ class MentoringController extends Controller
 	                'deliverables'=>$request->deliverables,
 	                'resourse_person_id'=>$request->resourse_person_id,
 	                'attendance' => $input['attendance'],
-	                'branch_id'	=> $branch_id
+	                'branch_id'	=> $branch_id,
+                    'created_at' => date('Y-m-d H:i:s')
                 );
 
                 //insert general data 

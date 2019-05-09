@@ -72,7 +72,8 @@ class CGtrainingController extends Controller
 	                'resourse_person_id'=>$request->resourse_person_id,
 	                'attendance' => $input['attendance'],
 	                'test' => $input['test'],
-	                'branch_id'	=> $branch_id
+	                'branch_id'	=> $branch_id,
+                    'created_at' => date('Y-m-d H:i:s')
                 );
 
                 //insert general data 

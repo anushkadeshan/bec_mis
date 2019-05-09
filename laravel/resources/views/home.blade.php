@@ -200,7 +200,7 @@
         <!-- /.row -->
         <div class="row">
 
-        	<div class="col-12 col-sm-6 col-md-6">
+        	<div class="col-12 col-sm-6 col-md-3">
         		<!-- MAP & BOX PANE -->
             <div class="card">
               <div class="card-header">
@@ -226,6 +226,32 @@
             </div>
             <!-- /.card -->
         	</div>
+          <div class="col-12 col-sm-6 col-md-3">
+            <!-- MAP & BOX PANE -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Online Users</h3>
+                <div class="card-tools">
+                  
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body p-0">
+                  <ul class="nav nav-pills flex-column">
+                  
+                  @foreach($recent_activities as $activity) 
+                  <li class="nav-item">
+                    <a href="" class="nav-link">
+                      {{$activity->user->name}}
+                    </a>
+                  </li>
+                  @endforeach
+                </ul>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
         	<div class="col-12 col-sm-6 col-md-6">
         		<div class="card">
 	              <div class="card-header">

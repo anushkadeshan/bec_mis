@@ -47,7 +47,8 @@ class RegionalMeetingController extends Controller
 	                'matters' =>$request->matters,
 	                'decisions' => $request->decisions,
 	                'decisions_to_followed'=>$request->decisions_to_followed,
-	                'branch_id'	=> $branch_id
+	                'branch_id'	=> $branch_id,
+                    'created_at' => date('Y-m-d H:i:s')
                 );
                 $regional_meeting = DB::table('regional_meetings')->insert($data1);
 

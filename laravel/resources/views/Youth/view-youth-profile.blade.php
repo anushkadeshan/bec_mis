@@ -273,7 +273,7 @@
                           <div class="timeline-body text-muted">
                             @if(!is_null($intresting_jobs))
                             	{{implode(', ', $intresting_jobs->industry)}}	
-                  			@endif
+                  			   @endif
                           </div>
                           
                         </div>

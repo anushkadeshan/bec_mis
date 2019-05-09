@@ -48,6 +48,8 @@ class YouthController extends Controller
     }
 
     public function familyList(Request $request){
+          $branch_id = auth()->user()->branch;
+
         if($request->get('query')){
           $query = $request->get('query');
           $data = DB::table('families')
@@ -145,10 +147,6 @@ class YouthController extends Controller
 
     public function create_tempory_jobs(Request $request){
       $validator = Validator::make($request->all(),[
-                'industry' => 'required',
-                'location' => 'required',
-                'intresting_courses' => 'required',
-                'min_salary' => 'required',
                 'youth_id' => 'required',
             ]);
 
@@ -192,8 +190,7 @@ class YouthController extends Controller
 
     public function create_following_course(Request $request){
       $validator = Validator::make($request->all(),[
-                'location' => 'required',
-                'min_salary' => 'required',
+                
                 'youth_id' => 'required',
                 'course_id' => 'required',
                 'completed_at' => 'required',
@@ -249,8 +246,6 @@ class YouthController extends Controller
 
     public function create_no_jobs(Request $request){
       $validator = Validator::make($request->all(),[
-                'location' => 'required',
-                'min_salary' => 'required',
                 'youth_id' => 'required',
             ]);
 
@@ -596,7 +591,7 @@ public function update_followed_course(Request $request){
 
 public function update_tempory_jobs(Request $request){
       $validator = Validator::make($request->all(),[
-                'location' => 'required',
+                
                 'youth_id' => 'required',
             ]);
 
@@ -666,8 +661,7 @@ public function update_tempory_jobs(Request $request){
 
 public function update_following_course(Request $request){
       $validator = Validator::make($request->all(),[
-                'location' => 'required',
-                'min_salary' => 'required',
+                
                 'course_id' => 'required',
                 'completed_at' => 'required',
                 'youth_id' => 'required',
@@ -754,7 +748,7 @@ public function update_following_course(Request $request){
 
     public function update_no_jobs(Request $request){
       $validator = Validator::make($request->all(),[
-                'location' => 'required',
+                
                   'youth_id' => 'required',
 
             ]);

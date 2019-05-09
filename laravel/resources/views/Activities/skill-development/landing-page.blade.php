@@ -89,7 +89,7 @@
                         </a>
                         </li>
                         <li class="nav-item">
-                        <a href="{{Route('reports/personal')}}" class="nav-link">
+                        <a href="{{URL::to('activities/skill-development/tvec-meeting')}}" class="nav-link">
                             <p>
                               Meetings between TVEC & Institutes
                               <i class="fa fa-angle-right right"></i>

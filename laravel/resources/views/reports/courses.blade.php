@@ -109,10 +109,10 @@
     <div class="col-md-9">
       <div class="card card-success card-outline">
                 <div class="card-header">
-                  <h3 class="card-title">Courses Details</h3>
+                  <h3 class="card-title">Courses Details <span  class="badge badge-success float-right" id="row_count"></span></h3>
                 </div>
                 <div class="card-body">
-                   <table id="example" class="table row-border table-hover" style="width:100%">
+                   <table id="example" class="table row-border table-hover table-responsive" style="width:100%">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -202,25 +202,37 @@ $(document).ready(function() {
 
       $('#ins').on('change', function () {
           table.columns(8).search( this.value ).draw();
+          var info = $('#example').DataTable().page.info();
+          $('#row_count').text(info.recordsDisplay+ ' courses filtered out of  ' +info.recordsTotal);
       } );
 
       $('#duration').on('keyup', function () {
           table.columns(1).search( this.value ).draw();
+          var info = $('#example').DataTable().page.info();
+          $('#row_count').text(info.recordsDisplay+ ' courses filtered out of  ' +info.recordsTotal);
       } );
       $('#course_type').on('change', function () {
           table.columns(3).search( this.value ).draw();
+          var info = $('#example').DataTable().page.info();
+          $('#row_count').text(info.recordsDisplay+ ' courses filtered out of  ' +info.recordsTotal);
       } );
 
       $('#standard').on('change', function () {
           table.columns(4).search( this.value ).draw();
+          var info = $('#example').DataTable().page.info();
+          $('#row_count').text(info.recordsDisplay+ ' courses filtered out of  ' +info.recordsTotal);
       } );
 
       $('#course_time').on('change', function () {
           table.columns(5).search( this.value ).draw();
+          var info = $('#example').DataTable().page.info();
+          $('#row_count').text(info.recordsDisplay+ ' courses filtered out of  ' +info.recordsTotal);
       } );
 
       $('#medium').on('change', function () {
           table.columns(6).search( this.value ).draw();
+          var info = $('#example').DataTable().page.info();
+          $('#row_count').text(info.recordsDisplay+ ' courses filtered out of  ' +info.recordsTotal);
       } );
 });
 </script>

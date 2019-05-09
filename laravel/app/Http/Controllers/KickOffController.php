@@ -30,7 +30,6 @@ class KickOffController extends Controller
                 'dm_name' =>'required',
                 'title_of_action' =>'required',	
                 'activity_code' =>'required',	
-                'meeting_date'	=>'required',
                 'time_start'=>'required',
                 'time_end' =>'required',
                 'venue'	=>'required',
@@ -66,7 +65,8 @@ class KickOffController extends Controller
 	                'deliverables'=>$request->deliverables,
 	                'resourse_person_id'=>$request->resourse_person_id,
 	                'attendance' => $input['attendance'],
-	                'branch_id'	=> $branch_id
+	                'branch_id'	=> $branch_id,
+                    'created_at' => date('Y-m-d H:i:s')
                 );
 
                 //insert general data 

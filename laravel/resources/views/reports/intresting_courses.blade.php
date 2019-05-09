@@ -65,7 +65,7 @@
 		<div class="col-md-9">
 			<div class="card card-success card-outline">
               	<div class="card-header">
-                	<h3 class="card-title">Youth Details</h3>
+                	<h3 class="card-title">Youth Details <span  class="badge badge-success float-right" id="row_count"></span></h3>
                 </div>
                 <div class="card-body">
                 	 <table id="example" class="table table-bordered table-striped" style="width:100%">
@@ -77,6 +77,7 @@
                         <th>Email</th>
                         <th>Courses</th>
                         <th>Branch</th>
+                        <th>Courses</th>
                         <th></th>
                     </tr>
                 </thead> 
@@ -89,6 +90,14 @@
                 		<td>{{$youth->email}}</td>
                     <td>{{$youth->intresting_courses}}</td>
                 		<td>{{$youth->branch_id}}</td>
+                    <td>                     
+                        @foreach($course_categories as $cc)
+                          @if(in_array($cc->id, json_decode($youth->intresting_courses)))
+                          {{$cc->course_category}},
+                          @endif
+                        @endforeach
+
+                    </td>
                 		<td><a href="{{ URL::to('youth/' . $youth->youth_id . '/view') }}">
                                     <button type="button" id="view-youth" data-id="{{$youth->youth_id}}" class="btn btn-block btn-warning btn-flat btn-sm" ><i class="fas fa-eye"></i> </button>
                                 </a></td>
@@ -97,7 +106,7 @@
                 	@endforeach
                 </tbody>
             </table>      
-                </div>
+            </div>
             </div>
 		</div>
 	</div>
@@ -143,10 +152,14 @@ $(document).ready(function() {
 
       $('#intresting_courses').on('change', function () {
           table.columns(4).search( this.value ).draw();
+          var info = $('#example').DataTable().page.info();
+          $('#row_count').text(info.recordsDisplay+ ' youths filtered out of  ' +info.recordsTotal);
       } );
 
       $('#branch_id').on('change', function () {
           table.columns(5).search( this.value ).draw();
+          var info = $('#example').DataTable().page.info();
+          $('#row_count').text(info.recordsDisplay+ ' youths filtered out of  ' +info.recordsTotal);
       } );
 } );
 </script>

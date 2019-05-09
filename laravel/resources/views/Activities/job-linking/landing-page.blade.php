@@ -30,7 +30,7 @@
                 			<ul	class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 				
                 				<li class="nav-item">
-            						<a href="{{Route('reports/personal')}}" class="nav-link">
+            						<a href="{{URL::to('activities/job-linking/assesment')}}" class="nav-link">
 	              						<p>
 	              							Work place assessment 
 	                						<i class="fa fa-angle-right right"></i>
@@ -38,7 +38,7 @@
             						</a>
           						</li>
                       <li class="nav-item">
-                        <a href="{{Route('reports/personal')}}" class="nav-link">
+                        <a href="{{URL::to('activities/job-linking/awareness')}}" class="nav-link">
                             <p>
                               Awareness on work place conditions
                               <i class="fa fa-angle-right right"></i>
@@ -46,7 +46,7 @@
                         </a>
                       </li>
                       <li class="nav-item">
-                        <a href="{{Route('reports/personal')}}" class="nav-link">
+                        <a href="{{URL::to('activities/job-linking/placements')}}" class="nav-link">
                             <p>
                               Job Interviews  
                               <i class="fa fa-angle-right right"></i>

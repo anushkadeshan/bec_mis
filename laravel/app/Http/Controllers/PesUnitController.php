@@ -85,6 +85,7 @@ class PesUnitController extends Controller
 	                'reasons_to_not_update'=>$request->reasons_to_not_update,
 	                'gaps' => $request->gaps,
 	                'branch_id' => $branch_id,
+                    'created_at' => date('Y-m-d H:i:s')
                 );
 
                 //insert general data 

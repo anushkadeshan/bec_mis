@@ -152,10 +152,10 @@
     <div class="col-md-9">
       <div class="card card-success card-outline">
                 <div class="card-header">
-                  <h3 class="card-title">Vacancy Details</h3>
+                  <h3 class="card-title">Vacancy Details <span  class="badge badge-success float-right" id="row_count"></span></h3>
                 </div>
                 <div class="card-body">
-                   <table id="example" class="table table-bordered table-striped" style="width:100%">
+                   <table id="example" class="table table-bordered table-striped table-responsive" style="width:100%">
                 <thead>
                     <tr>
                         <th>Title</th>
@@ -234,23 +234,35 @@ $(document).ready(function() {
 
       $('#business_function').on('change', function () {
           table.columns(3).search( this.value ).draw();
+          var info = $('#example').DataTable().page.info();
+          $('#row_count').text(info.recordsDisplay+ ' vacancies filtered out of  ' +info.recordsTotal);
       } );
       $('#location').on('keyup', function () {
           table.columns(4).search( this.value ).draw();
+          var info = $('#example').DataTable().page.info();
+          $('#row_count').text(info.recordsDisplay+ ' vacancies filtered out of  ' +info.recordsTotal);
       } );
 
       $('#specializaion').on('change', function () {
           table.columns(6).search( this.value ).draw();
+          var info = $('#example').DataTable().page.info();
+          $('#row_count').text(info.recordsDisplay+ ' vacancies filtered out of  ' +info.recordsTotal);
       } );
       $('#job_type').on('change', function () {
           table.columns(2).search( this.value ).draw();
+          var info = $('#example').DataTable().page.info();
+          $('#row_count').text(info.recordsDisplay+ ' vacancies filtered out of  ' +info.recordsTotal);
       } );
 
       $('#min_qualification').on('change', function () {
           table.columns(5).search( this.value ).draw();
+          var info = $('#example').DataTable().page.info();
+          $('#row_count').text(info.recordsDisplay+ ' vacancies filtered out of  ' +info.recordsTotal);
       } );
       $('#employer').on('change', function () {
           table.columns(7).search( this.value ).draw();
+          var info = $('#example').DataTable().page.info();
+          $('#row_count').text(info.recordsDisplay+ ' vacancies filtered out of  ' +info.recordsTotal);
       } );
 
 });

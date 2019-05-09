@@ -42,7 +42,6 @@ class FamilyController extends Controller
                 'gn_division' => 'required',
                 'head_of_household' => 'required|unique:families',
                 'address' => 'required',
-
                 'family_type' => 'required',
             ]);
         if($validator->passes()){
