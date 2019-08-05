@@ -32,7 +32,7 @@ class EmployerController extends Controller
      */
     public function index()
     {
-        $employers = Employer::with('user')->get();
+        $employers = Employer::with('user')->latest()->get();
         return view('Employer.employers')->with('employers', $employers);
     }
 
@@ -47,7 +47,7 @@ class EmployerController extends Controller
             'name' => 'required',
             'phone' => 'required|numeric|digits:10',
             'address' => 'required',
-            'email' => 'required|email|unique:employers',
+            'email' => 'email|unique:employers',
             'company_type' => 'required',
             'industry' => 'required'
         ]);

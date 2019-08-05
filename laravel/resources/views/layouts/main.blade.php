@@ -31,8 +31,8 @@
     <link href="{{asset('vendors/font-awesome-animation/dist/font-awesome-animation.min.css')}}" rel="stylesheet">
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <link href="{{asset('css/bootstrap3-wysihtml5.min.css')}}" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/dropdown.css" />
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/dropdown.css" />
     <style>
       /*----------------------- Preloader -----------------------*/
       body.preloader-site {
@@ -205,7 +205,7 @@
                 </a>
                 @break
                 @case('App\Notifications\youthAdd')
-                <a href="{{Route('youth/view')}}" id="read" class="dropdown-item" data-id="{{ $notification->id }}">
+                <a href="{{ URL::to('youth/' . $notification->data['youth']['id'] . '/view') }}" id="read" class="dropdown-item" data-id="{{ $notification->id }}">
 
                     <!-- Message Start -->
                     <div class="media">
@@ -215,7 +215,7 @@
                         {{ $notification->data['youth']['name'] }}
                         <span class="float-right text-sm text-muted"><i class="fa fa-star"></i></span>
                         </h3>
-                        <p class="text-sm">A youth profile was added. }}.</p>
+                        <p class="text-sm">A youth profile was added.</p>
                         <p class="text-sm text-muted"><i class="fas fa-clock"></i> {{ $notification->data['youth']['created_at'] }}</p>
                     </div>
                     </div>
@@ -319,6 +319,15 @@
               </p>
             </a>
           </li>
+          <li class="nav-item">
+            <a href="{{Route('tasks')}}" class="nav-link">
+              <i class="nav-icon fas fa-tasks"></i>
+              <p>
+                Tasks
+                <span class="badge badge-info right"></span>
+              </p>
+            </a>
+          </li>
           @endcan
           @cannot('branch')
           @can('view-activities')
@@ -355,6 +364,14 @@
                   <p>Job Linking</p>
                 </a>
               </li>
+              @can('view-M&E-reports')
+              <li class="nav-item">
+                <a href="{{url('m&e-reports')}}" class="nav-link">
+                 <i class="fas fa-file-contract nav-icon text-warning"></i>
+                  <p class="text-warning">M & E Reports</p>
+                </a>
+              </li>
+              @endcan
             </ul>
           </li>
           @endcan
@@ -433,6 +450,12 @@
           @can('view-applications')
           <li class="nav-header">Youth</li>
             @can('view-youth')
+            <li class="nav-item">
+                <a href="{{Route('youth/add')}}" class="nav-link">
+                  <i class="fas fa-plus nav-icon"></i>
+                  <p>Add Youth</p>
+                </a>
+            </li>
             <li class="nav-item">
                 <a href="{{Route('youth/view')}}" class="nav-link">
                   <i class="fas fa-child nav-icon"></i>
@@ -543,6 +566,7 @@
     <script src="{{ asset('vendors/adminLTE/js/jquery-jvectormap-world-mill-en.js') }}"></script>
     <!-- SlimScroll 1.3.0 -->
     <script src="{{ asset('vendors/adminLTE/js/jquery.slimscroll.min.js') }}"></script>
+    <script src="{{ asset('vendors/moment/min/moment.min.js') }}"></script>
     
     <!-- toastr notifications -->
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>

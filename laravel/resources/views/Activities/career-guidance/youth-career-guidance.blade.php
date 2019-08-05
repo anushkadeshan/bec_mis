@@ -94,7 +94,7 @@
                 <div class="col-md-3">
                   <div class="form-group">
                 <label for="dm_name">7. Meeting Date</label>
-                <input type="date" name="meeting_date" id="meeting_date" class="form-control">
+                <input type="date" name="date" id="meeting_date" class="form-control">
             </div>
                 </div>
                 <div class="col-md-3">
@@ -281,6 +281,64 @@
                 
               </tbody>
             </table>
+
+            <div class="row container" style="background-color: #5E6971; color: white; padding: 15px">
+                <div class="col-md-6">
+                  <div class="form-group">
+                <label for="dm_name">Search Youth by name or NIC and copy youth id </label>
+                <div class="input-group">                       
+                            <input data-toggle="tooltip" data-placement="top" title="Search youth name or NIC select" type="text" id="youth1" name="youth" class="form-control" placeholder="Search Name or NIC of youth">
+                            <div style="cursor: pointer" onclick="window.open('{{Route('youth/add')}}', '_blank');" class="input-group-prepend">
+                              <span data-toggle="tooltip" data-placement="top" title="Add a youth to list" class="input-group-text"><i style="color: blue;" class="fa fa-plus"></i></span>
+                            </div>  
+                         </div>
+                        <div id="youth_list"></div>
+            </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                <label for="dm_name">Youth ID</label>
+
+                    <div class="input-group"> 
+                              <input type="text" id="youth_id" class="form-control" value="" >
+                              <div data-clipboard-target="#youth_id" id="copy" style="cursor: pointer" class="input-group-prepend copy">
+                                <span data-toggle="tooltip" data-placement="top" title="copy to clipboard" class="input-group-text"><i class="fas fa-copy"></i></span>
+                              </div>
+                          </div>
+                        </div>
+
+                </div>
+              </div>
+              <div class="form-group">
+  
+                  <table class="table table-borderless" id="dynamic_field1">
+              <thead>
+                <tr>
+                  <th scope="col">Youth ID</th>
+                  <th scope="col">Career Field according to career test</th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th><input type="number" name="youth_id[]" class="form-control"></th>
+                  <td><select name="career_field1[]" class="form-control position-list">
+                    <option>Field Work</option>
+                    <option>Skill Work</option>
+                    <option>Scientific Service</option>
+                    <option>Arts & Communication</option>
+                    <option>Management, Business & Finance</option>
+                    <option>Office Related</option>
+                    <option>Public Relations</option>
+                    <option>Youth in Dilemma</option>
+                  </select></td>
+                  <td><button type="button" class="btn btn-success btn-flat" id="add1"><i class="fas fa-plus"></i></button></td>
+                </tr>
+                
+              </tbody>
+            </table>
+            
+              </div>
               <button type="button" id="test" class="btn btn-info btn-flat">Next</button>  
             
               </div>
@@ -521,10 +579,56 @@ $(document).ready(function(){
         $.each(msg, function(key,value){
           toastr.error('Validation Error !', ""+value+"");
         });
-    } 
+    }
+
+  $(document).ready(function(){
+//search resourse Person
+       $('#youth1').keyup(function(){ 
+              var query = $(this).val();
+              if(query != '')
+              {
+               var _token = $('input[name="_token"]').val();
+               $.ajax({
+                url: SITE_URL + '/youthList',
+                method:"POST",
+                data:{query:query, _token:_token},
+                success:function(data){
+                 $('#youth_list').fadeIn();  
+                 $('#youth_list').html(data);
+                }
+               });
+              }
+          });
+
+          $(document).on('click', '#youths li', function(){  
+            $('#youth_list').fadeOut(); 
+              $('#youth1').val($(this).text()); 
+              $('#youth_id').focus(); 
+              var ins_id = $(this).attr('id');
+              $('#youth_id').val(ins_id);
+               
+          });  
+}); 
+
+  new ClipboardJS('.copy');
+
+
+$(document).ready(function(){  
+      var i=1;  
+      $('#add1').click(function(){  
+           i++;  
+           $('#dynamic_field1').append('<tr id="row'+i+'"><th><input type="number" name="youth_id[]" class="form-control"></th><td><select name="career_field1[]" class="form-control position-list"><option>Field Work</option><option>Skill Work</option><option>Scientific Service</option><option>Arts & Communication</option><option>Management, Business & Finance</option><option>Office Related</option><option>Public Relations</option><option>Youth in Dilemma</option></select></td><td><button type="button" name="remove" id="'+i+'" class="btn btn-danger btn-flat btn_remove1"><i class="fas fa-times"></i></button></td></tr>');  
+           $('#youth1').val("");
+           $('#youth_id').val("");
+      });  
+      $(document).on('click', '.btn_remove1', function(){  
+           var button_id = $(this).attr("id");   
+           $('#row'+button_id+'').remove();  
+      });   
+ });  
 </script>
 <style type="text/css" media="screen">
-  #autocomplete, #resourse_person {
+  #autocomplete, #resourse_person, #youths {
     position: absolute;
     z-index: 1000;
     cursor: default;
@@ -540,10 +644,10 @@ $(document).ready(function(){
        -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
             box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
-#autocomplete,  #resourse_person > li {
+#autocomplete,  #resourse_person, #youths > li {
   padding: 3px 20px;
 }
-#autocomplete, #resourse_person > li.ui-state-focus {
+#autocomplete, #resourse_person, #youths > li.ui-state-focus {
   background-color: #DDD;
 }
 .ui-helper-hidden-accessible {

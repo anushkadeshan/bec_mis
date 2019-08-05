@@ -33,8 +33,10 @@
             						<a href="{{Route('activities/education/regional-meeting')}}" class="nav-link">
 	              						<p>
 	              							Attending BMIC regional meeting 
-	                						<i class="fa fa-angle-right right"></i>
+                              <i class="fa fa-angle-right right"></i>
+	                						
 	              						</p>
+                            
             						</a>
           						</li>
 

@@ -35,7 +35,7 @@ class CarrerGuidanceController extends Controller
                 'dm_name' =>'required',
                 'title_of_action' =>'required', 
                 'activity_code' =>'required',   
-                'meeting_date'  =>'required',
+                'date'  =>'required',
                 'time_start'=>'required',
                 'time_end' =>'required',
                 'venue' =>'required',
@@ -56,7 +56,7 @@ class CarrerGuidanceController extends Controller
                     'dm_name' =>$request->dm_name,
                     'title_of_action' =>json_encode($request->title_of_action),  
                     'activity_code' =>json_encode($request->activity_code),  
-                    'meeting_date'  =>$request->meeting_date,
+                    'date'  =>$request->date,
                     'time_start'=>$request->time_start,
                     'time_end' =>$request->time_end,
                     'venue' =>$request->venue,
@@ -87,6 +87,19 @@ class CarrerGuidanceController extends Controller
                 }
                 else{
                     return response()->json(['error' => 'Submit Participants Details.']);
+                }
+
+
+            //insert youths
+              $number3 = count($request->name);
+                if($number3>0){
+                    for($i=0; $i<$number; $i++){
+                        $youth = DB::table('cg_youths')->insert(['youth_id'=>$request->youth_id[$i],'career_field1'=>$request->career_field1[$i], 'career_guidances_id'=>$career_guidances_id]);
+                    }
+
+                }
+                else{
+                    return response()->json(['error' => 'Submit youths Details.']);
                 }
 
                 //insert youth selected

@@ -54,13 +54,20 @@ class ProgressController extends Controller
 
     public function view($id){
 
-    	$youth = Youth::with('family')->where('id',$id)->first();
-      $cg = DB::table('youths_career_guidances')->where('youth_id',$id)->get();
-      $soft = DB::table('youths_courses')
-            ->join('courses','courses.id','=','youths_courses.course_id')
-            ->where('courses.course_type','Soft Skills')
-            ->where('youths_courses.youth_id',$id)
-            ->where('youths_courses.provided_by_bec',1)
+    	$youth = Youth::with('family')
+               ->with('branch')
+               ->where('id',$id)
+               ->first();
+      $cg = DB::table('cg_youths')
+            ->join('career_guidances','career_guidances.id','=','cg_youths.career_guidances_id')
+            ->join('dsd_office','dsd_office.id','=','career_guidances.dsd')
+            ->where('cg_youths.youth_id',$id)
+            ->get();
+      $soft = DB::table('provide_soft_skills_youths')
+            ->join('provide_soft_skills','provide_soft_skills.id','=','provide_soft_skills_youths.provide_softskill_id')
+            ->join('institutes','institutes.id','=','provide_soft_skills.institute_id')
+            ->join('dsd_office','dsd_office.id','=','provide_soft_skills.dsd')
+            ->where('provide_soft_skills_youths.youth_id',$id)
             ->get();
       $vt = DB::table('youths_courses')
             ->join('courses','courses.id','=','youths_courses.course_id')
@@ -68,8 +75,12 @@ class ProgressController extends Controller
             ->where('youths_courses.youth_id',$id)
             ->where('youths_courses.provided_by_bec',1)
             ->get();
-      $jobs = DB::table('jobs_details')->where('youth_id',$id)->where('provided_by','BEC')->get();
+      $jobs = DB::table('placements_youths')
+              ->join('placements','placements.id','=','placements_youths.placements_id')
+              ->where('placements_youths.youth_id',$id)
+              ->get();
     	return view('Progress.view-progress')->with(['youth'=>$youth,'cg'=>$cg,'soft'=>$soft,'vt'=>$vt,'jobs'=>$jobs]);
+      //dd($jobs);
     }
 
     public function cgList(Request $request){
@@ -77,12 +88,13 @@ class ProgressController extends Controller
           $query = $request->get('query');
           $data = DB::table('career_guidances')
             ->where('date', 'LIKE', "%{$query}%")
+            ->join('dsd_office','dsd_office.id','=','career_guidances.dsd')
             ->get();
           $output = '<ul class="dropdown-menu" id="autocomplete" style="display:block; position:relative">';
           foreach($data as $row)
           {
            $output .= '
-           <li id="'.$row->id.'"><a href="#" >'.$row->date.' at '.$row->venue.' in '.$row->ds_division.' </a></li>
+           <li id="'.$row->id.'"><a href="#" >'.$row->date.' at '.$row->venue.' in '.$row->DSD_Name.' </a></li>
            ';
           }
           $output .= '</ul>';
@@ -100,8 +112,6 @@ class ProgressController extends Controller
               $careerGuidance_id = $request->careerGuidance_id;
               $youth_id = $request->youth_id;
               $branch = DB::table('youths_career_guidances')->insert(['careerGuidance_id' => $careerGuidance_id, 'youth_id' => $youth_id ]);
-
-
 
         }
 

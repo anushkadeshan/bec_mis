@@ -12,7 +12,7 @@ class Youth extends Model
 {
     public $timestamps = true;
     
-    protected $fillable = ['name', 'full_name',	'gender', 'nic'	,'phone','email','birth_date','driving_licence','maritial_status',	'nationality', 'disability','reason','highest_qualification','family_id','added_by','branch_id','user_id'];
+    protected $fillable = ['name', 'full_name',	'gender', 'nic'	,'phone','email','birth_date','driving_licence','maritial_status',	'nationality', 'disability','reason','highest_qualification','family_id','added_by','branch_id'];
 
     public function family(){
     	return $this->belongsTo('App\Family');

@@ -117,7 +117,9 @@
                     @foreach ($vacancies as $vacancy)
                     <tr id='clickable-row' style="cursor: pointer" data-href='{{ URL::to('vacancy/' . $vacancy->id . '/view') }}' class="vacancy{{$vacancy->id}}">
                         <td>{{ $no++ }}</td>
-                        <td><a href="{{ URL::to('vacancy/' . $vacancy->id . '/view') }}">{{ $vacancy->title }}</a></td>
+                        <td><a href="{{ URL::to('vacancy/' . $vacancy->id . '/view') }}">{{ $vacancy->title }}</a>
+                            <br><i class="fas fa-clock fa-xs"><small> {{$vacancy->dedline}}</small>
+                        </td>
                         <td>{{ $vacancy->job_type }}</td>
                         <td>{{ $vacancy->location }}</td>
                         <td>{{ $vacancy->specializaion }}</td>

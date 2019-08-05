@@ -1,5 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Input;
+use Illuminate\Http\Request;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -242,4 +244,26 @@ Route::post('/activity/job-linking/add-awareness', 'AwarenessController@insert')
 Route::get('/activities/job-linking/placements', 'PlacementController@index')->name('job-linking/placements')->middleware('can:add-M&E-reports');
 Route::post('/employerList', 'PlacementController@employerList')->name('employerList');
 Route::post('/activity/job-linking/add-placement', 'PlacementController@insert')->name('job-linking/add-placement')->middleware('can:add-M&E-reports');
+Route::get('/tasks', 'TodoController@index')->name('tasks')->middleware('can:admin');
+Route::post('/add-task', 'TodoController@add')->name('add-task');
+Route::post('/update-task', 'TodoController@update')->name('update-task');
+Route::post('/delete-task', 'TodoController@delete')->name('delete-task');
+
+//m and e reports
+Route::get('/m&e-reports', function () {
+    return view('Activities.Reports.select-report');
+});
+
+
+Route::get('/reports-me/education/regional-meeting', 'RegionalMeetingController@view')->name('reports-me/education/regional-meeting')->middleware('can:view-M&E-reports');
+Route::post('/reports-me/education/regional-meeting/fetch', 'RegionalMeetingController@fetch')->name('reports-me/education/regional-meeting/fetch')->middleware('can:view-M&E-reports');
+Route::get('/reports-me/education/regional-meeting/{id}/view', 'RegionalMeetingController@view_meeting')->name('meeting-view')->middleware('can:view-M&E-reports');
+Route::get('/reports-me/education/mentoring', 'MentoringController@view')->name('reports-me/education/mentoring')->middleware('can:view-M&E-reports');
+Route::post('/reports-me/education/mentoring/fetch', 'MentoringController@fetch')->name('reports-me/education/mentoring/fetch')->middleware('can:view-M&E-reports');
+Route::get('/reports-me/education/mentoring/{id}/view', 'MentoringController@view_meeting')->name('mentoring-view')->middleware('can:view-M&E-reports');
+
+Route::get('/download/mentoring/{file_name}', 'MentoringController@download')->name('mentoring-view')->middleware('can:view-M&E-reports');
+
+Route::get('/download/mentoring/photos/{id}', 'MentoringController@download_photos')->middleware('can:view-M&E-reports');
+
 

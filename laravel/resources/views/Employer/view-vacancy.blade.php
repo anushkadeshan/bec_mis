@@ -22,7 +22,7 @@
         		
         		<div class="col-md-6">
         			<h2 class="card-title">{{$vacancy->title}} - {{$vacancy->location}}</h2> 
-        			<p class="text-muted">at <span class="text-warning">{{$vacancy->employer->name}}</span><br><small><i class="fas fa-clock"></i> {{ $vacancy->created_at }}</small></p>
+        			<p class="text-muted">at <span class="text-success">{{$vacancy->employer->name}}</span><br><small><i class="fas fa-clock"></i> {{ $vacancy->created_at }}</small></p>
 
         		</div>
         		@can('apply-vacancy')
@@ -40,7 +40,7 @@
         <!-- /.card-header -->
         <div class="card-body">  
            <div class="row">
-           		<div class="col-md-3 text-dark-grey">
+           		<div class="col-md-2 text-dark-grey">
            			<div class="nav-item">
            				Job Location
            			</div>
@@ -60,7 +60,7 @@
            				Salary
            			</div>	
            		</div>
-           		<div class="col-md-3 text-muted">
+           		<div class="col-md-4 text-muted">
            			<div class="nav-item">
            				{{ $vacancy->location }}
            			</div>

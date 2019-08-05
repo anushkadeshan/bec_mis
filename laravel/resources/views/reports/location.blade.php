@@ -82,7 +82,7 @@
                         <th>District</th>
                         <th>DS Division</th>
                         <th>DS ID</th>
-                        <th>DS Division</th>
+                        <th>GN Division</th>
                         <th>GN ID</th>
                         <th></th>
                     </tr>

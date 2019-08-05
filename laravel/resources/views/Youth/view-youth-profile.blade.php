@@ -139,16 +139,18 @@
           </div>
           <!-- /.col -->
           <div class="col-md-8">
-            <div class="card card-success card-outline"">
+            <div class="card card-success card-outline">
               <div class="card-header p-2">
                 <ul class="nav nav-pills">    
-                  <li class="nav-item"><a class="nav-link active" href="#tab_1" data-toggle="tab">Intresting Things</a></li>
-                  <li class="nav-item"><a class="nav-link" href="#tab_2" data-toggle="tab">Language Proficiency </a></li>
+                  <li class="nav-item"><a class="nav-link active" href="#tab_1" data-toggle="tab">Family Details </a></li>
+                  <li class="nav-item"><a class="nav-link " href="#tab_2" data-toggle="tab">Intresting Things</a></li>
+                  <li class="nav-item"><a class="nav-link" href="#tab_3" data-toggle="tab">Language Proficiency </a></li>
+                  
                 </ul>
               </div><!-- /.card-header -->
               <div class="card-body">
                 <div class="tab-content">
-                  <div class="tab-pane" id="tab_2">
+                  <div class="tab-pane" id="tab_3">
                     <div class="row"> 
                           <div  class="col-md-3">
                             <ul class="nav flex-column">
@@ -259,14 +261,14 @@
                       </div>
                   </div>
 
-                  <div class="tab-pane active" id="tab_1">
+                  <div class="tab-pane" id="tab_2">
                     <ul class="timeline timeline-inverse">
                       <!-- timeline time label -->
                       <!-- /.timeline-label -->
                       <!-- timeline item -->
                       <li>
                       	<i class="fa fa-hotel bg-primary"></i>
-						<div class="timeline-item">
+						          <div class="timeline-item">
                         
                           <h3 class="timeline-header">Intresting Job Industries</h3>
 
@@ -340,6 +342,18 @@
                         </div>
                       </li>
                   </ul>
+                  </div>
+                  <div class="tab-pane active" id="tab_1">
+                    <ul class="list-group list-group-flush">
+                      <li class="list-group-item"><strong>Head of Household : </strong><span>{{$youth->family->head_of_household}}</span></li>
+                      <li class="list-group-item"><strong>NIC of Head of Household : </strong><span>{{$youth->family->nic_head_of_household}}</span></li>
+
+                      <li class="list-group-item"><strong>Family Type : </strong><span>{{$youth->family->family_type}}</span></li>
+
+                      <li class="list-group-item"><strong>Total Income : </strong><span>{{$youth->family->total_income}}</span></li>
+                      <li class="list-group-item"><strong>Total Family Members : </strong><span>{{$youth->family->total_members}}</span></li>
+                      <li class="list-group-item"><strong>PCI : </strong><span>{{$youth->family->total_income / $youth->family->total_members}}</span></li>
+                    </ul>
                   </div>
                   <!-- /.tab-pane -->
                 </div>

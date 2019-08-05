@@ -84,7 +84,7 @@ class PlacementController extends Controller
               	$number = count($request->youth_id);
                 if($number>0){
                     for($i=0; $i<$number; $i++){
-                        $participants = DB::table('placements_youths')->insert(['youth_id'=>$request->youth_id[$i],'type_of_support'=>$request->type_of_support[$i],'employer'=>$request->employer[$i],'vacancies'=>$request->vacancies[$i],'placements_id'=>$placements_id]);
+                        $participants = DB::table('placements_youths')->insert(['youth_id'=>$request->youth_id[$i],'type_of_support'=>$request->type_of_support[$i],'employer'=>$request->employer[$i],'vacancies'=>$request->vacancies[$i],'salary'=>$request->salary[$i],'placements_id'=>$placements_id]);
                     }
 
                 }

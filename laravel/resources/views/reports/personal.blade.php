@@ -141,6 +141,7 @@
                         <th>Edu. Qualificaton</th>
                         <th>Disability</th>
                         <th>Branch</th>
+                        <th>NIC</th>
                         <th></th>
                     </tr>
                 </thead> 
@@ -154,6 +155,7 @@
                 		<td>{{$youth->highest_qualification}}</td>
                     <td>{{$youth->disability}}</td>
                     <td>{{$youth->branch_id}}</td>
+                    <td>{{$youth->nic}}</td>
                 		<td><a href="{{ URL::to('youth/' . $youth->id . '/view') }}">
                                     <button type="button" id="view-youth" data-id="{{$youth->id}}" class="btn btn-block btn-warning btn-flat btn-sm" ><i class="fas fa-eye"></i> </button>
                                 </a></td>

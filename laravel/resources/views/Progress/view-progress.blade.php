@@ -6,7 +6,8 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-md-6">
-            <h3>Youth Progress</h3>
+            <h3>Youth Progress </h3>
+            <p class="text-primary float-left">{{$youth->name }} &nbsp; </p> &nbsp;<p class="text-warning float-left">({{ $youth->branch->name}})</p>
           </div>
           <div class="col-md-6">
             <ol class="breadcrumb float-sm-right">
@@ -24,46 +25,41 @@
     		<div class="row">
     		
 	          <div class="col-md-6">
-	            <div class="card card-info card-outline">
+	            <div class="card card-info card-outline @if(!$youth->cg) collapsed-card @endif">
 	              <div class="card-header">
-	              	<div class="row">
-	              		<div class="col-11">
-	              			<h3 class="card-title">Career Guidance </h3>
-	              		</div>
-	              		<div class="col-1">
-	              			@if(!is_null($cg))
-	              			<h5>
-	              			<span style="cursor: pointer" data-toggle="tooltip" data-placement="top" title="Youth has participated for {{$cg->count()}} CG program/s" class="badge badge-success">{{$cg->count()}}</span>
-	              			</h5>
-	              			@endif
-	              		</div>
-	              		
-	              	</div>
-	                
-
+	              	<h3 class="card-title">Career Guidance </h3>
+	              		<div class="card-tools">
+                  			<button type="button" class="btn btn-tool" data-widget="collapse"><i class="fa fa-plus"></i>
+                  			</button>
+               			</div>
 	              </div>
 	              <!-- /.card-header -->
 	              <div class="card-body">
-	               		<form id="cg">
-	               		
-		                	<div class="form-group">
-		                		<label for="cg_fid">Select CG </label>
-										      
-		                        <div class="input-group">
-		                        <input type="text" id="cg_id"class="form-control" placeholder="Search Date">
-		                        <div style="cursor: pointer" onclick="window.open('{{Route('activities/cg/view')}}', '_blank');" class="input-group-prepend">
-		                          <span data-toggle="tooltip" data-placement="top" title="Add CG program to list" class="input-group-text"><i style="color: blue;" class="fa fa-plus"></i></span>
-		                        </div>  
-		                      </div>
-                        <div id="cgList"></div>
-                          <input type="hidden" id="careerGuidance_id" name="careerGuidance_id" value="">
-                          <input type="hidden" name="youth_id" value="{{request()->route('id')}}">
-		                </div>
-		                {{ csrf_field() }}
-		                
-		                </form>
-		                <button type="button" id="cg-add" class="btn btn-primary btn-flat">Add</button>
-
+	              	@if(!is_null($cg))
+	              	<div class="table-responsive">
+                    <table class="table">
+                    	@foreach($cg as $cg1)
+                      <tr>
+                        <th style="width:35%">District:</th>
+                        <td>{{$cg1->district}}</td>
+                      </tr>
+                      <tr>
+                        <th>DS Division:</th>
+                        <td>{{$cg1->DSD_Name}}</td>
+                      </tr>
+                      <tr>
+                        <th>Date of Program:</th>
+                        <td>{{$cg1->date}}</td>
+                      </tr>
+                      <tr>
+                        <th>Venue:</th>
+                        <td>{{$cg1->venue}}</td>
+                      </tr>
+                     
+                      @endforeach
+                    </table>
+                  </div>
+                  @endif
 	              </div>
 	              <!-- /.card-body -->
 	              @if(!$youth->cg)
@@ -77,62 +73,48 @@
 	          
 	          <!-- /.col -->
 	          <div class="col-md-6">
-	            <div class="card card-success card-outline">
+	            <div class="card card-success card-outline @if(!$youth->soft_skills) collapsed-card @endif">
 	              <div class="card-header">
-	              	<div class="row">
-	              		<div class="col-11">
-	              			<h3 class="card-title">Soft Skills <small class="text-muted">(Berendina Provided)</small></h3>
-	              		</div>
-	              		<div class="col-1">
-	              			@if(!is_null($soft))
-	              			<h5>
-	              			<span style="cursor: pointer" data-toggle="tooltip" data-placement="top" title="Youth has involved with {{$soft->count()}} Soft Skills course/s provided by BEC." class="badge badge-success">{{$soft->count()}}</span>
-	              			</h5>
-	              			@endif
-	              		</div>
-	              		
+	              	<h3 class="card-title">Soft Skills <small class="text-muted">(Berendina Provided)</small></h3>
+	              	<div class="card-tools">
+                  		<button type="button" class="btn btn-tool" data-widget="collapse"><i class="fa fa-plus"></i>
+                  		</button>
+               		</div>	
 	              	</div>
-	                
-
-	              </div>
 	              <!-- /.card-header -->
 	              <div class="card-body">
-	              	<form id="soft">
-	              	
-	                <div class="form-group">
-                        <label for="course_name">Course </label>
-                            <div class="input-group">
-                                <input class="form-control" type="text" name="course_name" id="course_name" placeholder="Search Course">
-                                <div style="cursor: pointer" onclick="window.open('{{Route('courses/view')}}', '_blank');" class="input-group-prepend">
-                                	<span data-toggle="tooltip" data-placement="top" title="Add a course to list" class="input-group-text"><i style="color: blue;" class="fa fa-plus"></i></span>
-                                </div>  
-                            </div>
-              			<div id="courseList"></div>
-                     	<input class="form-control" type="hidden" name="course_id" id="course_id">
-                    </div>
-                     	<div class="row">
-
-	                     	<div class="form-group col-md-6">
-	                     		<label>Course Status</label>
-	                     		
-	                     		<select name="status" class="form-control">
-	                     			<option value="">Select Option</option>
-	                     			<option>Following</option>
-	                     			<option>Followed</option>
-	                     			<option>OJT</option>
-	                     			<option>Drop Out</option>
-								</select>
-	                     	</div>
-	                     	<div class="form-group col-md-6">
-	                     		<label>Completed date <small class="text-muted">(Approximate)</small></label>
-	                     		<input type="date" name="completed_at" class="form-control">
-	                     	</div>
-                     	</div>
-                          <input type="hidden" name="youth_id" value="{{request()->route('id')}}">
-
-                    {{csrf_field()}}
-                    <button type="button" class="btn btn-primary btn-flat" id="add-soft">Add</button>
-                    </form>
+	              	@if(!is_null($soft))
+	              	<div class="table-responsive">
+                    <table class="table">
+                    	@foreach($soft as $soft_skills)
+                      <tr>
+                        <th style="width:35%">District:</th>
+                        <td>{{$soft_skills->district}}</td>
+                      </tr>
+                      <tr>
+                        <th>DS Division:</th>
+                        <td>{{$soft_skills->DSD_Name}}</td>
+                      </tr>
+                      <tr>
+                        <th>Institute:</th>
+                        <td>{{$soft_skills->name}}</td>
+                      </tr>
+                      <tr>
+                        <th>Training Stage:</th>
+                        <td>{{$soft_skills->training_stage}}</td>
+                      </tr>
+                      <tr>
+                        <th>Start Date:</th>
+                        <td>{{$soft_skills->start_date}}</td>
+                      </tr>
+                      <tr>
+                        <th>Completion Date:</th>
+                        <td>{{$soft_skills->end_date}}</td>
+                      </tr>                   
+                      @endforeach
+                    </table>
+                  </div>
+                  @endif
 	              </div>
 	              <!-- /.card-body -->
 	              @if(!$youth->soft_skills)
@@ -146,59 +128,17 @@
 	          <div class="col-md-6">
 	            <div class="card card-warning card-outline">
 	              <div class="card-header">
-	              	<div class="row">
-	              		<div class="col-11">
-	                		<h3 class="card-title">Vocational\Professional Training <small class="text-muted">(Berendina Provided)</small></h3>
-	              			
-	              		</div>
-	              		<div class="col-1">
-	              			@if(!is_null($vt))
-	              			<h5>
-	              			<span style="cursor: pointer" data-toggle="tooltip" data-placement="top" title="Youth has involved with {{$vt->count()}} VT/Prof. course/s provided by BEC." class="badge badge-success">{{$vt->count()}}</span>
-	              			</h5>
-	              			@endif
-	              		</div>
-	              		
-	              	</div>
-
+	              	
+	                <h3 class="card-title">Vocational\Professional Training <small class="text-muted">(Berendina Provided)</small></h3>
+	                <div class="card-tools">
+                  		<button type="button" class="btn btn-tool" data-widget="collapse"><i class="fa fa-plus"></i>
+                  		</button>
+               		</div>
 	                <!-- /.card-tools -->
 	              </div>
 	              <!-- /.card-header -->
 	              <div class="card-body">
-	                <form id="vt">
 	              	
-	                <div class="form-group">
-                        <label for="course_name">Course </label>
-                            <div class="input-group">
-                                <input class="form-control" type="text" name="course_name" id="course_name1" placeholder="Search Course">
-                                <div style="cursor: pointer" onclick="window.open('{{Route('courses/view')}}', '_blank');" class="input-group-prepend">
-                                	<span data-toggle="tooltip" data-placement="top" title="Add a course to list" class="input-group-text"><i style="color: blue;" class="fa fa-plus"></i></span>
-                                </div>  
-                            </div>
-              			<div id="courseList1"></div>
-                     	<input class="form-control" type="hidden" name="course_id" id="course_id1">
-                    </div>
-                     	<div class="row">
-
-	                     	<div class="form-group col-md-6">
-	                     		<label>Course Status</label>
-	                     		
-	                     		<select name="status" class="form-control">
-	                     			<option value="">Select Option</option>
-	                     			<option>Following</option>
-	                     			<option>Followed</option>
-								</select>
-	                     	</div>
-	                     	<div class="form-group col-md-6">
-	                     		<label>Completed date <small class="text-muted">(Approximate)</small></label>
-	                     		<input type="date" name="completed_at" class="form-control">
-	                     	</div>
-                     	</div>
-                          <input type="hidden" id="youth_id1" name="youth_id" value="{{request()->route('id')}}">
-                     	
-                    {{csrf_field()}}
-                    <button type="button" class="btn btn-primary btn-flat" id="add-vt">Add</button>
-                    </form>
 	              </div>
 	              <!-- /.card-body -->
 	              @if(!$youth->vt&&!$youth->prof)
@@ -210,37 +150,49 @@
 	          </div>
 	          <!-- /.col -->
 	          <div class="col-md-6">
-	            <div class="card card-danger card-outline">
+	            <div class="card card-danger card-outline @if(!$youth->jobs) collapsed-card @endif">
 	              <div class="card-header">
-	              	<div class="row">
-	              		<div class="col-11">
-	                		<h3 class="card-title">Jobs <small class="text-muted">(Berendina Provided)</small></h3>
-	              		</div>
-	              		<div class="col-1">
-	              			@if(!is_null($jobs))
-	              			<h5>
-	              			<span style="cursor: pointer" data-toggle="tooltip" data-placement="top" title="Youth has been directed to {{$jobs->count()}} Job/s." class="badge badge-success">{{$jobs->count()}}</span>
-	              			</h5>
-	              			@endif
-	              		</div>
-	              		
-	              	</div>
+	              
+	                <h3 class="card-title">Jobs <small class="text-muted">(Berendina Provided)</small></h3>
+	              	<div class="card-tools">
+                  		<button type="button" class="btn btn-tool" data-widget="collapse"><i class="fa fa-plus"></i>
+                  		</button>
+               		</div>
 	              </div>
 	              <div class="card-body">
-	                <form id="jobs">
-	                	<div class="form-group">
-	                		<label>Job Title</label>
-	                		<input type="text" name="title" class="form-control">
-	                	</div>
-	                	<div class="form-group">
-                        <label for="course_name">Employer </label>
-							<input class="form-control" type="text" name="employer_name" id="employer_name">
-                    	</div>
-                    	<input type="hidden" name="provided_by" value="BEC">
-                    	{{csrf_field()}}
-                    	<input type="hidden" id="youth_id1" name="youth_id" value="{{request()->route('id')}}">
-                    	<button type="button" id="add-job" class="btn btn-primary btn-flat">Add</button>
-	                </form>
+	               @if(!is_null($jobs))
+	              	<div class="table-responsive">
+                    <table class="table">
+                    	@foreach($jobs as $job)
+                      <tr>
+                        <th style="width:35%">District:</th>
+                        <td>{{$job->district}}</td>
+                      </tr>
+
+                      <tr>
+                        <th>Job Interview Date:</th>
+                        <td>{{$job->program_date}}</td>
+                      </tr>
+                      <tr>
+                        <th>Interview Venue:</th>
+                        <td>{{$job->venue}}</td>
+                      </tr>
+                      <tr>
+                        <th>Employer:</th>
+                        <td>{{$job->employer}}</td>
+                      </tr>
+                      <tr>
+                        <th>Vacancy Placed:</th>
+                        <td>{{$job->vacancies}}</td>
+                      </tr> 
+                      <tr>
+                        <th>Salary:</th>
+                        <td>{{$job->salary}}</td>
+                      </tr>                  
+                      @endforeach
+                    </table>
+                  </div>
+                  @endif
 	              </div>
 	              <!-- /.card-body -->
 

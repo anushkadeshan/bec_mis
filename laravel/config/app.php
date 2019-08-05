@@ -148,6 +148,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Kim\Activity\ActivityServiceProvider::class,
         Laravel\Passport\PassportServiceProvider::class,
+        Chumper\Zipper\ZipperServiceProvider::class
 
         /*
          * Package Service Providers...
@@ -162,6 +163,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         BackupManager\Laravel\Laravel55ServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
 
     ],
 
@@ -212,6 +214,8 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Activity' => Kim\Activity\ActivityFacade::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
+        'Zipper' => Chumper\Zipper\Zipper::class
 
     ],
 

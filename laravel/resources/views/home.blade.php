@@ -719,7 +719,40 @@
 			        	</div>
 		        	</div>
 		        </div>
+             <div class="row">
+                <div class="col-md-12">
+                  <div class="card">
+                    <div class="card-header">
+                      <h3 class="card-title">Tasks</h3>
+                      <div class="card-tools">
+                        <span class="badge badge-success"></span>
+                      </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body p-0">
+                        <table class="table table-responsive">
+                        <tr>
+                          <th>Task</th>
+                          <th>Due Date</th>
+                          <th>Task Created at</th>
+                        </tr>
+                        @foreach($tasks as $task)
+                        <tr>
+                          <td>{{$task->task}}</td>
+                          <?php $current_date =  date('Y-m-d'); ?>
+                          
+                          <td style="color: @if($current_date>$task->due_date) red @else green @endif">{{$task->due_date}}</td>
 
+                          <td >{{date('Y-m-d',strtotime($task->created_at))}}</td>
+                        </tr>  
+                        @endforeach
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                  </div>
+                </div>
+          
+        </div>
 		        <div class="row">
 
         	<div class="col-12 col-sm-6 col-md-6">
@@ -777,6 +810,7 @@
             </div>
         	</div>
         </div>
+       
         </div>
     </section>
 @endcan

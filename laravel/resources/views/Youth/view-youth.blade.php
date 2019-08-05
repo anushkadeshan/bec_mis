@@ -64,7 +64,10 @@
                         @can('add-youth')
         				<th>NIC</th>
         				<th>Current Status</th>
-        				<th>Progress</th>
+                        @can('admin')
+                        <th>Branch</th>
+                        @endcan
+                        <th>Progress</th>
         				<th>Action</th>
                         @endcan
                         @can('search-youth')
@@ -77,46 +80,49 @@
         		<tbody>
         			<?php  $no=1; ?> 
         			@foreach($youths as $youth)
-        			<tr class="youth{{$youth->id}}">
+        			<tr class="youth{{$youth->youth_id}}">
         				<td>{{$no++}}</td>
-        				<td>{{ $youth->name }}</td>
+        				<td>{{ $youth->youth_name }}</td>
         				<td>{{ $youth->gender }}</td>
                         @can('add-youth')
         				<td>{{ $youth->nic }}</td>
         				<td>{{ $youth->current_status }}</td>
+                        @can('admin')
+                        <td>{{ $youth->ext }}</td>
+                        @endcan
         				<td width="180">
         					<form id="cg" style="margin-bottom: 5px;">
         						{{csrf_field()}}
 
-        						<input type="checkbox" name="cg" class="form-control cg" @if ($youth->cg) checked @endif  data-id="{{$youth->id}}">
+        						<input type="checkbox" name="cg" class="form-control cg" @if ($youth->cg) checked @endif  data-id="{{$youth->youth_id}}">
 								<label> &nbsp; Career Guidance</label>	
         					</form>
         					
         					<form id="soft" style="margin-bottom: 5px;">
         						{{csrf_field()}}
 
-        						<input type="checkbox" name="soft_skills" class="soft" @if ($youth->soft_skills) checked @endif data-id="{{$youth->id}}">
+        						<input type="checkbox" name="soft_skills" class="soft" @if ($youth->soft_skills) checked @endif data-id="{{$youth->youth_id}}">
 								<label>&nbsp; Soft Skill</label>
 							</form>
 
 							<form id="vt" name="vt"  style="margin-bottom: 5px;">
         						{{csrf_field()}}
 
-								<input type="checkbox" class="vt" data-id="{{$youth->id}}" @if ($youth->vt) checked @endif>
+								<input type="checkbox" class="vt" data-id="{{$youth->youth_id}}" @if ($youth->vt) checked @endif>
 								<label>&nbsp; VT Course</label>
 							</form>
 
 							<form id="prof" name="prof"   style="margin-bottom: 5px;">
         						{{csrf_field()}}
 
-								<input type="checkbox" class="prof" data-id="{{$youth->id}}" @if ($youth->prof) checked @endif>
+								<input type="checkbox" class="prof" data-id="{{$youth->youth_id}}" @if ($youth->prof) checked @endif>
 								<label>&nbsp; Prof. Course</label>
 							</form>
 
 							<form id="job" name="jobs" style="margin-bottom: 5px;">
         						{{csrf_field()}}
 
-								<input type="checkbox" class="jobs" data-id="{{$youth->id}}" @if ($youth->jobs) checked @endif>
+								<input type="checkbox" class="jobs" data-id="{{$youth->youth_id}}" @if ($youth->jobs) checked @endif>
 								<label>&nbsp; Job</label>
 							</form>
         				</td>
@@ -124,25 +130,25 @@
         					@can('view-youth')
                         	<div class="btn-group">
                                 @can('admin')
-                        		<a href="{{ URL::to('youth/' . $youth->id . '/view-progress') }}">
-                                    <button type="button" id="view-progress" data-id="{{$youth->id}}" class="btn btn-block btn-primary btn-flat btn-sm" ><i class="fas fa-tasks"></i> </button>
+                        		<a href="{{ URL::to('youth/' . $youth->youth_id . '/view-progress') }}" target="_blank">
+                                    <button type="button" id="view-progress" data-id="{{$youth->youth_id}}" class="btn btn-block btn-primary btn-flat btn-sm" ><i class="fas fa-tasks"></i> </button>
                                 </a>
                                 @endcan
-                                <a href="{{ URL::to('youth/' . $youth->id . '/view') }}">
-                                    <button type="button" id="view-youth" data-id="{{$youth->id}}" class="btn btn-block btn-warning btn-flat btn-sm" ><i class="fas fa-eye"></i> </button>
+                                <a href="{{ URL::to('youth/' . $youth->youth_id . '/view') }}" target="_blank">
+                                    <button type="button" id="view-youth" data-id="{{$youth->youth_id}}" class="btn btn-block btn-warning btn-flat btn-sm" ><i class="fas fa-eye"></i> </button>
                                 </a>
                             
                             @endcan
                             @can('edit-youth')
-                            <a href="{{ URL::to('youth/' . $youth->id . '/edit') }}" title="">
-                                    <button type="submit" id="edit-youth" data-id="{{$youth->id}}" class="btn btn-block btn-success btn-flat btn-sm"><i class="fas fa-edit"></i></button>
+                            <a href="{{ URL::to('youth/' . $youth->youth_id . '/edit') }}" target="_blank" title="">
+                                    <button type="submit" id="edit-youth" data-id="{{$youth->youth_id}}" class="btn btn-block btn-success btn-flat btn-sm"><i class="fas fa-edit"></i></button>
                             </a>        
                         	@endcan
                         	@can('delete-youth')
                             
                                 <form id="userDelete" method="post" >
                                 {{ csrf_field() }}
-                                    <button data-toggle="confirmation" type="button" id="delete-youth" data-id="{{$youth->id}}" class="btn btn-block btn-danger btn-flat btn-sm" ><i class="fas fa-trash-alt"></i> </button>
+                                    <button data-toggle="confirmation" type="button" id="delete-youth" data-id="{{$youth->youth_id}}" class="btn btn-block btn-danger btn-flat btn-sm" ><i class="fas fa-trash-alt"></i> </button>
                                 </form>
                             </div>
                             @endcan
@@ -152,7 +158,7 @@
                         <td>{{$youth->family->district}}</td>
                         <td>{{$youth->highest_qualification}}</td>
                         <td>
-                            <a href="{{ URL::to('youth/' . $youth->id . '/view') }}">
+                            <a href="{{ URL::to('youth/' . $youth->youth_id . '/view') }}">
                                     <button type="button" id="view-youth" data-id="{{$youth->id}}" class="btn btn-block btn-warning btn-flat btn-sm" ><i class="fas fa-eye"></i> Profile </button>
                                 </a>
                         </td>

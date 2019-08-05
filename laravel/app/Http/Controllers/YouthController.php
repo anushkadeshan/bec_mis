@@ -30,11 +30,18 @@ class YouthController extends Controller
       $branch = auth()->user()->branch;
 
       if(is_null($branch)){
-        $youths = Youth::with('family')->get();
+        $youths = Youth::with('family')
+                  ->join('branches','branches.id','=','youths.branch_id')
+                  ->select('youths.*','youths.name as youth_name','branches.*','youths.id as youth_id')
+                  ->get();
         
       }
       else{
-        $youths = Youth::with('family')->where('branch_id',$branch)->get(); 
+        $youths = Youth::with('family')
+                  ->where('branch_id',$branch)
+                  ->join('branches','branches.id','=','youths.branch_id')
+                  ->select('youths.*','youths.name as youth_name','branches.*','youths.id as youth_id')
+                  ->get(); 
       }
       //dd($youths->toArray());
       return view('Youth.view-youth')->with(['youths'=> $youths,'districts'=> $districts]);

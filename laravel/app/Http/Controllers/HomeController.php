@@ -243,7 +243,11 @@ class HomeController extends Controller
                                  ->where('status', null)->count();
                     //bec targets             
                    $targets =  DB::table('table_targets')->where('branch_id',$branch_id)->first();
-                    return view('home')->with(['employers_count'=>$employers_count,'vacancies_count'=>$vacancies_count,'institutes_count'=>$institutes_count,'courses_count'=>$courses_count,'count_cg'=>$count_cg,'count_soft_skills'=> $count_soft_skills,'count_vt'=>$count_vt,'count_prof'=>$count_prof,'count_jobs'=>$count_jobs,'count_youth'=>$count_youth,'targets'=>$targets,'applications'=>$applications,'new_application_count'=> $new_application_count,'followers'=>$followers,'new_follower_count'=>$new_follower_count]);
+
+                   //tasks
+
+                   $tasks = DB::table('todos')->get();
+                    return view('home')->with(['employers_count'=>$employers_count,'vacancies_count'=>$vacancies_count,'institutes_count'=>$institutes_count,'courses_count'=>$courses_count,'count_cg'=>$count_cg,'count_soft_skills'=> $count_soft_skills,'count_vt'=>$count_vt,'count_prof'=>$count_prof,'count_jobs'=>$count_jobs,'count_youth'=>$count_youth,'targets'=>$targets,'applications'=>$applications,'new_application_count'=> $new_application_count,'followers'=>$followers,'new_follower_count'=>$new_follower_count,'tasks'=>$tasks]);
                 break;
 
                 case 'employer':

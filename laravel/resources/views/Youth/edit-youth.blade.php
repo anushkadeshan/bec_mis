@@ -615,7 +615,6 @@
                                         $industries = array('Agriculture & Food Processing','Automobiles','Banking & Financial Services','BPO or KPO ','Civil & Construction','Consumer Goods & Durables','Consulting','Education','Engineering','Ecommerce & Internet','Events & Entertainment','Export & Import','Government & Public Sector','Healthcare','Hotel, Travel & Leisure','Insurance','IT & Telecom','Logistics & Transportation','Manufacturing','Manpower & Security','News & Media','NGO & Non profit','Pharmaceutical','Real Estate','Wholesale & Retail','Others');
                                       ?>
                                       <select id="industry" name="industry[]" class="form-control" multiple>
-                                        <option value="">Select Option  </option>
                                         @foreach($industries as $industry)
                                           <option @if(!is_null($intresting_jobs)) @if(in_array($industry,$intresting_jobs->industry)) selected @endif @endif>{{$industry}}</option>
                                           

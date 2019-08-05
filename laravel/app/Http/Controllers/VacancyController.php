@@ -53,11 +53,11 @@ class VacancyController extends Controller
         else{
            
                if (Gate::allows('apply-vacancy')) {
-                    $vacancies = Vacancy::with('employer')->where('dedline', '>', Carbon::now())->get();
+                    $vacancies = Vacancy::with('employer')->where('dedline', '>', Carbon::now())->latest()->get();
                } 
 
                else{
-                  $vacancies = Vacancy::with('employer')->get();
+                  $vacancies = Vacancy::with('employer')->latest()->get();
                }
                 
                 //dd($vacancy->toArray());

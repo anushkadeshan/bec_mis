@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
-
+use Zipper;
+use Carbon\Carbon;
 class MentoringController extends Controller
 {
     public function __construct()
@@ -122,5 +122,139 @@ class MentoringController extends Controller
                 return response()->json(['error' => $validator->errors()->all()]);
             }
     
+    }
+
+    public function view(){
+        $mentorings = DB::table('mentoring')
+                      //->leftjoin('mentoring_gvt_officials','mentoring_gvt_officials.mentoring_id','=','mentoring.id')
+                      ->join('branches','branches.id','=','mentoring.branch_id')
+                      ->get();
+        //dd($mentorings);
+
+        $participants2018 = DB::table('mentoring')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2018' )
+                        ->first();
+                        //->groupBy(function ($val) {
+                                // Carbon::parse($val->meeting_date)->format('Y');
+                        //});
+                        //->groupBy(DB::raw("year(meeting_date)"))
+                        
+           $participants2019 = DB::table('mentoring')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2019' )
+                        ->first();            
+            $participants2020 = DB::table('mentoring')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2020' )
+                        ->first();   
+            $participants2021 = DB::table('mentoring')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2021' )
+                        ->first();           
+        //dd($participants2018);
+        $branches = DB::table('branches')->get();
+        return view('Activities.Reports.Education.mentoring')->with(['mentorings'=>$mentorings,'branches'=>$branches,'participants2018'=>$participants2018,'participants2019'=>$participants2019,'participants2020'=>$participants2020,'participants2021'=>$participants2021]);
+    }
+
+    public function fetch(Request $request){
+        if($request->ajax())
+        {
+            if($request->dateStart != '' && $request->dateEnd != '')
+            {
+                if($request->branch !=''){
+                    $data = DB::table('mentoring') 
+                        ->join('branches','branches.id','=','mentoring.branch_id')
+                        ->join('resourse_people','resourse_people.id', '=' ,'mentoring.resourse_person_id')
+                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->where('branch_id',$request->branch)
+                        ->select('mentoring.*','branches.*','mentoring.id as m_id','resourse_people.*','resourse_people.name as r_name')
+                        ->orderBy('meeting_date', 'desc')
+                        ->get();
+                }
+                else{
+                    $data = DB::table('mentoring') 
+                        ->join('branches','branches.id','=','mentoring.branch_id')
+                        ->join('resourse_people','resourse_people.id', '=', 'mentoring.resourse_person_id')
+                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->select('mentoring.*','branches.*','mentoring.id as m_id','resourse_people.*','resourse_people.name as r_name')
+                        ->orderBy('meeting_date', 'desc')
+                        ->get();
+                }
+                
+            }
+        else
+            {
+                $data = DB::table('mentoring') 
+                        ->join('branches','branches.id','=','mentoring.branch_id')
+                        ->join('resourse_people','resourse_people.id', '=' ,'mentoring.resourse_person_id')
+                        ->select('mentoring.*','branches.*','mentoring.id as m_id','resourse_people.*','resourse_people.name as r_name')
+                        ->orderBy('meeting_date', 'desc')
+                        ->get();
+            }
+                return response()->json($data);
+        }
+    
+        
+
+    }
+
+    public function view_meeting($id){
+        $meeting = DB::table('mentoring')
+                    ->join('resourse_people','resourse_people.id', '=' ,'mentoring.resourse_person_id')
+                   ->join('branches','branches.id','=','mentoring.branch_id')
+                   ->select('mentoring.*','branches.*','mentoring.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')
+                   ->where('mentoring.id',$id)
+                   ->first();
+        $participants = DB::table('mentoring_gvt_officials')
+                        ->where('mentoring_id',$id)
+                        ->get();
+
+        $photos = DB::table('mentoring_images')
+                        ->where('mentoring_id',$id)
+                        ->get();
+       // dd($meeting);
+        //dd($participants);
+
+        return response()->json(array(
+            'participants' => $participants,
+            'meeting' => $meeting,
+            'photos' => $photos,
+        ));
+        
+
+    }
+
+    public function download($file_name){
+        //$file_name = $request->attendance;
+        $file = storage_path('activities/files/mentoring/attendance/'.$file_name.'');
+        //echo "<script>console.log( 'Debug Objects: " . $file_name . "' );</script>";
+
+        $headers = [
+                  'Content-Type' => 'application/pdf',
+               ];
+      // return Storage::download(filePath, Appended Text);
+        return response()->file($file,$headers);
+    }
+
+    public function download_photos($id){
+        $photos = DB::table('mentoring_images')
+            ->where('mentoring_id',$id)
+            ->select('mentoring_images.image')
+            ->get();
+
+        foreach($photos as $photo){
+            //echo $photo->image;
+            $headers = ["Content-Type"=>"application/zip"];
+            //$paths = storage_path('activities/files/mentoring/images/'.$photo->image.'');
+            $zipper = Zipper::make(storage_path('activities/files/mentoring/images/'.$id.'.zip'))->add(storage_path('activities/files/mentoring/images/'.$photo->image.''))->close();
+            return response()->download(storage_path('activities/files/mentoring/images/'.$id.'.zip',$headers)); 
+
+        }
+
+        //$photos_array = $photos->toArray();
+        //dd($photos);
+       // Zipper::make('mydir/photos.zip')->add($paths);
+       // return response()->download(('mydir/photos.zip')); 
     }
 }

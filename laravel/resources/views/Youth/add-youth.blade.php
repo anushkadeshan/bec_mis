@@ -561,7 +561,7 @@
                                     <div class="form-group">
                                       <label for="industry">Intrsting Industry</label>
                                       <select id="industry" name="industry[]" class="form-control" multiple>
-                                        <option value="">Select Option  </option>
+                                        
                                         <option>Agriculture &amp; Food Processing</option>
                                         <option>Automobiles</option>
                                         <option>Banking &amp; Financial Services</option>
@@ -622,7 +622,7 @@
                                     <div class="form-group">
                                       <label for="intresting_courses">Intresting Courses (if You like to follow)</label>
                                       <select name="intresting_courses[]" id="intresting_courses"  class="form-control" multiple>
-                                        <option value="">Select Option</option>
+                                        
                                         @foreach($course_categories as $cc)
                                            <option value="{{$cc->id}}">{{$cc->course_category}}</option>
                                         @endforeach
@@ -774,7 +774,7 @@
                                     <div class="form-group">
                                       <label for="industry">2. Intrsting Industry</label>
                                       <select id="industry" name="industry[]" class="form-control" multiple>
-                                        <option value="">Select Option  </option>
+                                        
                                         <option>Agriculture &amp; Food Processing</option>
                                         <option>Automobiles</option>
                                         <option>Banking &amp; Financial Services</option>
@@ -956,7 +956,7 @@
                                     <div class="form-group">
                                       <label for="industry">Intrsting Industry</label>
                                       <select id="industry" name="industry[]" class="form-control" multiple>
-                                        <option value="">Select Option  </option>
+                                        
                                         <option>Agriculture &amp; Food Processing</option>
                                         <option>Automobiles</option>
                                         <option>Banking &amp; Financial Services</option>
@@ -1017,7 +1017,7 @@
                                     <div class="form-group">
                                       <label for="intresting_courses">Intresting Courses (if You like to follow)</label>
                                       <select name="intresting_courses[]" id="intresting_courses"  class="form-control" multiple>
-                                        <option value="">Select Option</option>
+                                        
                                         @foreach($course_categories as $cc)
                                            <option value="{{$cc->id}}">{{$cc->course_category}}</option>
                                         @endforeach

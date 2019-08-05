@@ -21,15 +21,13 @@
         </div>
         <!-- /.card-header -->
         <div class="card-body">  
-            <table id="example1" class="table row-border table-hover">
+            <table id="example1" class="table row-border table-hover table-responsive">
                 <thead>
                     <tr>
                         <th>#</th>
                         <th>Name</th>
-                        <th>Phone</th>
-                        <th>Email</th>
-                        <th>Address</th>
-                        <th>Company Type</th>
+                        <th>Contacts</th>
+                        <th width ="50">Address</th>
                         <th>Industry</th>
                         @can('update-Employer')
                         <th>Action</th>
@@ -42,10 +40,10 @@
                     <tr class="employer{{$employer->id}}">
                         <td>{{ $no++ }}</td>
                         <td>{{ $employer->name }}</td>
-                        <td>{{ $employer->phone }}</td>
-                        <td>{{ $employer->email }}</td>
+                        <td>{{ $employer->phone }}
+                        <br> <small><i class="fas fa-envelope-square"></i> </small> <small> {{ $employer->email }}</small>    
+                        </td>
                         <td>{{ $employer->address }}</td>
-                        <td>{{ $employer->company_type }}</td>
                         <td>{{ $employer->industry }}</td>
                         @can('update-Employer')
                         <td>
