@@ -7,13 +7,13 @@
         <div class="row mb-2">
           <div class="col-md-6">
                   		
-            <h3>1.1 Attending BMIC regional meeting <small class="badge badge-danger"> {{count($meetings)}}</small></h3>
+            <h3>1.1.1 Attending BMIC regional meeting <small class="badge badge-danger"> {{count($meetings)}}</small></h3>
           </div>
           <div class="col-md-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{Route('home')}}">Dashboard</a></li>
               <li class="breadcrumb-item"><a href="{{url('m&e-reports')}}">Reprots</a></li>
-              <li class="breadcrumb-item active">1.1</li>
+              <li class="breadcrumb-item active">1.1.1</li>
             </ol>
           </div>
         </div>
@@ -243,7 +243,8 @@ $(document).ready(function() {
   }
   else
   {
-   alert('Both Date is required');
+    toastr.error('Error !', 'Both Date is required');
+   
   }
  });
 

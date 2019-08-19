@@ -959,6 +959,7 @@
           ['Mullaitivu', {{$count_MUL_youth}}, {{$count_MUL_cg}}, {{$count_MUL_soft_skills}}, {{$count_MUL_vt}},  {{$count_MUL_prof}}, {{$count_MUL_jobs}}],
         ]);
 
+        
         var options = {
           chart: {
            

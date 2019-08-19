@@ -33,6 +33,7 @@ class YouthController extends Controller
         $youths = Youth::with('family')
                   ->join('branches','branches.id','=','youths.branch_id')
                   ->select('youths.*','youths.name as youth_name','branches.*','youths.id as youth_id')
+                  ->latest()
                   ->get();
         
       }
@@ -166,7 +167,6 @@ class YouthController extends Controller
                   'need_help' => $request->need_help,
                   'type_of_help' => $request->type_of_help,
 
-
               );
               $data1 = array(
                 'industry' => $industry,
@@ -237,7 +237,6 @@ class YouthController extends Controller
                   'need_help' => $request->need_help,
                   'type_of_help' => $request->type_of_help,
                   'youth_id' => $request->youth_id,
-
 
               );
                 $intresting_business = DB::table('intresting_business')->insert($data3);

@@ -7,13 +7,13 @@
         <div class="row mb-2">
           <div class="col-md-6">
                   		
-            <h3>1.2 Mentoring program <small class="badge badge-success"> {{count($mentorings)}}</small></h3>
+            <h3>1.2.2 Mentoring program <small class="badge badge-success"> {{count($mentorings)}}</small></h3>
           </div>
           <div class="col-md-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{Route('home')}}">Dashboard</a></li>
               <li class="breadcrumb-item"><a href="{{url('m&e-reports')}}">Reprots</a></li>
-              <li class="breadcrumb-item active">1.2</li>
+              <li class="breadcrumb-item active">1.2.2</li>
             </ol>
           </div>
         </div>
@@ -93,7 +93,8 @@
               <div class="card-body">
                 <div class="tab-content">
                   <div class="tab-pane active" id="tab_1">
-                  	
+                  	<div class="text-center">
+                    
                   		<a class="btn btn-app zoom">
                   			<span class="badge bg-warning" id="total_records"></span>
                   			<i class="fa fa-handshake"></i>Meetings
@@ -134,8 +135,8 @@
                         <span class="badge bg-warning" id="total_cost"></span>
                         <i class="fa fa-dollar-sign"></i>Total Cost
                       </a>
-                  	
-                    <div  class="row" >
+                  	</div>
+                    <div  class="row" style="background-color: #CFCFCF">
                         <div class="col-md-12">
                           <div id="curve_chart" style=" height: 500px"></div>
                           
@@ -345,7 +346,7 @@ var dataTable = $("#example").DataTable({
   }
   else
   {
-   alert('Both Date is required');
+    toastr.error('Error !', 'Both Date is required');
   }
  });
 

@@ -129,7 +129,14 @@
 	          		<div class="col-md-4">
 	          			<div class="form-group">
 	          				<label>Institutional review report</label>
-	          				<input type="file" name="review_report" class="form-control">
+	          				<div class="input-group">                       
+                            <input data-toggle="tooltip" data-placement="top" title="Search Institiute name and select" type="text" id="review_report" class="form-control" placeholder="Search Institiute name and select">
+                            <input type="hidden" name="review_report" id="review_report1">
+                            <div style="cursor: pointer" onclick="window.open('{{url('activities/skill-development/institute-review')}}', '_blank');" class="input-group-prepend">
+                              <span data-toggle="tooltip" data-placement="top" title="Add a Review Report to list" class="input-group-text"><i style="color: blue;" class="fa fa-plus"></i></span>
+                            </div>  
+                        </div>
+                          <div id="review_list"></div>
 	          			</div>	
 	          		</div>
 	          		<div class="col-md-4">
@@ -321,6 +328,33 @@ $(document).ready(function(){
                
           });  
 });
+$(document).ready(function(){
+//institutte review
+   $('#review_report').keyup(function(){ 
+          var query = $(this).val();
+          if(query != '')
+          {
+           var _token = $('input[name="_token"]').val();
+           $.ajax({
+            url: SITE_URL + '/review_report_list',
+            method:"POST",
+            data:{query:query, _token:_token},
+            success:function(data){
+             $('#review_list').fadeIn();  
+             $('#review_list').html(data);
+            }
+           });
+          }
+      });
+
+      $(document).on('click', '#review_reports li', function(){  
+        $('#review_list').fadeOut(); 
+          $('#review_report').val($(this).text()); 
+          var ins_id = $(this).attr('id');
+          $('#review_report1').val(ins_id);
+           
+      });  
+});
   @if (session('error'))
   toastr.error('{{session('error')}}')
   @endif  
@@ -340,7 +374,7 @@ $(document).ready(function(){
   })
 </script>
 <style type="text/css" media="screen">
-  #autocomplete, #institute, #course, #youths {
+  #autocomplete, #institute, #course, #youths,#review_reports {
     position: absolute;
     z-index: 1000;
     cursor: default;
@@ -356,10 +390,10 @@ $(document).ready(function(){
        -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
             box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
-#autocomplete,  #institute, #course, #youths> li {
+#autocomplete,  #institute, #course, #youths, #review_reports> li {
   padding: 3px 20px;
 }
-#autocomplete, #institute, #course, #youths > li.ui-state-focus {
+#autocomplete, #institute, #course, #youths, #review_reports > li.ui-state-focus {
   background-color: #DDD;
 }
 .ui-helper-hidden-accessible {

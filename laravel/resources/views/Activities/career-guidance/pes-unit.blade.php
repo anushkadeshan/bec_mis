@@ -141,7 +141,7 @@
 	            </div>	
 	            <div style="width: 100%; height: 20px; border-bottom: 1px solid blue; text-align: center;padding-bottom: 10px">
 	                  <span class="badge badge-info" style="font-size: 20px; padding: 0 10px; ">
-	                    No of Youth Participated
+	                    No of Youth Catered
 	                  </span>
                 </div>
                 <br>	
@@ -209,17 +209,16 @@
 	          			<table class="table table-borderless" id="dynamic_field">
 						  <thead>
 						    <tr>
-						      <th scope="col">Most demanding services by youth from the unit</th>
-						      <th scope="col">Male</th>
-						      <th scope="col">Female</th>
+						      <th width="500" scope="col">Male</th>
+						      <th width="500" scope="col">Female</th>
 						      <th scope="col"></th>
 						    </tr>
 						  </thead>
 						  <tbody>
 						    <tr>
-						      <th><input type="text" name="service[]" class="form-control name-list"></th>
-						      <td><input type="number" name="male[]" class="form-control position-list"></td>
-						      <td><input type="number" name="female[]" class="form-control branch-list"></td>
+						     
+						      <td><input type="text" name="male[]" class="form-control position-list"></td>
+						      <td><input type="text" name="female[]" class="form-control branch-list"></td>
 						      <td><button type="button" class="btn btn-success btn-flat" id="add">Add More</button></td>
 						    </tr>
 						    

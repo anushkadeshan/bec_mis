@@ -32,10 +32,6 @@ class PartnershipTrainingController extends Controller
             if($validator->passes()){
                 $branch_id = auth()->user()->branch;
                 $input = $request->all();
-                if($request->hasFile('review_report')){
-	            	$input['review_report'] = time().'.'.$request->file('review_report')->getClientOriginalExtension();
-	            	$request->review_report->move(storage_path('activities/files/skill/partner-support/review_report'), $input['review_report']);
-            	}
             	if($request->hasFile('mou_report')){
 	            	$input['mou_report'] = time().'.'.$request->file('mou_report')->getClientOriginalExtension();
 	            	$request->mou_report->move(storage_path('activities/files/skill/partner-support/mou_report'), $input['mou_report']);
@@ -66,7 +62,7 @@ class PartnershipTrainingController extends Controller
 	                'total_female'=>$request->total_female,
 	                'pwd_male'=>$request->pwd_male,
 	                'pwd_female'=>$request->pwd_female,
-	                'review_report' => $input['review_report'],
+	                'review_report' => $request->review_report,
 	                'mou_report' => $input['mou_report'],
 	                'group_photo' => $input['group_photo'],
 	                'branch_id'	=> $branch_id,

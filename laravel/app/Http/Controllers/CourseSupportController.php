@@ -86,7 +86,7 @@ class CourseSupportController extends Controller
     		    'total_female'  => 'required',
                 'district' => 'required',
                 'dm_name' =>'required',	
-                'review_report' => 'mimes:jpeg,jpg,png,gif,svg,pdf',
+                'review_report' => 'required',
                 'institute_id' => 'required',
                 'course_id' => 'required',
             ]);
@@ -94,10 +94,7 @@ class CourseSupportController extends Controller
             if($validator->passes()){
                 $branch_id = auth()->user()->branch;
                 $input = $request->all();
-                if($request->hasFile('review_report')){
-	            	$input['review_report'] = time().'.'.$request->file('review_report')->getClientOriginalExtension();
-	            	$request->review_report->move(storage_path('activities/files/skill/course-support/review_report'), $input['review_report']);
-            	}
+                
                 $data1 = array(
                 	'district' => $request->district,
                 	'dsd' => $request->dsd,
@@ -114,7 +111,7 @@ class CourseSupportController extends Controller
 	                'pwd_male'=>$request->pwd_male,
 	                'pwd_female'=>$request->pwd_female,
 	                'course_id'=>$request->course_id,
-	                'review_report' => $input['review_report'],
+	                'review_report' => $request->review_report,
 	                'branch_id'	=> $branch_id,
                   'created_at' => date('Y-m-d H:i:s')
                 );
@@ -139,5 +136,26 @@ class CourseSupportController extends Controller
                 return response()->json(['error' => $validator->errors()->all()]);
             }
     
+    }
+
+    public function reviewList(Request $request){
+
+      if($request->get('query')){
+          $query = $request->get('query');
+          $data = DB::table('institutes')
+                  ->join('institute_reviews','institute_reviews.institute_id','=','institutes.id')
+                  ->where('institutes.name', 'LIKE', "%{$query}%")
+                  ->select('institutes.*','institute_reviews.id as ins_id','institute_reviews.*')
+                  ->get();
+          $output = '<ul class="dropdown-menu" id="review_reports" style="display:block; position:relative">';
+          foreach($data as $row)
+          {
+           $output .= '
+           <li class="nav-item" id="'.$row->ins_id.'"><a href="#" >'.$row->name.' | '.$row->district.'</a></li>
+           ';
+          }
+          $output .= '</ul>';
+          echo $output;
+         }
     }
 }

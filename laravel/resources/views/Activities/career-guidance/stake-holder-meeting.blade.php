@@ -43,7 +43,6 @@
 	          			<div class="form-group">
 	          				<label for="gn_division">3. GN Divisions Covered</label>
     						<select name="gnd[]" id="gn_division" class="form-control" multiple>
-     							<option value="">Select Option</option>
     						</select>
    						</div>
 	          		</div>
@@ -239,7 +238,7 @@
    	  			//success
    	  			console.log(data);
    	  			$.each(data, function(index, gnObj){
-   	  				$('#gn_division').append('<option value="'+gnObj.GN_ID+'">'+gnObj.GN_Office+'</option>');
+   	  				$('#gn_division').append('<option value="'+gnObj.GN_Office+'">'+gnObj.GN_Office+'</option>');
 
    	  			});
    	  		});

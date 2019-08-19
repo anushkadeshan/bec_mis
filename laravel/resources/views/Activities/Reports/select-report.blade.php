@@ -62,7 +62,7 @@
 							</a>
 						</li>
 	    				<li class="nav-item">
-							<a href="{{Route('reports/personal')}}" class="nav-link">
+							<a href="{{url('/reports-me/cg/stake-holder-meeting')}}" class="nav-link">
 	      						<p>
 	              					Stakeholder meetings 
 	      							<i class="fa fa-angle-right right"></i>
@@ -70,7 +70,7 @@
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="{{Route('reports/personal')}}" class="nav-link">
+							<a href="{{Route('reports-me/cg/kick-off-meeting')}}" class="nav-link">
 	      						<p>
 	              					Kick of events 
 	      							<i class="fa fa-angle-right right"></i>

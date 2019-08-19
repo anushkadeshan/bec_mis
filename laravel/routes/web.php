@@ -122,8 +122,6 @@ Route::post('/institutes/delete-institute', 'InstituteController@delete')->name(
 Route::get('/institute/{id}/view', 'InstituteController@view')->name('view-institute')->middleware('can:view-institute'); 
 Route::post('/institutes/add-courses', 'InstituteController@update_courses')->name('/institutes/add-course')->middleware('can:add-institute'); 
 
-
-
 //Courses  routes
 Route::get('/courses/view', 'CourseController@index')->name('courses/view')->middleware('can:view-course');
 Route::post('/courses/add', 'CourseController@insert')->name('courses/insert')->middleware('can:add-course');
@@ -133,7 +131,6 @@ Route::post('/courses/delete', 'CourseController@delete')->name('courses/delete'
 Route::post('/courses/update', 'CourseController@update')->name('courses/update')->middleware('can:edit-course');
 Route::get('/courses/{id}/view', 'CourseController@view')->name('view-course')->middleware('can:view-course');
 Route::post('/courses/add-institutes', 'CourseController@update_institutes')->name('add-course-institute')->middleware('can:add-course');
-
 //results routs
 Route::post('/result/add-education', 'ResultController@create_education')->name('result/add-education')->middleware('can:add-youth');
 Route::post('/result/add-course', 'ResultController@create_course')->name('result/add-course')->middleware('can:add-youth');
@@ -153,9 +150,6 @@ Route::post('/soft_skills/add', 'ProgressController@add_soft')->name('soft_skill
 Route::post('/vt/add', 'ProgressController@add_vt')->name('vt/add')->middleware('can:view-activities');
 Route::post('/softCourseList', 'ProgressController@softCourseList')->name('softCourseList');
 Route::post('/vtCourseList', 'ProgressController@vtCourseList')->name('vtCourseList');
-
-
-
 Route::post('/activities/cg/delete', 'CarrerGuidanceController@delete')->name('activities/cg/delete')->middleware('can:view-activities');
 
 //reports routs
@@ -224,6 +218,7 @@ Route::get('/activities/skill-development/course-support', 'CourseSupportControl
 Route::post('/institutesList', 'CourseSupportController@instituesList')->name('institutesList')->middleware('can:add-M&E-reports');
 Route::post('/support-courseList', 'CourseSupportController@courseList')->name('support-courseList')->middleware('can:add-M&E-reports');
 Route::post('/youthList', 'CourseSupportController@youthList')->name('youthList')->middleware('can:add-M&E-reports');
+Route::post('/review_report_list', 'CourseSupportController@reviewList')->name('reviewList')->middleware('can:add-M&E-reports');
 Route::post('/activity/skill/add-course-support', 'CourseSupportController@insert')->name('activity/skill/add-course-support')->middleware('can:add-M&E-reports');
 Route::get('/activities/skill-development/provide-softskill', 'ProvideSoftskillController@index')->name('skill-development/provide-softskill')->middleware('can:add-M&E-reports');
 Route::post('/activity/skill/add-provide-soft', 'ProvideSoftskillController@insert')->name('activity/skill/add-provide-soft')->middleware('can:add-M&E-reports');
@@ -254,16 +249,31 @@ Route::get('/m&e-reports', function () {
     return view('Activities.Reports.select-report');
 });
 
-
+//regional meeting reports
 Route::get('/reports-me/education/regional-meeting', 'RegionalMeetingController@view')->name('reports-me/education/regional-meeting')->middleware('can:view-M&E-reports');
 Route::post('/reports-me/education/regional-meeting/fetch', 'RegionalMeetingController@fetch')->name('reports-me/education/regional-meeting/fetch')->middleware('can:view-M&E-reports');
 Route::get('/reports-me/education/regional-meeting/{id}/view', 'RegionalMeetingController@view_meeting')->name('meeting-view')->middleware('can:view-M&E-reports');
+
+//mentoring program reports
 Route::get('/reports-me/education/mentoring', 'MentoringController@view')->name('reports-me/education/mentoring')->middleware('can:view-M&E-reports');
 Route::post('/reports-me/education/mentoring/fetch', 'MentoringController@fetch')->name('reports-me/education/mentoring/fetch')->middleware('can:view-M&E-reports');
 Route::get('/reports-me/education/mentoring/{id}/view', 'MentoringController@view_meeting')->name('mentoring-view')->middleware('can:view-M&E-reports');
-
 Route::get('/download/mentoring/{file_name}', 'MentoringController@download')->name('mentoring-view')->middleware('can:view-M&E-reports');
-
 Route::get('/download/mentoring/photos/{id}', 'MentoringController@download_photos')->middleware('can:view-M&E-reports');
+
+
+//stake holder meeting reports
+Route::get('/reports-me/cg/stake-holder-meeting', 'StakeHolderMeetingController@view')->name('reports-me/cg/stake-holder-meeting')->middleware('can:view-M&E-reports');
+Route::post('/reports-me/cg/stake-holder-meeting/fetch', 'StakeHolderMeetingController@fetch')->name('reports-me/cg/stake-holder-meeting/fetch')->middleware('can:view-M&E-reports');
+Route::get('/reports-me/cg/stakeHolder/{id}/view', 'StakeHolderMeetingController@view_meeting')->name('mentoring-view')->middleware('can:view-M&E-reports');
+Route::get('/download/stake/{file_name}', 'StakeHolderMeetingController@download')->name('stake-view')->middleware('can:view-M&E-reports');
+Route::get('/download/stake/photos/{id}', 'StakeHolderMeetingController@download_photos')->middleware('can:view-M&E-reports');
+
+//kickoff meeting reports
+Route::get('/reports-me/cg/kick-off-meeting', 'KickOffController@view')->name('reports-me/cg/kick-off-meeting')->middleware('can:view-M&E-reports');
+Route::post('/reports-me/cg/kick-off-meeting/fetch', 'KickOffController@fetch')->name('reports-me/cg/kick-off-meeting/fetch')->middleware('can:view-M&E-reports');
+Route::get('/reports-me/cg/kick-off/{id}/view', 'KickOffController@view_meeting')->name('kick-off-view')->middleware('can:view-M&E-reports');
+Route::get('/download/kick-off/{file_name}', 'KickOffController@download')->name('kick-off-view')->middleware('can:view-M&E-reports');
+Route::get('/download/kick-off/photos/{id}', 'KickOffController@download_photos')->middleware('can:view-M&E-reports');
 
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Zipper;
 
 class StakeHolderMeetingController extends Controller
 {
@@ -94,5 +95,141 @@ class StakeHolderMeetingController extends Controller
                 return response()->json(['error' => $validator->errors()->all()]);
             }
     
+    }
+
+    public function view(){
+        $meetings = DB::table('stake_holder_meetings')
+                      //->leftjoin('mentoring_gvt_officials','mentoring_gvt_officials.mentoring_id','=','mentoring.id')
+                      ->join('branches','branches.id','=','stake_holder_meetings.branch_id')
+                      ->get();
+        //dd($mentorings);
+
+        $participants2018 = DB::table('stake_holder_meetings')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2018' )
+                        ->first();
+                        //->groupBy(function ($val) {
+                                // Carbon::parse($val->meeting_date)->format('Y');
+                        //});
+                        //->groupBy(DB::raw("year(meeting_date)"))
+                        
+           $participants2019 = DB::table('stake_holder_meetings')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2019' )
+                        ->first();            
+            $participants2020 = DB::table('stake_holder_meetings')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2020' )
+                        ->first();   
+            $participants2021 = DB::table('stake_holder_meetings')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2021' )
+                        ->first();           
+        //dd($participants2018);
+        $branches = DB::table('branches')->get();
+        return view('Activities.Reports.career-guidance.stake-holder')->with(['meetings'=>$meetings,'branches'=>$branches,'participants2018'=>$participants2018,'participants2019'=>$participants2019,'participants2020'=>$participants2020,'participants2021'=>$participants2021]);
+    }
+
+    public function fetch(Request $request){
+        if($request->ajax())
+        {
+            if($request->dateStart != '' && $request->dateEnd != '')
+            {
+                if($request->branch !=''){
+                    $data = DB::table('stake_holder_meetings') 
+                        ->join('branches','branches.id','=','stake_holder_meetings.branch_id')
+                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->where('branch_id',$request->branch)
+                        ->select('stake_holder_meetings.*','branches.*','stake_holder_meetings.id as m_id')
+                        ->orderBy('meeting_date', 'desc')
+                        ->get();
+                }
+                else{
+                    $data = DB::table('stake_holder_meetings') 
+                        ->join('branches','branches.id','=','stake_holder_meetings.branch_id')
+                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->select('stake_holder_meetings.*','branches.*','stake_holder_meetings.id as m_id')
+
+                        ->orderBy('meeting_date', 'desc')
+                        ->get();
+                }
+                
+            }
+        else
+            {
+                $data = DB::table('stake_holder_meetings') 
+                        ->join('branches','branches.id','=','stake_holder_meetings.branch_id')
+                        ->select('stake_holder_meetings.*','branches.*','stake_holder_meetings.id as m_id')
+
+                        ->orderBy('meeting_date', 'desc')
+                        ->get();
+            }
+                return response()->json($data);
+        }
+    
+        
+
+    }
+
+    public function view_meeting($id){
+        $meeting = DB::table('stake_holder_meetings')
+                   ->join('branches','branches.id','=','stake_holder_meetings.branch_id')
+                   ->join('dsd_office','dsd_office.ID','=','stake_holder_meetings.dsd')
+                   ->select('stake_holder_meetings.*','branches.*','stake_holder_meetings.id as m_id')
+                   ->where('stake_holder_meetings.id',$id)
+                   ->first();
+        $participants = DB::table('stake_holder_participants')
+                        ->where('stake_holder_meeting_id',$id)
+                        ->get();
+
+        $photos = DB::table('stake_holder_images')
+                        ->where('stake_holder_meeting_id',$id)
+                        ->get();
+       // dd($meeting);
+        //dd($participants);
+
+        return response()->json(array(
+            'participants' => $participants,
+            'meeting' => $meeting,
+            'photos' => $photos,
+        ));
+        
+
+    }
+
+    public function download($file_name){
+        //$file_name = $request->attendance;
+        $file = storage_path('activities/files/stakeholder/attendance/'.$file_name.'');
+        //echo "<script>console.log( 'Debug Objects: " . $file_name . "' );</script>";
+
+        $headers = [
+                  'Content-Type' => 'application/pdf',
+               ];
+      // return Storage::download(filePath, Appended Text);
+        return response()->file($file,$headers);
+    }
+
+    public function download_photos($id){
+        $photos = DB::table('stake_holder_images')
+            ->where('stake_holder_meeting_id',$id)
+            ->select('stake_holder_images.images')
+            ->get();
+
+        foreach($photos as $photo){
+            //echo $photo->images;
+            //$paths = storage_path('activities/files/mentoring/images/'.$photo->image.'');
+            $headers = ["Content-Type"=>"application/zip"];
+            
+            $zipper = Zipper::make(storage_path('activities/files/stakeholder/images/'.$id.'.zip'))->add(storage_path('activities/files/stakeholder/images/'.$photo->images.''))->close();
+
+        return response()->download(storage_path('activities/files/stakeholder/images/'.$id.'.zip','photos',$headers)); 
+
+        }
+
+
+        //$photos_array = $photos->toArray();
+        //dd($photos);
+       // Zipper::make('mydir/photos.zip')->add($paths);
+       // return response()->download(('mydir/photos.zip')); 
     }
 }

@@ -93,7 +93,7 @@
               <div class="row">
                 <div class="col-md-3">
                   <div class="form-group">
-                <label for="dm_name">7. Meeting Date</label>
+                <label for="dm_name">7. Program Date</label>
                 <input type="date" name="date" id="meeting_date" class="form-control">
             </div>
                 </div>

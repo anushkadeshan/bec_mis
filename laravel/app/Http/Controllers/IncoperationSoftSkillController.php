@@ -31,10 +31,7 @@ class IncoperationSoftSkillController extends Controller
             if($validator->passes()){
                 $branch_id = auth()->user()->branch;
                 $input = $request->all();
-                if($request->hasFile('review_report')){
-	            	$input['review_report'] = time().'.'.$request->file('review_report')->getClientOriginalExtension();
-	            	$request->review_report->move(storage_path('activities/files/skill/incoperate/review_report'), $input['review_report']);
-            	}
+            
             	if($request->hasFile('gsrn')){
 	            	$input['gsrn'] = time().'.'.$request->file('gsrn')->getClientOriginalExtension();
 	            	$request->gsrn->move(storage_path('activities/files/skill/incoperate/gsrn'), $input['gsrn']);
@@ -49,7 +46,7 @@ class IncoperationSoftSkillController extends Controller
 	                'institute_id'	=>$request->institute_id, 
 	                'tvec_ex_date' => $request->tvec_ex_date,
 	                'nature_of_assistance' => $request->nature_of_assistance,
-	                'review_report' => $input['review_report'],
+	                'review_report' => $request->review_report,
 	                'gsrn' => $input['gsrn'],
 	                'branch_id'	=> $branch_id,
 	                'created_at' => date('Y-m-d H:i:s')

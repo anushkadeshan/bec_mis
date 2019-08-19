@@ -78,7 +78,7 @@
 						    <select name="activity_code" id="activity_code" class="form-control">
 								<option value="">Select Option</option>
 								@foreach($activities as $activity)
-								<option @if($activity->code=='1.1.2') selected @endif value="{{ $activity->code}}">{{ $activity->code }}</option>
+								<option @if($activity->code=='2.1.2') selected @endif value="{{ $activity->code}}">{{ $activity->code }}</option>
 								@endforeach
     					   </select>
 						</div>
@@ -87,7 +87,7 @@
 	            <div class="row">
 	            	<div class="col-md-3">
 	            		<div class="form-group">
-						    <label for="dm_name">7. Meeting Date</label>
+						    <label for="dm_name">7. Program Date</label>
 						    <input type="date" name="meeting_date" id="date" class="form-control">
 						</div>
 	            	</div>
@@ -305,7 +305,7 @@
    	  			//success
    	  			console.log(data);
    	  			$.each(data, function(index, gnObj){
-   	  				$('#gn_division').append('<option value="'+gnObj.GN_ID+'">'+gnObj.GN_Office+'</option>');
+   	  				$('#gn_division').append('<option value="'+gnObj.GN_Office+'">'+gnObj.GN_Office+'</option>');
 
    	  			});
    	  		});

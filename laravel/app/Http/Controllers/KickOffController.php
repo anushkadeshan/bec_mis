@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request; 
 use DB;
 use Illuminate\Support\Facades\Validator;
+use Zipper;
 
 class KickOffController extends Controller
 {
@@ -32,7 +33,10 @@ class KickOffController extends Controller
                 'activity_code' =>'required',	
                 'time_start'=>'required',
                 'time_end' =>'required',
-                'venue'	=>'required',
+                'venue' =>'required',
+                'no_of_forms' =>'required',
+                'no_of_selected_youth'	=>'required',
+                'resourse_person_id'=>'required',
                 'image.*' => 'image|mimes:jpeg,jpg,png,gif,svg',
                 'attendance' => 'mimes:jpeg,jpg,png,gif,svg,pdf',
             ]);
@@ -62,7 +66,9 @@ class KickOffController extends Controller
 	                'pwd_female'=>$request->pwd_female,
 	                'mode_of_conduct'=>$request->mode_of_conduct,
 	                'topics'=>$request->topics,
-	                'deliverables'=>$request->deliverables,
+                    'deliverables'=>$request->deliverables,
+                    'no_of_forms'=>$request->no_of_forms,
+	                'no_of_selected_youth'=>$request->no_of_selected_youth,
 	                'resourse_person_id'=>$request->resourse_person_id,
 	                'attendance' => $input['attendance'],
 	                'branch_id'	=> $branch_id,
@@ -98,5 +104,137 @@ class KickOffController extends Controller
                 return response()->json(['error' => $validator->errors()->all()]);
             }
     
+    }
+
+     public function view(){
+        $meetings = DB::table('kickoffs')
+                      //->leftjoin('mentoring_gvt_officials','mentoring_gvt_officials.mentoring_id','=','mentoring.id')
+                      ->join('branches','branches.id','=','kickoffs.branch_id')
+                      ->get();
+        //dd($mentorings);
+
+        $participants2018 = DB::table('kickoffs')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2018' )
+                        ->first();
+                        //->groupBy(function ($val) {
+                                // Carbon::parse($val->meeting_date)->format('Y');
+                        //});
+                        //->groupBy(DB::raw("year(meeting_date)"))
+                        
+           $participants2019 = DB::table('kickoffs')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2019' )
+                        ->first();            
+            $participants2020 = DB::table('kickoffs')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2020' )
+                        ->first();   
+            $participants2021 = DB::table('kickoffs')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2021' )
+                        ->first();           
+        //dd($participants2018);
+        $branches = DB::table('branches')->get();
+        return view('Activities.Reports.career-guidance.kickoff')->with(['meetings'=>$meetings,'branches'=>$branches,'participants2018'=>$participants2018,'participants2019'=>$participants2019,'participants2020'=>$participants2020,'participants2021'=>$participants2021]);
+    }
+
+    public function fetch(Request $request){
+        if($request->ajax())
+        {
+            if($request->dateStart != '' && $request->dateEnd != '')
+            {
+                if($request->branch !=''){
+                    $data = DB::table('kickoffs') 
+                        ->join('branches','branches.id','=','kickoffs.branch_id')
+                        ->join('resourse_people','resourse_people.id', '=' ,'kickoffs.resourse_person_id')
+                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->where('branch_id',$request->branch)
+                        ->select('kickoffs.*','branches.*','kickoffs.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')
+                        ->orderBy('meeting_date', 'desc')
+                        ->get();
+                }
+                else{
+                    $data = DB::table('kickoffs') 
+                        ->join('branches','branches.id','=','kickoffs.branch_id')
+                        ->join('resourse_people','resourse_people.id', '=' ,'kickoffs.resourse_person_id')
+                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->select('kickoffs.*','branches.*','kickoffs.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')
+                        ->orderBy('meeting_date', 'desc')
+                        ->get();
+                }
+                
+            }
+        else
+            {
+                $data = DB::table('kickoffs') 
+                        ->join('branches','branches.id','=','kickoffs.branch_id')
+                        ->join('resourse_people','resourse_people.id', '=' ,'kickoffs.resourse_person_id')
+                        ->select('kickoffs.*','branches.*','kickoffs.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')
+                        ->orderBy('meeting_date', 'desc')
+                        ->get();
+            }
+                return response()->json($data);
+        }
+    
+        
+
+    }
+
+    public function view_meeting($id){
+        $meeting = DB::table('kickoffs')
+                    ->join('resourse_people','resourse_people.id', '=' ,'kickoffs.resourse_person_id')
+                   ->join('branches','branches.id','=','kickoffs.branch_id')
+                   ->select('kickoffs.*','branches.*','kickoffs.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')
+                   ->where('kickoffs.id',$id)
+                   ->first();
+        $participants = DB::table('kickoff_gvt_officials')
+                        ->where('kickoff_id',$id)
+                        ->get();
+
+        $photos = DB::table('kickoff_photos')
+                        ->where('kickoff_id',$id)
+                        ->get();
+       // dd($meeting);
+        //dd($participants);
+
+        return response()->json(array(
+            'participants' => $participants,
+            'meeting' => $meeting,
+            'photos' => $photos,
+        ));
+        
+
+    }
+
+    public function download($file_name){
+        //$file_name = $request->attendance;
+        $file = storage_path('activities/files/kick-off/attendance/'.$file_name.'');
+        //echo "<script>console.log( 'Debug Objects: " . $file_name . "' );</script>";
+
+        $headers = [
+                  'Content-Type' => 'application/pdf',
+               ];
+      // return Storage::download(filePath, Appended Text);
+        return response()->file($file,$headers);
+    }
+
+    public function download_photos($id){
+        $photos = DB::table('kickoff_photos')
+                  ->where('kickoff_id',$id)
+                  ->select('kickoff_photos.images')
+                  ->get();
+        foreach($photos as $photo){
+            //echo $photo->images;
+            $headers = ["Content-Type"=>"application/zip"];
+            //$paths = storage_path('activities/files/mentoring/images/'.$photo->image.'');
+            $zipper = Zipper::make(storage_path('activities/files/kick-off/images/'.$id.'.zip'))->add(storage_path('activities/files/kick-off/images/'.$photo->images.''))->close();
+        }
+            return response()->download(storage_path('activities/files/kick-off/images/'.$id.'.zip','photos',$headers)); 
+
+        //$photos_array = $photos->toArray();
+        //dd($photos);
+       // Zipper::make('mydir/photos.zip')->add($paths);
+       // return response()->download(('mydir/photos.zip')); 
     }
 }

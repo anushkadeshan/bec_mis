@@ -93,10 +93,10 @@ class PesUnitController extends Controller
                 $pes_id = DB::getPdo()->lastInsertId();
              
 
-                $number = count($request->service);
+                $number = count($request->male);
                 if($number>0){
                 	for($i=0; $i<$number; $i++){
-                		$services = DB::table('pes_unit_services')->insert(['service'=>$request->service[$i],'male'=>$request->male[$i],'female'=> $request->female[$i],'pes_id'=>$pes_id]);
+                		$services = DB::table('pes_unit_services')->insert(['male'=>$request->male[$i],'female'=> $request->female[$i],'pes_id'=>$pes_id]);
                 	}
 
                 }
