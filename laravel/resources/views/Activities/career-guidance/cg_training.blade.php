@@ -265,7 +265,7 @@
    	  			//success
    	  			console.log(data);
    	  			$.each(data, function(index, gnObj){
-   	  				$('#gn_division').append('<option value="'+gnObj.GN_ID+'">'+gnObj.GN_Office+'</option>');
+   	  				$('#gn_division').append('<option value="'+gnObj.GN_Office+'">'+gnObj.GN_Office+'</option>');
 
    	  			});
    	  		});

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use DB;
 use Illuminate\Support\Facades\Validator;
-
+use Auth;
 
 class PesUnitController extends Controller
 {
@@ -109,5 +109,114 @@ class PesUnitController extends Controller
                 return response()->json(['error' => $validator->errors()->all()]);
             }
     
+    }
+
+    public function view(){
+
+        $branch_id = Auth::user()->branch;
+        if(is_null($branch_id)){
+        $meetings = DB::table('pes_units')
+                      //->leftjoin('mentoring_gvt_officials','mentoring_gvt_officials.mentoring_id','=','mentoring.id')
+                      ->join('branches','branches.id','=','pes_units.branch_id')
+                      ->get();
+        //dd($mentorings);
+        }
+        else{
+            $meetings = DB::table('pes_units')
+                      //->leftjoin('mentoring_gvt_officials','mentoring_gvt_officials.mentoring_id','=','mentoring.id')
+                      ->join('branches','branches.id','=','pes_units.branch_id')
+                      ->where('pes_units.branch_id','=',$branch_id)
+                      ->get();
+        }
+        
+        $branches = DB::table('branches')->get();
+        return view('Activities.Reports.career-guidance.pes')->with(['meetings'=>$meetings,'branches'=>$branches]);
+    }
+
+    public function fetch(Request $request){
+        if($request->ajax())
+        {
+            if($request->dateStart != '' && $request->dateEnd != '')
+            {
+                $branch_id = Auth::user()->branch;
+
+                if($request->branch !=''){
+                    $data = DB::table('pes_units') 
+                        ->join('branches','branches.id','=','pes_units.branch_id')
+                        ->whereBetween('date', array($request->dateStart, $request->dateEnd))
+                        ->where('branch_id',$request->branch)
+                        ->select('pes_units.*','branches.*','pes_units.id as m_id','branches.name as branch_name','date as meeting_date')
+                        ->orderBy('date', 'desc')
+                        ->get();
+                }
+                else{
+                    
+                    if(is_null($branch_id)){
+
+                    $data = DB::table('pes_units') 
+                        ->join('branches','branches.id','=','pes_units.branch_id')
+                        ->whereBetween('date', array($request->dateStart, $request->dateEnd))
+                        ->select('pes_units.*','branches.*','pes_units.id as m_id','branches.name as branch_name','date as meeting_date')
+                        //->where('pes_units.branch_id','=',$branch_id)
+                        ->orderBy('date', 'desc')
+                        ->get();
+                    }
+                    else{
+                    $data = DB::table('pes_units') 
+                        ->join('branches','branches.id','=','pes_units.branch_id')
+                        ->whereBetween('date', array($request->dateStart, $request->dateEnd))
+                        ->select('pes_units.*','branches.*','pes_units.id as m_id','branches.name as branch_name','date as meeting_date')
+                        ->where('pes_units.branch_id','=',$branch_id)
+                        ->orderBy('date', 'desc')
+                        ->get();
+                    }
+                }
+                
+            }
+        else
+            {
+                $branch_id = Auth::user()->branch;
+                if(is_null($branch_id)){
+                
+                    $data = DB::table('pes_units') 
+                            ->join('branches','branches.id','=','pes_units.branch_id')
+                            ->select('pes_units.*','branches.*','pes_units.id as m_id','branches.name as branch_name','date as meeting_date')
+                            ->orderBy('date', 'desc')
+                            ->get();
+                }
+                else{
+                    $data = DB::table('pes_units') 
+                        ->join('branches','branches.id','=','pes_units.branch_id')
+                        ->select('pes_units.*','branches.*','pes_units.id as m_id','branches.name as branch_name','date as meeting_date')
+                         ->where('pes_units.branch_id','=',$branch_id)
+                        ->orderBy('date', 'desc')                     
+
+                        ->get();
+                }
+            }
+                return response()->json($data);
+        }
+    
+        
+
+    }
+
+    public function view_meeting($id){
+        $meeting = DB::table('pes_units')
+                   ->join('branches','branches.id','=','pes_units.branch_id')
+                   ->where('pes_units.id',$id)
+                   ->first();
+        $services = DB::table('pes_unit_services')
+                        ->where('pes_id',$id)
+                        ->get();
+       // dd($meeting);
+        //dd($participants);
+
+        return response()->json(array(
+            'services' => $services,
+            'meeting' => $meeting,
+        ));
+        
+
     }
 }

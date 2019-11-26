@@ -148,7 +148,8 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Kim\Activity\ActivityServiceProvider::class,
         Laravel\Passport\PassportServiceProvider::class,
-        Chumper\Zipper\ZipperServiceProvider::class
+        Chumper\Zipper\ZipperServiceProvider::class,
+        OwenIt\Auditing\AuditingServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -159,11 +160,11 @@ return [
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
-        //App\Providers\BroadcastServiceProvider::class,
+        App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        BackupManager\Laravel\Laravel55ServiceProvider::class,
-        Barryvdh\DomPDF\ServiceProvider::class,
+        //BackupManager\Laravel\Laravel55ServiceProvider::class,
+        //Barryvdh\DomPDF\ServiceProvider::class,
 
     ],
 

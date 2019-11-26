@@ -947,7 +947,7 @@
       google.charts.load('current', {'packages':['bar']});
       google.charts.setOnLoadCallback(drawChart);
 
-      function drawChart() {
+            function drawChart() {
         var data = google.visualization.arrayToDataTable([
           ['Branch', 'Youths', 'CG','Soft Skills','VT','Prof','Jobs'],
           ['Nuwara Eliya', {{$count_NE_youth}}, {{$count_NE_cg}}, {{$count_NE_soft_skills}}, {{$count_NE_vt}},  {{$count_NE_prof}}, {{$count_NE_jobs}}],

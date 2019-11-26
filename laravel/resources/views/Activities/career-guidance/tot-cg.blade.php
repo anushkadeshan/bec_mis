@@ -53,6 +53,13 @@
              	</div>
               <div class="col-md-3">
                 <div class="form-group">
+                  <label for="date"> No of Days</label>
+              <input type="number" name="days" id="days" class="form-control">
+            </div>
+                 
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
                   <label for="time">4. Time Start</label>
                   <input type="time" name="time_start" id="time" class="form-control">
                 </div>
@@ -265,7 +272,7 @@ $(document).ready(function(){
             success: function(data) {
               if($.isEmptyObject(data.error)){              
               toastr.success('Succesfully Add ToT on Career guidance reprot ! ', 'Congratulations', {timeOut: 5000});
-			  $("#kick")[0].reset();
+			  $("#tot")[0].reset();
 
             }
             else{

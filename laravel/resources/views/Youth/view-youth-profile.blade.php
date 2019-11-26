@@ -353,7 +353,7 @@
 
                       <li class="list-group-item"><strong>Total Income : </strong><span>{{$youth->family->total_income}}</span></li>
                       <li class="list-group-item"><strong>Total Family Members : </strong><span>{{$youth->family->total_members}}</span></li>
-                      <li class="list-group-item"><strong>PCI : </strong><span>{{$youth->family->total_income / $youth->family->total_members}}</span></li>
+                      <li class="list-group-item"><strong>PCI : </strong><span>@if(!is_null($youth->family->total_members)){{$youth->family->total_income / $youth->family->total_members}}@endif</span></li>
                     </ul>
                   </div>
                   <!-- /.tab-pane -->

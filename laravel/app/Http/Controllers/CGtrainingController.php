@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use DB;
 use Illuminate\Support\Facades\Validator;
-
+use Zipper;
+use Auth;
 
 class CGtrainingController extends Controller
 {
@@ -95,5 +96,209 @@ class CGtrainingController extends Controller
                 return response()->json(['error' => $validator->errors()->all()]);
             }
     
+    }
+
+    public function view(){
+
+        $branch_id = Auth::user()->branch;
+        if(is_null($branch_id)){
+        $meetings = DB::table('cg_trainings')
+                      //->leftjoin('mentoring_gvt_officials','mentoring_gvt_officials.mentoring_id','=','mentoring.id')
+                      ->join('branches','branches.id','=','cg_trainings.branch_id')
+                      ->get();
+        //dd($mentorings);
+
+        $participants2018 = DB::table('cg_trainings')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2018' )
+                        ->first();
+                        //->groupBy(function ($val) {
+                                // Carbon::parse($val->meeting_date)->format('Y');
+                        //});
+                        //->groupBy(DB::raw("year(meeting_date)"))
+                        
+           $participants2019 = DB::table('cg_trainings')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2019' )
+                        ->first();            
+            $participants2020 = DB::table('cg_trainings')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2020' )
+                        ->first();   
+            $participants2021 = DB::table('cg_trainings')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2021' )
+                        ->first();           
+        //dd($participants2018);
+        }
+        else{
+            $meetings = DB::table('cg_trainings')
+                      //->leftjoin('mentoring_gvt_officials','mentoring_gvt_officials.mentoring_id','=','mentoring.id')
+                      ->join('branches','branches.id','=','cg_trainings.branch_id')
+                      ->where('cg_trainings.branch_id','=',$branch_id)
+                      ->get();
+        //dd($mentorings);
+
+        $participants2018 = DB::table('cg_trainings')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2018' )
+                      ->where('cg_trainings.branch_id','=',$branch_id)
+                        ->first();
+                        //->groupBy(function ($val) {
+                                // Carbon::parse($val->meeting_date)->format('Y');
+                        //});
+                        //->groupBy(DB::raw("year(meeting_date)"))
+                        
+           $participants2019 = DB::table('cg_trainings')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2019' )
+                      ->where('cg_trainings.branch_id','=',$branch_id)
+                        ->first();            
+            $participants2020 = DB::table('cg_trainings')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2020' )
+                      ->where('cg_trainings.branch_id','=',$branch_id)
+                        ->first();   
+            $participants2021 = DB::table('cg_trainings')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2021' )
+                        ->where('cg_trainings.branch_id','=',$branch_id)
+                        ->first();           
+        //dd($participants2018);
+        }
+        $branches = DB::table('branches')->get();
+        return view('Activities.Reports.career-guidance.cg-training')->with(['meetings'=>$meetings,'branches'=>$branches,'participants2018'=>$participants2018,'participants2019'=>$participants2019,'participants2020'=>$participants2020,'participants2021'=>$participants2021]);
+    }
+
+    public function fetch(Request $request){
+        if($request->ajax())
+        {
+            if($request->dateStart != '' && $request->dateEnd != '')
+            {
+                $branch_id = Auth::user()->branch;
+                if($request->branch !=''){
+                    $data = DB::table('cg_trainings') 
+                        ->join('branches','branches.id','=','cg_trainings.branch_id')
+                        ->join('resourse_people','resourse_people.id', '=' ,'cg_trainings.resourse_person_id')
+                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->where('branch_id',$request->branch)
+                        ->select('cg_trainings.*','branches.*','cg_trainings.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')
+                        ->orderBy('meeting_date', 'desc')
+                        ->get();
+                }
+                else{
+                    
+                if(is_null($branch_id)){
+
+                    $data = DB::table('cg_trainings') 
+                        ->join('branches','branches.id','=','cg_trainings.branch_id')
+                        ->join('resourse_people','resourse_people.id', '=' ,'cg_trainings.resourse_person_id')
+                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->select('cg_trainings.*','branches.*','cg_trainings.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')                     
+                        //->where('cg_trainings.branch_id','=',$branch_id)
+                        ->orderBy('meeting_date', 'desc')
+                        ->get();
+                }
+                else{
+                    $data = DB::table('cg_trainings') 
+                        ->join('branches','branches.id','=','cg_trainings.branch_id')
+                        ->join('resourse_people','resourse_people.id', '=' ,'cg_trainings.resourse_person_id')
+                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->where('cg_trainings.branch_id','=',$branch_id)
+                        ->select('cg_trainings.*','branches.*','cg_trainings.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')                     
+                        ->orderBy('meeting_date', 'desc')
+                        ->get();
+                }
+                }
+                
+            }
+        else
+            {
+                $branch_id = Auth::user()->branch;
+                if(is_null($branch_id)){
+                $data = DB::table('cg_trainings') 
+                        ->join('branches','branches.id','=','cg_trainings.branch_id')
+                        ->join('resourse_people','resourse_people.id', '=' ,'cg_trainings.resourse_person_id')
+                        ->select('cg_trainings.*','branches.*','cg_trainings.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')
+                        ->orderBy('meeting_date', 'desc')
+                        ->get();
+                }
+                else{
+                    $data = DB::table('cg_trainings') 
+                        ->join('branches','branches.id','=','cg_trainings.branch_id')
+                        ->join('resourse_people','resourse_people.id', '=' ,'cg_trainings.resourse_person_id')
+                        ->select('cg_trainings.*','branches.*','cg_trainings.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')
+                        ->orderBy('meeting_date', 'desc')                      
+                        ->where('cg_trainings.branch_id','=',$branch_id)
+                        ->get();
+                }
+            }
+                return response()->json($data);
+        }
+    }
+
+    public function view_meeting($id){
+        $meeting = DB::table('cg_trainings')
+                    ->join('resourse_people','resourse_people.id', '=' ,'cg_trainings.resourse_person_id')
+                   ->join('branches','branches.id','=','cg_trainings.branch_id')
+                   ->select('cg_trainings.*','branches.*','cg_trainings.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')
+                   ->where('cg_trainings.id',$id)
+                   ->first();
+
+        $photos = DB::table('cg_trainings_photos')
+                        ->where('cg_trainings_id',$id)
+                        ->get();
+
+       // dd($meeting);
+        //dd($participants);
+
+        return response()->json(array( 
+            'meeting' => $meeting,
+            'photos' => $photos,
+        ));
+        
+
+    }
+
+    public function download($file_name){
+        //$file_name = $request->attendance;
+        $file = storage_path('activities/files/cg_training/attendance/'.$file_name.'');
+        //echo "<script>console.log( 'Debug Objects: " . $file_name . "' );</script>";
+
+        $headers = [
+                  'Content-Type' => 'application/pdf',
+               ];
+      // return Storage::download(filePath, Appended Text);
+        return response()->file($file,$headers);
+    }
+
+    public function download_test($id){
+        //$file_name = $request->attendance;
+        $file = storage_path('activities/files/cg_training/pre-pro-test/'.$id.'');
+        //echo "<script>console.log( 'Debug Objects: " . $file_name . "' );</script>";
+
+        $headers = [
+                  'Content-Type' => 'application/pdf',
+               ];
+      // return Storage::download(filePath, Appended Text);
+        return response()->file($file,$headers);
+    }
+    public function download_photos($id){
+        $photos = DB::table('cg_trainings_photos')
+                  ->where('cg_trainings_id',$id)
+                  ->select('cg_trainings_photos.images')
+                  ->get();
+        foreach($photos as $photo){
+            //echo $photo->images;
+            $headers = ["Content-Type"=>"application/zip"];
+            //$paths = storage_path('activities/files/mentoring/images/'.$photo->image.'');
+            $zipper = Zipper::make(storage_path('activities/files/cg_training/images/'.$id.'.zip'))->add(storage_path('activities/files/cg_training/images/'.$photo->images.''))->close();
+        }
+            return response()->download(storage_path('activities/files/cg_training/images/'.$id.'.zip','photos',$headers)); 
+
+        //$photos_array = $photos->toArray();
+        //dd($photos);
+       // Zipper::make('mydir/photos.zip')->add($paths);
+       // return response()->download(('mydir/photos.zip')); 
     }
 }

@@ -474,7 +474,6 @@ class YouthController extends Controller
                 'full_name' => 'required',
                 'gender' => 'required',
                 'phone' => 'required',
-                'email' => 'email',
                 'birth_date' => 'required',
                 'maritial_status' => 'required',
                 'nationality' => 'required',
@@ -737,6 +736,7 @@ public function update_following_course(Request $request){
                     $common = DB::table('youth_common_details')->insert($data2);     
                     
                 }
+                echo "<script>console.log('Debug Objects: " . $request->youth_following_course_id . "' );</script>";
                 if (DB::table('youths_courses')->where('id', '=', $request->youth_following_course_id)->exists()) {
                     $course = DB::table('youths_courses')->whereid($request->youth_following_course_id)->update($data);     
                 }
@@ -808,6 +808,7 @@ public function update_following_course(Request $request){
                     $intresting_business = DB::table('intresting_business')->insert($data);     
 
                 }
+
                 if (DB::table('youth_common_details')->where('id', '=', $request->common_details_id)->exists()) {
                     $common = DB::table('youth_common_details')->whereid($request->common_details_id)->update($data2);     
                 }
@@ -1167,7 +1168,7 @@ public function update_following_course(Request $request){
           }
           else{
             $courses = null;
-          }
+          } 
           break;
       }
 

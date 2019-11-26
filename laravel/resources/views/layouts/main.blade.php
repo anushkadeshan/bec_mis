@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Dashboard - BEC MIS</title>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
@@ -328,9 +329,18 @@
               </p>
             </a>
           </li>
+          <li class="nav-item">
+            <a href="{{url('audits')}}" class="nav-link">
+             <i class=" nav-icon fas fa-passport"></i>
+              <p>
+                Audit Reports
+                <span class="badge badge-info right"></span>
+              </p>
+            </a>
+          </li>
           @endcan
-          @cannot('branch')
-          @can('view-activities')
+          @can('add-M&E-reports')
+          
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link active">
               <i class="nav-icon fa fa-cogs"></i>
@@ -343,28 +353,28 @@
               <li class="nav-item">
                 <a href="{{url('/education')}}" class="nav-link">
                   <i class="fas fa-graduation-cap nav-icon"></i>
-                  <p>Education</p>
+                  <p class="text-primary">Education - 1</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="{{url('career-guidance')}}" class="nav-link">
                   <i class="fas fa-chalkboard-teacher"></i>
-                  <p>&nbsp; Career Guidance</p>
+                  <p class="text-primary">&nbsp; Career Guidance - 2</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="{{url('skill-development')}}" class="nav-link">
                   <i class="fa fa-award nav-icon"></i>
-                  <p>Skill Development</p>
+                  <p class="text-primary">Skill Development - 3</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="{{url('job-linking')}}" class="nav-link">
                   <i class="fa fa-briefcase nav-icon"></i>
-                  <p>Job Linking</p>
+                  <p class="text-primary">Job Linking - 4</p>
                 </a>
               </li>
-              @can('view-M&E-reports')
+              @cannot('branch')
               <li class="nav-item">
                 <a href="{{url('m&e-reports')}}" class="nav-link">
                  <i class="fas fa-file-contract nav-icon text-warning"></i>
@@ -374,7 +384,6 @@
               @endcan
             </ul>
           </li>
-          @endcan
           @endcan
           @can('view-youth-profile')
           <li class="nav-header">Profile Details</li>

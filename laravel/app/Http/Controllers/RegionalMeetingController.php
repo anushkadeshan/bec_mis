@@ -73,13 +73,29 @@ class RegionalMeetingController extends Controller
     }
 
     public function view(){
-        
-        $meetings = DB::table('regional_meetings')                    
+
+        $branch_id = Auth::user()->branch;
+
+        if(is_null($branch_id)){
+            $meetings = DB::table('regional_meetings')                    
                     ->join('branches','branches.id','=','regional_meetings.branch_id')
                     //->join('regional_meeting_participants','regional_meetings.id','=','regional_meeting_participants.regional_meeting_id')
                     //->select('regional_meetings.id as r_id','regional_meetings.*')
                     //->whereRaw('extract(month from meeting_date) = ?', [Carbon::now()->month])
                     ->get();
+        }
+
+        else{
+            $meetings = DB::table('regional_meetings')                    
+                    ->join('branches','branches.id','=','regional_meetings.branch_id')
+                    ->where('regional_meetings.branch_id','=',$branch_id)
+                    //->join('regional_meeting_participants','regional_meetings.id','=','regional_meeting_participants.regional_meeting_id')
+                    //->select('regional_meetings.id as r_id','regional_meetings.*')
+                    //->whereRaw('extract(month from meeting_date) = ?', [Carbon::now()->month])
+                    ->get();
+        }
+        
+        
 
         $dsd = DB::table('dsd_office')->get();
         $branches = DB::table('branches')->get();
@@ -93,6 +109,7 @@ class RegionalMeetingController extends Controller
         {
             if($request->dateStart != '' && $request->dateEnd != '')
             {
+                $branch_id = Auth::user()->branch;
                 if($request->branch !=''){
                     $data = DB::table('regional_meetings') 
                         ->join('branches','branches.id','=','regional_meetings.branch_id')
@@ -103,6 +120,8 @@ class RegionalMeetingController extends Controller
                         ->get();
                 }
                 else{
+                if(is_null($branch_id)){
+
                     $data = DB::table('regional_meetings') 
                         ->join('branches','branches.id','=','regional_meetings.branch_id')
                         ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
@@ -110,20 +129,46 @@ class RegionalMeetingController extends Controller
                         ->orderBy('meeting_date', 'desc')
                         ->get();
                 }
-                
+                else{
+                    $data = DB::table('regional_meetings') 
+                        ->join('branches','branches.id','=','regional_meetings.branch_id')
+                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->select('regional_meetings.*','branches.*','regional_meetings.id as r_id')
+                        ->where('branch_id',$branch_id)
+                        ->orderBy('meeting_date', 'desc')
+                        ->get();
+                }
+                }
+               // echo "<script>console.log( 'Debug Objects: " . $request->branch . "' );</script>";
             }
 
             
 
         else
             {
-                $data = DB::table('regional_meetings') 
+                $branch_id = Auth::user()->branch;
+
+                if(is_null($branch_id)){
+                   $data = DB::table('regional_meetings') 
                         ->join('branches','branches.id','=','regional_meetings.branch_id')
                         ->select('regional_meetings.*','branches.*','regional_meetings.id as r_id')
                         ->orderBy('meeting_date', 'desc')
-                        ->get();
+                        ->get(); 
+                }
+                else{
+                    $data = DB::table('regional_meetings') 
+                        ->join('branches','branches.id','=','regional_meetings.branch_id')
+                        ->where('regional_meetings.branch_id',$branch_id)
+                        ->select('regional_meetings.*','branches.*','regional_meetings.id as r_id')
+                        ->orderBy('meeting_date', 'desc')
+                        ->get(); 
+                }
+                
             }
                 echo json_encode($data);
+
+
+
         }
     
         

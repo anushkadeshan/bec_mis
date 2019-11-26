@@ -52,6 +52,13 @@ class ProgressController extends Controller
         $jobs->save();
     }
 
+    public function bss(Request $request){
+      $id = Input::get('youth_id');
+        $bss = Youth::findOrFail($id);
+        $bss->bss = !$bss->bss;
+        $bss->save();
+    }
+
     public function view($id){
 
     	$youth = Youth::with('family')

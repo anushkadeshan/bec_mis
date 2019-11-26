@@ -142,6 +142,7 @@ Route::post('progress-soft', 'ProgressController@soft')->name('progress-soft');
 Route::post('progress-vt', 'ProgressController@vt')->name('progress-vt');
 Route::post('progress-prof', 'ProgressController@prof')->name('progress-prof');
 Route::post('progress-jobs', 'ProgressController@jobs')->name('progress-jobs');
+Route::post('progress-bss', 'ProgressController@bss')->name('progress-bss');
 Route::get('/youth/{id}/view-progress', 'ProgressController@view')->name('view-progress')->middleware('can:view-youth');
 Route::post('/cgList', 'ProgressController@cgList')->name('cgList');
 Route::post('/cg/add', 'ProgressController@add')->name('cg/add')->middleware('can:view-activities');
@@ -277,3 +278,112 @@ Route::get('/download/kick-off/{file_name}', 'KickOffController@download')->name
 Route::get('/download/kick-off/photos/{id}', 'KickOffController@download_photos')->middleware('can:view-M&E-reports');
 
 
+//cg reports
+Route::get('/reports-me/cg/cg', 'CarrerGuidanceController@view')->name('reports-me/cg/cg')->middleware('can:view-M&E-reports');
+Route::post('/reports-me/cg/cg/fetch', 'CarrerGuidanceController@fetch')->name('reports-me/cg/cg/fetch')->middleware('can:view-M&E-reports');
+Route::get('/reports-me/cg/cg/{id}/view', 'CarrerGuidanceController@view_meeting')->name('cg-view')->middleware('can:view-M&E-reports');
+Route::get('/download/cg/{file_name}', 'CarrerGuidanceController@download')->name('cg-view')->middleware('can:view-M&E-reports');
+Route::get('/download/cg/photos/{id}', 'CarrerGuidanceController@download_photos')->middleware('can:view-M&E-reports');
+
+
+//pes reports
+Route::get('/reports-me/cg/pes', 'PesUnitController@view')->name('reports-me/cg/pes')->middleware('can:view-M&E-reports');
+Route::post('/reports-me/cg/pes/fetch', 'PesUnitController@fetch')->name('reports-me/cg/pes/fetch')->middleware('can:view-M&E-reports');
+Route::get('/reports-me/cg/pes/{id}/view', 'PesUnitController@view_meeting')->name('cg-view')->middleware('can:view-M&E-reports');
+
+//pes supports
+Route::get('/reports-me/cg/pes-support', 'PesUnitSupportController@view')->name('reports-me/cg/pes-support')->middleware('can:view-M&E-reports');
+Route::post('/reports-me/cg/pes-support/fetch', 'PesUnitSupportController@fetch')->name('reports-me/cg/pes-support/fetch')->middleware('can:view-M&E-reports');
+Route::post('/reports-me/cg/pes-support/fetch', 'PesUnitSupportController@fetch')->name('reports-me/cg/pes-support/fetch')->middleware('can:view-M&E-reports');
+Route::get('/reports-me/cg/pes-support/{id}/view', 'PesUnitSupportController@view_meeting')->name('cg-view')->middleware('can:view-M&E-reports');
+Route::get('/download/cg/pes-support/{id}', 'PesUnitSupportController@download')->name('cg-view')->middleware('can:view-M&E-reports');
+Route::get('/download/cg/pes-support/photos/{id}', 'PesUnitSupportController@download_photos')->middleware('can:view-M&E-reports');
+
+//CG Training
+Route::get('/reports-me/cg/cg-training', 'CGtrainingController@view')->name('reports-me/cg/cg-training')->middleware('can:view-M&E-reports');
+Route::post('/reports-me/cg/cg-training/fetch', 'CGtrainingController@fetch')->name('reports-me/cg/cg-training/fetch')->middleware('can:view-M&E-reports');
+Route::get('/reports-me/cg/cg-training/{id}/view', 'CGtrainingController@view_meeting')->name('cg-view')->middleware('can:view-M&E-reports');
+Route::get('/download/cg-training/{file_name}', 'CGtrainingController@download')->name('cg-view')->middleware('can:view-M&E-reports');
+Route::get('/download/cg-training/photos/{id}', 'CGtrainingController@download_photos')->middleware('can:view-M&E-reports');
+Route::get('/download/cg-training/test/{id}', 'CGtrainingController@download_test')->middleware('can:view-M&E-reports');
+
+
+//gvt Training
+Route::get('/reports-me/skill/gvt-support', 'CourseSupportController@view')->name('reports-me/skill/gvt-support')->middleware('can:view-M&E-reports');
+Route::post('/reports-me/skill/gvt-support/fetch', 'CourseSupportController@fetch')->name('reports-me/skill/gvt-support/fetch')->middleware('can:view-M&E-reports');
+Route::get('/reports-me/skill/gvt-support/{id}/view', 'CourseSupportController@view_meeting')->name('cg-view')->middleware('can:view-M&E-reports');
+
+//soft skill Training
+Route::get('/reports-me/skill/soft-skill', 'ProvideSoftskillController@view')->name('reports-me/skill/soft-skill')->middleware('can:view-M&E-reports');
+Route::post('/reports-me/skill/soft-skill/fetch', 'ProvideSoftskillController@fetch')->name('reports-me/skill/soft-skill/fetch')->middleware('can:view-M&E-reports');
+Route::get('/reports-me/skill/soft-skill/{id}/view', 'ProvideSoftskillController@view_meeting')->name('cg-view')->middleware('can:view-M&E-reports');
+Route::get('/download/soft-skill/{file_name}', 'ProvideSoftskillController@download')->name('cg-view')->middleware('can:view-M&E-reports');
+
+//finacial support
+Route::get('/reports-me/skill/financial', 'FinancialSupportController@view')->name('reports-me/skill/soft-skill')->middleware('can:view-M&E-reports');
+Route::post('/reports-me/skill/financial/fetch', 'FinancialSupportController@fetch')->name('reports-me/skill/financial/fetch')->middleware('can:view-M&E-reports');
+Route::get('/reports-me/skill/financial/{id}/view', 'FinancialSupportController@view_meeting')->name('cg-view')->middleware('can:view-M&E-reports');
+Route::get('/download/financial/{file_name}', 'FinancialSupportController@download')->name('cg-view')->middleware('can:view-M&E-reports');
+
+//partnership
+Route::get('/reports-me/skill/partnership', 'PartnershipTrainingController@view')->name('reports-me/skill/partnership')->middleware('can:view-M&E-reports');
+Route::post('/reports-me/skill/partnership/fetch', 'PartnershipTrainingController@fetch')->name('reports-me/skill/partnership/fetch')->middleware('can:view-M&E-reports');
+Route::get('/reports-me/skill/partnership/{id}/view', 'PartnershipTrainingController@view_meeting')->name('cg-view')->middleware('can:view-M&E-reports');
+Route::get('/download/partnership/{file_name}', 'PartnershipTrainingController@download')->name('cg-view')->middleware('can:view-M&E-reports');
+Route::get('/download/partnership/group-photo/{file_name}', 'PartnershipTrainingController@group')->name('cg-view')->middleware('can:view-M&E-reports');
+
+//institute review
+Route::get('/reports-me/skill/institute-review', 'InstituteReviewController@view')->name('reports-me/skill/institute-review')->middleware('can:view-M&E-reports');
+Route::post('/reports-me/skill/institute-review/fetch', 'InstituteReviewController@fetch')->name('reports-me/skill/institute-review/fetch')->middleware('can:view-M&E-reports');
+Route::get('/reports-me/skill/institute-review/{id}/view', 'InstituteReviewController@view_meeting')->name('cg-view')->middleware('can:view-M&E-reports');
+Route::get('/download/institute-review/{file_name}', 'InstituteReviewController@download')->name('cg-view')->middleware('can:view-M&E-reports');
+
+//Incoperation Soft Skill
+Route::get('/reports-me/skill/incoperate-soft-skills', 'IncoperationSoftSkillController@view')->name('reports-me/skill/incoperate-soft-skills')->middleware('can:view-M&E-reports');
+Route::post('/reports-me/skill/incoperate-soft-skills/fetch', 'IncoperationSoftSkillController@fetch')->name('reports-me/skill/incoperate-soft-skills/fetch')->middleware('can:view-M&E-reports');
+Route::get('/reports-me/skill/incoperate-soft-skills/{id}/view', 'IncoperationSoftSkillController@view_meeting')->name('cg-view')->middleware('can:view-M&E-reports');
+Route::get('/download/incoperate-soft-skills/{file_name}', 'IncoperationSoftSkillController@download')->name('cg-view')->middleware('can:view-M&E-reports');
+Route::get('/download/incoperate-soft-skills/photos/{id}', 'IncoperationSoftSkillController@download_photos')->middleware('can:view-M&E-reports');
+
+//TVEC Meeting
+Route::get('/reports-me/skill/tvec-meeting', 'TvecMeetingController@view')->name('reports-me/skill/tvec-meeting')->middleware('can:view-M&E-reports');
+Route::post('/reports-me/skill/tvec-meeting/fetch', 'TvecMeetingController@fetch')->name('reports-me/skill/tvec-meeting/fetch')->middleware('can:view-M&E-reports');
+Route::get('/reports-me/skill/tvec-meeting/{id}/view', 'TvecMeetingController@view_meeting')->name('cg-view')->middleware('can:view-M&E-reports');
+Route::get('/download/tvec-meeting/{file_name}', 'TvecMeetingController@download')->name('cg-view')->middleware('can:view-M&E-reports');
+Route::get('/download/tvec-meeting/photos/{id}', 'TvecMeetingController@download_photos')->middleware('can:view-M&E-reports');
+Route::get('/download/tvec-meeting/minute/{id}', 'TvecMeetingController@download_minute')->middleware('can:view-M&E-reports');
+
+
+//Workplace assesment
+Route::get('/reports-me/job/assesment', 'AssesmentController@view')->name('reports-me/skill/assesment')->middleware('can:view-M&E-reports');
+Route::post('/reports-me/job/assesment/fetch', 'AssesmentController@fetch')->name('reports-me/skill/assesment/fetch')->middleware('can:view-M&E-reports');
+Route::get('/reports-me/job/assesment/{id}/view', 'AssesmentController@view_meeting')->name('cg-view')->middleware('can:view-M&E-reports');
+
+//Awareness
+Route::get('/reports-me/job/awareness', 'AwarenessController@view')->name('reports-me/job/awareness')->middleware('can:view-M&E-reports');
+Route::post('/reports-me/job/awareness/fetch', 'AwarenessController@fetch')->name('reports-me/job/awareness/fetch')->middleware('can:view-M&E-reports');
+Route::get('/reports-me/job/awareness/{id}/view', 'AwarenessController@view_meeting')->name('cg-view')->middleware('can:view-M&E-reports');
+Route::get('/download/awareness/{file_name}', 'AwarenessController@download')->name('cg-view')->middleware('can:view-M&E-reports');
+Route::get('/download/awareness/photos/{id}', 'AwarenessController@download_photos')->middleware('can:view-M&E-reports');
+Route::get('/download/awareness/test/{id}', 'AwarenessController@download_test')->middleware('can:view-M&E-reports');
+
+//Awareness
+Route::get('/reports-me/job/placements', 'PlacementController@view')->name('reports-me/job/placements')->middleware('can:view-M&E-reports');
+Route::post('/reports-me/job/placements/fetch', 'PlacementController@fetch')->name('reports-me/job/placements/fetch')->middleware('can:view-M&E-reports');
+Route::get('/reports-me/job/placements/{id}/view', 'PlacementController@view_meeting')->name('cg-view')->middleware('can:view-M&E-reports');
+Route::get('/download/placements/{file_name}', 'PlacementController@download')->name('cg-view')->middleware('can:view-M&E-reports');
+Route::get('/download/placements/photos/{id}', 'PlacementController@download_photos')->middleware('can:view-M&E-reports');
+Route::get('/download/placements/attendance/{id}', 'PlacementController@download_e_attendance')->middleware('can:view-M&E-reports');
+
+//tot
+Route::get('/reports-me/cg/tot', 'CarrerGuidanceController@view_tot')->name('reports-me/cg/tot')->middleware('can:view-M&E-reports');
+Route::post('/reports-me/jcg/tot/fetch', 'CarrerGuidanceController@fetch_tot')->name('reports-me/cg/tot/fetch')->middleware('can:view-M&E-reports');
+Route::get('/reports-me/cg/tot/{id}/view', 'CarrerGuidanceController@view_meeting_tot')->name('cg-view')->middleware('can:view-M&E-reports');
+Route::get('/download/cg/tot/{file_name}', 'CarrerGuidanceController@download_tot')->name('cg-view')->middleware('can:view-M&E-reports');
+Route::get('/download/cg/tot/tr/{file_name}', 'CarrerGuidanceController@download_tr')->name('cg-view')->middleware('can:view-M&E-reports');
+Route::get('/download/cg/tot/photos/{id}', 'CarrerGuidanceController@download_photos_tot')->middleware('can:view-M&E-reports');
+
+
+//audits
+Route::get('/audits', 'AuditContrller@index')->middleware('can:admin');
+Route::post('/audit/fetch', 'AuditContrller@fetch')->name('audit/fetch')->middleware('can:admin');

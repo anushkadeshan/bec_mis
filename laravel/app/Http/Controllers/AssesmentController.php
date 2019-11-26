@@ -25,7 +25,7 @@ class AssesmentController extends Controller
           $data = DB::table('employers')
             ->where('name', 'LIKE', "%{$query}%")
             ->get();
-          $output = '<ul class="dropdown-menu" id="autocomplete" style="display:block; position:relative">';
+          $output = '<ul class="dropdown-menu" id="employers" style="display:block; position:relative">';
           foreach($data as $row)
           {
            $output .= '
@@ -73,7 +73,6 @@ class AssesmentController extends Controller
     		'shifts' => $request->shifts,
     		'contract' => $request->contract,
     		'permanant' => $request->permanant,
-    		'regularly' => $request->regularly,
     		'different_locations' => $request->different_locations,
     		'disabled' => $request->disabled,
     		'hrd' => $request->hrd,
@@ -101,4 +100,79 @@ class AssesmentController extends Controller
     		return response()->json(['error'=>$validator->errors()->all()]);
     	}
     }
+
+     public function view(){
+        $meetings = DB::table('assesments')
+                      //->leftjoin('mentoring_gvt_officials','mentoring_gvt_officials.mentoring_id','=','mentoring.id')
+                      ->join('branches','branches.id','=','assesments.branch_id')
+                      ->get();
+        //dd($mentorings);       
+        //dd($participants2018);
+        $branches = DB::table('branches')->get();
+
+        $employers = DB::table('assesments')
+                   ->join('employers','employers.id','=','assesments.employer_id')
+                   ->select('employers.name as employer_name','employers.*')
+                   ->distinct()
+                   ->get();
+        return view('Activities.Reports.Job-Linking.assesment')->with(['meetings'=>$meetings,'branches'=>$branches,'employers'=>$employers]);
+    }
+
+    public function fetch(Request $request){
+        if($request->ajax())
+        {
+            if($request->dateStart != '' && $request->dateEnd != '')
+            {
+                if($request->branch !=''){
+                    $data = DB::table('assesments') 
+                        ->join('branches','branches.id','=','assesments.branch_id')
+                        ->join('employers','employers.id', '=' ,'assesments.employer_id')
+                        ->whereBetween('review_date', array($request->dateStart, $request->dateEnd))
+                        ->where('branch_id',$request->branch)
+                        ->select('assesments.*','branches.*','assesments.id as m_id','employers.*','employers.name as e_name','branches.name as branch_name')
+                        ->orderBy('review_date', 'desc')
+                        ->get();
+                }
+                else{
+                    $data = DB::table('assesments') 
+                        ->join('branches','branches.id','=','assesments.branch_id')
+                        ->join('employers','employers.id', '=' ,'assesments.employer_id')
+                        ->whereBetween('review_date', array($request->dateStart, $request->dateEnd))
+                        ->select('assesments.*','branches.*','assesments.id as m_id','employers.*','employers.name as e_name','branches.name as branch_name')
+                        ->orderBy('review_date', 'desc')
+                        ->get();
+                }
+                
+            }
+        else
+            {
+                $data = DB::table('assesments') 
+                        ->join('branches','branches.id','=','assesments.branch_id')
+                        ->join('employers','employers.id', '=' ,'assesments.employer_id')
+                        ->select('assesments.*','branches.*','assesments.id as m_id','employers.*','employers.name as e_name','branches.name as branch_name')
+                        ->orderBy('review_date', 'desc')
+                        ->get();
+            }
+                return response()->json($data);
+        }
+    }
+
+    public function view_meeting($id){
+        $meeting = DB::table('assesments')
+                   ->join('employers','employers.id', '=' ,'assesments.employer_id')
+                   ->join('branches','branches.id','=','assesments.branch_id')
+                   ->select('assesments.*','branches.*','assesments.id as m_id','employers.*','employers.name as e_name','branches.name as branch_name','employers.id as e_id')
+                   ->where('assesments.id',$id)
+                   ->first();
+
+       // dd($meeting);
+        //dd($participants);
+
+        return response()->json(array( 
+            'meeting' => $meeting,
+        ));
+        
+
+    }
+
 }

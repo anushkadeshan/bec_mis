@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use DB;
+use Zipper;
 
 class AwarenessController extends Controller
 {
@@ -81,12 +82,128 @@ class AwarenessController extends Controller
             		}
                 }
 
-
-
     	}
 
     	else{
     		return response()->json(['error'=> $validator->errors()->all()]);
     	}
+    }
+
+     public function view(){
+        $meetings = DB::table('awareness')
+                      //->leftjoin('mentoring_gvt_officials','mentoring_gvt_officials.mentoring_id','=','mentoring.id')
+                      ->join('branches','branches.id','=','awareness.branch_id')
+                      ->get();
+        //dd($mentorings);
+
+        $participants2018 = DB::table('awareness')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2018' )
+                        ->first();
+                        //->groupBy(function ($val) {
+                                // Carbon::parse($val->program_date)->format('Y');
+                        //});
+                        //->groupBy(DB::raw("year(program_date)"))
+                        
+           $participants2019 = DB::table('awareness')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2019' )
+                        ->first();            
+            $participants2020 = DB::table('awareness')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2020' )
+                        ->first();   
+            $participants2021 = DB::table('awareness')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2021' )
+                        ->first();           
+        //dd($participants2018);
+        $branches = DB::table('branches')->get();
+        return view('Activities.Reports.Job-Linking.awareness')->with(['meetings'=>$meetings,'branches'=>$branches,'participants2018'=>$participants2018,'participants2019'=>$participants2019,'participants2020'=>$participants2020,'participants2021'=>$participants2021]);
+    }
+
+    public function fetch(Request $request){
+        if($request->ajax())
+        {
+            if($request->dateStart != '' && $request->dateEnd != '')
+            {
+                if($request->branch !=''){
+                    $data = DB::table('awareness') 
+                        ->join('branches','branches.id','=','awareness.branch_id')
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->where('branch_id',$request->branch)
+                        ->select('awareness.*','branches.*','awareness.id as m_id','branches.name as branch_name')
+                        ->orderBy('program_date', 'desc')
+                        ->get();
+                }
+                else{
+                    $data = DB::table('awareness') 
+                        ->join('branches','branches.id','=','awareness.branch_id')
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->select('awareness.*','branches.*','awareness.id as m_id','branches.name as branch_name')
+                        ->orderBy('program_date', 'desc')
+                        ->get();
+                }
+                
+            }
+        else
+            {
+                $data = DB::table('awareness') 
+                        ->join('branches','branches.id','=','awareness.branch_id')
+                        ->select('awareness.*','branches.*','awareness.id as m_id','branches.name as branch_name')
+                        ->orderBy('program_date', 'desc')
+                        ->get();
+            }
+                return response()->json($data);
+        }
+    }
+
+    public function view_meeting($id){
+        $meeting = DB::table('awareness')
+                   ->join('branches','branches.id','=','awareness.branch_id')
+                   ->select('awareness.*','branches.*','awareness.id as m_id','branches.name as branch_name')
+                   ->where('awareness.id',$id)
+                   ->first();
+
+       // dd($meeting);
+        //dd($participants);
+
+        return response()->json(array( 
+            'meeting' => $meeting,
+        ));
+        
+
+    }
+
+    public function download($file_name){
+        //$file_name = $request->attendance;
+        $file = storage_path('activities/files/job-linking/awareness/attendance/'.$file_name.'');
+        //echo "<script>console.log( 'Debug Objects: " . $file_name . "' );</script>";
+
+        $headers = [
+                  'Content-Type' => 'application/pdf',
+                  'Content-Type' => 'application/msword',
+               ];
+      // return Storage::download(filePath, Appended Text);
+        return response()->file($file,$headers);
+    }
+
+    public function download_photos($id){
+        $photos = DB::table('awareness_photos')
+                  ->where('awareness_id',$id)
+                  ->select('awareness_photos.images')
+                  ->get();
+        foreach($photos as $photo){
+            //echo $photo->images;
+            $headers = ["Content-Type"=>"application/zip"];
+            //$paths = storage_path('activities/files/mentoring/images/'.$photo->image.'');
+            $zipper = Zipper::make(storage_path('activities/files/job-linking/awareness/images/'.$id.'.zip'))->add(storage_path('activities/files/job-linking/awareness/images/'.$photo->images.''))->close();
+        }
+            return response()->download(storage_path('activities/files/job-linking/awareness/images/'.$id.'.zip','photos',$headers)); 
+
+        //$photos_array = $photos->toArray();
+        //dd($photos);
+       // Zipper::make('mydir/photos.zip')->add($paths);
+       // return response()->download(('mydir/photos.zip')); 
     }
 }

@@ -29,8 +29,8 @@
                     </div>
                     <div class="card-body">
                       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false" style="background-color: #5E6971; color: white;">
-                        
-                      @can('admin')
+                      <?php $branch_id = Auth::user()->branch; ?> 
+                      @if(is_null($branch_id)) 
                       <li class="nav-item">
                         <a class="nav-link">
                             <div class="form-group">
@@ -44,6 +44,11 @@
                           </div>
                         </a>
                       </li> 
+                      @else
+                      <input type="hidden" name="branch_id" value="{{$branch_id}}">
+                      <br>  
+                      @endif
+
                       <li class="nav-item">
                         <a class="nav-link">
                             
@@ -67,11 +72,10 @@
                       </li>
                       <li class="nav-item">
                         	<a class="nav-link">
-                      			<button type="button" name="filter" id="filter" class="btn btn-primary btn-flat"><i class="fas fa-filter"></i> Filter</button>
+                      			<button type="button" name="filter" id="filter" class="btn btn-primary btn-flat"><i class="fas fa-filter"></i> Filter <i style="display:none" id="loading" class="fa fa-spinner fa-lg faa-spin animated"></i></button>
                       			<button type="button" name="refresh" id="refresh" class="btn btn-default btn-flat">Refresh</button>
                       		</a>
                       </li>
-                      @endcan
                                       
                       </ul>
                     </div>
@@ -218,6 +222,12 @@ $(document).ready(function() {
    method:"POST",
    data:{dateStart:dateStart, dateEnd:dateEnd, _token:_token,branch:branch},
    dataType:"json",
+   beforeSend: function(){
+        $('#loading').show();
+    },
+    complete: function(){
+        $('#loading').hide();
+    }, 
    success:function(data)
    {
 

@@ -474,7 +474,7 @@
    	  			$('#dsd').empty();
 
    	  			$.each(data, function(index, dsObj){
-   	  				$('#dsd').append('<option value="'+dsObj.ID+'">'+dsObj.DSD_Name+'</option>');
+   	  				$('#dsd').append('<option value="'+dsObj.DSD_Name+'">'+dsObj.DSD_Name+'</option>');
 
    	  			});
    	  		});
@@ -549,7 +549,7 @@ $(document).ready(function(){
               }
           });
 
-          $(document).on('click', '#autocomplete li', function(){  
+          $(document).on('click', '#employers li', function(){  
             $('#employer_list').fadeOut(); 
               $('#employer_name').val($(this).text()); 
               $('#employer_name').focus(); 
@@ -637,7 +637,7 @@ $(document).ready(function(){
   })
 </script>
 <style type="text/css" media="screen">
-  #autocomplete, #institute, #course, #youths {
+  #autocomplete, #employers, #youths {
     position: absolute;
     z-index: 1000;
     cursor: default;
@@ -653,10 +653,10 @@ $(document).ready(function(){
        -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
             box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
-#autocomplete,  #institute, #course, #youths> li {
+#autocomplete,  #employers, #youths > li {
   padding: 3px 20px;
 }
-#autocomplete, #institute, #course, #youths > li.ui-state-focus {
+#autocomplete, #employers, #youths > li.ui-state-focus {
   background-color: #DDD;
 }
 .ui-helper-hidden-accessible {

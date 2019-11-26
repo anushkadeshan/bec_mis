@@ -300,7 +300,7 @@
    	  			$('#dsd').empty();
 
    	  			$.each(data, function(index, dsObj){
-   	  				$('#dsd').append('<option value="'+dsObj.ID+'">'+dsObj.DSD_Name+'</option>');
+   	  				$('#dsd').append('<option value="'+dsObj.DSD_Name+'">'+dsObj.DSD_Name+'</option>');
 
    	  			});
    	  		});
@@ -351,6 +351,9 @@ $(document).ready(function(){
 
             }
             else{
+                $('#loading').hide();
+               toastr.error('May be youth details are mismatched !', 'Something Error !')
+
              printValidationErrors(data.error);
               
             }         
@@ -358,7 +361,7 @@ $(document).ready(function(){
 
             error: function (jqXHR, exception) {    
                 console.log(jqXHR);
-                toastr.error('Error !', 'Something Error')
+                toastr.error('May be youth details are mismatched !', 'Something Error')
             },
         });
     });

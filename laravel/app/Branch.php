@@ -5,8 +5,12 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\CareerGuidance;
 
-class Branch extends Model
+use OwenIt\Auditing\Contracts\Auditable;
+
+class Branch extends Model implements Auditable
 {
+    
+    use \OwenIt\Auditing\Auditable;
     protected $fillable = ['name','ext'];
 
     public function youths(){

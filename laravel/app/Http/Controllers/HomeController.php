@@ -246,7 +246,7 @@ class HomeController extends Controller
 
                    //tasks
 
-                   $tasks = DB::table('todos')->get();
+                   $tasks = DB::table('todos')->orderBy('todos.id','DESC')->take(50)->get();
                     return view('home')->with(['employers_count'=>$employers_count,'vacancies_count'=>$vacancies_count,'institutes_count'=>$institutes_count,'courses_count'=>$courses_count,'count_cg'=>$count_cg,'count_soft_skills'=> $count_soft_skills,'count_vt'=>$count_vt,'count_prof'=>$count_prof,'count_jobs'=>$count_jobs,'count_youth'=>$count_youth,'targets'=>$targets,'applications'=>$applications,'new_application_count'=> $new_application_count,'followers'=>$followers,'new_follower_count'=>$new_follower_count,'tasks'=>$tasks]);
                 break;
 

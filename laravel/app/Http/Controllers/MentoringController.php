@@ -6,13 +6,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Zipper;
 use Carbon\Carbon;
+use Auth;
+
 class MentoringController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth');
     }
-
+ 
     public function index(){
     	$districts = DB::table('districts')->get();
     	$managers = DB::table('branches')->select('manager')->distinct()->get();
@@ -125,22 +127,19 @@ class MentoringController extends Controller
     }
 
     public function view(){
-        $mentorings = DB::table('mentoring')
+
+        $branch_id = Auth::user()->branch;
+        if(is_null($branch_id)){
+            $mentorings = DB::table('mentoring')
                       //->leftjoin('mentoring_gvt_officials','mentoring_gvt_officials.mentoring_id','=','mentoring.id')
                       ->join('branches','branches.id','=','mentoring.branch_id')
                       ->get();
-        //dd($mentorings);
 
-        $participants2018 = DB::table('mentoring')                        
+            $participants2018 = DB::table('mentoring')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
                         ->where(DB::raw('YEAR(meeting_date)'), '=', '2018' )
                         ->first();
-                        //->groupBy(function ($val) {
-                                // Carbon::parse($val->meeting_date)->format('Y');
-                        //});
-                        //->groupBy(DB::raw("year(meeting_date)"))
-                        
-           $participants2019 = DB::table('mentoring')                        
+            $participants2019 = DB::table('mentoring')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
                         ->where(DB::raw('YEAR(meeting_date)'), '=', '2019' )
                         ->first();            
@@ -151,8 +150,49 @@ class MentoringController extends Controller
             $participants2021 = DB::table('mentoring')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
                         ->where(DB::raw('YEAR(meeting_date)'), '=', '2021' )
+                        ->first();
+
+        }
+        else{
+            $mentorings = DB::table('mentoring')
+                      //->leftjoin('mentoring_gvt_officials','mentoring_gvt_officials.mentoring_id','=','mentoring.id')
+                      ->join('branches','branches.id','=','mentoring.branch_id')                    
+                      ->where('mentoring.branch_id','=',$branch_id)
+
+                      ->get();
+        
+        //dd($mentorings);
+
+        $participants2018 = DB::table('mentoring')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2018' )
+                        ->where('mentoring.branch_id','=',$branch_id)
+                        ->first();
+                        //->groupBy(function ($val) {
+                                // Carbon::parse($val->meeting_date)->format('Y');
+                        //});
+                        //->groupBy(DB::raw("year(meeting_date)"))
+                        
+           $participants2019 = DB::table('mentoring')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2019' )
+                        ->where('mentoring.branch_id','=',$branch_id)
+
+                        ->first();            
+            $participants2020 = DB::table('mentoring')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2020' )
+                        ->where('mentoring.branch_id','=',$branch_id)
+
+                        ->first();   
+            $participants2021 = DB::table('mentoring')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2021' )
+                        ->where('mentoring.branch_id','=',$branch_id)
+
                         ->first();           
         //dd($participants2018);
+        }
         $branches = DB::table('branches')->get();
         return view('Activities.Reports.Education.mentoring')->with(['mentorings'=>$mentorings,'branches'=>$branches,'participants2018'=>$participants2018,'participants2019'=>$participants2019,'participants2020'=>$participants2020,'participants2021'=>$participants2021]);
     }
@@ -162,6 +202,8 @@ class MentoringController extends Controller
         {
             if($request->dateStart != '' && $request->dateEnd != '')
             {
+                $branch_id = Auth::user()->branch;
+                
                 if($request->branch !=''){
                     $data = DB::table('mentoring') 
                         ->join('branches','branches.id','=','mentoring.branch_id')
@@ -173,24 +215,53 @@ class MentoringController extends Controller
                         ->get();
                 }
                 else{
+                    
+                    if(is_null($branch_id)){
+
                     $data = DB::table('mentoring') 
                         ->join('branches','branches.id','=','mentoring.branch_id')
                         ->join('resourse_people','resourse_people.id', '=', 'mentoring.resourse_person_id')
                         ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        //->where('mentoring.branch_id','=',$branch_id)
                         ->select('mentoring.*','branches.*','mentoring.id as m_id','resourse_people.*','resourse_people.name as r_name')
                         ->orderBy('meeting_date', 'desc')
                         ->get();
+                    }
+                    else{
+                        $data = DB::table('mentoring') 
+                        ->join('branches','branches.id','=','mentoring.branch_id')
+                        ->join('resourse_people','resourse_people.id', '=', 'mentoring.resourse_person_id')
+                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->where('mentoring.branch_id','=',$branch_id)
+                        ->select('mentoring.*','branches.*','mentoring.id as m_id','resourse_people.*','resourse_people.name as r_name')
+                        ->orderBy('meeting_date', 'desc')
+                        ->get();
+                    }
                 }
                 
             }
         else
             {
-                $data = DB::table('mentoring') 
+                
+                $branch_id = Auth::user()->branch;
+                if(is_null($branch_id)){
+                    $data = DB::table('mentoring') 
                         ->join('branches','branches.id','=','mentoring.branch_id')
                         ->join('resourse_people','resourse_people.id', '=' ,'mentoring.resourse_person_id')
                         ->select('mentoring.*','branches.*','mentoring.id as m_id','resourse_people.*','resourse_people.name as r_name')
                         ->orderBy('meeting_date', 'desc')
                         ->get();
+                }
+                else{
+                    $data = DB::table('mentoring') 
+                        ->join('branches','branches.id','=','mentoring.branch_id')
+                        ->join('resourse_people','resourse_people.id', '=' ,'mentoring.resourse_person_id')
+                        ->select('mentoring.*','branches.*','mentoring.id as m_id','resourse_people.*','resourse_people.name as r_name')
+                        ->where('mentoring.branch_id','=',$branch_id)
+                        ->orderBy('meeting_date', 'desc')
+                        ->get();
+                }
+                
             }
                 return response()->json($data);
         }

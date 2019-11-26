@@ -4,8 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Family extends Model
+use OwenIt\Auditing\Contracts\Auditable;
+
+class Family extends Model implements Auditable
 {
+    
+    use \OwenIt\Auditing\Auditable;
 	public $timestamps = true;
     protected $fillable = ['district','ds_division','gn_division','head_of_household','nic_head_of_household','address','family_type','total_income','total_members'] ;
 

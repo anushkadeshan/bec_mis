@@ -5,8 +5,12 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
 use App\Youth;
 
-class Employer extends Model
+use OwenIt\Auditing\Contracts\Auditable;
+
+class Employer extends Model implements Auditable
 {
+    
+    use \OwenIt\Auditing\Auditable;
 	use Notifiable;
     public $timestamps = true;
     protected $fillable=['name','address','company_type', 'industry','user_id','phone' , 'email','added_by'];

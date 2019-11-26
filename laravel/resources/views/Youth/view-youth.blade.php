@@ -125,6 +125,12 @@
 								<input type="checkbox" class="jobs" data-id="{{$youth->youth_id}}" @if ($youth->jobs) checked @endif>
 								<label>&nbsp; Job</label>
 							</form>
+                            <form id="bss" name="bss" style="margin-bottom: 5px;">
+                                {{csrf_field()}}
+
+                                <input type="checkbox" class="bss" data-id="{{$youth->youth_id}}" @if ($youth->bss) checked @endif>
+                                <label>&nbsp; BSS Provided</label>
+                            </form>
         				</td>
         				<td>
         					@can('view-youth')
@@ -308,6 +314,31 @@ $(document).ready(function(){
         $.ajax({
             type: 'POST',
             url: SITE_URL + '/progress-jobs',
+                      
+            data: {
+                '_token': $('input[name=_token]').val(),
+                'youth_id': id
+            },
+                      
+            success: function(data) {
+                          
+            toastr.success('Progress Successfully Added ! ', 'Congratulations', {timeOut: 5000});
+                          
+            },
+  
+            error: function (jqXHR, exception) {    
+                console.log(jqXHR);
+                toastr.error('Something Error !', 'Status not Changed!')
+            },
+        });
+        });
+
+    //bss checked 
+    $(document).on('ifClicked', '.bss', function(){    
+        id = $(this).data('id');
+        $.ajax({
+            type: 'POST',
+            url: SITE_URL + '/progress-bss',
                       
             data: {
                 '_token': $('input[name=_token]').val(),

@@ -279,7 +279,7 @@
    	  			$('#dsd').empty();
 
    	  			$.each(data, function(index, dsObj){
-   	  				$('#dsd').append('<option value="'+dsObj.ID+'">'+dsObj.DSD_Name+'</option>');
+   	  				$('#dsd').append('<option value="'+dsObj.DSD_Name+'">'+dsObj.DSD_Name+'</option>');
 
    	  			});
    	  		});

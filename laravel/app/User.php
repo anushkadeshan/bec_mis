@@ -8,8 +8,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use \Cache;
 use Laravel\Passport\HasApiTokens;
 
-class User extends Authenticatable 
+use OwenIt\Auditing\Contracts\Auditable;
+   
+    
+class User extends Authenticatable implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
     use HasApiTokens, Notifiable;
     public $timestamps = true;
     /**

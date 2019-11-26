@@ -414,6 +414,8 @@ $(document).ready(function(){
 
             }
             else{
+            	$('#loading').hide();
+               toastr.error('May be youth details are mismatched !', 'Something Error !');	
              printValidationErrors(data.error);
               
             }         

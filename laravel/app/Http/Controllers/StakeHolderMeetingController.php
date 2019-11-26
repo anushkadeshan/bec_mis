@@ -6,6 +6,7 @@ use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Zipper;
+use Auth;
 
 class StakeHolderMeetingController extends Controller
 {
@@ -98,22 +99,24 @@ class StakeHolderMeetingController extends Controller
     }
 
     public function view(){
-        $meetings = DB::table('stake_holder_meetings')
-                      //->leftjoin('mentoring_gvt_officials','mentoring_gvt_officials.mentoring_id','=','mentoring.id')
-                      ->join('branches','branches.id','=','stake_holder_meetings.branch_id')
-                      ->get();
-        //dd($mentorings);
+        $branch_id = Auth::user()->branch;
+        if(is_null($branch_id)){
+            $meetings = DB::table('stake_holder_meetings')
+                          //->leftjoin('mentoring_gvt_officials','mentoring_gvt_officials.mentoring_id','=','mentoring.id')
+                          ->join('branches','branches.id','=','stake_holder_meetings.branch_id')
+                          ->get();
+            //dd($mentorings);
 
-        $participants2018 = DB::table('stake_holder_meetings')                        
-                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"))
-                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2018' )
-                        ->first();
-                        //->groupBy(function ($val) {
-                                // Carbon::parse($val->meeting_date)->format('Y');
-                        //});
-                        //->groupBy(DB::raw("year(meeting_date)"))
-                        
-           $participants2019 = DB::table('stake_holder_meetings')                        
+            $participants2018 = DB::table('stake_holder_meetings')                        
+                            ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"))
+                            ->where(DB::raw('YEAR(meeting_date)'), '=', '2018' )
+                            ->first();
+                            //->groupBy(function ($val) {
+                                    // Carbon::parse($val->meeting_date)->format('Y');
+                            //});
+                            //->groupBy(DB::raw("year(meeting_date)"))
+                            
+            $participants2019 = DB::table('stake_holder_meetings')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"))
                         ->where(DB::raw('YEAR(meeting_date)'), '=', '2019' )
                         ->first();            
@@ -124,9 +127,46 @@ class StakeHolderMeetingController extends Controller
             $participants2021 = DB::table('stake_holder_meetings')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"))
                         ->where(DB::raw('YEAR(meeting_date)'), '=', '2021' )
-                        ->first();           
+                        ->first();  
+        }
+        else{
+            $meetings = DB::table('stake_holder_meetings')
+                      //->leftjoin('mentoring_gvt_officials','mentoring_gvt_officials.mentoring_id','=','mentoring.id')
+                      ->join('branches','branches.id','=','stake_holder_meetings.branch_id')
+                      ->where('stake_holder_meetings.branch_id','=',$branch_id)
+                      ->get();
+            //dd($mentorings);
+
+            $participants2018 = DB::table('stake_holder_meetings')                        
+                            ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"))
+                            ->where(DB::raw('YEAR(meeting_date)'), '=', '2018' )
+                            ->where('stake_holder_meetings.branch_id','=',$branch_id)
+                            ->first();
+                            //->groupBy(function ($val) {
+                                    // Carbon::parse($val->meeting_date)->format('Y');
+                            //});
+                            //->groupBy(DB::raw("year(meeting_date)"))
+                            
+            $participants2019 = DB::table('stake_holder_meetings')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2019' )
+                        ->where('stake_holder_meetings.branch_id','=',$branch_id)
+                        ->first();     
+
+            $participants2020 = DB::table('stake_holder_meetings')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2020' )
+                        ->where('stake_holder_meetings.branch_id','=',$branch_id)
+                        ->first();   
+
+            $participants2021 = DB::table('stake_holder_meetings')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2021' )
+                        ->where('stake_holder_meetings.branch_id','=',$branch_id)
+                        ->first(); 
+        }         
         //dd($participants2018);
-        $branches = DB::table('branches')->get();
+        $branches = DB::table('branches')->get(); 
         return view('Activities.Reports.career-guidance.stake-holder')->with(['meetings'=>$meetings,'branches'=>$branches,'participants2018'=>$participants2018,'participants2019'=>$participants2019,'participants2020'=>$participants2020,'participants2021'=>$participants2021]);
     }
 
@@ -135,6 +175,8 @@ class StakeHolderMeetingController extends Controller
         {
             if($request->dateStart != '' && $request->dateEnd != '')
             {
+                $branch_id = Auth::user()->branch;
+
                 if($request->branch !=''){
                     $data = DB::table('stake_holder_meetings') 
                         ->join('branches','branches.id','=','stake_holder_meetings.branch_id')
@@ -145,24 +187,48 @@ class StakeHolderMeetingController extends Controller
                         ->get();
                 }
                 else{
+                    
+                    if(is_null($branch_id)){
+
                     $data = DB::table('stake_holder_meetings') 
                         ->join('branches','branches.id','=','stake_holder_meetings.branch_id')
                         ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
                         ->select('stake_holder_meetings.*','branches.*','stake_holder_meetings.id as m_id')
-
+                        //->where('stake_holder_meetings.branch_id','=',$branch_id)
                         ->orderBy('meeting_date', 'desc')
                         ->get();
+                    }
+                    else{
+                        $data = DB::table('stake_holder_meetings') 
+                        ->join('branches','branches.id','=','stake_holder_meetings.branch_id')
+                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->select('stake_holder_meetings.*','branches.*','stake_holder_meetings.id as m_id')
+                        ->where('stake_holder_meetings.branch_id','=',$branch_id)
+                        ->orderBy('meeting_date', 'desc')
+                        ->get();
+                    }
                 }
                 
             }
         else
             {
-                $data = DB::table('stake_holder_meetings') 
+                $branch_id = Auth::user()->branch;
+                if(is_null($branch_id)){
+                    $data = DB::table('stake_holder_meetings') 
                         ->join('branches','branches.id','=','stake_holder_meetings.branch_id')
                         ->select('stake_holder_meetings.*','branches.*','stake_holder_meetings.id as m_id')
-
                         ->orderBy('meeting_date', 'desc')
                         ->get();
+                }
+                else{
+                    $data = DB::table('stake_holder_meetings') 
+                        ->join('branches','branches.id','=','stake_holder_meetings.branch_id')
+                        ->select('stake_holder_meetings.*','branches.*','stake_holder_meetings.id as m_id')
+                        ->where('stake_holder_meetings.branch_id','=',$branch_id)
+                        ->orderBy('meeting_date', 'desc')
+                        ->get();
+                }
+                
             }
                 return response()->json($data);
         }

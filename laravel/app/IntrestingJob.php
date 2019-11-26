@@ -4,8 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class IntrestingJob extends Model
+use OwenIt\Auditing\Contracts\Auditable;
+
+class IntrestingJob extends Model implements Auditable
 {
+    
+    use \OwenIt\Auditing\Auditable;
 
 public $timestamps = true;   
 protected $fillable = ['industry','location','profession_adequate','plan_to_meet_qualifications','details','experience','min_salary','intresting_courses','youth_id'];

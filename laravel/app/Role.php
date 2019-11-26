@@ -5,8 +5,12 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use App\User;
 
-class Role extends Model
+use OwenIt\Auditing\Contracts\Auditable;
+
+class Role extends Model implements Auditable
 {
+    
+    use \OwenIt\Auditing\Auditable;
     public $timestamps = true;
     protected $fillable=[ 'name','slug','permissions'];
 

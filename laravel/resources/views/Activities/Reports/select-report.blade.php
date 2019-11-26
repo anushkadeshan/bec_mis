@@ -78,7 +78,7 @@
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="{{Route('reports/personal')}}" class="nav-link">
+							<a href="{{url('/reports-me/cg/tot')}}" class="nav-link">
 	      						<p>
 	              					ToT on Career guidance
 	      							<i class="fa fa-angle-right right"></i>
@@ -86,7 +86,7 @@
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="{{Route('reports/personal')}}" class="nav-link">
+							<a href="{{url('/reports-me/cg/cg')}}" class="nav-link">
 	      						<p>
 	              					CG & Career fair workshop 
 	      							<i class="fa fa-angle-right right"></i>
@@ -102,7 +102,7 @@
 							</a>
 						</li>
 			            <li class="nav-item">
-			                <a href="{{Route('reports/location')}}" class="nav-link">
+			                <a href="{{url('/reports-me/cg/pes')}}" class="nav-link">
 			                    <p>
 			                      Gap identification of PES unit
 			                      <i class="fa fa-angle-right right"></i>
@@ -110,7 +110,7 @@
 			                </a>
 			            </li>
 						<li class="nav-item">
-			                <a href="{{Route('reports/location')}}" class="nav-link">
+			                <a href="{{url('/reports-me/cg/pes-support')}}" class="nav-link">
 			                    <p>
 			                       Material support for PES units
 			                      <i class="fa fa-angle-right right"></i>
@@ -118,7 +118,7 @@
 			                </a>
 			            </li>
 			            <li class="nav-item">
-			                <a href="{{Route('reports/location')}}" class="nav-link">
+			                <a href="{{url('/reports-me/cg/cg-training')}}" class="nav-link">
 			                    <p>
 			                      Training on Career counselling <br>	 for GND level officers 
 			                      <i class="fa fa-angle-right right"></i>
@@ -146,7 +146,7 @@
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="{{Route('reports/personal')}}" class="nav-link">
+							<a href="{{Route('reports-me/skill/gvt-support')}}" class="nav-link text-danger">
 	      						<p>
 	              					Support for course enrollment & <br> Directing to follow VT/Professional <br> courses at govt. institutions 
 	      							<i class="fa fa-angle-right right"></i>
@@ -154,7 +154,7 @@
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="{{Route('reports/personal')}}" class="nav-link">
+							<a href="{{url('reports-me/skill/soft-skill')}}" class="nav-link text-danger">
 	      						<p>
 	              					Soft Skill training 
 	      							<i class="fa fa-angle-right right"></i>
@@ -162,7 +162,7 @@
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="{{Route('reports/personal')}}" class="nav-link">
+							<a href="{{url('reports-me/skill/financial')}}" class="nav-link">
 	      						<p>
 	              					Financial assistance to follow <br>	 VT/Professional courses
 	      							<i class="fa fa-angle-right right"></i>
@@ -170,7 +170,7 @@
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="{{Route('reports/personal')}}" class="nav-link">
+							<a href="{{url('reports-me/skill/partnership')}}" class="nav-link">
 	      						<p>
 	              					Partnership Training
 	      							<i class="fa fa-angle-right right"></i>
@@ -186,7 +186,7 @@
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="{{Route('reports/personal')}}" class="nav-link">
+							<a href="{{Route('reports-me/skill/institute-review')}}" class="nav-link">
 	      						<p>
 	              					Review of institutions 
 	      							<i class="fa fa-angle-right right"></i>
@@ -194,7 +194,7 @@
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="{{Route('reports/personal')}}" class="nav-link">
+							<a href="{{Route('reports-me/skill/incoperate-soft-skills')}}" class="nav-link">
 	      						<p>
 	              					Incorporation of soft skill <br>component 
 	      							<i class="fa fa-angle-right right"></i>
@@ -202,7 +202,7 @@
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="{{Route('reports/personal')}}" class="nav-link">
+							<a href="{{Route('reports-me/skill/tvec-meeting')}}" class="nav-link">
 	      						<p>
 	              					Meetings between TVEC & Institutes
 	      							<i class="fa fa-angle-right right"></i>
@@ -230,7 +230,7 @@
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="{{Route('reports/personal')}}" class="nav-link">
+							<a href="{{url('reports-me/job/assesment')}}" class="nav-link">
 	      						<p>
 	              					Work place assessment 
 	      							<i class="fa fa-angle-right right"></i>
@@ -238,7 +238,7 @@
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="{{Route('reports/personal')}}" class="nav-link">
+							<a href="{{url('reports-me/job/awareness')}}" class="nav-link">
 	      						<p>
 	              					Awareness on work place <br>	conditions
 	      							<i class="fa fa-angle-right right"></i>
@@ -246,7 +246,7 @@
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="{{Route('reports/personal')}}" class="nav-link">
+							<a href="{{Route('reports-me/job/placements')}}" class="nav-link">
 	      						<p>
 	              					Job Interviews
 	      							<i class="fa fa-angle-right right"></i>
@@ -256,8 +256,7 @@
         			</ul>
         		</div>
             </div>
-		</div>
-		
+		</div>	
 	</div>
 </div>
 @endsection

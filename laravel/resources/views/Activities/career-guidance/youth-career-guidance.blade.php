@@ -236,53 +236,9 @@
               <button type="button" id="youth" class="btn btn-info btn-flat">Next</button>  
             </div>
             <div class="tab-pane" id="tab_4">
-              <h5 class="text-muted"> No. of youth identified to support on VT/Professional education</h5>
-              <div class="form-group">
-  
-                  <table class="table table-bordered" id="dynamic_field">
-              <thead>
-                <tr>
-                  <th scope="col">Identified requirement</th>
-                  <th scope="col">Male</th>
-                  <th scope="col">Female</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th><label>No. of youth in immediate job search</label>
-                  <input type="hidden" name="requirement[]"  value="No. of youth in immediate job search" class="form-control name-list"></th>
-                  <td><input type="number" name="male[]" class="form-control branch-list"></td>
-                  <td><input type="number" name="female[]" class="form-control branch-list"></td>
-                </tr>
-                <tr>
-                  <th><label>No. of youth need soft skill training prior to job placement/VT/professional training</label>
-                  <input type="hidden" name="requirement[]"  value="No. of youth need soft skill training prior to job placement/VT/professional training" class="form-control name-list"></th>
-                  <td><input type="number" name="male[]" class="form-control branch-list"></td>
-                  <td><input type="number" name="female[]" class="form-control branch-list"></td>
-                </tr>
-                <tr>
-                  <th><label>No. of youth identified to support on VT courses</label>
-                  <input type="hidden" name="requirement[]"  value="No. of youth identified to support on VT courses" class="form-control name-list"></th>
-                  <td><input type="number" name="male[]" class="form-control branch-list"></td>
-                  <td><input type="number" name="female[]" class="form-control branch-list"></td>
-                </tr>
-                <tr>
-                  <th><label>No. of youth identified to support on professional courses</label>
-                  <input type="hidden" name="requirement[]"  value="No. of youth identified to support on professional courses" class="form-control name-list"></th>
-                  <td><input type="number" name="male[]" class="form-control branch-list"></td>
-                  <td><input type="number" name="female[]" class="form-control branch-list"></td>
-                </tr>
-                <tr>
-                  <th><label>Youth who need further assistance in identifying a career</label>
-                  <input type="hidden" name="requirement[]"  value="Youth who need further assistance in identifying a career" class="form-control name-list"></th>
-                  <td><input type="number" name="male[]" class="form-control branch-list"></td>
-                  <td><input type="number" name="female[]" class="form-control branch-list"></td>
-                </tr>
-                
-              </tbody>
-            </table>
+              <h5 class="text-muted"> Youth Participated to CG Program</h5>
 
-            <div class="row container" style="background-color: #5E6971; color: white; padding: 15px">
+              <div class="row container" style="background-color: #5E6971; color: white; padding: 15px">
                 <div class="col-md-6">
                   <div class="form-group">
                 <label for="dm_name">Search Youth by name or NIC and copy youth id </label>
@@ -337,11 +293,61 @@
                 
               </tbody>
             </table>
-            
               </div>
+              <div class="card card-body">
+                
+              
+              <h5 class="text-muted"> No. of youth identified to support on VT/Professional education</h5>
+              <div class="form-group">
+  
+                  <table class="table table-bordered" id="dynamic_field">
+              <thead>
+                <tr>
+                  <th scope="col">Identified requirement</th>
+                  <th scope="col">Male</th>
+                  <th scope="col">Female</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th><label>No. of youth in immediate job search</label>
+                  <input type="hidden" name="requirement[]"  value="No. of youth in immediate job search" class="form-control name-list"></th>
+                  <td><input type="number" name="male[]" class="form-control branch-list"></td>
+                  <td><input type="number" name="female[]" class="form-control branch-list"></td>
+                </tr>
+                <tr>
+                  <th><label>No. of youth need soft skill training prior to job placement/VT/professional training</label>
+                  <input type="hidden" name="requirement[]"  value="No. of youth need soft skill training prior to job placement/VT/professional training" class="form-control name-list"></th>
+                  <td><input type="number" name="male[]" class="form-control branch-list"></td>
+                  <td><input type="number" name="female[]" class="form-control branch-list"></td>
+                </tr>
+                <tr>
+                  <th><label>No. of youth identified to support on VT courses</label>
+                  <input type="hidden" name="requirement[]"  value="No. of youth identified to support on VT courses" class="form-control name-list"></th>
+                  <td><input type="number" name="male[]" class="form-control branch-list"></td>
+                  <td><input type="number" name="female[]" class="form-control branch-list"></td>
+                </tr>
+                <tr>
+                  <th><label>No. of youth identified to support on professional courses</label>
+                  <input type="hidden" name="requirement[]"  value="No. of youth identified to support on professional courses" class="form-control name-list"></th>
+                  <td><input type="number" name="male[]" class="form-control branch-list"></td>
+                  <td><input type="number" name="female[]" class="form-control branch-list"></td>
+                </tr>
+                <tr>
+                  <th><label>Youth who need further assistance in identifying a career</label>
+                  <input type="hidden" name="requirement[]"  value="Youth who need further assistance in identifying a career" class="form-control name-list"></th>
+                  <td><input type="number" name="male[]" class="form-control branch-list"></td>
+                  <td><input type="number" name="female[]" class="form-control branch-list"></td>
+                </tr>
+                
+              </tbody>
+            </table>
+
+            </div>
+            </div>
               <button type="button" id="test" class="btn btn-info btn-flat">Next</button>  
             
-              </div>
+              
             </div>
             <div class="tab-pane" id="tab_5">
               <h5 class="text-muted">Summary of the career test(Refer the career test format)</h5>
@@ -559,18 +565,21 @@ $(document).ready(function(){
             success: function(data) {
               if($.isEmptyObject(data.error)){              
               toastr.success('Succesfully Add Career guidance and career fair Details ! ', 'Congratulations', {timeOut: 5000});
-        $("#cg")[0].reset();
+              $("#cg")[0].reset();
 
             }
             else{
+             toastr.error('Something Error !', 'May be youth details are mismatched');
              printValidationErrors(data.error);
+             return false;
               
             }         
         },
 
             error: function (jqXHR, exception) {    
                 console.log(jqXHR);
-                toastr.error('Error !', 'Something Error')
+                toastr.error('Something Error !', 'May be youth details are mismatched');
+                
             },
         });
     });

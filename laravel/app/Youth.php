@@ -7,9 +7,13 @@ use App\Course;
 use App\CareerGuidance;
 use App\Vacancy;
 use App\Employer;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Youth extends Model
+class Youth extends Model implements Auditable
 {
+    
+    use \OwenIt\Auditing\Auditable;
+
     public $timestamps = true;
     
     protected $fillable = ['name', 'full_name',	'gender', 'nic'	,'phone','email','birth_date','driving_licence','maritial_status',	'nationality', 'disability','reason','highest_qualification','family_id','added_by','branch_id'];
