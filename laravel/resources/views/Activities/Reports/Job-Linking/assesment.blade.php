@@ -12,7 +12,7 @@
           <div class="col-md-4">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{Route('home')}}">Dashboard</a></li>
-              <li class="breadcrumb-item"><a href="{{url('m&e-reports')}}">Reprots</a></li>
+              <li class="breadcrumb-item"><a href="{{url('m&e-reports')}}">Reports</a></li>
               <li class="breadcrumb-item active">4.2.1</li>
             </ol>
           </div>
@@ -30,7 +30,8 @@
                     <div class="card-body">
                       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false" style="background-color: #5E6971; color: white;">
                         
-                      @can('admin')
+                      <?php $branch_id = Auth::user()->branch; ?> 
+                      @if(is_null($branch_id))
                       <li class="nav-item">
                         <a class="nav-link">
                             <div class="form-group">
@@ -44,6 +45,9 @@
                           </div>
                         </a>
                       </li> 
+                      @else
+                      <input type="hidden" name="branch_id" value="{{$branch_id}}"> 
+                      @endif
                       <li class="nav-item">
                         <a class="nav-link">
                             
@@ -65,7 +69,7 @@
                           </div>
                         </a>
                       </li>
-                      <li class="nav-item">
+                     <!-- <li class="nav-item">
                         <a class="nav-link">
                             <div class="form-group">
                             <label for="disability">Employer &nbsp;&nbsp;</label>
@@ -78,13 +82,13 @@
                           </div>
                         </a>
                       </li> 
+                    -->
                       <li class="nav-item">
                           <a class="nav-link">
                             <button type="button" name="filter" id="filter" class="btn btn-primary btn-flat"><i id="loading" class="fas fa-filter"></i> Filter</button>
                             <button type="button" name="refresh" id="refresh" class="btn btn-default btn-flat">Refresh</button>
                           </a>
                       </li>
-                      @endcan
                                       
                       </ul>
                     </div>
@@ -341,12 +345,12 @@ var dataTable = $("#example").DataTable({
 
  fetch_data();
 
- function fetch_data(dateStart = '', dateEnd = '',branch='' ,course='',employer='')
+ function fetch_data(dateStart = '', dateEnd = '',branch='' /*,course='',employer=''*/)
  {
   $.ajax({
    url:"{{ url('reports-me/job/assesment/fetch') }}",
    method:"POST",
-   data:{dateStart:dateStart, dateEnd:dateEnd, _token:_token,branch:branch,employer:employer},
+   data:{dateStart:dateStart, dateEnd:dateEnd, _token:_token,branch:branch/*,employer:employer*/},
    dataType:"json",
    beforeSend: function(){
      $("#loading").attr('class', 'fa fa-spinner fa-lg faa-spin animated');
@@ -364,7 +368,7 @@ var dataTable = $("#example").DataTable({
   $.each(data, function(index, value) {
     //console.log(value);
     // use data table row.add, then .draw for table refresh
-    dataTable.row.add([count++, value.review_date, value.e_name, value.head_of_org, value.branch_name,'<button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button>']).draw();
+    dataTable.row.add([count++, value.review_date, value.e_name, value.head_of_org, value.branch_name,'<div class="btn-group"><button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button><a href="{{url('reports-me/assesment')}}/'+value.m_id+'/edit"><button type="button" name="view" class="btn btn-success btn-flat btn-sm"><i class="fa fa-edit"></i></button></a></div>']).draw();
 
   });
    
@@ -377,7 +381,7 @@ var dataTable = $("#example").DataTable({
   var dateStart = $('#dateStart').val();
   var dateEnd = $('#dateEnd').val();
   var branch = $('#branch_id').val();
-  var employer = $('#employer_id').val();
+  //var employer = $('#employer_id').val();
   if(dateStart != '' &&  dateEnd != '')
   {
    fetch_data(dateStart, dateEnd, branch,employer);
@@ -393,7 +397,7 @@ var dataTable = $("#example").DataTable({
   $('#dateStart').val('');
   $('#dateEnd').val('');
   $('#branch_id').val('');
-  $('#employer_id').val('');
+ // $('#employer_id').val('');
   fetch_data();
  });
  }

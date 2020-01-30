@@ -15,8 +15,17 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('notification', require('./components/Notification.vue'));
+Vue.component('ExampleComponent', require('./components/ExampleComponent.vue'));
 
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+
+    created(){
+    	Echo.private('App.User.'+winow.Laravel.userId).notification((notification) => {
+			console.log('Notification received ', notification);
+			alert(notification);
+		});
+    }
+
 });
+

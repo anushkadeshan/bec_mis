@@ -6,7 +6,11 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-
+use Auth;
+use Illuminate\Support\Facades\URL;
+use App\Audit;
+use App\User;
+use App\Notifications\CompletionReport;
 
 class PartnershipTrainingController extends Controller
 {
@@ -94,6 +98,25 @@ class PartnershipTrainingController extends Controller
                     return response()->json(['error' => 'Youth details are mismathced.']);
 
               }
+
+              $audit = array(
+                    'user_type' => 'App\User',
+                    'user_id' => Auth::user()->id,
+                    'event' => 'created',
+                    'auditable_type' => 'partner_trainings',
+                    'auditable_id' => $partner_trainings_id,
+                    'url' => url()->current(),
+                    'ip_address' => request()->ip(),
+                    'user_agent' => $request->header('User-Agent'),
+
+                );
+
+                $reports = Audit::create($audit);
+
+                $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin','management' ]);})->get();
+                foreach ($notifyTo as $notifyUser) {
+                    $notifyUser->notify(new CompletionReport($reports));
+                }
             }
             else{
                 return response()->json(['error' => $validator->errors()->all()]);
@@ -102,6 +125,8 @@ class PartnershipTrainingController extends Controller
     }
 
     public function view(){
+        $branch_id = Auth::user()->branch;
+        if(is_null($branch_id)){
         $meetings = DB::table('partner_trainings')
                       //->leftjoin('mentoring_gvt_officials','mentoring_gvt_officials.mentoring_id','=','mentoring.id')
                       ->join('branches','branches.id','=','partner_trainings.branch_id')
@@ -150,6 +175,67 @@ class PartnershipTrainingController extends Controller
         $contribution = DB::table('partner_trainings')
                ->select(DB::raw("SUM(bec_contribution) as bec"),DB::raw("SUM(partner_contribution) as partner"),DB::raw("SUM(student_contribution) as student"))
                ->first();
+        }
+
+        else{
+          $meetings = DB::table('partner_trainings')
+                      //->leftjoin('mentoring_gvt_officials','mentoring_gvt_officials.mentoring_id','=','mentoring.id')
+                      ->join('branches','branches.id','=','partner_trainings.branch_id')
+                      ->where('partner_trainings.branch_id','=',$branch_id)
+                      ->get();                        
+
+        //dd($mentorings);
+
+        $participants2018 = DB::table('partner_trainings')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2018' )
+                      ->where('partner_trainings.branch_id','=',$branch_id)
+                        ->first();
+                        //->groupBy(function ($val) {
+                                // Carbon::parse($val->meeting_date)->format('Y');
+                        //});
+                        //->groupBy(DB::raw("year(meeting_date)"))
+                        
+           $participants2019 = DB::table('partner_trainings')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2019' )
+                      ->where('partner_trainings.branch_id','=',$branch_id)
+                        ->first();            
+            $participants2020 = DB::table('partner_trainings')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2020' )
+                      ->where('partner_trainings.branch_id','=',$branch_id)
+                        ->first();   
+            $participants2021 = DB::table('partner_trainings')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2021' )
+                      ->where('partner_trainings.branch_id','=',$branch_id)
+                        ->first();           
+        //dd($participants2018);
+        $branches = DB::table('branches')->get();
+
+        $courses = DB::table('partner_trainings')
+                   ->join('courses','courses.id','=','partner_trainings.course_id')
+                   ->select('courses.name as course_name','courses.*')
+                   ->distinct()
+                   ->get();
+        $institutes = DB::table('partner_trainings')
+                   ->join('institutes','institutes.id','=','partner_trainings.institute_id')
+                   ->select('institutes.name as institute_name','institutes.*')
+                   ->distinct()
+                   ->get();
+        $today = Carbon::today();
+        $ongoing = DB::table('partner_trainings')
+                   ->where('end_date', '>', $today->format('Y-m-d'))
+                   ->where('partner_trainings.branch_id','=',$branch_id)
+                   ->count();
+
+        $contribution = DB::table('partner_trainings')
+                      ->where('partner_trainings.branch_id','=',$branch_id)
+               ->select(DB::raw("SUM(bec_contribution) as bec"),DB::raw("SUM(partner_contribution) as partner"),DB::raw("SUM(student_contribution) as student"))
+               ->first();
+        }
+        
 
         return view('Activities.Reports.Skill-Development.partnership')->with(['meetings'=>$meetings,'branches'=>$branches,'participants2018'=>$participants2018,'participants2019'=>$participants2019,'participants2020'=>$participants2020,'participants2021'=>$participants2021,'courses'=>$courses,'institutes'=>$institutes,'ongoing' => $ongoing,'contribution'=> $contribution]);
     }
@@ -157,11 +243,12 @@ class PartnershipTrainingController extends Controller
      public function fetch(Request $request){
         if($request->ajax())
         {
+            $branch_id = Auth::user()->branch;
+
             if($request->dateStart != '' && $request->dateEnd != '')
             {
                 
-                switch (true) {
-                  case ($request->branch!=''):
+                  if($request->branch!=''){
                     $data = DB::table('partner_trainings') 
                       ->join('branches','branches.id','=','partner_trainings.branch_id')
                       ->join('institutes','institutes.id','=','partner_trainings.institute_id')
@@ -171,100 +258,42 @@ class PartnershipTrainingController extends Controller
                       ->select('partner_trainings.*','branches.*','partner_trainings.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
                       ->orderBy('program_date', 'desc')
                       ->get();    
-                    break;
+                  }
+                  
 
-                  case ($request->branch!='' and $request->course!=''):
-                  $data = DB::table('partner_trainings') 
-                    ->join('branches','branches.id','=','partner_trainings.branch_id')
-                    ->join('institutes','institutes.id','=','partner_trainings.institute_id')
-                    ->join('courses','courses.id', '=' ,'partner_trainings.course_id')
-                    ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
-                    ->where('branch_id',$request->branch)
-                    ->where('course_id',$request->course)
-                    ->select('partner_trainings.*','branches.*','partner_trainings.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
-                    ->orderBy('program_date', 'desc')
-                    ->get();    
-                  break;
+                  else{
+                   if(is_null($branch_id)){
 
-                  case ($request->branch!='' and $request->institute !=''):
-                  $data = DB::table('partner_trainings') 
-                    ->join('branches','branches.id','=','partner_trainings.branch_id')
-                    ->join('institutes','institutes.id','=','partner_trainings.institute_id')
-                    ->join('courses','courses.id', '=' ,'partner_trainings.course_id')
-                    ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
-                    ->where('branch_id',$request->branch)
-                    ->where('institute_id',$request->institute)
-                    ->select('partner_trainings.*','branches.*','partner_trainings.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
-                    ->orderBy('program_date', 'desc')
-                    ->get();    
-                  break;
-
-                  case ($request->course!='' and $request->institute !=''):
-                  $data = DB::table('partner_trainings') 
-                    ->join('branches','branches.id','=','partner_trainings.branch_id')
-                    ->join('institutes','institutes.id','=','partner_trainings.institute_id')
-                    ->join('courses','courses.id', '=' ,'partner_trainings.course_id')
-                    ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
-                    ->where('course_id',$request->course)
-                    ->where('institute_id',$request->institute)
-                    ->select('partner_trainings.*','branches.*','partner_trainings.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
-                    ->orderBy('program_date', 'desc')
-                    ->get();    
-                  break;
-
-                  case ($request->course!=''):
-                  $data = DB::table('partner_trainings') 
-                    ->join('branches','branches.id','=','partner_trainings.branch_id')
-                    ->join('institutes','institutes.id','=','partner_trainings.institute_id')
-                    ->join('courses','courses.id', '=' ,'partner_trainings.course_id')
-                    ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
-                    ->where('course_id',$request->course)
-                    ->select('partner_trainings.*','branches.*','partner_trainings.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
-                    ->orderBy('program_date', 'desc')
-                    ->get();    
-                  break;
-
-                  case ($request->institute!=''):
-                  $data = DB::table('partner_trainings') 
-                    ->join('branches','branches.id','=','partner_trainings.branch_id')
-                    ->join('institutes','institutes.id','=','partner_trainings.institute_id')
-                    ->join('courses','courses.id', '=' ,'partner_trainings.course_id')
-                    ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
-                    ->where('institute_id',$request->institute)
-                    ->select('partner_trainings.*','branches.*','partner_trainings.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
-                    ->orderBy('program_date', 'desc')
-                    ->get();    
-                  break;
-
-                  case ($request->institute!='' and $request->course !='' and $request->branch !=''):
-                  $data = DB::table('partner_trainings') 
-                        ->join('branches','branches.id','=','partner_trainings.branch_id')
-                        ->join('institutes','institutes.id','=','partner_trainings.institute_id')
-                        ->join('courses','courses.id', '=' ,'partner_trainings.course_id')
-                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
-                        ->where('branch_id',$request->branch)
-                        ->where('institute_id',$request->institute)
-                        ->where('course_id',$request->course)
-                        ->select('partner_trainings.*','branches.*','partner_trainings.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
-                        ->orderBy('program_date', 'desc')
-                        ->get();    
-                  break;
-                  default:
                     $data = DB::table('partner_trainings') 
                         ->join('branches','branches.id','=','partner_trainings.branch_id')
                         ->join('institutes','institutes.id','=','partner_trainings.institute_id')
                         ->join('courses','courses.id', '=' ,'partner_trainings.course_id')
-                        ->select('partner_trainings.*','branches.*','partner_trainings.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
                         ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->select('partner_trainings.*','branches.*','partner_trainings.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
                         ->orderBy('program_date', 'desc')
                         ->get();
-                    break;
-                }
+                    }
+                    else{
+                      $data = DB::table('partner_trainings') 
+                        ->join('branches','branches.id','=','partner_trainings.branch_id')
+                        ->join('institutes','institutes.id','=','partner_trainings.institute_id')
+                        ->join('courses','courses.id', '=' ,'partner_trainings.course_id')
+                        ->where('partner_trainings.branch_id','=',$branch_id)
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->select('partner_trainings.*','branches.*','partner_trainings.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
+                        ->orderBy('program_date', 'desc')
+                        ->get();
+                    }
+                  }
+
+                    
+                
                 
             }
         else
             {
+              if(is_null($branch_id)){
+                
                 $data = DB::table('partner_trainings') 
                         ->join('branches','branches.id','=','partner_trainings.branch_id')
                         ->join('institutes','institutes.id','=','partner_trainings.institute_id')
@@ -272,6 +301,17 @@ class PartnershipTrainingController extends Controller
                         ->select('partner_trainings.*','branches.*','partner_trainings.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
                         ->orderBy('program_date', 'desc')
                         ->get();
+              }
+              else{
+                $data = DB::table('partner_trainings') 
+                        ->join('branches','branches.id','=','partner_trainings.branch_id')
+                        ->join('institutes','institutes.id','=','partner_trainings.institute_id')
+                        ->join('courses','courses.id', '=' ,'partner_trainings.course_id')
+                        ->where('partner_trainings.branch_id','=',$branch_id)
+                        ->select('partner_trainings.*','branches.*','partner_trainings.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
+                        ->orderBy('program_date', 'desc')
+                        ->get();
+              }
             }
                 return response()->json($data);
         }
@@ -330,5 +370,98 @@ class PartnershipTrainingController extends Controller
       // return Storage::download(filePath, Appended Text);
         return response()->file($file,$headers);
     }
+
+    public function edit($id){
+
+      $meeting = DB::table('partner_trainings')
+                   ->join('branches','branches.id','=','partner_trainings.branch_id')
+                   ->join('institutes','institutes.id','=','partner_trainings.institute_id')
+                   ->join('courses','courses.id', '=' ,'partner_trainings.course_id')
+                   ->join('dsd_office','dsd_office.ID','=','partner_trainings.dsd')
+                   ->select('partner_trainings.*','branches.*','partner_trainings.id as m_id','partner_trainings.course_id as c_id','partner_trainings.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date','dsd_office.*')
+                   ->where('partner_trainings.id',$id)
+                   ->first();
+
+      $youths = DB::table('partner_trainings_youth')
+                  ->join('youths','youths.id','=','partner_trainings_youth.youth_id')
+                  ->select('partner_trainings_youth.*','partner_trainings_youth.id as p_id','youths.*')
+                  ->where('partner_trainings_youth.partner_trainings_id',$id)
+                  ->get();
+
+        return view ('Activities.skill-development.edit.partnership')->with(['meeting'=> $meeting,'youths'=>$youths]);
+
+    }
+
+    public function update(Request $request){
+
+        $validator = Validator::make($request->all(),[
+                'program_date'  =>'required',
+                
+            ]);
+
+        if($validator->passes()){
+        // echo "<script>console.log( 'Debug Objects: " . $meeting_date . "' );</script>";
+
+        $data1 = array(   
+            'program_date'  =>$request->program_date,
+            'start_date'=>$request->start_date,
+            'end_date' =>$request->end_date,
+            'mou_signed' =>$request->mou_signed,
+            'date_mou_signed' =>$request->date_mou_signed,
+            'institute_id'  =>$request->institute_id,
+            'institutional_review' =>$request->institutional_review,
+            'course_id' => $request->course_id,
+            'bec_contribution' => $request->bec_contribution,
+            'partner_contribution' => $request->partner_contribution,
+            'student_contribution' => $request->student_contribution,
+            'total_cost' => $request->total_cost,
+            'total_male' => $request->total_male,
+            'total_female'=>$request->total_female,
+            'pwd_male'=>$request->pwd_male,
+            'pwd_female'=>$request->pwd_female,
+            
+        );
+        //dd($data1);
+        DB::table('partner_trainings')->whereid($request->m_id)->update($data1);
+
+        $audit = array(
+            'user_type' => 'App\User',
+            'user_id' => Auth::user()->id,
+            'event' => 'updated',
+            'auditable_type' => 'partner_trainings',
+            'auditable_id' => $request->m_id,
+            'url' => url()->current(),
+            'ip_address' => request()->ip(),
+            'user_agent' => $request->header('User-Agent'),
+
+        );
+
+        $reports = Audit::create($audit);
+    }
+
+
+    
+
+    else{
+        return response()->json(['error' => $validator->errors()->all()]);
+        }
+    }
+
+    public function update_youths(Request $request){
+
+        $participants = DB::table('partner_trainings_youth')
+                        ->whereid($request->id_p)
+                        ->update(['approved_amount'=>$request->approved_amount]);
+
+    }
+
+    public function add_youth(Request $request){
+
+        $participants = DB::table('partner_trainings_youth')
+                        ->insert(['youth_id'=>$request->youth_id,'approved_amount'=>$request->approved_amount,'partner_trainings_id' => $request->m_id]);
+
+    }
+
+    
 
 }

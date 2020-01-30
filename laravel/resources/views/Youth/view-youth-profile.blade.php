@@ -145,11 +145,113 @@
                   <li class="nav-item"><a class="nav-link active" href="#tab_1" data-toggle="tab">Family Details </a></li>
                   <li class="nav-item"><a class="nav-link " href="#tab_2" data-toggle="tab">Intresting Things</a></li>
                   <li class="nav-item"><a class="nav-link" href="#tab_3" data-toggle="tab">Language Proficiency </a></li>
+                @can('view-M&E-reports')  <li class="nav-item"><a class="nav-link" href="#tab_4" data-toggle="tab">BEC Program Status </a></li>@endcan
                   
                 </ul>
               </div><!-- /.card-header -->
               <div class="card-body">
-                <div class="tab-content">
+               <div class="tab-content">
+                  
+                  <div class="tab-pane active" id="tab_1">
+                    @if (Auth::user()->can('view-youth-contacts'))
+                    <ul class="list-group list-group-flush">
+                      <li class="list-group-item"><strong>Head of Household : </strong><span>{{$youth->family->head_of_household}}</span></li>
+                      <li class="list-group-item"><strong>NIC of Head of Household : </strong><span>{{$youth->family->nic_head_of_household}}</span></li>
+
+                      <li class="list-group-item"><strong>Family Type : </strong><span>{{$youth->family->family_type}}</span></li>
+
+                      <li class="list-group-item"><strong>Total Income : </strong><span>{{$youth->family->total_income}}</span></li>
+                      <li class="list-group-item"><strong>Total Family Members : </strong><span>{{$youth->family->total_members}}</span></li>
+                      <li class="list-group-item"><strong>PCI : </strong><span>@if(!is_null($youth->family->total_members)){{$youth->family->total_income / $youth->family->total_members}}@endif</span></li>
+                    </ul>
+                  @else
+                    Content is not allowed
+                  @endif
+                  </div>
+      
+                  <div class="tab-pane" id="tab_2">
+                    <ul class="timeline timeline-inverse">
+                      <!-- timeline time label -->
+                      <!-- /.timeline-label -->
+                      <!-- timeline item -->
+                      <li>
+                      	<i class="fa fa-hotel bg-primary"></i>
+						          <div class="timeline-item">
+                        
+                          <h3 class="timeline-header">Intresting Job Industries</h3>
+
+                          <div class="timeline-body text-muted">
+                            @if(!is_null($intresting_jobs))
+                            	{{implode(', ', $intresting_jobs->industry)}}	
+                  			   @endif
+                          </div>
+                          
+                        </div>
+                      </li>
+                  </ul>
+
+                  <ul class="timeline timeline-inverse">
+                      <!-- timeline time label -->
+                      <!-- /.timeline-label -->
+                      <!-- timeline item -->
+                      <li>
+                      	<i class="fa fa-globe bg-primary"></i>
+
+						      <div class="timeline-item">
+                        
+                          <h3 class="timeline-header">Intresting Job Locations</h3>
+
+                          <div class="timeline-body text-muted">
+                            @if(!is_null($intresting_jobs))
+                            	{{implode(', ', $intresting_jobs->location)}}	
+                              
+                  			     @endif
+                          </div>
+                          
+                        </div>
+                      </li>
+                  </ul>
+                  <ul class="timeline timeline-inverse">
+                      <!-- timeline time label -->
+                      <!-- /.timeline-label -->
+                      <!-- timeline item -->
+                      <li>
+                      	<i class="fa fa-graduation-cap bg-primary"></i>
+						      <div class="timeline-item">
+                        
+                          <h3 class="timeline-header">Intresting Courses Catogeries</h3>
+
+                          <div class="timeline-body text-muted">
+                          	@if(!is_null($intresting_courses))
+                            @foreach($intresting_courses as $courses)
+                            	{{$courses->course_category}} , 	
+                  			@endforeach
+                  			@endif
+                          </div>
+                          
+                        </div>
+                      </li>
+                  </ul>
+                  <ul class="timeline timeline-inverse">
+                      <!-- timeline time label -->
+                      <!-- /.timeline-label -->
+                      <!-- timeline item -->
+                      <li>
+                      	<i class="fa fa-award bg-primary"></i>
+						      <div class="timeline-item">
+                        
+                          <h3 class="timeline-header">Intresting Self Businesses</h3>
+
+                          <div class="timeline-body text-muted">
+                            @if(!is_null($intresting_business))
+                            	{{$intresting_business->intresting_business}}	
+                  			@endif
+                          </div>
+                          
+                        </div>
+                      </li>
+                  </ul>
+                  </div>
                   <div class="tab-pane" id="tab_3">
                     <div class="row"> 
                           <div  class="col-md-3">
@@ -260,22 +362,30 @@
                           </div>
                       </div>
                   </div>
-
-                  <div class="tab-pane" id="tab_2">
+                  @can('view-M&E-reports')
+                  <div class="tab-pane" id="tab_4">
                     <ul class="timeline timeline-inverse">
                       <!-- timeline time label -->
                       <!-- /.timeline-label -->
                       <!-- timeline item -->
                       <li>
-                      	<i class="fa fa-hotel bg-primary"></i>
-						          <div class="timeline-item">
+                        @if(is_null($cg)) <i class="fa fa-hotel bg-default"></i> @else <i class="fa fa-hotel bg-success"></i>@endif
+                      <div class="timeline-item">
                         
-                          <h3 class="timeline-header">Intresting Job Industries</h3>
+                          <h3 class="timeline-header">Career Guidance <span  style="float: right" class="text-success">@if(!is_null($cg))<i class="far fa-check-circle"></i>@endif</span></h3>
 
                           <div class="timeline-body text-muted">
-                            @if(!is_null($intresting_jobs))
-                            	{{implode(', ', $intresting_jobs->industry)}}	
-                  			   @endif
+                            @if(!is_null($cg))
+                           <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Date : </strong><span>{{$cg->date}}</span></li>
+                            <li class="list-group-item"><strong>Vanue : </strong><span>{{$cg->venue}}</span></li>
+                            <li class="list-group-item"><strong>Career Field : </strong><span>{{$cg->career_field1}}</span></li>
+                            <li class="list-group-item"><strong>Career Field 2 : </strong><span>{{$cg->career_field2}}</span></li>
+                            <li class="list-group-item"><strong>Career Field 3 : </strong><span>{{$cg->career_field3}}</span></li>
+                            </ul>
+                            @else
+                            No data Available
+                            @endif
                           </div>
                           
                         </div>
@@ -287,17 +397,22 @@
                       <!-- /.timeline-label -->
                       <!-- timeline item -->
                       <li>
-                      	<i class="fa fa-globe bg-primary"></i>
+                  @if(is_null($soft))<i class="fa fa-globe bg-default"></i>@else <i class="fa fa-globe bg-success"></i>@endif
 
-						<div class="timeline-item">
+                  <div class="timeline-item">
                         
-                          <h3 class="timeline-header">Intresting Job Locations</h3>
+                          <h3 class="timeline-header">Soft Skills Course <span  style="float: right" class="text-success">@if(!is_null($soft))<i class="far fa-check-circle"></i>@endif</span> </h3>
 
                           <div class="timeline-body text-muted">
-                            @if(!is_null($intresting_jobs))
-                            	{{implode(', ', $intresting_jobs->location)}}	
-                              
-                  			     @endif
+                            @if(!is_null($soft))
+                           <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Institute : </strong><span>{{$soft->name}}</span></li>
+                            <li class="list-group-item"><strong>Course Start Date : </strong><span>{{$soft->start_date}}</span></li>
+                            <li class="list-group-item"><strong>Course End Date : </strong><span>{{$soft->end_date}}</span></li>
+                            </ul>
+                            @else
+                            No data Available
+                            @endif
                           </div>
                           
                         </div>
@@ -308,17 +423,23 @@
                       <!-- /.timeline-label -->
                       <!-- timeline item -->
                       <li>
-                      	<i class="fa fa-graduation-cap bg-primary"></i>
-						<div class="timeline-item">
+                  @if(is_null($gvt))<i class="fa fa-graduation-cap bg-default"></i>@else <i class="fa fa-hotel bg-success"></i>@endif
+                  <div class="timeline-item">
                         
-                          <h3 class="timeline-header">Intresting Courses Catogeries</h3>
+                          <h3 class="timeline-header">Support to Follow Gvt. Courses <span  style="float: right" class="text-success">@if(!is_null($gvt))<i class="far fa-check-circle"></i>@endif</span></h3>
 
                           <div class="timeline-body text-muted">
-                          	@if(!is_null($intresting_courses))
-                            @foreach($intresting_courses as $courses)
-                            	{{$courses->course_category}} , 	
-                  			@endforeach
-                  			@endif
+                            @if(!is_null($gvt))
+                           <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Institute : </strong><span>{{$gvt->institute_name}}</span></li>
+                            <li class="list-group-item"><strong>Course Name : </strong><span>{{$gvt->course_name}}</span></li>
+                            <li class="list-group-item"><strong>Course Type : </strong><span>{{$gvt->course_type}}</span></li>
+                            <li class="list-group-item"><strong>Course Start Date : </strong><span>{{$gvt->start_date}}</span></li>
+                            <li class="list-group-item"><strong>Course End Date : </strong><span>{{$gvt->end_date}}</span></li>
+                            </ul>
+                            @else
+                            No data Available
+                            @endif
                           </div>
                           
                         </div>
@@ -329,33 +450,92 @@
                       <!-- /.timeline-label -->
                       <!-- timeline item -->
                       <li>
-                      	<i class="fa fa-award bg-primary"></i>
-						<div class="timeline-item">
+                        @if(is_null($financial))<i class="fa fa-award bg-default"></i>@else <i class="fa fa-award bg-success"></i>@endif
+                  <div class="timeline-item">
                         
-                          <h3 class="timeline-header">Intresting Self Businesses</h3>
+                          <h3 class="timeline-header">Finacial Assistance for Courses <span  style="float: right" class="text-success">@if(!is_null($financial))<i class="far fa-check-circle"></i>@endif</span></h3>
 
                           <div class="timeline-body text-muted">
-                            @if(!is_null($intresting_business))
-                            	{{$intresting_business->intresting_business}}	
-                  			@endif
+                            @if(!is_null($financial))
+                           <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Institute : </strong><span>{{$financial->institute_name}}</span></li>
+                            <li class="list-group-item"><strong>Course Name : </strong><span>{{$financial->course_name}}</span></li>
+                            <li class="list-group-item"><strong>Course Type : </strong><span>{{$financial->course_type}}</span></li>
+                            <li class="list-group-item"><strong>Course Start Date : </strong><span>{{$financial->start_date}}</span></li>
+                            <li class="list-group-item"><strong>Course End Date : </strong><span>{{$financial->end_date}}</span></li>
+                            <li class="list-group-item"><strong>Approved Ammount : </strong><span>{{$financial->approved_amount}}</span></li>
+                            <li class="list-group-item"><strong>Installments : </strong><span>{{$financial->installments}}</span></li>
+                            </ul>
+                            @else
+                            No data Available
+                            @endif
+                          </div>
+                          
+                        </div>
+                      </li>
+                  </ul>
+                  <ul class="timeline timeline-inverse">
+                      <!-- timeline time label -->
+                      <!-- /.timeline-label -->
+                      <!-- timeline item -->
+                      <li>
+                        @if(is_null($partner))<i class="fa fa-award bg-default"></i>@else <i class="fa fa-award bg-success"></i>@endif
+                  <div class="timeline-item">
+                        
+                          <h3 class="timeline-header">Support to Courses with Partnerships <span  style="float: right" class="text-success">@if(!is_null($partner))<i class="far fa-check-circle"></i>@endif</span></h3>
+
+                          <div class="timeline-body text-muted">
+                            @if(!is_null($partner))
+                           <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Institute : </strong><span>{{$partner->institute_name}}</span></li>
+                            <li class="list-group-item"><strong>Course Name : </strong><span>{{$partner->course_name}}</span></li>
+                            <li class="list-group-item"><strong>Course Type : </strong><span>{{$partner->course_type}}</span></li>
+                            <li class="list-group-item"><strong>Course Start Date : </strong><span>{{$partner->start_date}}</span></li>
+                            <li class="list-group-item"><strong>Course End Date : </strong><span>{{$partner->end_date}}</span></li>
+                            <li class="list-group-item"><strong>Approved Ammount : </strong><span>{{$partner->approved_amount}}</span></li>
+
+                            </ul>
+                            @else
+                            No data Available
+                            @endif
+                          </div>
+                          
+                        </div>
+                      </li>
+                  </ul>
+                  <ul class="timeline timeline-inverse">
+                      <!-- timeline time label -->
+                      <!-- /.timeline-label -->
+                      <!-- timeline item -->
+                      <li>
+                        @if(is_null($placement) || is_null($individual))<i class="fa fa-briefcase bg-default"></i>@else <i class="fa fa-briefcase bg-success"></i>@endif
+                          <div class="timeline-item">
+                        
+                          <h3 class="timeline-header">Job Placement <span  style="float: right" class="text-success">@if(!is_null($placement) || !is_null($individual))<i class="far fa-check-circle"></i>@endif</span></h3>
+
+                          <div class="timeline-body text-muted">
+                           @if(!is_null($placement))
+                           <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Employer : </strong><span>{{$placement->name}}</span></li>
+                            <li class="list-group-item"><strong>Vacancy Placed : </strong><span>{{$placement->vacancies}}</span></li>
+                            <li class="list-group-item"><strong>Salary : </strong><span>{{$placement->salary}}</span></li>                          
+                            </ul>
+                            @elseif(!is_null($individual))
+                            <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Employer : </strong><span>{{$individual->name}}</span></li>
+                            <li class="list-group-item"><strong>Vacancy Placed : </strong><span>{{$individual->vacancy}}</span></li>
+                            <li class="list-group-item"><strong>Salary : </strong><span>{{$individual->salary}}</span></li>                          
+                            </ul>
+                            @else
+                            No data Available
+                            @endif
                           </div>
                           
                         </div>
                       </li>
                   </ul>
                   </div>
-                  <div class="tab-pane active" id="tab_1">
-                    <ul class="list-group list-group-flush">
-                      <li class="list-group-item"><strong>Head of Household : </strong><span>{{$youth->family->head_of_household}}</span></li>
-                      <li class="list-group-item"><strong>NIC of Head of Household : </strong><span>{{$youth->family->nic_head_of_household}}</span></li>
-
-                      <li class="list-group-item"><strong>Family Type : </strong><span>{{$youth->family->family_type}}</span></li>
-
-                      <li class="list-group-item"><strong>Total Income : </strong><span>{{$youth->family->total_income}}</span></li>
-                      <li class="list-group-item"><strong>Total Family Members : </strong><span>{{$youth->family->total_members}}</span></li>
-                      <li class="list-group-item"><strong>PCI : </strong><span>@if(!is_null($youth->family->total_members)){{$youth->family->total_income / $youth->family->total_members}}@endif</span></li>
-                    </ul>
-                  </div>
+                  @endcan
                   <!-- /.tab-pane -->
                 </div>
                 <!-- /.tab-content -->

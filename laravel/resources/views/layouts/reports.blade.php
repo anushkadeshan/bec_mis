@@ -59,6 +59,9 @@
 
       }
 
+        th { font-size: 15px; }
+        td { font-size: 14px; }
+        
     </style>
     </head>
     <body class="hold-transition sidebar-mini">

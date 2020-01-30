@@ -12,7 +12,7 @@
           <div class="col-md-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{Route('home')}}">Dashboard</a></li>
-              <li class="breadcrumb-item"><a href="{{url('m&e-reports')}}">Reprots</a></li>
+              <li class="breadcrumb-item"><a href="{{url('m&e-reports')}}">Reports</a></li>
               <li class="breadcrumb-item active">3.3.4</li>
             </ol>
           </div>
@@ -30,7 +30,8 @@
                     <div class="card-body">
                       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false" style="background-color: #5E6971; color: white;">
                         
-                      @can('admin')
+                      <?php $branch_id = Auth::user()->branch; ?> 
+                      @if(is_null($branch_id))
                       <li class="nav-item">
                         <a class="nav-link">
                             <div class="form-group">
@@ -44,6 +45,9 @@
                           </div>
                         </a>
                       </li> 
+                      @else
+                      <input type="hidden" name="branch_id" value="{{$branch_id}}"> 
+                      @endif
                       <li class="nav-item">
                         <a class="nav-link">
                             
@@ -67,12 +71,11 @@
                       </li>
                       <li class="nav-item">
                           <a class="nav-link">
-                            <button type="button" name="filter" id="filter" class="btn btn-primary btn-flat"><i class="fas fa-filter"></i> Filter</button>
+                            <button type="button" name="filter" id="filter" class="btn btn-primary btn-flat"><i class="fas fa-filter"></i> Filter <i style="display:none" id="loading" class="fa fa-spinner fa-lg faa-spin animated"></i></button>
                             <button type="button" name="refresh" id="refresh" class="btn btn-default btn-flat">Refresh</button>
                           </a>
                       </li>
-                      @endcan
-                                      
+                                
                       </ul>
                     </div>
                   </div>
@@ -258,6 +261,12 @@ var dataTable = $("#example").DataTable({
    method:"POST",
    data:{dateStart:dateStart, dateEnd:dateEnd, _token:_token,branch:branch},
    dataType:"json",
+   beforeSend: function(){
+     $("#loading").attr('class', 'fa fa-spinner fa-lg faa-spin animated');
+   },
+   complete: function(){
+     $("#loading").attr('class', 'fas fa-filter');
+   },
    success:function(data)
    {
   

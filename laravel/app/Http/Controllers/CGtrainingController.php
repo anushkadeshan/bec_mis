@@ -7,6 +7,10 @@ use DB;
 use Illuminate\Support\Facades\Validator;
 use Zipper;
 use Auth;
+use Illuminate\Support\Facades\URL;
+use App\Audit;
+use App\User;
+use App\Notifications\CompletionReport;
 
 class CGtrainingController extends Controller
 {
@@ -90,6 +94,25 @@ class CGtrainingController extends Controller
 	            	$images = DB::table('cg_trainings_photos')->insert(['images'=>$imageName,'cg_trainings_id'=>$cg_trainings_id]);
 	        		} 
 	        	}
+
+                $audit = array(
+                    'user_type' => 'App\User',
+                    'user_id' => Auth::user()->id,
+                    'event' => 'created',
+                    'auditable_type' => 'cg_trainings',
+                    'auditable_id' => $cg_trainings_id,
+                    'url' => url()->current(),
+                    'ip_address' => request()->ip(),
+                    'user_agent' => $request->header('User-Agent'),
+
+                );
+
+                $reports = Audit::create($audit);
+
+                $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin','management' ]);})->get();
+                foreach ($notifyTo as $notifyUser) {
+                    $notifyUser->notify(new CompletionReport($reports));
+                }
 
             }
             else{
@@ -241,7 +264,8 @@ class CGtrainingController extends Controller
         $meeting = DB::table('cg_trainings')
                     ->join('resourse_people','resourse_people.id', '=' ,'cg_trainings.resourse_person_id')
                    ->join('branches','branches.id','=','cg_trainings.branch_id')
-                   ->select('cg_trainings.*','branches.*','cg_trainings.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')
+                    ->join('dsd_office','dsd_office.ID', '=' ,'cg_trainings.dsd')
+                   ->select('cg_trainings.*','branches.*','cg_trainings.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name','dsd_office.*')
                    ->where('cg_trainings.id',$id)
                    ->first();
 
@@ -301,4 +325,73 @@ class CGtrainingController extends Controller
        // Zipper::make('mydir/photos.zip')->add($paths);
        // return response()->download(('mydir/photos.zip')); 
     }
+
+    public function edit($id){
+
+      $meeting = DB::table('cg_trainings')
+                    ->join('resourse_people','resourse_people.id', '=' ,'cg_trainings.resourse_person_id')
+                   ->join('dsd_office','dsd_office.ID', '=' ,'cg_trainings.dsd')
+                   ->join('branches','branches.id','=','cg_trainings.branch_id')
+                   ->select('cg_trainings.*','branches.*','cg_trainings.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name','dsd_office.*')
+                   ->where('cg_trainings.id',$id)
+                   ->first();
+
+        return view ('Activities.career-guidance.edit.cg-training')->with(['meeting'=> $meeting]);
+
+    }
+
+    public function update(Request $request){
+
+        $validator = Validator::make($request->all(),[
+                'meeting_date'  =>'required',
+                'time_start'=>'required',
+                'time_end' =>'required',
+                'venue' =>'required',
+                
+            ]);
+
+        if($validator->passes()){
+        // echo "<script>console.log( 'Debug Objects: " . $meeting_date . "' );</script>";
+
+        $data1 = array( 
+            'meeting_date'  =>$request->meeting_date,
+            'time_start'=>$request->time_start,
+            'time_end' =>$request->time_end,
+            'venue' =>$request->venue,
+            'program_cost' =>$request->program_cost,
+            'total_male' => $request->total_male,
+            'total_female'=>$request->total_female,
+            'pwd_male'=>$request->pwd_male,
+            'pwd_female'=>$request->pwd_female,
+            'mode_of_conduct'=>$request->mode_of_conduct,
+            'topics'=>$request->topics,
+            'deliverables'=>$request->deliverables,
+            'resourse_person_id'=>$request->resourse_person_id,
+        );
+        //dd($data1);
+        DB::table('cg_trainings')->whereid($request->m_id)->update($data1);
+
+        $audit = array(
+            'user_type' => 'App\User',
+            'user_id' => Auth::user()->id,
+            'event' => 'updated',
+            'auditable_type' => 'cg_trainings',
+            'auditable_id' => $request->m_id,
+            'url' => url()->current(),
+            'ip_address' => request()->ip(),
+            'user_agent' => $request->header('User-Agent'),
+
+        );
+
+        $reports = Audit::create($audit);
+    }
+
+
+    
+
+    else{
+        return response()->json(['error' => $validator->errors()->all()]);
+        }
+    }
+
 }

@@ -149,7 +149,7 @@
                       <div  class="col-md-7">
                         <div class="card card-success">
                           <div  class="card-header">
-                            Youth Participation (all time)
+                            Youth Participation (all time) <a href="{{Route('view_cg_youths')}}"><span  class="badge badge-warning float-right" id="row_count">View Youth Report</span></a>
                           </div>
                           <div  class="card-body">
                         
@@ -382,7 +382,7 @@ var dataTable = $("#example").DataTable({
   $.each(data.data2, function(index, value) {
     //console.log(value);
     // use data table row.add, then .draw for table refresh
-    dataTable.row.add([count++, value.meeting_date, value.total_male, value.total_female, value.pwd_male,value.pwd_female,value.venue, value.branch_name,'<button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button>']).draw();
+    dataTable.row.add([count++, value.meeting_date, value.total_male, value.total_female, value.pwd_male,value.pwd_female,value.venue, value.branch_name,'<div class="btn-group"><button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button><a href="{{url('reports-me/cg')}}/'+value.m_id+'/edit"><button type="button" name="view" class="btn btn-success btn-flat btn-sm"><i class="fa fa-edit"></i></button></a></div>']).draw();
 
      var total_male = value.total_male;
      var total_female = value.total_female;

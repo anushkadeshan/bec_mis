@@ -255,7 +255,7 @@
         	<div class="col-12 col-sm-6 col-md-6">
         		<div class="card">
 	              <div class="card-header">
-	                <h3 class="card-title">Goal Completion</h3>
+	                <h3 class="card-title">Goal Completion    <a href="{{Route('view_completion')}}"><span  class="badge badge-success float-right" id="row_count">View Report</span></a></h3>
 	                <div class="card-tools">
 	                  
 	                </div>
@@ -299,7 +299,7 @@
                     </div>
 
                     <!-- /.progress-group -->
-                    <div class="progress-group">
+                    <div class="progress-group"> 
                       Job Placement
                       <span class="float-right"><b>{{$actual_jobs}}</b>/{{$total_jobs}}</span>
                       <div class="progress progress-sm">
@@ -311,6 +311,74 @@
             	</div>
               </div>
         	</div>
+          <div class="row">
+            <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+              <span class="info-box-icon bg-info elevation-1"><i class="fas fa-file-alt"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Total Reports</span>
+                <span class="info-box-number">
+                 {{$total_reports->count()}}
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box mb-3">
+              <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-file-signature"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Total Reports Today</span>
+                <span class="info-box-number">
+                  @if(Auth::check())
+                    {{$total_reports_day}}
+                  @endif
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+            <div class="col-12 col-sm-6 col-md-6">
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title">M and E Reports</h3>
+                  </div>
+                  <div class="card-body">
+                      <table id="example3" class="table row-border table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Report</th>
+                            <th>Branch</th>
+                            <th>Created At</th>
+                        </tr>
+                    </thead> 
+                    <tbody>
+                        <?php  $no=1; ?>
+                        @foreach ($total_reports as $total_report)
+                        <tr class="task">
+                            <td>{{ $no++ }}</td>
+                            <td>
+                              <?php $string = $total_report->auditable_type;
+                                    $replaced = str_replace("_", " ", $string);?>
+                              {{ ucwords($replaced) }}
+                            </td>
+                            <td>{{ $total_report->branch_name }}</td>
+                            <td>{{ $total_report->created_at }}</td>
+                       
+                        </tr>
+                        @endforeach
+                    <tbody>        
+                </table>
+                  </div>
+              </div>
+            </div>
+          </div>
         <div class="row">
 
         	<div class="col-12 col-sm-6 col-md-6">
@@ -367,52 +435,6 @@
               <!-- /.card-body -->
             </div>
         	</div>
-        </div>
-        <div class="row">
-
-          <div class="col-12 col-sm-6 col-md-12">
-            <!-- MAP & BOX PANE -->
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">User Activities</h3>
-                <div class="card-tools">
-                </div>
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body p-0">
-                <table class="table table-striped" id="example1">
-                
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Action</th>
-                      <th>Table</th>
-                      <th>by</th>
-                      <th>Relevent ID</th>
-                      <th>at</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php $i=1; ?>
-                    @foreach($audits as $audit) 
-                      <tr>
-                        <td>{{$i++}}</td>
-                        <td>{{$audit->action}}</td>
-                        <td>{{$audit->relevent_table}}</td>
-                        <td>{{$audit->name}}</td>
-                        <td>{{$audit->relevent_id}}</td>
-                        <td>{{date('F j, Y, g:i a',strtotime($audit->time_stamp))}}</td>
-                      </tr>
-                    @endforeach
-                    
-                  </tbody>
-                </table>
-                  
-              </div>
-              <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
-          </div>
         </div>
         </div>
     </section>
@@ -622,27 +644,6 @@
 		        		<div class="card">
 			              <div class="card-header">
 			                <h5 class="card-title">Progress Recap Report</h5>
-
-			                <div class="card-tools">
-			                  <button type="button" class="btn btn-tool" data-widget="collapse">
-			                    <i class="fa fa-minus"></i>
-			                  </button>
-			                  <div class="btn-group">
-			                    <button type="button" class="btn btn-tool dropdown-toggle" data-toggle="dropdown">
-			                      <i class="fa fa-wrench"></i>
-			                    </button>
-			                    <div class="dropdown-menu dropdown-menu-right" role="menu">
-			                      <a href="#" class="dropdown-item">Action</a>
-			                      <a href="#" class="dropdown-item">Another action</a>
-			                      <a href="#" class="dropdown-item">Something else here</a>
-			                      <a class="dropdown-divider"></a>
-			                      <a href="#" class="dropdown-item">Separated link</a>
-			                    </div>
-			                  </div>
-			                  <button type="button" class="btn btn-tool" data-widget="remove">
-			                    <i class="fa fa-times"></i>
-			                  </button>
-			                </div>
 			              </div>
 			              <!-- /.card-header -->
 			              <div class="card-body">
@@ -653,22 +654,9 @@
 		        	<div class="col-md-4">
 		        		<div class="card">
 			              <div class="card-header">
-			                <h5 class="card-title">Goal Completion</h5>
+			                <h5 class="card-title">Goal Completion <a href="{{Route('view_completion')}}"><span  class="badge badge-success float-right" id="row_count">View Report</span></a></h5>
 
-			                <div class="card-tools">
-			                  <button type="button" class="btn btn-tool" data-widget="collapse">
-			                    <i class="fa fa-minus"></i>
-			                  </button>
-			                  <div class="btn-group">
-			                    <button type="button" class="btn btn-tool dropdown-toggle" data-toggle="dropdown">
-			                      <i class="fa fa-wrench"></i>
-			                    </button>
-			                    
-			                  </div>
-			                  <button type="button" class="btn btn-tool" data-widget="remove">
-			                    <i class="fa fa-times"></i>
-			                  </button>
-			                </div>
+			                
 			              </div>
 			              <!-- /.card-header -->
 			              <div class="card-body">
@@ -934,6 +922,354 @@
         </div>
     </section>
 @endcan
+@can('me-dashboard')
+<section class="content">
+        <div class="container-fluid">
+          <!-- Info boxes -->
+        <div class="row">
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+              <span class="info-box-icon bg-info elevation-1"><i class="fas fa-file-alt"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Total Reports</span>
+                <span class="info-box-number">
+                 {{$total_reports->count()}}
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box mb-3">
+              <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-file-signature"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Total Reports Today</span>
+                <span class="info-box-number">
+                  @if(Auth::check())
+                    {{$total_reports_day}}
+                  @endif
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+
+          <!-- fix for small devices only -->
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="card-title">Progress Recap Report</h5>
+
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div id="columnchart_material" style="height: 350px;"></div>
+                  </div>
+                  <!-- /.col -->
+                  <!-- /.col -->
+                </div>
+                <!-- /.row -->
+              </div>
+              <!-- ./card-body -->
+              <div class="card-footer">
+            <!-- /.row -->
+                <!-- /.row -->
+              </div>
+              <!-- /.card-footer -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+        <div class="row">
+
+        
+          <div class="col-12 col-sm-6 col-md-6">
+            <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Goal Completion    <a href="{{Route('view_completion')}}"><span  class="badge badge-success float-right" id="row_count">View Report</span></a></h3>
+                  <div class="card-tools">
+                    
+                  </div>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+
+                    <div class="progress-group">
+                      Career Guidance
+                      <span class="float-right"><b>{{$actual_cg}}</b>/{{$total_cg}}</span>
+                      <div class="progress progress-sm">
+                        <div class="progress-bar bg-primary" style="width: <?php $total_cg = ($actual_cg/$total_cg)*100; ?> {{$total_cg}}%"></div>
+                      </div>
+                    </div>
+                    <!-- /.progress-group -->
+
+                    <div class="progress-group">
+                      Soft Skills
+                      <span class="float-right"><b>{{$actual_soft_skills}}</b>/{{$total_soft}}</span>
+                      <div class="progress progress-sm">
+                        <div class="progress-bar bg-danger" style="width:  <?php $total_soft = ($actual_soft_skills/$total_soft)*100; ?> {{$total_soft}}%"></div>
+                      </div>
+                    </div>
+
+                    <!-- /.progress-group -->
+                    <div class="progress-group">
+                      <span class="progress-text">Vocational Training</span>
+                      <span class="float-right"><b>{{$actual_vt}}</b>/{{$total_vt}}</span>
+                      <div class="progress progress-sm">
+                        <div class="progress-bar bg-success" style="width: <?php $total_vt = ($actual_vt/$total_vt)*100; ?> {{$total_vt}}%"></div>
+                      </div>
+                    </div>
+
+                    <!-- /.progress-group -->
+                    <div class="progress-group">
+                      <span class="progress-text">Professional Training</span>
+                      <span class="float-right"><b>{{$actual_prof}}</b>/{{$total_prof}}</span>
+                      <div class="progress progress-sm">
+                        <div class="progress-bar bg-success" style="width: <?php $total_prof = ($actual_prof/$total_prof)*100; ?> {{$total_prof}}%"></div>
+                      </div>
+                    </div>
+
+                    <!-- /.progress-group -->
+                    <div class="progress-group"> 
+                      Job Placement
+                      <span class="float-right"><b>{{$actual_jobs}}</b>/{{$total_jobs}}</span>
+                      <div class="progress progress-sm">
+                        <div class="progress-bar bg-warning" style="width: <?php $total_jobs = ($actual_jobs/$total_jobs)*100; ?> {{$total_jobs}}%"></div>
+                      </div>
+                    </div>
+                    <!-- /.progress-group -->
+                </div>
+              </div>
+              </div>
+              <div class="col-12 col-sm-6 col-md-6">
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title">M and E Reports</h3>
+                  </div>
+                  <div class="card-body">
+                      <table id="example3" class="table row-border table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Report</th>
+                            <th>Branch</th>
+                            <th>Created At</th>
+                        </tr>
+                    </thead> 
+                    <tbody>
+                        <?php  $no=1; ?>
+                        @foreach ($total_reports as $total_report)
+                        <tr class="task">
+                            <td>{{ $no++ }}</td>
+                            <td>
+                              <?php $string = $total_report->auditable_type;
+                                    $replaced = str_replace("_", " ", $string);?>
+                              {{ ucwords($replaced) }}
+                            </td>
+                            <td>{{ $total_report->branch_name }}</td>
+                            <td>{{ $total_report->created_at }}</td>
+                       
+                        </tr>
+                        @endforeach
+                    <tbody>        
+                </table>
+                  </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+    </section>
+@endcan
+@can('management-dashboard')
+<section class="content">
+        <div class="container-fluid">
+          <!-- Info boxes -->
+        <div class="row">
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+              <span class="info-box-icon bg-info elevation-1"><i class="fas fa-file-alt"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Total Reports</span>
+                <span class="info-box-number">
+                 {{$total_reports->count()}}
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box mb-3">
+              <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-file-signature"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Total Reports Today</span>
+                <span class="info-box-number">
+                  @if(Auth::check())
+                    {{$total_reports_day}}
+                  @endif
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+
+          <!-- fix for small devices only -->
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="card-title">Progress Recap Report</h5>
+
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div id="columnchart_material" style="height: 350px;"></div>
+                  </div>
+                  <!-- /.col -->
+                  <!-- /.col -->
+                </div>
+                <!-- /.row -->
+              </div>
+              <!-- ./card-body -->
+              <div class="card-footer">
+            <!-- /.row -->
+                <!-- /.row -->
+              </div>
+              <!-- /.card-footer -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+        <div class="row">
+
+        
+          <div class="col-12 col-sm-6 col-md-6">
+            <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Goal Completion    <a href="{{Route('view_completion')}}"><span  class="badge badge-success float-right" id="row_count">View Report</span></a></h3>
+                  <div class="card-tools">
+                    
+                  </div>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+
+                    <div class="progress-group">
+                      Career Guidance
+                      <span class="float-right"><b>{{$actual_cg}}</b>/{{$total_cg}}</span>
+                      <div class="progress progress-sm">
+                        <div class="progress-bar bg-primary" style="width: <?php $total_cg = ($actual_cg/$total_cg)*100; ?> {{$total_cg}}%"></div>
+                      </div>
+                    </div>
+                    <!-- /.progress-group -->
+
+                    <div class="progress-group">
+                      Soft Skills
+                      <span class="float-right"><b>{{$actual_soft_skills}}</b>/{{$total_soft}}</span>
+                      <div class="progress progress-sm">
+                        <div class="progress-bar bg-danger" style="width:  <?php $total_soft = ($actual_soft_skills/$total_soft)*100; ?> {{$total_soft}}%"></div>
+                      </div>
+                    </div>
+
+                    <!-- /.progress-group -->
+                    <div class="progress-group">
+                      <span class="progress-text">Vocational Training</span>
+                      <span class="float-right"><b>{{$actual_vt}}</b>/{{$total_vt}}</span>
+                      <div class="progress progress-sm">
+                        <div class="progress-bar bg-success" style="width: <?php $total_vt = ($actual_vt/$total_vt)*100; ?> {{$total_vt}}%"></div>
+                      </div>
+                    </div>
+
+                    <!-- /.progress-group -->
+                    <div class="progress-group">
+                      <span class="progress-text">Professional Training</span>
+                      <span class="float-right"><b>{{$actual_prof}}</b>/{{$total_prof}}</span>
+                      <div class="progress progress-sm">
+                        <div class="progress-bar bg-success" style="width: <?php $total_prof = ($actual_prof/$total_prof)*100; ?> {{$total_prof}}%"></div>
+                      </div>
+                    </div>
+
+                    <!-- /.progress-group -->
+                    <div class="progress-group"> 
+                      Job Placement
+                      <span class="float-right"><b>{{$actual_jobs}}</b>/{{$total_jobs}}</span>
+                      <div class="progress progress-sm">
+                        <div class="progress-bar bg-warning" style="width: <?php $total_jobs = ($actual_jobs/$total_jobs)*100; ?> {{$total_jobs}}%"></div>
+                      </div>
+                    </div>
+                    <!-- /.progress-group -->
+                </div>
+              </div>
+              </div>
+              <div class="col-12 col-sm-6 col-md-6">
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title">M and E Reports</h3>
+                  </div>
+                  <div class="card-body">
+                      <table id="example3" class="table row-border table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Report</th>
+                            <th>Branch</th>
+                            <th>Created At</th>
+                        </tr>
+                    </thead> 
+                    <tbody>
+                        <?php  $no=1; ?>
+                        @foreach ($total_reports as $total_report)
+                        <tr class="task">
+                            <td>{{ $no++ }}</td>
+                            <td>
+                              <?php $string = $total_report->auditable_type;
+                                    $replaced = str_replace("_", " ", $string);?>
+                              {{ ucwords($replaced) }}
+                            </td>
+                            <td>{{ $total_report->branch_name }}</td>
+                            <td>{{ $total_report->created_at }}</td>
+                       
+                        </tr>
+                        @endforeach
+                    <tbody>        
+                </table>
+                  </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+    </section>
+@endcan
 @endsection
 @section('scripts')
 <script>
@@ -949,14 +1285,15 @@
 
             function drawChart() {
         var data = google.visualization.arrayToDataTable([
-          ['Branch', 'Youths', 'CG','Soft Skills','VT','Prof','Jobs'],
-          ['Nuwara Eliya', {{$count_NE_youth}}, {{$count_NE_cg}}, {{$count_NE_soft_skills}}, {{$count_NE_vt}},  {{$count_NE_prof}}, {{$count_NE_jobs}}],
-          ['Trincomalee', {{$count_TRIN_youth}}, {{$count_TRIN_cg}}, {{$count_TRIN_soft_skills}} , {{$count_TRIN_vt}},  {{$count_TRIN_prof}}, {{$count_TRIN_jobs}}],
-          ['Kegalle', {{$count_KEG_youth}}, {{$count_KEG_cg}}, {{$count_KEG_soft_skills}}, {{$count_KEG_vt}}, {{$count_KEG_prof}}, {{$count_KEG_jobs}}],
-          ['Ginigathhena', {{$count_GINI_youth}}, {{$count_GINI_cg}}, {{$count_GINI_soft_skills}}, {{$count_GINI_vt}},  {{$count_GINI_prof}}, {{$count_GINI_jobs}}],
-          ['Battacalao', {{$count_BAT_youth}}, {{$count_BAT_cg}}, {{$count_BAT_soft_skills}}, {{$count_BAT_vt}},  {{$count_BAT_prof}}, {{$count_BAT_jobs}}],
-          ['Anuradhapura', {{$count_ANU_youth}}, {{$count_ANU_cg}}, {{$count_ANU_soft_skills}}, {{$count_ANU_vt}}, {{$count_ANU_prof}}, {{$count_ANU_jobs}}],
-          ['Mullaitivu', {{$count_MUL_youth}}, {{$count_MUL_cg}}, {{$count_MUL_soft_skills}}, {{$count_MUL_vt}},  {{$count_MUL_prof}}, {{$count_MUL_jobs}}],
+          ['Branch', 'Youths', 'CG','Soft Skills','VT','Prof','Jobs','BSS'],
+          ['Nuwara Eliya', {{$count_NE_youth}}, {{$count_NE_cg}}, {{$count_NE_soft_skills}}, {{$count_NE_vt}},  {{$count_NE_prof}}, {{$count_NE_jobs}},{{$count_NE_bss}}],
+          ['Trincomalee', {{$count_TRIN_youth}}, {{$count_TRIN_cg}}, {{$count_TRIN_soft_skills}} , {{$count_TRIN_vt}},  {{$count_TRIN_prof}}, {{$count_TRIN_jobs}},{{$count_TRIN_bss}}],
+          ['Kegalle', {{$count_KEG_youth}}, {{$count_KEG_cg}}, {{$count_KEG_soft_skills}}, {{$count_KEG_vt}}, {{$count_KEG_prof}}, {{$count_KEG_jobs}},{{$count_KEG_bss}}],
+          ['Ginigathhena', {{$count_GINI_youth}}, {{$count_GINI_cg}}, {{$count_GINI_soft_skills}}, {{$count_GINI_vt}},  {{$count_GINI_prof}}, {{$count_GINI_jobs}},{{$count_GINI_bss}}],
+          ['Battacalao', {{$count_BAT_youth}}, {{$count_BAT_cg}}, {{$count_BAT_soft_skills}}, {{$count_BAT_vt}},  {{$count_BAT_prof}}, {{$count_BAT_jobs}},{{$count_BAT_bss}}],
+          ['Anuradhapura', {{$count_ANU_youth}}, {{$count_ANU_cg}}, {{$count_ANU_soft_skills}}, {{$count_ANU_vt}}, {{$count_ANU_prof}}, {{$count_ANU_jobs}},{{$count_ANU_bss}}],
+          ['Mullaitivu', {{$count_MUL_youth}}, {{$count_MUL_cg}}, {{$count_MUL_soft_skills}}, {{$count_MUL_vt}},  {{$count_MUL_prof}}, {{$count_MUL_jobs}},{{$count_MUL_bss}}],
+
         ]);
 
         
@@ -970,7 +1307,133 @@
 
         chart.draw(data, google.charts.Bar.convertOptions(options));
       }
+
+      $(document).ready(function() {
+        
+        $('#example3').DataTable( {
+            dom: 'Bfrtip',
+            buttons: [
+                
+            ],
+
+            bFilter: false
+
+        
+        } );
+      } );
     </script>
+@endcan
+@can('me-dashboard')
+<script type="text/javascript">
+      google.charts.load('current', {'packages':['bar']});
+      google.charts.setOnLoadCallback(drawChart);
+
+            function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Branch', 'Youths', 'CG','Soft Skills','VT','Prof','Jobs','BSS'],
+          ['Nuwara Eliya', {{$count_NE_youth}}, {{$count_NE_cg}}, {{$count_NE_soft_skills}}, {{$count_NE_vt}},  {{$count_NE_prof}}, {{$count_NE_jobs}},{{$count_NE_bss}}],
+          ['Trincomalee', {{$count_TRIN_youth}}, {{$count_TRIN_cg}}, {{$count_TRIN_soft_skills}} , {{$count_TRIN_vt}},  {{$count_TRIN_prof}}, {{$count_TRIN_jobs}},{{$count_TRIN_bss}}],
+          ['Kegalle', {{$count_KEG_youth}}, {{$count_KEG_cg}}, {{$count_KEG_soft_skills}}, {{$count_KEG_vt}}, {{$count_KEG_prof}}, {{$count_KEG_jobs}},{{$count_KEG_bss}}],
+          ['Ginigathhena', {{$count_GINI_youth}}, {{$count_GINI_cg}}, {{$count_GINI_soft_skills}}, {{$count_GINI_vt}},  {{$count_GINI_prof}}, {{$count_GINI_jobs}},{{$count_GINI_bss}}],
+          ['Battacalao', {{$count_BAT_youth}}, {{$count_BAT_cg}}, {{$count_BAT_soft_skills}}, {{$count_BAT_vt}},  {{$count_BAT_prof}}, {{$count_BAT_jobs}},{{$count_BAT_bss}}],
+          ['Anuradhapura', {{$count_ANU_youth}}, {{$count_ANU_cg}}, {{$count_ANU_soft_skills}}, {{$count_ANU_vt}}, {{$count_ANU_prof}}, {{$count_ANU_jobs}},{{$count_ANU_bss}}],
+          ['Mullaitivu', {{$count_MUL_youth}}, {{$count_MUL_cg}}, {{$count_MUL_soft_skills}}, {{$count_MUL_vt}},  {{$count_MUL_prof}}, {{$count_MUL_jobs}},{{$count_MUL_bss}}],
+
+        ]);
+
+        
+        var options = {
+          chart: {
+           
+          }
+        };
+
+        var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
+
+        chart.draw(data, google.charts.Bar.convertOptions(options));
+      }
+
+       $(document).ready(function() {
+        
+        $('#example3').DataTable( {
+            dom: 'Bfrtip',
+            buttons: [
+                
+            ],
+
+            bFilter: false
+
+        
+        } );
+      } );
+    </script>
+
+    <style>
+  th { font-size: 15px; }
+  td { font-size: 14px; }
+
+  .zoom:hover {
+  transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+  z-index: 5000;
+  transition: all .2s ease-in-out;
+}
+</style>
+@endcan
+@can('management-dashboard')
+<script type="text/javascript">
+      google.charts.load('current', {'packages':['bar']});
+      google.charts.setOnLoadCallback(drawChart);
+
+            function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Branch', 'Youths', 'CG','Soft Skills','VT','Prof','Jobs','BSS'],
+          ['Nuwara Eliya', {{$count_NE_youth}}, {{$count_NE_cg}}, {{$count_NE_soft_skills}}, {{$count_NE_vt}},  {{$count_NE_prof}}, {{$count_NE_jobs}},{{$count_NE_bss}}],
+          ['Trincomalee', {{$count_TRIN_youth}}, {{$count_TRIN_cg}}, {{$count_TRIN_soft_skills}} , {{$count_TRIN_vt}},  {{$count_TRIN_prof}}, {{$count_TRIN_jobs}},{{$count_TRIN_bss}}],
+          ['Kegalle', {{$count_KEG_youth}}, {{$count_KEG_cg}}, {{$count_KEG_soft_skills}}, {{$count_KEG_vt}}, {{$count_KEG_prof}}, {{$count_KEG_jobs}},{{$count_KEG_bss}}],
+          ['Ginigathhena', {{$count_GINI_youth}}, {{$count_GINI_cg}}, {{$count_GINI_soft_skills}}, {{$count_GINI_vt}},  {{$count_GINI_prof}}, {{$count_GINI_jobs}},{{$count_GINI_bss}}],
+          ['Battacalao', {{$count_BAT_youth}}, {{$count_BAT_cg}}, {{$count_BAT_soft_skills}}, {{$count_BAT_vt}},  {{$count_BAT_prof}}, {{$count_BAT_jobs}},{{$count_BAT_bss}}],
+          ['Anuradhapura', {{$count_ANU_youth}}, {{$count_ANU_cg}}, {{$count_ANU_soft_skills}}, {{$count_ANU_vt}}, {{$count_ANU_prof}}, {{$count_ANU_jobs}},{{$count_ANU_bss}}],
+          ['Mullaitivu', {{$count_MUL_youth}}, {{$count_MUL_cg}}, {{$count_MUL_soft_skills}}, {{$count_MUL_vt}},  {{$count_MUL_prof}}, {{$count_MUL_jobs}},{{$count_MUL_bss}}],
+
+        ]);
+
+        
+        var options = {
+          chart: {
+           
+          }
+        };
+
+        var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
+
+        chart.draw(data, google.charts.Bar.convertOptions(options));
+      }
+
+       $(document).ready(function() {
+        
+        $('#example3').DataTable( {
+            dom: 'Bfrtip',
+            buttons: [
+                
+            ],
+
+            bFilter: false
+
+        
+        } );
+      } );
+    </script>
+
+    <style>
+  th { font-size: 15px; }
+  td { font-size: 14px; }
+
+  .zoom:hover {
+  transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+  z-index: 5000;
+  transition: all .2s ease-in-out;
+}
+</style>
 @endcan
 @can('branch-dashboard')
 	<script type="text/javascript">
@@ -986,6 +1449,7 @@
           ['VT', {{$count_vt}},'silver'],
           ['Prof', {{$count_prof}},'silver'],
           ['Jobs', {{$count_jobs}},'silver'],
+          ['BSS', {{$count_bss}},'silver'],
         ]);
 
         var options = {

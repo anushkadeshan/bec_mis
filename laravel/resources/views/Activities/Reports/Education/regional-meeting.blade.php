@@ -45,8 +45,7 @@
                         </a>
                       </li> 
                       @else
-                      <input type="hidden" name="branch_id" value="{{$branch_id}}">
-                      <br>  
+                      <input type="hidden" name="branch_id" value="{{$branch_id}}"> 
                       @endif
 
                       <li class="nav-item">
@@ -236,7 +235,7 @@ $(document).ready(function() {
     $.each(data, function(index, value) {
     console.log(value);
     // use data table row.add, then .draw for table refresh
-    dataTable.row.add([count++, value.meeting_date, value.district, value.name, '<button type="button" name="view" data-id="'+value.r_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button>']).draw();
+    dataTable.row.add([count++, value.meeting_date, value.district, value.name, '<div class="btn-group"><button type="button" name="view" data-id="'+value.r_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button><a href="{{url('reports-me/regional')}}/'+value.r_id+'/edit"><button type="button" name="view" class="btn btn-success btn-flat btn-sm"><i class="fa fa-edit"></i></button></a></div>']).draw();
     });
     var output = '';
    $('#total_records').text(data.length);

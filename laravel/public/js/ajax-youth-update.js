@@ -506,6 +506,7 @@ $(document).ready(function () {
 $(document).on('click', '#edit-course', function(){
         var id = $(this).data('id');
         $('#youth_course_id').val($(this).data('id'));
+        $('#youth_course_id1').val($(this).data('id'));
         $('#course_name').val($(this).data('course_name'));
         $('#course_id').val($(this).data('course_id'));
         $('#status').val($(this).data('status'));
@@ -517,3 +518,31 @@ $(document).on('click', '#edit-course', function(){
 
         
     });
+$(document).ready(function(){
+//serahc course id
+       $('#course_name3').keyup(function(){ 
+              var query = $(this).val();
+              if(query != '')
+              {
+               var _token = $('input[name="_token"]').val();
+               $.ajax({
+                url: SITE_URL + '/courseList1',
+                method:"POST",
+                data:{query:query, _token:_token},
+                success:function(data){
+                 $('#courseList3').fadeIn();  
+                 $('#courseList3').html(data);
+                }
+               });
+              }
+          });
+
+          $(document).on('click', '#following li', function(){  
+            $('#courseList3').fadeOut(); 
+              $('#course_name3').val($(this).text()); 
+              var course_id = $(this).attr('id');
+              $('#course_id3').val(course_id);
+               
+          });  
+    });
+

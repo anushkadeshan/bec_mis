@@ -79,7 +79,8 @@
         		</thead>
         		<tbody>
         			<?php  $no=1; ?> 
-        			@foreach($youths as $youth)
+                    @foreach($youths->chunk(100) as $chunk)
+        			@foreach($chunk as $youth)
         			<tr class="youth{{$youth->youth_id}}">
         				<td>{{$no++}}</td>
         				<td>{{ $youth->youth_name }}</td>
@@ -129,7 +130,7 @@
                                 {{csrf_field()}}
 
                                 <input type="checkbox" class="bss" data-id="{{$youth->youth_id}}" @if ($youth->bss) checked @endif>
-                                <label>&nbsp; BSS Provided</label>
+                                <label>&nbsp; BSS Beneficiary</label>
                             </form>
         				</td>
         				<td>
@@ -170,6 +171,7 @@
                         </td>
                         @endcan
         			</tr>
+                    @endforeach
         			@endforeach
         		</tbody>
         	</table>

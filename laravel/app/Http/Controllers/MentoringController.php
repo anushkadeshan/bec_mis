@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\Validator;
 use Zipper;
 use Carbon\Carbon;
 use Auth;
+use Illuminate\Support\Facades\URL;
+use App\Audit;
+use App\User;
+use App\Notifications\CompletionReport;
 
 class MentoringController extends Controller
 {
@@ -118,6 +122,25 @@ class MentoringController extends Controller
                 else{
                 	return response()->json(['error' => 'Submit Goverment Participants Details.']);
                 } 
+
+                $audit = array(
+                    'user_type' => 'App\User',
+                    'user_id' => Auth::user()->id,
+                    'event' => 'created',
+                    'auditable_type' => 'mentoring',
+                    'auditable_id' => $mentoring_id,
+                    'url' => url()->current(),
+                    'ip_address' => request()->ip(),
+                    'user_agent' => $request->header('User-Agent'),
+
+                );
+
+                $reports = Audit::create($audit);
+
+                $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin','management' ]);})->get();
+                foreach ($notifyTo as $notifyUser) {
+                    $notifyUser->notify(new CompletionReport($reports));
+                }
 
             }
             else{

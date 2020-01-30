@@ -42,6 +42,7 @@ class YouthController extends Controller
                   ->where('branch_id',$branch)
                   ->join('branches','branches.id','=','youths.branch_id')
                   ->select('youths.*','youths.name as youth_name','branches.*','youths.id as youth_id')
+                  ->latest()
                   ->get(); 
       }
       //dd($youths->toArray());
@@ -550,6 +551,31 @@ public function update_followed_course(Request $request){
             if($validator->passes()){
               
               $followed_courses = DB::table('youths_courses')->whereid($request->id)->update(['provided_by_bec'=> $request->provided_by_bec, 'course_id' => $request->course_id,'completed_at'=> $request->completed_at,'status'=> $request->status]);
+
+            }
+            else{
+                return response()->json(['error' => $validator->errors()->all()]);
+            }
+    }
+
+    public function add_new_course(Request $request){
+        $validator = Validator::make($request->all(),[
+                'provided_by_bec' => 'required',
+                'course_id' => 'required',
+                'completed_at' => 'required'
+            ]);
+
+            $data = array(
+                'course_id' => $request->course_id,
+                'provided_by_bec' => $request->provided_by_bec,
+                'completed_at' => $request->completed_at,
+                'youth_id' => $request->youth_id,
+                'status' => $request->status
+            );
+
+            if($validator->passes()){
+              
+              $followed_courses = DB::table('youths_courses')->insert($data);
 
             }
             else{
@@ -1353,8 +1379,53 @@ public function update_following_course(Request $request){
           break;
       }
 
+      $cg = DB::table('cg_youths')
+            ->join('career_guidances','career_guidances.id','=','cg_youths.career_guidances_id')
+            ->where('cg_youths.youth_id',$id)
+            ->first();
 
-      return view('Youth.view-youth-profile')->with(['course_categories'=> $course_categories, 'branches' => $branches, 'youth' => $youth_data, 'followed_courses' => $followed_courses, 'results' => $results, 'language' => $language, 'jobs_details' =>$jobs_details, 'intresting_jobs' => $intresting_jobs, 'intresting_business' => $intresting_business,'youth_common_details' => $youth_common_details,'following_course' => $following_course,'intresting_courses'=> $courses ]);
+      $soft = DB::table('provide_soft_skills_youths')
+            ->join('provide_soft_skills','provide_soft_skills.id','=','provide_soft_skills_youths.provide_softskill_id')
+            ->join('institutes','institutes.id','=','provide_soft_skills.institute_id')
+            ->where('provide_soft_skills_youths.youth_id',$id)
+            ->first();
+
+      $gvt = DB::table('course_supports_youth')
+            ->join('course_supports','course_supports.id','=','course_supports_youth.course_support_id')
+            ->join('institutes','institutes.id','=','course_supports.institute_id')
+            ->join('courses','courses.id','=','course_supports.course_id')
+            ->select('course_supports_youth.*','course_supports.*','institutes.name as institute_name','courses.name as course_name','courses.*')
+            ->where('course_supports_youth.youth_id',$id)
+            ->first();
+
+      $financial = DB::table('finacial_supports_youths')
+            ->join('finacial_supports','finacial_supports.id','=','finacial_supports_youths.finacial_support_id')
+            ->join('institutes','institutes.id','=','finacial_supports.institute_id')
+            ->join('courses','courses.id','=','finacial_supports.course_id')
+            ->select('finacial_supports_youths.*','finacial_supports.*','institutes.name as institute_name','courses.name as course_name','courses.*')
+            ->where('finacial_supports_youths.youth_id',$id)
+            ->first();
+
+      $partner = DB::table('partner_trainings_youth')
+            ->join('partner_trainings','partner_trainings.id','=','partner_trainings_youth.partner_trainings_id')
+            ->join('institutes','institutes.id','=','partner_trainings.institute_id')
+            ->join('courses','courses.id','=','partner_trainings.course_id')
+            ->select('partner_trainings_youth.*','partner_trainings.*','institutes.name as institute_name','courses.name as course_name','courses.*')
+            ->where('partner_trainings_youth.youth_id',$id)
+            ->first();
+
+      $placement = DB::table('placements_youths')
+            ->join('placements','placements.id','=','placements_youths.placements_id')
+            ->join('employers','employers.id','=','placements_youths.employer')
+            ->where('placements_youths.youth_id',$id)
+            ->first();
+
+      $individual = DB::table('placement_individual')
+            ->join('employers','employers.id','=','placement_individual.employer_id')
+            ->where('placement_individual.youth_id',$id)
+            ->first();
+
+      return view('Youth.view-youth-profile')->with(['course_categories'=> $course_categories, 'branches' => $branches, 'youth' => $youth_data, 'followed_courses' => $followed_courses, 'results' => $results, 'language' => $language, 'jobs_details' =>$jobs_details, 'intresting_jobs' => $intresting_jobs, 'intresting_business' => $intresting_business,'youth_common_details' => $youth_common_details,'following_course' => $following_course,'intresting_courses'=> $courses, 'cg' => $cg, 'soft'=> $soft, 'gvt'=> $gvt, 'financial' => $financial, 'partner'=> $partner,'placement' => $placement, 'individual' => $individual ]);
         
       
       

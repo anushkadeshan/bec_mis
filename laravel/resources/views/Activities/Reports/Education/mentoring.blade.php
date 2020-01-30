@@ -160,10 +160,11 @@
                             <th>PWD F</th>
                             <th>Fathers</th>
                             <th>Mothers</th>
-                            <th>M Guardians</th>
-		                        <th>F Guardians</th>
+                            <th>M Guard.</th>
+		                        <th>F Guard.</th>
 		                        <th>Branch</th>
-		                        <th>Action</th>
+                            <th>Action</th>
+		                        <th></th>
 		                      
 		                    </tr>
 		                    <tbody>	
@@ -232,6 +233,14 @@
                     		<button type="button hidden-print" id="print" class="btn btn-success btn-flat"><i class="fas fa-print"></i> Print</button>
                         <a id="link" href="" target="_blank">  <button type="button" id="download_a" name="file_name" class="btn btn-primary btn-flat" data-id="" data-attendance=""><i class="fas fa-download"></i> Download Attendanace</button></a> 
                         <a id="link2" href="" target="_blank">  <button type="button" id="download_a" name="id" class="btn btn-warning btn-flat"><i class="fas fa-download"></i> Download Photos</button></a> 
+                        @can('verify-report')
+                        <br>  
+                        <br>  
+                        <div  class="form-group">
+                          <button type="button" class="btn btn-light" id="verify"><span id="verify-lable">Verify</span> <i id="icon" style="display: none" class="fa fa-check   faa-ring animated" aria-hidden="true"></i> </button>
+                        </div>
+                        {{ csrf_field() }}  
+                        @endcan
                     		{{ csrf_field() }}	
                     	</div>
                     </div>
@@ -259,10 +268,27 @@
 $(document).ready(function() {
 
 var dataTable = $("#example").DataTable({
+
       dom: 'Bfrtip',
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
             ],
+      "createdRow": function ( row, data, index ) {
+            if ( data[12] == 0 ) {
+                $('td', row).eq(0).addClass('highlight');
+            }
+
+            else{
+              $('td', row).eq(0).addClass('highlight2');
+            }
+        },
+
+        "columnDefs": [
+            {
+                "targets": [ 12 ],
+                "visible": false,
+            }
+        ],
     });
   
 	var date = new Date();
@@ -301,7 +327,7 @@ var dataTable = $("#example").DataTable({
   $.each(data, function(index, value) {
     console.log(value);
     // use data table row.add, then .draw for table refresh
-    dataTable.row.add([count++, value.meeting_date, value.total_male, value.total_female, value.pwd_male,value.pwd_female,value.fathers, value.mothers, value.male_gurdians, value.female_gurdians, value.ext,'<button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button>']).draw();
+    dataTable.row.add([count++, value.meeting_date, value.total_male, value.total_female, value.pwd_male,value.pwd_female,value.fathers, value.mothers, value.male_gurdians, value.female_gurdians, value.ext,'<div class="btn-group"><button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button></div>',value.verified]).draw();
 
      var total_male = value.total_male;
      var total_female = value.total_female;
@@ -367,7 +393,6 @@ $('body').on('click', '.btn_view', function () {
 
       var meeting_id = $(this).data('id');
        
-
       $.get("{{ route('reports-me/education/mentoring') }}" +'/' + meeting_id +'/view', function (data) {
           $('#tabs a[href="#tab_3"]').tab('show');
           $('#tabs a[href="#tab_3"]').attr("data-toggle", "tab");
@@ -407,6 +432,23 @@ $('body').on('click', '.btn_view', function () {
           $("#link2").attr("href",url1);
           //alert(url1)
 
+          var verify = data.meeting.verified;
+
+          if(verify==1){
+            $("#verify").attr("class" ,'btn btn-success btn-flat');
+            $("#verify-lable").text('Verified');
+
+          }
+
+          else{
+             $("#verify").attr("class" ,'btn btn-danger btn-flat');
+             $("#verify-lable").text('Verify');
+             $('#verify').data('id',id);
+             $('#verify').data('table','mentoring');
+          }
+
+
+
           var output1 = '';
 		   $('#total_participants').text(data.participants.length);
 
@@ -427,7 +469,38 @@ $('body').on('click', '.btn_view', function () {
 
    });
 
+$(document).ready(function(){
+  $('#verify').click( function(){
+    //alert($('#download_a').data('attendance'));
+    var _token = $('input[name="_token"]').val();
+    var id = $('#verify').data('id');
+    var table = $('#verify').data('table');
 
+    $.ajax({
+      url: SITE_URL + '/verify/report/',
+      method:"POST",
+      data:{id:id, table:table, _token:_token},
+      //dataType:"json",
+
+
+      success:function(data)
+      {
+          $('#icon').show();
+          $("#verify").attr("class" ,'btn btn-success btn-flat');
+          $("#verify-lable").text('Verified');
+          toastr.success('Verified Successfully !', 'Congradulations')
+
+      },
+
+      error: function (jqXHR, exception) {    
+        console.log(jqXHR);
+        toastr.error('Error !', 'Something Error')
+      },
+
+    });
+
+  });
+});
 
 $('#print').click(function () {
     $('.print').printThis({
@@ -509,5 +582,12 @@ google.charts.load('current', {'packages':['corechart']});
   z-index: 5000;
   transition: all .2s ease-in-out;
 }
+
+td.highlight {
+      border-left: solid 5px #EB3062;
+    }
+td.highlight2 {
+      border-left: solid 5px #33A532;
+    }
 </style>
 @endsection

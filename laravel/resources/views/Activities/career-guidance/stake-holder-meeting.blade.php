@@ -159,6 +159,7 @@
 						      <th scope="col">Gender</th>
 						      <th scope="col">Designation</th>
 						      <th scope="col">Institute</th>
+						      <th scope="col">Phone</th>
 						      <th scope="col"></th>
 						    </tr>
 						  </thead>
@@ -168,6 +169,7 @@
 						      <td><input type="text" name="gender[]" class="form-control position-list"></td>
 						      <td><input type="text" name="designation[]" class="form-control branch-list"></td>
 						      <td><input type="text" name="institute[]" class="form-control branch-list"></td>
+						      <td><input type="text" name="phone[]" class="form-control branch-list"></td>
 						      <td><button type="button" class="btn btn-success btn-flat" id="add">Add More</button></td>
 						    </tr>
 						    
@@ -255,7 +257,7 @@ $(document).ready(function(){
       var i=1;  
       $('#add').click(function(){  
            i++;  
-           $('#dynamic_field').append('<tr id="row'+i+'"><td><input type="text" name="name[]" class="form-control name_list" /></td><td><input type="text" name="gender[]" class="form-control position-list"></td>						      <td><input type="text" name="designation[]" class="form-control branch-list"></td><td><input type="text" name="institute[]" class="form-control branch-list"></td><td><button type="button" name="remove" id="'+i+'" class="btn btn-danger btn-flat btn_remove">X</button></td></tr>');  
+           $('#dynamic_field').append('<tr id="row'+i+'"><td><input type="text" name="name[]" class="form-control name_list" /></td><td><input type="text" name="gender[]" class="form-control position-list"></td>						      <td><input type="text" name="designation[]" class="form-control branch-list"></td><td><input type="text" name="institute[]" class="form-control branch-list"></td><td><input type="text" name="phone[]" class="form-control branch-list"></td><td><button type="button" name="remove" id="'+i+'" class="btn btn-danger btn-flat btn_remove">X</button></td></tr>');  
       });  
       $(document).on('click', '.btn_remove', function(){  
            var button_id = $(this).attr("id");   

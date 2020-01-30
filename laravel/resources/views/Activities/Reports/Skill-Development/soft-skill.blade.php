@@ -24,73 +24,75 @@
   <div class="row">
     <div class="col-md-3 hidden-print">
       <div class="card card-warning card-outline">
-                    <div class="card-header">
-                      <h3 class="card-title">Filters</h3>
-                    </div>
-                    <div class="card-body">
-                      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false" style="background-color: #5E6971; color: white;">
-                        
-                      <?php $branch_id = Auth::user()->branch; ?> 
-                      @if(is_null($branch_id)) 
-                      <li class="nav-item">
-                        <a class="nav-link">
-                            <div class="form-group">
-                            <label for="disability">Branch &nbsp;&nbsp;</label>
-                            <select name="branch_id" id="branch_id" class="form-control">
-                              <option value="">All</option>
-                              @foreach($branches as $branch)
-                              <option value="{{$branch->id}}">{{$branch->name}}</option>
-                              @endforeach
-                            </select>
-                          </div>
-                        </a>
-                      </li> 
-                      @else
-                      <input type="hidden" name="branch_id" value="{{$branch_id}}"> 
-                      @endif
-                      <li class="nav-item">
-                        <a class="nav-link">
-                            
-                         <div class="input-group date" data-provide="datepicker">
-                      <input type="text" class="form-control" id="dateStart" data-date-end-date="0d" placeholder="From">
-                     <div class="input-group-addon">
-                      <span class="glyphicon glyphicon-th"></span>
-                    </div>
-                  </div>
-                        </a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link">
-                         <div class="input-group date" data-provide="datepicker">
-                            <input type="text" name="dateEnd" id="dateEnd" class="form-control" data-date-end-date="0d" placeholder="To">
-                            <div class="input-group-addon">
-                          <span class="glyphicon glyphicon-th"></span>
-                      </div>
-                          </div>
-                        </a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link">
-                            <div class="form-group">
-                            <label for="disability">Institute &nbsp;&nbsp;</label>
-                            <select name="institute_id" id="institute_id" class="form-control">
-                              <option value="">All</option>
-                              @foreach($institutes as $institute)
-                              <option value="{{$institute->id}}">{{$institute->institute_name}}</option>
-                              @endforeach
-                            </select>
-                          </div>
-                        </a>
-                      </li> 
-                      <li class="nav-item">
-                          <a class="nav-link">
-                            <button type="button" name="filter" id="filter" class="btn btn-primary btn-flat"><i id="loading" class="fas fa-filter"></i> Filter <i style="display:none" id="loading" class="fa fa-spinner fa-lg faa-spin animated"></i></button>
-                            <button type="button" name="refresh" id="refresh" class="btn btn-default btn-flat">Refresh</button>
-                          </a>
-                      </li>               
-                      </ul>
-                    </div>
-                  </div>
+        <div class="card-header">
+          <h3 class="card-title">Filters</h3>
+        </div>
+        <div class="card-body">
+          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false" style="background-color: #5E6971; color: white;">
+            
+          <?php $branch_id = Auth::user()->branch; ?> 
+          @if(is_null($branch_id)) 
+          <li class="nav-item">
+            <a class="nav-link">
+                <div class="form-group">
+                <label for="disability">Branch &nbsp;&nbsp;</label>
+                <select name="branch_id" id="branch_id" class="form-control">
+                  <option value="">All</option>
+                  @foreach($branches as $branch)
+                  <option value="{{$branch->id}}">{{$branch->name}}</option>
+                  @endforeach
+                </select>
+              </div>
+            </a>
+          </li> 
+          @else
+          <input type="hidden" name="branch_id" value="{{$branch_id}}"> 
+          @endif
+          <li class="nav-item">
+            <a class="nav-link">
+                
+             <div class="input-group date" data-provide="datepicker">
+          <input type="text" class="form-control" id="dateStart" data-date-end-date="0d" placeholder="From">
+         <div class="input-group-addon">
+          <span class="glyphicon glyphicon-th"></span>
+        </div>
+      </div>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link">
+             <div class="input-group date" data-provide="datepicker">
+                <input type="text" name="dateEnd" id="dateEnd" class="form-control" data-date-end-date="0d" placeholder="To">
+                <div class="input-group-addon">
+              <span class="glyphicon glyphicon-th"></span>
+          </div>
+              </div>
+            </a>
+          </li>
+          <!--
+          <li class="nav-item">
+            <a class="nav-link">
+                <div class="form-group">
+                <label for="disability">Institute &nbsp;&nbsp;</label>
+                <select name="institute_id" id="institute_id" class="form-control">
+                  <option value="">All</option>
+                  @foreach($institutes as $institute)
+                  <option value="{{$institute->id}}">{{$institute->institute_name}}</option>
+                  @endforeach
+                </select>
+              </div>
+            </a>
+          </li> 
+        -->
+          <li class="nav-item">
+              <a class="nav-link">
+                <button type="button" name="filter" id="filter" class="btn btn-primary btn-flat"><i id="loading" class="fas fa-filter"></i> Filter <i style="display:none" id="loading" class="fa fa-spinner fa-lg faa-spin animated"></i></button>
+                <button type="button" name="refresh" id="refresh" class="btn btn-default btn-flat">Refresh</button>
+              </a>
+          </li>               
+          </ul>
+        </div>
+      </div>
     </div>
     <div class="col-md-9">
       <div class="row">
@@ -143,7 +145,7 @@
                     </div>
                     <div class="card card-success">
                     <div  class="card-header">
-                     Enrolled Youths to soft skill training
+                     Enrolled Youths to soft skill training <a href="{{Route('view_soft_youths')}}"><span  class="badge badge-warning float-right" id="row_count">View Youth Report</span></a>
                     </div>
                     <div  class="card-body">
                     
@@ -406,12 +408,12 @@ var dataTable = $("#example").DataTable({
 
  fetch_data();
 
- function fetch_data(dateStart = '', dateEnd = '',branch='' ,course='',institute='')
+ function fetch_data(dateStart = '', dateEnd = '',branch=''/* ,course='',institute=''*/)
  {
   $.ajax({
    url:"{{ Route('reports-me/skill/soft-skill/fetch') }}",
    method:"POST",
-   data:{dateStart:dateStart, dateEnd:dateEnd, _token:_token,branch:branch,institute:institute},
+   data:{dateStart:dateStart, dateEnd:dateEnd, _token:_token ,branch:branch /*,institute:institute*/},
    dataType:"json",
    beforeSend: function(){
      $("#loading").attr('class', 'fa fa-spinner fa-lg faa-spin animated');
@@ -433,7 +435,7 @@ var dataTable = $("#example").DataTable({
   $.each(data, function(index, value) {
     //console.log(value);
     // use data table row.add, then .draw for table refresh
-    dataTable.row.add([count++, value.meeting_date, value.total_male, value.total_female, value.institute_name,value.end_date,value.cost,value.ext,'<button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button>']).draw();
+    dataTable.row.add([count++, value.meeting_date, value.total_male, value.total_female, value.institute_name,value.end_date,value.cost,value.ext,'<div class="btn-group"><button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button><a href="{{url('reports-me/soft-skill')}}/'+value.m_id+'/edit"><button type="button" name="view" class="btn btn-success btn-flat btn-sm"><i class="fa fa-edit"></i></button></a></div>']).draw();
 
      var total_male = value.total_male;
      var total_female = value.total_female;
@@ -466,10 +468,10 @@ var dataTable = $("#example").DataTable({
   var dateStart = $('#dateStart').val();
   var dateEnd = $('#dateEnd').val();
   var branch = $('#branch_id').val();
-  var institute = $('#institute_id').val();
+  //var institute = $('#institute_id').val();
   if(dateStart != '' &&  dateEnd != '')
   {
-   fetch_data(dateStart, dateEnd, branch,institute);
+   fetch_data(dateStart, dateEnd, branch /*,institute*/);
   
   }
   else
@@ -482,7 +484,7 @@ var dataTable = $("#example").DataTable({
   $('#dateStart').val('');
   $('#dateEnd').val('');
   $('#branch_id').val('');
-  $('#institute_id').val('');
+  //$('#institute_id').val('');
   fetch_data();
  });
  }

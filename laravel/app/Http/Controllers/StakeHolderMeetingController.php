@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Zipper;
 use Auth;
+use Illuminate\Support\Facades\URL;
+use App\Audit;
+use App\User;
+use App\Notifications\CompletionReport;
 
 class StakeHolderMeetingController extends Controller
 {
@@ -83,13 +87,32 @@ class StakeHolderMeetingController extends Controller
                 $number = count($request->name);
                 if($number>0){
                 	for($i=0; $i<$number; $i++){
-                		$gvt_participants = DB::table('stake_holder_participants')->insert(['name'=>$request->name[$i],'designation'=>$request->designation[$i],'gender'=> $request->gender[$i],'institute'=> $request->institute[$i],'stake_holder_meeting_id'=>$stakeholder_id]);
+                		$gvt_participants = DB::table('stake_holder_participants')->insert(['name'=>$request->name[$i],'designation'=>$request->designation[$i],'gender'=> $request->gender[$i],'institute'=> $request->institute[$i],'phone'=> $request->phone[$i],'stake_holder_meeting_id'=>$stakeholder_id]);
                 	}
 
                 }
                 else{
                 	return response()->json(['error' => 'Submit Participants Details.']);
                 } 
+
+                $audit = array(
+                    'user_type' => 'App\User',
+                    'user_id' => Auth::user()->id,
+                    'event' => 'created',
+                    'auditable_type' => 'stake_holder_meetings',
+                    'auditable_id' => $stakeholder_id,
+                    'url' => url()->current(),
+                    'ip_address' => request()->ip(),
+                    'user_agent' => $request->header('User-Agent'),
+
+                );
+
+                $reports = Audit::create($audit);
+
+                $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin','management' ]);})->get();
+                foreach ($notifyTo as $notifyUser) {
+                    $notifyUser->notify(new CompletionReport($reports));
+                }
 
             }
             else{
@@ -241,7 +264,7 @@ class StakeHolderMeetingController extends Controller
         $meeting = DB::table('stake_holder_meetings')
                    ->join('branches','branches.id','=','stake_holder_meetings.branch_id')
                    ->join('dsd_office','dsd_office.ID','=','stake_holder_meetings.dsd')
-                   ->select('stake_holder_meetings.*','branches.*','stake_holder_meetings.id as m_id')
+                   ->select('stake_holder_meetings.*','branches.*','stake_holder_meetings.id as m_id','dsd_office.*')
                    ->where('stake_holder_meetings.id',$id)
                    ->first();
         $participants = DB::table('stake_holder_participants')
@@ -297,5 +320,101 @@ class StakeHolderMeetingController extends Controller
         //dd($photos);
        // Zipper::make('mydir/photos.zip')->add($paths);
        // return response()->download(('mydir/photos.zip')); 
+    }
+
+     public function edit($id){
+
+       $meeting = DB::table('stake_holder_meetings')
+                   ->join('branches','branches.id','=','stake_holder_meetings.branch_id')
+                   ->join('dsd_office','dsd_office.ID','=','stake_holder_meetings.dsd')
+                   ->select('stake_holder_meetings.*','branches.*','stake_holder_meetings.id as m_id')
+                   ->where('stake_holder_meetings.id',$id)
+                   ->first();
+        $participants = DB::table('stake_holder_participants')
+                        ->where('stake_holder_meeting_id',$id)
+                        ->get();
+
+        $photos = DB::table('stake_holder_images')
+                        ->where('stake_holder_meeting_id',$id)
+                        ->get();
+
+        $activities = DB::table('activities')->get();
+
+        return view ('Activities.career-guidance.edit.stake')->with(['meeting'=> $meeting,'participants'=>$participants,'activities'=>$activities]);
+
+    }
+
+    public function update(Request $request){
+
+        $validator = Validator::make($request->all(),[
+                'meeting_date'  =>'required',
+                'time_start'=>'required',
+                'time_end' =>'required',
+                'venue' =>'required',
+                
+            ]);
+
+        if($validator->passes()){
+        // echo "<script>console.log( 'Debug Objects: " . $meeting_date . "' );</script>";
+
+        $data1 = array(  
+            'meeting_date'  =>$request->meeting_date,
+            'time_start'=>$request->time_start,
+            'time_end' =>$request->time_end,
+            'venue' =>$request->venue,
+            'program_cost' =>$request->program_cost,
+            'total_male' => $request->total_male,
+            'total_female'=>$request->total_female,
+            'decisions'=>$request->decisions,
+        );
+        //dd($data1);
+        DB::table('stake_holder_meetings')->whereid($request->m_id)->update($data1);
+
+        $audit = array(
+            'user_type' => 'App\User',
+            'user_id' => Auth::user()->id,
+            'event' => 'updated',
+            'auditable_type' => 'stake_holder_meetings',
+            'auditable_id' => $request->m_id,
+            'url' => url()->current(),
+            'ip_address' => request()->ip(),
+            'user_agent' => $request->header('User-Agent'),
+
+        );
+
+        $reports = Audit::create($audit);
+    }
+
+
+    
+
+    else{
+                return response()->json(['error' => $validator->errors()->all()]);
+            }
+    }
+
+    public function update_participants(Request $request){
+
+        $participants = DB::table('stake_holder_participants')
+                        ->whereid($request->id_p)
+                        ->update(['name'=>$request->name,'gender'=>$request->gender,'designation'=> $request->designation,'institute'=> $request->institute,'phone'=> $request->phone]);
+
+    }
+
+    public function add_participants(Request $request){
+
+        $participants = DB::table('stake_holder_participants')
+                        ->insert(['name'=>$request->name,'gender'=>$request->gender,'designation'=> $request->designation,'institute'=> $request->institute,'phone'=> $request->phone, 'stake_holder_meeting_id'=>$request->m_id]);
+
+    }
+
+    public function participants(){
+        $participants = DB::table('stake_holder_participants')
+                        ->join('stake_holder_meetings','stake_holder_meetings.id','=','stake_holder_participants.stake_holder_meeting_id')
+                        ->join('dsd_office','dsd_office.ID','=','stake_holder_meetings.dsd')
+                        ->latest('stake_holder_meetings.id')
+                        ->get();
+
+        return view('Activities.participants')->with(['participants'=> $participants]);
     }
 }

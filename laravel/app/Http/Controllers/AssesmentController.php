@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use DB;
+use Auth;
+use Illuminate\Support\Facades\URL;
+use App\Audit;
 
 class AssesmentController extends Controller
 {
@@ -93,7 +96,28 @@ class AssesmentController extends Controller
     		);
 
     		$review = DB::table('assesments')->insert($data);
+            $assesment_id = DB::getPdo()->lastInsertId();
 
+
+            $audit = array(
+                    'user_type' => 'App\User',
+                    'user_id' => Auth::user()->id,
+                    'event' => 'created',
+                    'auditable_type' => 'assesments',
+                    'auditable_id' => $assesment_id,
+                    'url' => url()->current(),
+                    'ip_address' => request()->ip(),
+                    'user_agent' => $request->header('User-Agent'),
+
+                );
+
+                $reports = Audit::create($audit);
+
+                $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin','management' ]);})->get();
+                foreach ($notifyTo as $notifyUser) {
+                    $notifyUser->notify(new CompletionReport($reports));
+                }                
+            
     	}
 
     	else{
@@ -102,6 +126,9 @@ class AssesmentController extends Controller
     }
 
      public function view(){
+        $branch_id = Auth::user()->branch;
+        
+        if(is_null($branch_id)){
         $meetings = DB::table('assesments')
                       //->leftjoin('mentoring_gvt_officials','mentoring_gvt_officials.mentoring_id','=','mentoring.id')
                       ->join('branches','branches.id','=','assesments.branch_id')
@@ -115,12 +142,31 @@ class AssesmentController extends Controller
                    ->select('employers.name as employer_name','employers.*')
                    ->distinct()
                    ->get();
+        }
+        else{
+            $meetings = DB::table('assesments')
+                      //->leftjoin('mentoring_gvt_officials','mentoring_gvt_officials.mentoring_id','=','mentoring.id')
+                      ->join('branches','branches.id','=','assesments.branch_id')                        
+                      ->where('assesments.branch_id','=',$branch_id)
+                      ->get();
+        //dd($mentorings);       
+        //dd($participants2018);
+        $branches = DB::table('branches')->get();
+
+        $employers = DB::table('assesments')
+                   ->join('employers','employers.id','=','assesments.employer_id')
+                   ->where('assesments.branch_id','=',$branch_id)
+                   ->select('employers.name as employer_name','employers.*')
+                   ->distinct()
+                   ->get();
+        }
         return view('Activities.Reports.Job-Linking.assesment')->with(['meetings'=>$meetings,'branches'=>$branches,'employers'=>$employers]);
     }
 
     public function fetch(Request $request){
         if($request->ajax())
-        {
+        {  
+            $branch_id = Auth::user()->branch;
             if($request->dateStart != '' && $request->dateEnd != '')
             {
                 if($request->branch !=''){
@@ -134,6 +180,7 @@ class AssesmentController extends Controller
                         ->get();
                 }
                 else{
+                    if(is_null($branch_id)){
                     $data = DB::table('assesments') 
                         ->join('branches','branches.id','=','assesments.branch_id')
                         ->join('employers','employers.id', '=' ,'assesments.employer_id')
@@ -141,17 +188,40 @@ class AssesmentController extends Controller
                         ->select('assesments.*','branches.*','assesments.id as m_id','employers.*','employers.name as e_name','branches.name as branch_name')
                         ->orderBy('review_date', 'desc')
                         ->get();
+                    }
+                    else{
+                        $data = DB::table('assesments') 
+                        ->join('branches','branches.id','=','assesments.branch_id')
+                        ->join('employers','employers.id', '=' ,'assesments.employer_id')
+                        ->whereBetween('review_date', array($request->dateStart, $request->dateEnd))
+                        ->where('assesments.branch_id','=',$branch_id)
+                        ->select('assesments.*','branches.*','assesments.id as m_id','employers.*','employers.name as e_name','branches.name as branch_name')
+                        ->orderBy('review_date', 'desc')
+                        ->get();
+                    }
                 }
                 
             }
         else
             {
+                if(is_null($branch_id)){
+                
                 $data = DB::table('assesments') 
                         ->join('branches','branches.id','=','assesments.branch_id')
                         ->join('employers','employers.id', '=' ,'assesments.employer_id')
                         ->select('assesments.*','branches.*','assesments.id as m_id','employers.*','employers.name as e_name','branches.name as branch_name')
                         ->orderBy('review_date', 'desc')
                         ->get();
+                }
+                else{
+                    $data = DB::table('assesments') 
+                        ->join('branches','branches.id','=','assesments.branch_id')
+                        ->join('employers','employers.id', '=' ,'assesments.employer_id')
+                        ->where('assesments.branch_id','=',$branch_id)
+                        ->select('assesments.*','branches.*','assesments.id as m_id','employers.*','employers.name as e_name','branches.name as branch_name')
+                        ->orderBy('review_date', 'desc')
+                        ->get();
+                }
             }
                 return response()->json($data);
         }
@@ -173,6 +243,92 @@ class AssesmentController extends Controller
         ));
         
 
+    }
+
+    public function edit($id){
+
+      $meeting = DB::table('assesments')
+                   ->join('employers','employers.id', '=' ,'assesments.employer_id')
+                   ->join('branches','branches.id','=','assesments.branch_id')
+                   ->select('assesments.*','branches.*','assesments.id as m_id','employers.*','employers.name as e_name','branches.name as branch_name','employers.id as e_id')
+                   ->where('assesments.id',$id)
+                   ->first();
+
+        return view ('Activities.job-linking.edit.assesment')->with(['meeting'=> $meeting]);
+
+    }
+
+    public function update(Request $request){
+
+        $validator = Validator::make($request->all(),[
+                'review_date'  =>'required',
+                
+            ]);
+
+        if($validator->passes()){
+        // echo "<script>console.log( 'Debug Objects: " . $meeting_date . "' );</script>";
+
+        $data1 = array(   
+            
+            'review_date' => $request->review_date,
+            'employer_id'=> $request->employer_id,
+            'head_of_org' => $request->head_of_org,
+            'registered' => $request->registered,
+            'type_of_reg' => $request->type_of_reg,
+            'nature_of_business' => $request->nature_of_business,
+            'no_of_employers' => $request->no_of_employers,
+            'worksites' => $request->worksites,
+            'departments' => $request->departments,
+            'time_from' => $request->time_from,
+            'time_to' => $request->time_to,
+            'days_from' => $request->days_from,
+            'days_to' => $request->days_to,
+            'women' => $request->women,
+            'full_time' => $request->full_time,
+            'part_time' => $request->part_time,
+            'shifts' => $request->shifts,
+            'contract' => $request->contract,
+            'permanant' => $request->permanant,
+            'different_locations' => $request->different_locations,
+            'disabled' => $request->disabled,
+            'hrd' => $request->hrd,
+            'app_letter' => $request->app_letter,
+            'probation' => $request->probation,
+            'duration' => $request->duration,
+            'leave_policy' => $request->leave_policy,
+            'gender_policy' => $request->gender_policy,
+            'harassment' => $request->harassment,
+            'elaborate' => $request->elaborate,
+            'equal_opportunity' => $request->equal_opportunity,
+            'prepared_language' => $request->prepared_language,
+            'starting_salary' => $request->starting_salary,
+            'facilities' => json_encode($request->facilities),  
+            
+        );
+        //dd($data1);
+        DB::table('assesments')->whereid($request->m_id)->update($data1);
+
+        $audit = array(
+            'user_type' => 'App\User',
+            'user_id' => Auth::user()->id,
+            'event' => 'updated',
+            'auditable_type' => 'assesments',
+            'auditable_id' => $request->m_id,
+            'url' => url()->current(),
+            'ip_address' => request()->ip(),
+            'user_agent' => $request->header('User-Agent'),
+
+        );
+
+        $reports = Audit::create($audit);
+    }
+
+
+    
+
+    else{
+        return response()->json(['error' => $validator->errors()->all()]);
+        }
     }
 
 }

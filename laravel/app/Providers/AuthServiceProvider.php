@@ -29,7 +29,8 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
         $this->registerPostPolicies();
-        Passport::routes();   
+        Passport::routes(); 
+        Passport::loadKeysFrom('/secret-keys/oauth');  
     }
 
     public function registerPostPolicies()
@@ -210,6 +211,10 @@ class AuthServiceProvider extends ServiceProvider
          return $user->hasAccess(['guest-dashboard']);
          });
 
+        Gate::define('me-dashboard', function($user){
+         return $user->hasAccess(['me-dashboard']);
+         });
+
         Gate::define('view-M&E-reports', function($user){
          return $user->hasAccess(['view-M&E-reports']);
          });
@@ -224,6 +229,18 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('delete-M&E-reports', function($user){
          return $user->hasAccess(['delete-M&E-reports']);
+         });
+
+        Gate::define('management', function($user){
+         return $user->hasAccess(['management']);
+         });
+
+        Gate::define('management-dashboard', function($user){
+         return $user->hasAccess(['management-dashboard']);
+         });
+
+        Gate::define('verify-report', function($user){
+         return $user->hasAccess(['verify-report']);
          });
 
 

@@ -62,6 +62,9 @@
 
       }
 
+        th { font-size: 15px; }
+        td { font-size: 14px; }
+
     </style>
     </head>
     <body class="hold-transition sidebar-mini">
@@ -339,49 +342,49 @@
             </a>
           </li>
           @endcan
-          @can('add-M&E-reports')
+          @can('view-M&E-reports')
           
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link active">
               <i class="nav-icon fa fa-cogs"></i>
               <p>
-                BEC Activities
+                Completion Reports
                 <i class="right fa fa-angle-left"></i>
               </p>
             </a>
             <ul class="nav nav-treeview">
+              @can('add-M&E-reports')
               <li class="nav-item">
-                <a href="{{url('/education')}}" class="nav-link">
-                  <i class="fas fa-graduation-cap nav-icon"></i>
-                  <p class="text-primary">Education - 1</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="{{url('career-guidance')}}" class="nav-link">
-                  <i class="fas fa-chalkboard-teacher"></i>
-                  <p class="text-primary">&nbsp; Career Guidance - 2</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="{{url('skill-development')}}" class="nav-link">
-                  <i class="fa fa-award nav-icon"></i>
-                  <p class="text-primary">Skill Development - 3</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="{{url('job-linking')}}" class="nav-link">
-                  <i class="fa fa-briefcase nav-icon"></i>
-                  <p class="text-primary">Job Linking - 4</p>
-                </a>
-              </li>
-              @cannot('branch')
-              <li class="nav-item">
-                <a href="{{url('m&e-reports')}}" class="nav-link">
-                 <i class="fas fa-file-contract nav-icon text-warning"></i>
-                  <p class="text-warning">M & E Reports</p>
+                <a href="{{url('/completion-reports')}}" class="nav-link">
+                  <i class="fas fa-plus-square nav-icon text-primary"></i>
+                  <p class="text-primary">Add Reports</p>
                 </a>
               </li>
               @endcan
+              @can('view-M&E-reports')
+              
+              <li class="nav-item">
+                <a href="{{url('m&e-reports')}}" class="nav-link">
+                 <i class="fas fa-file-contract nav-icon text-warning"></i>
+                  <p class="text-warning"> View M & E Reports</p>
+                </a>
+              </li>
+              
+              <li class="nav-item">
+                <a href="{{url('resource-people')}}" class="nav-link">
+                 <i class="fas fa-user nav-icon text-success"></i>
+                  <p class="text-success">Resourse People Pool</p>
+                </a>
+              </li>
+              
+              <li class="nav-item">
+                <a href="{{url('stake-holders')}}" class="nav-link">
+                 <i class="fas fa-user nav-icon text-danger"></i>
+                  <p class="text-danger">Stake Holders Pool</p>
+                </a>
+              </li>
+              @endcan
+              
             </ul>
           </li>
           @endcan
@@ -507,7 +510,7 @@
           @endcan 
           @endcan
           @can('view-reports')
-          <li class="nav-header">Reports</li>
+          <li class="nav-header">Base Line Reports</li>
 
             <li class="nav-item">
                 <a href="{{Route('reports/index')}}" class="nav-link active">
@@ -646,7 +649,16 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-50704959-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-50704959-3');
+</script>
 
 @yield('scripts')
 

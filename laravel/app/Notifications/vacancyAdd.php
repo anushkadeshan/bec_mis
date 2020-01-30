@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use App\Employer;
 use App\Vacancy;
 
@@ -31,7 +32,7 @@ class vacancyAdd extends Notification
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ['database','broadcast'];
     }
 
     /**
@@ -59,5 +60,12 @@ class vacancyAdd extends Notification
         return [
           'vacancy' => $this->vacancy      
         ];
+    }
+
+    public function toBroadcast($notifiable)
+    {
+        return new BroadcastMessage([
+            'vacancy' => $this->vacancy
+        ]);
     }
 }

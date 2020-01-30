@@ -17,6 +17,7 @@ use App\Youth;
 use App\Notifications\applyVacancy;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Gate;
+use App\Events\userLogin;
 
 class VacancyController extends Controller
 {
@@ -44,6 +45,7 @@ class VacancyController extends Controller
                $employer_id = $employer->id;
                $vacancies = Vacancy::with('employer')
                             ->where('employer_id', $employer_id)
+                            ->where('dedline','>',Carbon::today())
                             ->get();
                return view('Employer.vacancies')->with('vacancies', $vacancies);
 
@@ -53,11 +55,13 @@ class VacancyController extends Controller
         else{
            
                if (Gate::allows('apply-vacancy')) {
-                    $vacancies = Vacancy::with('employer')->where('dedline', '>', Carbon::now())->latest()->get();
+                    $vacancies = Vacancy::with('employer')->where('dedline', '<', Carbon::now())->latest()->get();
                } 
 
                else{
-                  $vacancies = Vacancy::with('employer')->latest()->get();
+                  $vacancies = Vacancy::with('employer')
+                              ->where('dedline','>',Carbon::today())
+                              ->latest()->get();
                }
                 
                 //dd($vacancy->toArray());

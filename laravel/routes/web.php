@@ -1,6 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Input;
 use Illuminate\Http\Request;
+use App\Events\userLogin;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +19,7 @@ Route::get('/', function () {
 });
 
 Auth::routes();
+Route::group(['middleware' => ['auth']], function() {
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/ds', 'UserController@ds')->name('ds');
@@ -85,6 +87,7 @@ Route::post('/youth/update-followed-course', 'YouthController@update_followed_co
 Route::post('/youth/update-jobs', 'YouthController@update_permanant_jobs')->name('youth/update-jobs')->middleware('can:edit-youth');
 Route::post('/youth/update-tempory', 'YouthController@update_tempory_jobs')->name('youth/update-tempory')->middleware('can:edit-youth');
 Route::post('/youth/update-following-course', 'YouthController@update_following_course')->name('youth/update-following-course')->middleware('can:edit-youth');
+Route::post('/youth/add-new-course', 'YouthController@add_new_course')->name('youth/add-new-course')->middleware('can:edit-youth');
 Route::post('/youth/update-no-jobs', 'YouthController@update_no_jobs')->name('youth/update-no-jobs')->middleware('can:edit-youth');
 Route::post('/youth/update-self', 'YouthController@update_self')->name('youth/update-self')->middleware('can:edit-youth');
 
@@ -143,6 +146,8 @@ Route::post('progress-vt', 'ProgressController@vt')->name('progress-vt');
 Route::post('progress-prof', 'ProgressController@prof')->name('progress-prof');
 Route::post('progress-jobs', 'ProgressController@jobs')->name('progress-jobs');
 Route::post('progress-bss', 'ProgressController@bss')->name('progress-bss');
+Route::get('view_completion', 'ProgressController@view_completion')->name('view_completion');
+Route::post('view_completion/fetch', 'ProgressController@fetch')->name('view_completion/fetch');
 Route::get('/youth/{id}/view-progress', 'ProgressController@view')->name('view-progress')->middleware('can:view-youth');
 Route::post('/cgList', 'ProgressController@cgList')->name('cgList');
 Route::post('/cg/add', 'ProgressController@add')->name('cg/add')->middleware('can:view-activities');
@@ -175,7 +180,12 @@ Route::get('/home/admin', 'DashboardController@admin')->name('home/admin')->midd
 
 
 //M&E
-Route::get('/education', function () {
+
+Route::get('/completion-reports', function () {	
+    return view('Activities.landing');
+});
+
+Route::get('/education', function () {	
     return view('Activities.education.landing-page');
 });
 
@@ -192,6 +202,10 @@ Route::get('/job-linking', function () {
     return view('Activities.job-linking.landing-page');
 });
 
+Route::get('/view_cg_youths', 'CarrerGuidanceController@view_youths')->name('view_cg_youths')->middleware('can:view-M&E-reports');
+Route::get('/view_gvt_youths', 'CourseSupportController@view_youths')->name('view_gvt_youths')->middleware('can:view-M&E-reports');
+Route::get('/view_soft_youths', 'ProvideSoftskillController@view_youths')->name('view_soft_youths')->middleware('can:view-M&E-reports');
+
 
 Route::get('/activities/education/regional-meeting', 'RegionalMeetingController@index')->name('activities/education/regional-meeting')->middleware('can:add-M&E-reports');
 Route::post('/activity/education/add-meeting', 'RegionalMeetingController@add')->name('activity/education/add-meeting')->middleware('can:add-M&E-reports');
@@ -204,6 +218,8 @@ Route::get('/activities/career-guidance/stake-holder-meeting', 'StakeHolderMeeti
 Route::post('/activity/cg/add-stake-holder', 'StakeHolderMeetingController@add')->name('activity/cg/add-stake-holder')->middleware('can:add-M&E-reports');
 Route::get('/activities/career-guidance/kick-off', 'KickOffController@index')->name('activities/career-guidance/kick-off')->middleware('can:add-M&E-reports');
 Route::post('/activities/career-guidance/kick-off-add', 'KickOffController@add')->name('activities/career-guidance/kick-off-add')->middleware('can:add-M&E-reports');
+Route::get('/activities/career-guidance/households', 'KickOffController@households')->name('activities/career-guidance/households')->middleware('can:add-M&E-reports');
+Route::post('/activities/career-guidance/hhs-add', 'KickOffController@add_HHS')->name('activities/career-guidance/hhs-add')->middleware('can:add-M&E-reports');
 Route::get('/activities/career-guidance/tot-cg', 'CarrerGuidanceController@add_tot')->name('activities/career-guidance/tot-cg')->middleware('can:add-M&E-reports');
 Route::post('/activities/career-guidance/tot-cg-add', 'CarrerGuidanceController@insert_tot')->name('activities/career-guidance/tot-cg-add')->middleware('can:add-M&E-reports');
 Route::get('/activities/cg/view', 'CarrerGuidanceController@index')->name('activities/cg/view')->middleware('can:add-M&E-reports');
@@ -240,6 +256,8 @@ Route::post('/activity/job-linking/add-awareness', 'AwarenessController@insert')
 Route::get('/activities/job-linking/placements', 'PlacementController@index')->name('job-linking/placements')->middleware('can:add-M&E-reports');
 Route::post('/employerList', 'PlacementController@employerList')->name('employerList');
 Route::post('/activity/job-linking/add-placement', 'PlacementController@insert')->name('job-linking/add-placement')->middleware('can:add-M&E-reports');
+Route::get('/activities/job-linking/individual', 'PlacementController@individual')->name('job-linking/individual')->middleware('can:add-M&E-reports');
+Route::post('/activity/job-linking/add-individual', 'PlacementController@insert_individual')->name('job-linking/add-individual')->middleware('can:add-M&E-reports');
 Route::get('/tasks', 'TodoController@index')->name('tasks')->middleware('can:admin');
 Route::post('/add-task', 'TodoController@add')->name('add-task');
 Route::post('/update-task', 'TodoController@update')->name('update-task');
@@ -247,6 +265,8 @@ Route::post('/delete-task', 'TodoController@delete')->name('delete-task');
 
 //m and e reports
 Route::get('/m&e-reports', function () {
+	//$count = Auth::user()->unreadNotifications->get();
+	//$regional = DB::table('regional_meetings')->count();
     return view('Activities.Reports.select-report');
 });
 
@@ -261,6 +281,8 @@ Route::post('/reports-me/education/mentoring/fetch', 'MentoringController@fetch'
 Route::get('/reports-me/education/mentoring/{id}/view', 'MentoringController@view_meeting')->name('mentoring-view')->middleware('can:view-M&E-reports');
 Route::get('/download/mentoring/{file_name}', 'MentoringController@download')->name('mentoring-view')->middleware('can:view-M&E-reports');
 Route::get('/download/mentoring/photos/{id}', 'MentoringController@download_photos')->middleware('can:view-M&E-reports');
+Route::get('/resource-people', 'ResoursePersonController@show')->name('resource-people')->middleware('can:view-M&E-reports');
+Route::get('/download/cv/{id}', 'ResoursePersonController@download')->name('download/cv')->middleware('can:view-M&E-reports');
 
 
 //stake holder meeting reports
@@ -274,6 +296,7 @@ Route::get('/download/stake/photos/{id}', 'StakeHolderMeetingController@download
 Route::get('/reports-me/cg/kick-off-meeting', 'KickOffController@view')->name('reports-me/cg/kick-off-meeting')->middleware('can:view-M&E-reports');
 Route::post('/reports-me/cg/kick-off-meeting/fetch', 'KickOffController@fetch')->name('reports-me/cg/kick-off-meeting/fetch')->middleware('can:view-M&E-reports');
 Route::get('/reports-me/cg/kick-off/{id}/view', 'KickOffController@view_meeting')->name('kick-off-view')->middleware('can:view-M&E-reports');
+Route::get('/reports-me/cg/hhs/{id}/view', 'KickOffController@view_hhs')->name('kick-off-view')->middleware('can:view-M&E-reports');
 Route::get('/download/kick-off/{file_name}', 'KickOffController@download')->name('kick-off-view')->middleware('can:view-M&E-reports');
 Route::get('/download/kick-off/photos/{id}', 'KickOffController@download_photos')->middleware('can:view-M&E-reports');
 
@@ -367,10 +390,11 @@ Route::get('/download/awareness/{file_name}', 'AwarenessController@download')->n
 Route::get('/download/awareness/photos/{id}', 'AwarenessController@download_photos')->middleware('can:view-M&E-reports');
 Route::get('/download/awareness/test/{id}', 'AwarenessController@download_test')->middleware('can:view-M&E-reports');
 
-//Awareness
+//job placement
 Route::get('/reports-me/job/placements', 'PlacementController@view')->name('reports-me/job/placements')->middleware('can:view-M&E-reports');
 Route::post('/reports-me/job/placements/fetch', 'PlacementController@fetch')->name('reports-me/job/placements/fetch')->middleware('can:view-M&E-reports');
 Route::get('/reports-me/job/placements/{id}/view', 'PlacementController@view_meeting')->name('cg-view')->middleware('can:view-M&E-reports');
+Route::get('/reports-me/job/ind-placements/{id}/view', 'PlacementController@view_meeting2')->name('cg-view')->middleware('can:view-M&E-reports');
 Route::get('/download/placements/{file_name}', 'PlacementController@download')->name('cg-view')->middleware('can:view-M&E-reports');
 Route::get('/download/placements/photos/{id}', 'PlacementController@download_photos')->middleware('can:view-M&E-reports');
 Route::get('/download/placements/attendance/{id}', 'PlacementController@download_e_attendance')->middleware('can:view-M&E-reports');
@@ -387,3 +411,95 @@ Route::get('/download/cg/tot/photos/{id}', 'CarrerGuidanceController@download_ph
 //audits
 Route::get('/audits', 'AuditContrller@index')->middleware('can:admin');
 Route::post('/audit/fetch', 'AuditContrller@fetch')->name('audit/fetch')->middleware('can:admin');
+
+//verify reports
+
+Route::post('/verify/report', 'ProgressController@verify')->middleware('can:verify-report');
+
+//edit m and e reports
+Route::get('/reports-me/regional/{id}/edit', 'RegionalMeetingController@edit')->middleware('can:edit-M&E-reports');
+Route::post('/activity/education/edit-meeting', 'RegionalMeetingController@update')->middleware('can:edit-M&E-reports');
+Route::post('/activity/education/update-meeting', 'RegionalMeetingController@update_participants')->middleware('can:edit-M&E-reports');
+Route::post('/activity/education/add-part', 'RegionalMeetingController@add_participants')->middleware('can:edit-M&E-reports');
+
+Route::get('/reports-me/stake/{id}/edit', 'StakeHolderMeetingController@edit')->middleware('can:edit-M&E-reports');
+Route::post('/activity/cg/update-stake-holder', 'StakeHolderMeetingController@update')->middleware('can:edit-M&E-reports');
+Route::post('/activity/cg/update-meeting', 'StakeHolderMeetingController@update_participants')->middleware('can:edit-M&E-reports');
+Route::post('/activity/cg/add-part', 'StakeHolderMeetingController@add_participants')->middleware('can:edit-M&E-reports');
+
+Route::get('/reports-me/cg/{id}/edit', 'CarrerGuidanceController@edit')->middleware('can:edit-M&E-reports');
+Route::post('/activity/cg/edit-cg', 'CarrerGuidanceController@update')->middleware('can:edit-M&E-reports');
+Route::post('/activity/cg/update-cg', 'CarrerGuidanceController@update_participants')->middleware('can:edit-M&E-reports');
+Route::post('/activity/cg/add-part-cg', 'CarrerGuidanceController@add_participants')->middleware('can:edit-M&E-reports');
+Route::post('/activity/cg/update-youth', 'CarrerGuidanceController@update_youths')->middleware('can:edit-M&E-reports');
+Route::post('/activity/cg/add-youth-cg', 'CarrerGuidanceController@add_youths')->middleware('can:edit-M&E-reports');
+Route::post('/activity/cg/update-req', 'CarrerGuidanceController@update_req')->middleware('can:edit-M&E-reports');
+Route::post('/activity/cg/update-cts', 'CarrerGuidanceController@update_cts')->middleware('can:edit-M&E-reports');
+
+Route::get('/reports-me/kick-off/{id}/edit', 'KickOffController@edit')->middleware('can:edit-M&E-reports');
+Route::post('/activities/career-guidance/kick-off-edit', 'KickOffController@update')->middleware('can:edit-M&E-reports');
+Route::post('/activity/cg/update-kick-p', 'KickOffController@update_participants')->middleware('can:edit-M&E-reports');
+Route::post('/activity/cg/add-part-kick', 'KickOffController@add_participants')->middleware('can:edit-M&E-reports');
+
+Route::get('/reports-me/pes/{id}/edit', 'PesUnitController@edit')->middleware('can:edit-M&E-reports');
+Route::post('/activities/career-guidance/pes-update', 'PesUnitController@update')->middleware('can:edit-M&E-reports');
+Route::post('/activity/cg/update-pes', 'PesUnitController@update_services')->middleware('can:edit-M&E-reports');
+
+Route::get('/reports-me/pes-support/{id}/edit', 'PesUnitSupportController@edit')->middleware('can:edit-M&E-reports');
+Route::post('/activities/career-guidance/pes-support-update', 'PesUnitSupportController@update')->middleware('can:edit-M&E-reports');
+Route::post('/activity/cg/update-pes-s', 'PesUnitSupportController@update_gaps')->middleware('can:edit-M&E-reports');
+Route::post('/activity/cg/add-gap-pes', 'PesUnitSupportController@add_gaps')->middleware('can:edit-M&E-reports');
+
+Route::get('/reports-me/cg-training/{id}/edit', 'CGtrainingController@edit')->middleware('can:edit-M&E-reports');
+Route::post('/activities/career-guidance/cg-training-update', 'CGtrainingController@update')->middleware('can:edit-M&E-reports');
+
+Route::get('/reports-me/gvt-support/{id}/edit', 'CourseSupportController@edit')->middleware('can:edit-M&E-reports');
+Route::post('/activity/skill/edit-course-support', 'CourseSupportController@update')->middleware('can:edit-M&E-reports');
+Route::post('/activity/skill/update-youth-support', 'CourseSupportController@update_youths')->middleware('can:edit-M&E-reports');
+Route::post('/activity/cg/add-new-youth', 'CourseSupportController@add_youth')->middleware('can:edit-M&E-reports');
+
+Route::get('/reports-me/soft-skill/{id}/edit', 'ProvideSoftskillController@edit')->middleware('can:edit-M&E-reports');
+Route::post('/activity/skill/update-provide-soft', 'ProvideSoftskillController@update')->middleware('can:edit-M&E-reports');
+Route::post('/activity/skill/add-new-ss-youth', 'ProvideSoftskillController@add_youth')->middleware('can:edit-M&E-reports');
+
+Route::get('/reports-me/financial/{id}/edit', 'FinancialSupportController@edit')->middleware('can:edit-M&E-reports');
+Route::post('/activity/skill/update-finacial-support', 'FinancialSupportController@update')->middleware('can:edit-M&E-reports');
+Route::post('/activity/skill/update-youth-finacial', 'FinancialSupportController@update_youths')->middleware('can:edit-M&E-reports');
+Route::post('/activity/cg/add-new-finacial-youth', 'FinancialSupportController@add_youth')->middleware('can:edit-M&E-reports');
+
+Route::get('/reports-me/partnership/{id}/edit', 'PartnershipTrainingController@edit')->middleware('can:edit-M&E-reports');
+Route::post('/activity/skill/update-partnership', 'PartnershipTrainingController@update')->middleware('can:edit-M&E-reports');
+Route::post('/activity/skill/update-youth-partnership', 'PartnershipTrainingController@update_youths')->middleware('can:edit-M&E-reports');
+Route::post('/activity/cg/add-new-partnership-youth', 'PartnershipTrainingController@add_youth')->middleware('can:edit-M&E-reports');
+
+Route::get('/reports-me/review/{id}/edit', 'InstituteReviewController@edit')->middleware('can:edit-M&E-reports');
+Route::post('/activity/skill/update-institute-review', 'InstituteReviewController@update')->middleware('can:edit-M&E-reports');
+Route::post('/activity/skill/update-review', 'InstituteReviewController@update_youths')->middleware('can:edit-M&E-reports');
+Route::post('/activity/cg/add-review', 'InstituteReviewController@add_youth')->middleware('can:edit-M&E-reports');
+
+Route::get('/reports-me/incorporation/{id}/edit', 'IncoperationSoftSkillController@edit')->middleware('can:edit-M&E-reports');
+Route::post('/activity/skill/update-incoperation', 'IncoperationSoftSkillController@update')->middleware('can:edit-M&E-reports');
+
+Route::get('/reports-me/assesment/{id}/edit', 'AssesmentController@edit')->middleware('can:edit-M&E-reports');
+Route::post('/activity/job-linking/update-assesment', 'AssesmentController@update')->middleware('can:edit-M&E-reports');
+
+Route::get('/reports-me/awareness/{id}/edit', 'AwarenessController@edit')->middleware('can:edit-M&E-reports');
+Route::post('/activity/job-linking/update-awareness', 'AwarenessController@update')->middleware('can:edit-M&E-reports');
+
+Route::get('/reports-me/placement/{id}/edit', 'PlacementController@edit')->middleware('can:edit-M&E-reports');
+Route::post('/activity/job-linking/update-placement', 'PlacementController@update')->middleware('can:edit-M&E-reports');
+Route::post('/activity/skill/update-employer', 'PlacementController@update_employers')->middleware('can:edit-M&E-reports');
+Route::post('/activity/skill/add-new-employer', 'PlacementController@add_employer')->middleware('can:edit-M&E-reports');
+Route::post('/activity/skill/update-youth-placement', 'PlacementController@update_youths')->middleware('can:edit-M&E-reports');
+Route::post('/activity/cg/add-new-placement-youth', 'PlacementController@add_youth')->middleware('can:edit-M&E-reports');
+
+Route::get('/reports-me/individual/{id}/edit', 'PlacementController@edit_i')->middleware('can:edit-M&E-reports');
+Route::post('/activity/job-linking/update-individual', 'PlacementController@update_i')->middleware('can:edit-M&E-reports');
+
+Route::get('/stake-holders', 'StakeHolderMeetingController@participants')->middleware('can:view-M&E-reports');
+
+Route::get('event', function () {
+    event(new userLogin('User Logged'));
+});
+
+});

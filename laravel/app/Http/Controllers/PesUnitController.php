@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use DB;
 use Illuminate\Support\Facades\Validator;
 use Auth;
+use Illuminate\Support\Facades\URL;
+use App\Audit;
+use App\User;
+use App\Notifications\CompletionReport;
 
 class PesUnitController extends Controller
 {
@@ -103,6 +107,25 @@ class PesUnitController extends Controller
                 else{
                 	return response()->json(['error' => 'Submit most demanding services by youth.']);
                 } 
+
+                $audit = array(
+                    'user_type' => 'App\User',
+                    'user_id' => Auth::user()->id,
+                    'event' => 'created',
+                    'auditable_type' => 'pes_units',
+                    'auditable_id' => $pes_id,
+                    'url' => url()->current(),
+                    'ip_address' => request()->ip(),
+                    'user_agent' => $request->header('User-Agent'),
+
+                );
+
+                $reports = Audit::create($audit);
+
+                $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin','management' ]);})->get();
+                foreach ($notifyTo as $notifyUser) {
+                    $notifyUser->notify(new CompletionReport($reports));
+                }
 
             }
             else{
@@ -217,6 +240,101 @@ class PesUnitController extends Controller
             'meeting' => $meeting,
         ));
         
+
+    }
+
+    public function edit($id){
+
+        $meeting = DB::table('pes_units')
+                   ->join('branches','branches.id','=','pes_units.branch_id')
+                   ->select('pes_units.*','branches.*','pes_units.id as m_id','branches.name as branch_name')
+                   ->where('pes_units.id',$id)
+                   ->first();
+        $services = DB::table('pes_unit_services')
+                        ->where('pes_id',$id)
+                        ->get();
+
+
+        return view ('Activities.career-guidance.edit.pes')->with(['meeting'=> $meeting,'services'=>$services]);
+
+    }
+
+    public function update(Request $request){
+
+        $validator = Validator::make($request->all(),[
+                'date'  =>'required',
+                
+            ]);
+
+        if($validator->passes()){
+        // echo "<script>console.log( 'Debug Objects: " . $meeting_date . "' );</script>";
+
+        $data1 = array(
+            'date'  =>$request->date,
+            'pwd_male'=>$request->pwd_male,
+            'pwd_female'=>$request->pwd_female,
+            'responding_officer_name'=> $request->responding_officer_name,
+            'responding_officer_des'=> $request->responding_officer_des,
+            'responding_officer_contacts' => $request->responding_officer_contacts,
+            'type_of_services'=> $request->type_of_services,
+            'records' => $request->records,
+            'male_18_24' => $request->male_18_24,
+            'male_25_30' => $request->male_25_30,
+            'male_30'=> $request->male_30,
+            'female_18_24'=> $request->female_18_24,
+            'female_25_30'=> $request->female_25_30,
+            'female_30'=> $request->female_30,
+            'unit_available'=>$request->unit_available,
+            'space_available'=> $request->space_available,
+            'stationary_available'=> $request->stationary_available,
+            'chairs_available'=> $request->chairs_available,
+            'tables_available'=>$request->tables_available,
+            'cupboards_available'=>$request->cupboards_available,
+            'stationary_items_available' => $request->stationary_items_available,
+            'lack_of_items'=> $request->lack_of_items,
+            'staff'=> $request->staff,
+            'sufficient_staff'=> $request->sufficient_staff,
+            'additional_staff'=> $request->additional_staff,
+            'vt_database' => $request->vt_database,
+            'update_vt'=> $request->update_vt,
+            'last_updated_vt' => $request->last_updated_vt,
+            'job_database'=> $request->job_database,
+            'update_job'=> $request->update_job,
+            'last_updated_job'=>$request->last_updated_job,
+            'reasons_to_not_update'=>$request->reasons_to_not_update,
+            'gaps' => $request->gaps,
+        );
+        //dd($data1);
+        DB::table('pes_units')->whereid($request->m_id)->update($data1);
+
+        $audit = array(
+            'user_type' => 'App\User',
+            'user_id' => Auth::user()->id,
+            'event' => 'updated',
+            'auditable_type' => 'pes_units',
+            'auditable_id' => $request->m_id,
+            'url' => url()->current(),
+            'ip_address' => request()->ip(),
+            'user_agent' => $request->header('User-Agent'),
+
+        );
+
+        $reports = Audit::create($audit);
+    }
+
+
+    
+
+    else{
+        return response()->json(['error' => $validator->errors()->all()]);
+        }
+    }
+
+    public function update_services(Request $request){
+
+        $participants = DB::table('pes_unit_services')
+                        ->whereid($request->id_p)
+                        ->update(['male'=>$request->male,'female'=>$request->female]);
 
     }
 }

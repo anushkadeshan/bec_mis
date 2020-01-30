@@ -241,7 +241,7 @@
             		success:function(data){
             			if($.isEmptyObject(data.error)){
 			                toastr.success('Profile Successfully updated ! ', 'Congratulations', {timeOut: 5000});
-			                $("#vacancy")[0].reset();
+			                //$("#vacancy")[0].reset();
             			}
 			            else{
 			                printValidationErrors(data.error);

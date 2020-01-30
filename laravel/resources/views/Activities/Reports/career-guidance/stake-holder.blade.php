@@ -146,13 +146,14 @@
                   </div>
                   <!-- /.tab-pane -->
                   <div class="tab-pane print" id="tab_3">
+                    <div class="card card-success card-outline">
+                          <div class="card-header">
+                                    <h3 class="card-title">Meeting Details</h3>
+                              </div>
+                              <div class="card-body">
                     <div class="row">
                     	<div class="col-md-6">
-                    		<div class="card card-success card-outline">
-                    			<div class="card-header">
-                                		<h3 class="card-title">Meeting Details</h3>
-                            	</div>
-                            	<div class="card-body">
+                    		
 		                    		<ul class="list-group list-group-flush">
           									  <li class="list-group-item border-0"><strong>District : </strong><span id="district"></span></li>
                               <li class="list-group-item border-0"><strong>DSDs : </strong><span id="dsd"></span></li>
@@ -162,43 +163,51 @@
           									  <li class="list-group-item border-0"><strong>Time Start : </strong><span id="time_start"></span></li>
           									  <li class="list-group-item border-0"><strong>Time End : </strong><span id="time_end"></span></li>
           									  <li class="list-group-item border-0"><strong>Venue : </strong><span id="venue"></span></li>
-          									  <li class="list-group-item border-0"><strong>Program Cost: </strong><span id="program_cost"></span></li>
-          									  <li class="list-group-item border-0"><strong>Total Male: </strong><span id="total_male"></span></li>
+          									  
+          									</ul>
+          									
+                    	</div>	
+                    	<div class="col-md-6">
+                        <li class="list-group-item border-0"><strong>Program Cost: </strong><span id="program_cost"></span></li>
+                              <li class="list-group-item border-0"><strong>Total Male: </strong><span id="total_male"></span></li>
                               <li class="list-group-item border-0"><strong>Total Female: </strong><span id="total_female"></span></li>
                               
                               <li class="list-group-item border-0"><strong>Decisions taken/comments made by the participants: </strong><span id="decisions"></span></li>
-          									  <li class="list-group-item border-0"><strong>Branch: </strong><span id="branch"></span></li>
-          									</ul>
-          								</div>
-          							</div>	
-                    	</div>	
-                    	<div class="col-md-6">
-                    		<div class="card card-primary card-outline">
-                    			<div class="card-header">
-                                		<h3 class="card-title">Government Officials <small class="badge badge-danger" id="total_participants"></small></h3>
-                            	</div>
-                            	<div class="card-body">
-                            		<table id="example2" class="table row-border table-hover">
-						                <thead>
-						                    <tr>
-						                        <th>#</th>
-                                    <th>Name</th>
-						                        <th>Gender</th>
-						                        <th>Position</th>
-						                        <th>Institute</th>
-						                    </tr>
-						                    <tbody>	
-						                    </tbody>
-						                </thead>        
-            		 				</table>
-                            	</div>
-                          </div>
-                         
-                    		<button type="button hidden-print" id="print" class="btn btn-success btn-flat"><i class="fas fa-print"></i> Print</button>
+                              <li class="list-group-item border-0"><strong>Branch: </strong><span id="branch"></span></li>
+                    	<button type="button hidden-print" id="print" class="btn btn-success btn-flat"><i class="fas fa-print"></i> Print</button>
                         <a id="link" href="" target="_blank">  <button type="button" id="download_a" name="file_name" class="btn btn-primary btn-flat" data-id="" data-attendance=""><i class="fas fa-download"></i> Download Attendanace</button></a> 
                         <a id="link2" href="" target="_blank">  <button type="button" id="download_a" name="id" class="btn btn-warning btn-flat"><i class="fas fa-download"></i> Download Photos</button></a> 
-                    		{{ csrf_field() }}	
+                        {{ csrf_field() }}		
                     	</div>
+                      </div>
+                        </div>
+                    </div>
+                    <div  class="row">
+                      <div class="col-md-12">
+                        <div class="card card-primary card-outline">
+                          <div class="card-header">
+                                    <h3 class="card-title">Government Officials <small class="badge badge-danger" id="total_participants"></small></h3>
+                              </div>
+                              <div class="card-body">
+                                <table id="example1" class="table row-border table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Gender</th>
+                                    <th>Position</th>
+                                    <th>Institute</th>
+                                    <th>Phone</th>
+                                </tr>
+                                <tbody> 
+                                </tbody>
+                            </thead>        
+                        </table>
+                              </div>
+                          </div>
+                         
+                        
+                      </div>
                     </div>
                   </div>
                   <!-- /.tab-pane -->
@@ -266,7 +275,7 @@ var dataTable = $("#example").DataTable({
   $.each(data, function(index, value) {
     console.log(value);
     // use data table row.add, then .draw for table refresh
-    dataTable.row.add([count++, value.meeting_date, value.total_male, value.total_female,value.venue,value.program_cost, value.name,'<button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button>']).draw();
+    dataTable.row.add([count++, value.meeting_date, value.total_male, value.total_female,value.venue,value.program_cost, value.name,'<div class="btn-group"><button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button><a href="{{url('reports-me/stake')}}/'+value.m_id+'/edit"><button type="button" name="view" class="btn btn-success btn-flat btn-sm"><i class="fa fa-edit"></i></button></a></div>']).draw();
 
      var total_male = value.total_male;
      var total_female = value.total_female;
@@ -321,7 +330,7 @@ $('body').on('click', '.btn_view', function () {
           $('#tabs a[href="#tab_3"]').attr("data-toggle", "tab");
 
           $('#district').text(data.meeting.district);
-          $('#dsd').text(data.meeting.dsd);
+          $('#dsd').text(data.meeting.DSD_Name);
           $('#gnd').text(data.meeting.gnd);
           $('#dm_name').text(data.meeting.dm_name);
           $('#meeting_date').text(data.meeting.meeting_date);
@@ -358,9 +367,10 @@ $('body').on('click', '.btn_view', function () {
 		     output1 += '<td>' + data.participants[count].name + '</td>';
          output1 += '<td>' + data.participants[count].gender + '</td>';
          output1 += '<td>' + data.participants[count].designation + '</td>';
-		     output1 += '<td>' + data.participants[count].institute + '</td></tr>';
+         output1 += '<td>' + data.participants[count].institute + '</td>';
+		     output1 += '<td>' + data.participants[count].phone + '</td></tr>';
 		    }
-		    $('#example2 tbody').html(output1);
+		    $('#example1 tbody').html(output1);
 
 
       })

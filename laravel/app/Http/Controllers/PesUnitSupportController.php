@@ -7,6 +7,10 @@ Use DB;
 use Illuminate\Support\Facades\Validator;
 use Auth;
 use Zipper;
+use Illuminate\Support\Facades\URL;
+use App\Audit;
+use App\User;
+use App\Notifications\CompletionReport;
 
 class PesUnitSupportController extends Controller
 {
@@ -22,7 +26,7 @@ class PesUnitSupportController extends Controller
     	return view('Activities.career-guidance.pes-unit-support')->with(['districts'=> $districts,'managers'=>$managers,'activities'=>$activities]);
     }
 
-    public function pes_List(Request $request){
+    public function pes_List(Request $request){ 
     	if($request->get('query')){
           $query = $request->get('query');
           $data = DB::table('pes_units')
@@ -110,6 +114,25 @@ class PesUnitSupportController extends Controller
                 else{
                 	return response()->json(['errors' => 'Submit materials provided for particular PES unit.']);
                 } 
+
+                $audit = array(
+                    'user_type' => 'App\User',
+                    'user_id' => Auth::user()->id,
+                    'event' => 'created',
+                    'auditable_type' => 'pes_unit_supports',
+                    'auditable_id' => $pes_units_support_id,
+                    'url' => url()->current(),
+                    'ip_address' => request()->ip(),
+                    'user_agent' => $request->header('User-Agent'),
+
+                );
+
+                $reports = Audit::create($audit);
+
+                $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin','management' ]);})->get();
+                foreach ($notifyTo as $notifyUser) {
+                    $notifyUser->notify(new CompletionReport($reports));
+                }
 
             }
             else{
@@ -302,8 +325,79 @@ class PesUnitSupportController extends Controller
        // return response()->download(('mydir/photos.zip')); 
     }
 
+    public function edit($id){
+
+       $meeting = DB::table('pes_unit_supports')
+                   ->join('branches','branches.id','=','pes_unit_supports.branch_id')
+                   ->join('pes_units','pes_units.id','=','pes_unit_supports.pes_identification_id')
+                   ->select('pes_unit_supports.*','branches.*','pes_unit_supports.id as m_id','branches.name as branch_name','pes_units.dsd as pdsd','pes_units.date as pdate')
+                   ->where('pes_unit_supports.id',$id)
+                   ->first();
+
+        $gaps = DB::table('pes_units_gaps')
+                     ->where('pes_units_gaps.pes_units_support_id',$id)
+                     ->get();
+
+        return view ('Activities.career-guidance.edit.pes-support')->with(['meeting'=> $meeting,'gaps'=>$gaps]);
+
+    }
+
+public function update(Request $request){
+
+        $validator = Validator::make($request->all(),[
+                'visit_date'  =>'required',
+                'support_date'=>'required',
+                
+            ]);
+
+        if($validator->passes()){
+        // echo "<script>console.log( 'Debug Objects: " . $meeting_date . "' );</script>";
+
+        $data1 = array(  
+            'visit_date' =>$request->visit_date,
+            'support_date'  =>$request->support_date,                
+            'gaps' => $request->gaps,
+            'pes_identification_id' => $request->pes_identification_id,
+        );
+        //dd($data1);
+        DB::table('pes_unit_supports')->whereid($request->m_id)->update($data1);
+
+        $audit = array(
+            'user_type' => 'App\User',
+            'user_id' => Auth::user()->id,
+            'event' => 'updated',
+            'auditable_type' => 'pes_unit_supports',
+            'auditable_id' => $request->m_id,
+            'url' => url()->current(),
+            'ip_address' => request()->ip(),
+            'user_agent' => $request->header('User-Agent'),
+
+        );
+
+        $reports = Audit::create($audit);
+    }
 
 
+    
 
+    else{
+        return response()->json(['error' => $validator->errors()->all()]);
+        }
+    }
+
+    public function update_gaps(Request $request){
+
+        $participants = DB::table('pes_units_gaps')
+                        ->whereid($request->id_p)
+                        ->update(['meterials_provided'=>$request->meterials_provided,'units'=> $request->units,'date_provided'=> $request->date_provided,'usage'=> $request->usage,'cost'=> $request->cost]);
+
+    }
+
+    public function add_gaps(Request $request){
+
+        $participants = DB::table('pes_units_gaps')
+                        ->insert(['gap_num'=>$request->gap_num,'meterials_provided'=>$request->meterials_provided,'units'=> $request->units,'date_provided'=> $request->date_provided,'usage'=> $request->usage,'cost'=> $request->cost, 'pes_units_support_id'=>$request->m_id]);
+
+    }
 
 }

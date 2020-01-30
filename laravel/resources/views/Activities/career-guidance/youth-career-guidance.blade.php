@@ -272,6 +272,8 @@
                 <tr>
                   <th scope="col">Youth ID</th>
                   <th scope="col">Career Field according to career test</th>
+                  <th scope="col">2nd Priority</th>
+                  <th scope="col">3rd Priority</th>
                   <th scope="col"></th>
                 </tr>
               </thead>
@@ -279,6 +281,26 @@
                 <tr>
                   <th><input type="number" name="youth_id[]" class="form-control"></th>
                   <td><select name="career_field1[]" class="form-control position-list">
+                    <option>Field Work</option>
+                    <option>Skill Work</option>
+                    <option>Scientific Service</option>
+                    <option>Arts & Communication</option>
+                    <option>Management, Business & Finance</option>
+                    <option>Office Related</option>
+                    <option>Public Relations</option>
+                    <option>Youth in Dilemma</option>
+                  </select></td>
+                  <td><select name="career_field2[]" class="form-control position-list">
+                    <option>Field Work</option>
+                    <option>Skill Work</option>
+                    <option>Scientific Service</option>
+                    <option>Arts & Communication</option>
+                    <option>Management, Business & Finance</option>
+                    <option>Office Related</option>
+                    <option>Public Relations</option>
+                    <option>Youth in Dilemma</option>
+                  </select></td>
+                  <td><select name="career_field3[]" class="form-control position-list">
                     <option>Field Work</option>
                     <option>Skill Work</option>
                     <option>Scientific Service</option>
@@ -626,7 +648,7 @@ $(document).ready(function(){
       var i=1;  
       $('#add1').click(function(){  
            i++;  
-           $('#dynamic_field1').append('<tr id="row'+i+'"><th><input type="number" name="youth_id[]" class="form-control"></th><td><select name="career_field1[]" class="form-control position-list"><option>Field Work</option><option>Skill Work</option><option>Scientific Service</option><option>Arts & Communication</option><option>Management, Business & Finance</option><option>Office Related</option><option>Public Relations</option><option>Youth in Dilemma</option></select></td><td><button type="button" name="remove" id="'+i+'" class="btn btn-danger btn-flat btn_remove1"><i class="fas fa-times"></i></button></td></tr>');  
+           $('#dynamic_field1').append('<tr id="row'+i+'"><th><input type="number" name="youth_id[]" class="form-control"></th><td><select name="career_field1[]" class="form-control position-list"><option>Field Work</option><option>Skill Work</option><option>Scientific Service</option><option>Arts & Communication</option><option>Management, Business & Finance</option><option>Office Related</option><option>Public Relations</option><option>Youth in Dilemma</option></select></td><td><select name="career_field2[]" class="form-control position-list"><option>Field Work</option><option>Skill Work</option><option>Scientific Service</option><option>Arts & Communication</option><option>Management, Business & Finance</option><option>Office Related</option><option>Public Relations</option><option>Youth in Dilemma</option></select></td><td><select name="career_field3[]" class="form-control position-list"><option>Field Work</option><option>Skill Work</option><option>Scientific Service</option><option>Arts & Communication</option><option>Management, Business & Finance</option><option>Office Related</option><option>Public Relations</option><option>Youth in Dilemma</option></select></td><td><button type="button" name="remove" id="'+i+'" class="btn btn-danger btn-flat btn_remove1"><i class="fas fa-times"></i></button></td></tr>');  
            $('#youth1').val("");
            $('#youth_id').val("");
       });  

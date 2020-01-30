@@ -6,6 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use DB;
 use Zipper;
+use Auth;
+use Illuminate\Support\Facades\URL;
+use App\Audit;
+use App\User;
+use App\Notifications\CompletionReport;
 
 class AwarenessController extends Controller
 {
@@ -82,6 +87,25 @@ class AwarenessController extends Controller
             		}
                 }
 
+                $audit = array(
+                    'user_type' => 'App\User',
+                    'user_id' => Auth::user()->id,
+                    'event' => 'created',
+                    'auditable_type' => 'awareness',
+                    'auditable_id' => $awareness_id,
+                    'url' => url()->current(),
+                    'ip_address' => request()->ip(),
+                    'user_agent' => $request->header('User-Agent'),
+
+                );
+
+                $reports = Audit::create($audit);
+
+                $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin','management' ]);})->get();
+                foreach ($notifyTo as $notifyUser) {
+                    $notifyUser->notify(new CompletionReport($reports));
+                }
+
     	}
 
     	else{
@@ -90,6 +114,9 @@ class AwarenessController extends Controller
     }
 
      public function view(){
+        $branch_id = Auth::user()->branch;
+        if(is_null($branch_id)){
+
         $meetings = DB::table('awareness')
                       //->leftjoin('mentoring_gvt_officials','mentoring_gvt_officials.mentoring_id','=','mentoring.id')
                       ->join('branches','branches.id','=','awareness.branch_id')
@@ -116,7 +143,43 @@ class AwarenessController extends Controller
             $participants2021 = DB::table('awareness')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
                         ->where(DB::raw('YEAR(program_date)'), '=', '2021' )
-                        ->first();           
+                        ->first();  
+        }
+        else{
+            $meetings = DB::table('awareness')
+                      //->leftjoin('mentoring_gvt_officials','mentoring_gvt_officials.mentoring_id','=','mentoring.id')
+                      ->join('branches','branches.id','=','awareness.branch_id')
+                      ->where('awareness.branch_id','=',$branch_id)
+                      ->get();                        
+
+        //dd($mentorings);
+
+        $participants2018 = DB::table('awareness')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2018' )
+                        ->where('awareness.branch_id','=',$branch_id)
+                        ->first();
+                        //->groupBy(function ($val) {
+                                // Carbon::parse($val->program_date)->format('Y');
+                        //});
+                        //->groupBy(DB::raw("year(program_date)"))
+                        
+           $participants2019 = DB::table('awareness')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2019' )
+                        ->where('awareness.branch_id','=',$branch_id)
+                        ->first();            
+            $participants2020 = DB::table('awareness')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2020' )
+                        ->where('awareness.branch_id','=',$branch_id)
+                        ->first();   
+            $participants2021 = DB::table('awareness')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2021' )
+                        ->where('awareness.branch_id','=',$branch_id)
+                        ->first(); 
+        }         
         //dd($participants2018);
         $branches = DB::table('branches')->get();
         return view('Activities.Reports.Job-Linking.awareness')->with(['meetings'=>$meetings,'branches'=>$branches,'participants2018'=>$participants2018,'participants2019'=>$participants2019,'participants2020'=>$participants2020,'participants2021'=>$participants2021]);
@@ -125,6 +188,8 @@ class AwarenessController extends Controller
     public function fetch(Request $request){
         if($request->ajax())
         {
+            $branch_id = Auth::user()->branch;
+
             if($request->dateStart != '' && $request->dateEnd != '')
             {
                 if($request->branch !=''){
@@ -137,22 +202,43 @@ class AwarenessController extends Controller
                         ->get();
                 }
                 else{
+                    if(is_null($branch_id)){
                     $data = DB::table('awareness') 
                         ->join('branches','branches.id','=','awareness.branch_id')
                         ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->select('awareness.*','branches.*','awareness.id as m_id','branches.name as branch_name')
                         ->orderBy('program_date', 'desc')
                         ->get();
+                    }
+                    else{
+                       $data = DB::table('awareness') 
+                        ->join('branches','branches.id','=','awareness.branch_id')
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->where('awareness.branch_id','=',$branch_id)
+                        ->select('awareness.*','branches.*','awareness.id as m_id','branches.name as branch_name')
+                        ->orderBy('program_date', 'desc')
+                        ->get(); 
+                    }
                 }
                 
             }
         else
             {
+                if(is_null($branch_id)){
                 $data = DB::table('awareness') 
                         ->join('branches','branches.id','=','awareness.branch_id')
                         ->select('awareness.*','branches.*','awareness.id as m_id','branches.name as branch_name')
                         ->orderBy('program_date', 'desc')
                         ->get();
+                }
+                else{
+                    $data = DB::table('awareness') 
+                        ->join('branches','branches.id','=','awareness.branch_id')
+                        ->where('awareness.branch_id','=',$branch_id)
+                        ->select('awareness.*','branches.*','awareness.id as m_id','branches.name as branch_name')
+                        ->orderBy('program_date', 'desc')
+                        ->get();
+                }
             }
                 return response()->json($data);
         }
@@ -205,5 +291,74 @@ class AwarenessController extends Controller
         //dd($photos);
        // Zipper::make('mydir/photos.zip')->add($paths);
        // return response()->download(('mydir/photos.zip')); 
+    }
+
+    public function edit($id){
+
+      $meeting = DB::table('awareness')
+                   ->join('branches','branches.id','=','awareness.branch_id')
+                   ->select('awareness.*','branches.*','awareness.id as m_id','branches.name as branch_name')
+                   ->where('awareness.id',$id)
+                   ->first();
+
+        return view ('Activities.job-linking.edit.awareness')->with(['meeting'=> $meeting]);
+
+    }
+
+    public function update(Request $request){
+
+        $validator = Validator::make($request->all(),[
+                'program_date'  =>'required',
+                
+            ]);
+
+        if($validator->passes()){
+        // echo "<script>console.log( 'Debug Objects: " . $meeting_date . "' );</script>";
+
+        $data1 = array(   
+           
+                'program_date'  =>$request->program_date,
+                'time_start'=>$request->time_start,
+                'time_end' =>$request->time_end,
+                'venue' =>$request->venue,
+                'cost' =>$request->cost,
+                'total_male' => $request->total_male,
+                'total_female'=>$request->total_female,
+                'pwd_male'=>$request->pwd_male,
+                'pwd_female'=>$request->pwd_female,
+                'mode_of_awareness'=>$request->mode_of_awareness,
+                'topics'=>$request->topics,
+                'deliverables'=>$request->deliverables,
+                'exposure_visit'=>$request->exposure_visit,
+                'palce'=>$request->palce,
+                'demonstraion'=>$request->demonstraion,
+                'matters_discussed'=>$request->matters_discussed,
+                'any_concerns'=>$request->any_concerns,
+            
+        );
+        //dd($data1);
+        DB::table('awareness')->whereid($request->m_id)->update($data1);
+
+        $audit = array(
+            'user_type' => 'App\User',
+            'user_id' => Auth::user()->id,
+            'event' => 'updated',
+            'auditable_type' => 'awareness',
+            'auditable_id' => $request->m_id,
+            'url' => url()->current(),
+            'ip_address' => request()->ip(),
+            'user_agent' => $request->header('User-Agent'),
+
+        );
+
+        $reports = Audit::create($audit);
+    }
+
+
+    
+
+    else{
+        return response()->json(['error' => $validator->errors()->all()]);
+        }
     }
 }

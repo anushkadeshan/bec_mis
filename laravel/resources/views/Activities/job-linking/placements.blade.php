@@ -10,8 +10,7 @@
 	        <h3 class="card-title p-3">Job Interviews</h3>
 	        <ul class="nav nav-pills ml-auto p-2" id="tabs">
 	          <li class="nav-item"><a class="nav-link active" href="#tab_1" data-toggle="tab">Genaral</a></li>
-	          <li class="nav-item"><a class="nav-link" href="#tab_2" data-toggle="tab">Employers</a></li>
-	          <li class="nav-item"><a class="nav-link" href="#tab_3" data-toggle="tab">Youths</a></li>
+	          <li class="nav-item"><a class="nav-link" href="#tab_2" data-toggle="tab">Employers and Youths</a></li>
 	          <li class="nav-item"><a class="nav-link" href="#tab_4" data-toggle="tab">Attachments</a></li>
 	        </ul>
 	      </div><!-- /.card-header -->
@@ -113,6 +112,7 @@
 	          <!-- /.tab-pane -->
 	          
 	          <div class="tab-pane" id="tab_2">
+	          	<h5 class="text-success">Add Employer Participant Details </h5>
 	          	<div class="row container" style="background-color: #5E6971; color: white; padding: 15px">
 	          		<div class="col-md-6">
 	            		<div class="form-group">
@@ -169,10 +169,9 @@
 						</table>
 						
 	          	</div>
-	          	<button type="button" id="res" class="btn btn-info btn-flat">Next</button>	
-	            
-	          </div>
-	          <div class="tab-pane" id="tab_3">
+	          	<hr>
+	          	<h5 class="text-success">Add Youth Placement Details </h5>
+
 	          	<div class="row container" style="background-color: #5E6971; color: white; padding: 15px">
 	          		<div class="col-md-6">
 	            		<div class="form-group">
@@ -207,7 +206,7 @@
 						    <tr>
 						      <th scope="col">Youth ID</th>
 						      <th scope="col">Type of Support By BEC</th>
-						      <th scope="col">Employer</th>
+						      <th scope="col">Employer ID</th>
 						      <th scope="col">Vacancy Placed</th>
 						      <th scope="col">Salary</th>
 						    </tr>
@@ -216,7 +215,7 @@
 						    <tr>
 						      <th><input type="text" name="youth_id[]" class="form-control name-list"></th>
 						      <td><input type="text" name="type_of_support[]" class="form-control position-list"></td>
-						      <td><input type="text" name="employer[]" class="form-control position-list"></td>
+						      <td><input type="number" name="employer[]" class="form-control position-list"></td>
 						      <td><input type="text" name="vacancies[]" class="form-control position-list"></td>
 						      <td><input type="text" name="salary[]" class="form-control position-list"></td>
 						      <td><button type="button" class="btn btn-success btn-flat" id="add1"><i class="fas fa-plus"></i></button></td>
@@ -225,8 +224,7 @@
 						  </tbody>
 						</table>
 						
-	          	</div>
-	          	<button type="button" id="att" class="btn btn-info btn-flat">Next</button>	
+	          	</div> 
 	          </div>
 	          <div class="tab-pane" id="tab_4">
 	          	<div class="row">
@@ -312,7 +310,7 @@ $(document).ready(function(){
       var i=1;  
       $('#add1').click(function(){  
            i++;  
-           $('#dynamic_field1').append('<tr id="row'+i+'"><th><input type="text" name="youth_id[]" class="form-control name-list"></th><td><input type="text" name="type_of_support[]" class="form-control position-list"></td><td><input type="text" name="employer[]" class="form-control position-list"></td><td><input type="text" name="vacancies[]" class="form-control position-list"></td><td><input type="text" name="salary[]" class="form-control position-list"></td><td><button type="button" name="remove" id="'+i+'" class="btn btn-danger btn-flat btn_remove1">X</button></td></tr>');  
+           $('#dynamic_field1').append('<tr id="row'+i+'"><th><input type="text" name="youth_id[]" class="form-control name-list"></th><td><input type="text" name="type_of_support[]" class="form-control position-list"></td><td><input type="number" name="employer[]" class="form-control position-list"></td><td><input type="text" name="vacancies[]" class="form-control position-list"></td><td><input type="text" name="salary[]" class="form-control position-list"></td><td><button type="button" name="remove" id="'+i+'" class="btn btn-danger btn-flat btn_remove1">X</button></td></tr>');  
       });  
       $(document).on('click', '.btn_remove1', function(){  
            var button_id = $(this).attr("id");   

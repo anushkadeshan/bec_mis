@@ -7,6 +7,10 @@ use DB;
 use Illuminate\Support\Facades\Validator;
 use Zipper;
 use Auth;
+use Illuminate\Support\Facades\URL;
+use App\Audit;
+use App\User;
+use App\Notifications\CompletionReport;
 
 class KickOffController extends Controller
 {
@@ -20,6 +24,13 @@ class KickOffController extends Controller
     	$managers = DB::table('branches')->select('manager')->distinct()->get();
     	$activities = DB::table('activities')->get();
     	return view('Activities.career-guidance.kick-off')->with(['districts'=> $districts,'managers'=>$managers,'activities'=>$activities]);
+    }
+
+    public function households(){
+        $districts = DB::table('districts')->get();
+        $managers = DB::table('branches')->select('manager')->distinct()->get();
+        $activities = DB::table('activities')->get();
+        return view('Activities.career-guidance.household')->with(['districts'=> $districts,'managers'=>$managers,'activities'=>$activities]);
     }
 
     public function add(Request $request){
@@ -36,7 +47,6 @@ class KickOffController extends Controller
                 'time_end' =>'required',
                 'venue' =>'required',
                 'no_of_forms' =>'required',
-                'no_of_selected_youth'	=>'required',
                 'resourse_person_id'=>'required',
                 'image.*' => 'image|mimes:jpeg,jpg,png,gif,svg',
                 'attendance' => 'mimes:jpeg,jpg,png,gif,svg,pdf',
@@ -100,6 +110,25 @@ class KickOffController extends Controller
                 	return response()->json(['error' => 'Submit Goverment Participants Details.']);
                 } 
 
+                $audit = array(
+                    'user_type' => 'App\User',
+                    'user_id' => Auth::user()->id,
+                    'event' => 'created',
+                    'auditable_type' => 'kickoffs',
+                    'auditable_id' => $kick_off_id,
+                    'url' => url()->current(),
+                    'ip_address' => request()->ip(),
+                    'user_agent' => $request->header('User-Agent'),
+
+                );
+
+                $reports = Audit::create($audit);
+
+                $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin','management' ]);})->get();
+                foreach ($notifyTo as $notifyUser) {
+                    $notifyUser->notify(new CompletionReport($reports));
+                }
+
             }
             else{
                 return response()->json(['error' => $validator->errors()->all()]);
@@ -107,6 +136,66 @@ class KickOffController extends Controller
     
     }
 
+    public function add_HHS(Request $request){
+        $validator = Validator::make($request->all(),[
+                'total_male'  => 'required',
+                'total_female'  => 'required',
+                'district' => 'required',
+                'dm_name' =>'required',
+                'title_of_action' =>'required', 
+                'activity_code' =>'required',   
+                'no_of_forms' =>'required',
+            ]);
+
+            if($validator->passes()){
+                $branch_id = auth()->user()->branch;
+                $input = $request->all();
+                if($request->hasFile('attendance')){
+                    $input['attendance'] = time().'.'.$request->file('attendance')->getClientOriginalExtension();
+                    $request->attendance->move(storage_path('activities/files/kick-off/attendance'), $input['attendance']);
+                }
+                $data1 = array(
+                    'district' => $request->district,
+                    'dsd' => $request->dsd,
+                    'gnd' => json_encode($request->gnd),
+                    'dm_name' =>$request->dm_name,
+                    'title_of_action' =>$request->title_of_action,  
+                    'activity_code' =>$request->activity_code,  
+                    'meeting_date'  =>$request->meeting_date,
+                    'total_male' => $request->total_male,
+                    'total_female'=>$request->total_female,
+                    'pwd_male'=>$request->pwd_male,
+                    'pwd_female'=>$request->pwd_female,
+                    'no_of_forms'=>$request->no_of_forms,
+                    'no_of_selected_youth'=>$request->no_of_selected_youth,
+                    'branch_id' => $branch_id,
+                    'created_at' => date('Y-m-d H:i:s')
+                );
+
+                //insert general data 
+                $household = DB::table('households')->insert($data1);
+                $hhs_id = DB::getPdo()->lastInsertId();
+
+                $audit = array(
+                    'user_type' => 'App\User',
+                    'user_id' => Auth::user()->id,
+                    'event' => 'created',
+                    'auditable_type' => 'households',
+                    'auditable_id' => $hhs_id,
+                    'url' => url()->current(),
+                    'ip_address' => request()->ip(),
+                    'user_agent' => $request->header('User-Agent'),
+
+                );
+
+                $insert = Audit::create($audit);
+
+            }
+            else{
+                return response()->json(['error' => $validator->errors()->all()]);
+            }
+    
+    }
      public function view(){
 
         $branch_id = Auth::user()->branch;
@@ -135,6 +224,28 @@ class KickOffController extends Controller
                         ->where(DB::raw('YEAR(meeting_date)'), '=', '2020' )
                         ->first();   
             $participants2021 = DB::table('kickoffs')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2021' )
+                        ->first(); 
+
+            $hhs2018 = DB::table('households')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2018' )
+                        ->first();
+                        //->groupBy(function ($val) {
+                                // Carbon::parse($val->meeting_date)->format('Y');
+                        //});
+                        //->groupBy(DB::raw("year(meeting_date)"))
+                        
+           $hhs2019 = DB::table('households')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2019' )
+                        ->first();            
+            $hhs2020 = DB::table('households')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2020' )
+                        ->first();   
+            $hhs2021 = DB::table('households')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
                         ->where(DB::raw('YEAR(meeting_date)'), '=', '2021' )
                         ->first();  
@@ -172,10 +283,36 @@ class KickOffController extends Controller
                     ->where(DB::raw('YEAR(meeting_date)'), '=', '2021' )
                     ->where('kickoffs.branch_id','=',$branch_id)
                     ->first(); 
+
+         $hhs2018 = DB::table('households')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2018' )
+                        ->where('households.branch_id','=',$branch_id)
+                        ->first();
+                        //->groupBy(function ($val) {
+                                // Carbon::parse($val->meeting_date)->format('Y');
+                        //});
+                        //->groupBy(DB::raw("year(meeting_date)"))
+                        
+       $hhs2019 = DB::table('households')                        
+                    ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                    ->where(DB::raw('YEAR(meeting_date)'), '=', '2019' )
+                    ->where('households.branch_id','=',$branch_id)
+                    ->first();            
+        $hhs2020 = DB::table('households')                        
+                    ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                    ->where(DB::raw('YEAR(meeting_date)'), '=', '2020' )
+                    ->where('households.branch_id','=',$branch_id)
+                    ->first();   
+        $hhs2021 = DB::table('households')                        
+                    ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
+                    ->where(DB::raw('YEAR(meeting_date)'), '=', '2021' )
+                    ->where('households.branch_id','=',$branch_id)
+                    ->first();            
         }                         
         //dd($participants2018);
         $branches = DB::table('branches')->get();
-        return view('Activities.Reports.career-guidance.kickoff')->with(['meetings'=>$meetings,'branches'=>$branches,'participants2018'=>$participants2018,'participants2019'=>$participants2019,'participants2020'=>$participants2020,'participants2021'=>$participants2021]);
+        return view('Activities.Reports.career-guidance.kickoff')->with(['meetings'=>$meetings,'branches'=>$branches,'participants2018'=>$participants2018,'participants2019'=>$participants2019,'participants2020'=>$participants2020,'participants2021'=>$participants2021,'hhs2018'=> $hhs2018,'hhs2019'=>$hhs2019,'hhs2020'=>$hhs2020,'hhs2021'=>$hhs2021]);
     }
 
     public function fetch(Request $request){
@@ -194,6 +331,14 @@ class KickOffController extends Controller
                         ->select('kickoffs.*','branches.*','kickoffs.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')
                         ->orderBy('meeting_date', 'desc')
                         ->get();
+
+                    $hhs = DB::table('households') 
+                        ->join('branches','branches.id','=','households.branch_id')
+                        ->select('households.*','branches.*','households.id as m_id','branches.name as branch_name')
+                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->where('branch_id',$request->branch)
+                        ->orderBy('meeting_date', 'desc')
+                        ->get();
                 }
                 else{
                     
@@ -207,6 +352,14 @@ class KickOffController extends Controller
                         //->where('kickoffs.branch_id','=',$branch_id)
                         ->orderBy('meeting_date', 'desc')
                         ->get();
+
+                    $hhs = DB::table('households') 
+                        ->join('branches','branches.id','=','households.branch_id')
+                        ->select('households.*','branches.*','households.id as m_id','branches.name as branch_name')
+                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->orderBy('meeting_date', 'desc')
+                        ->get();
+
                     }
                     else{
                         $data = DB::table('kickoffs') 
@@ -215,6 +368,14 @@ class KickOffController extends Controller
                         ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
                         ->where('kickoffs.branch_id','=',$branch_id)
                         ->select('kickoffs.*','branches.*','kickoffs.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')
+                        ->orderBy('meeting_date', 'desc')
+                        ->get();
+
+                        $hhs = DB::table('households') 
+                        ->join('branches','branches.id','=','households.branch_id')
+                        ->select('households.*','branches.*','households.id as m_id','branches.name as branch_name')
+                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->where('households.branch_id','=',$branch_id)
                         ->orderBy('meeting_date', 'desc')
                         ->get();
                     }
@@ -232,6 +393,11 @@ class KickOffController extends Controller
                         ->select('kickoffs.*','branches.*','kickoffs.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')
                         ->orderBy('meeting_date', 'desc')
                         ->get();
+                $hhs = DB::table('households') 
+                        ->join('branches','branches.id','=','households.branch_id')
+                        ->select('households.*','branches.*','households.id as m_id','branches.name as branch_name')
+                        ->orderBy('meeting_date', 'desc')
+                        ->get();
                 }
 
                 else{
@@ -242,9 +408,21 @@ class KickOffController extends Controller
                         ->where('kickoffs.branch_id','=',$branch_id)
                         ->orderBy('meeting_date', 'desc')                      
                         ->get();
+
+                    $hhs = DB::table('households') 
+                        ->join('branches','branches.id','=','households.branch_id')
+                        ->select('households.*','branches.*','households.id as m_id','branches.name as branch_name')
+                        ->where('households.branch_id','=',$branch_id)
+                        ->orderBy('meeting_date', 'desc')
+                        ->get();
                 }
             }
-                return response()->json($data);
+                
+                return response()->json(array(
+                    'kick' => $data,
+                    'hhs' => $hhs,
+                ));
+                //return response()->json($data);
         }
     
         
@@ -254,8 +432,9 @@ class KickOffController extends Controller
     public function view_meeting($id){
         $meeting = DB::table('kickoffs')
                     ->join('resourse_people','resourse_people.id', '=' ,'kickoffs.resourse_person_id')
+                    ->join('dsd_office','dsd_office.ID', '=' ,'kickoffs.dsd')
                    ->join('branches','branches.id','=','kickoffs.branch_id')
-                   ->select('kickoffs.*','branches.*','kickoffs.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')
+                   ->select('kickoffs.*','branches.*','kickoffs.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name','dsd_office.*')
                    ->where('kickoffs.id',$id)
                    ->first();
         $participants = DB::table('kickoff_gvt_officials')
@@ -276,6 +455,8 @@ class KickOffController extends Controller
         
 
     }
+
+
 
     public function download($file_name){
         //$file_name = $request->attendance;
@@ -306,5 +487,107 @@ class KickOffController extends Controller
         //dd($photos);
        // Zipper::make('mydir/photos.zip')->add($paths);
        // return response()->download(('mydir/photos.zip')); 
+    }
+
+    public function view_hhs($id){
+        $meeting = DB::table('households')
+                   ->join('branches','branches.id','=','households.branch_id')
+                   ->select('households.*','branches.*','households.id as m_id','branches.name as branch_name')
+                   ->where('households.id',$id)
+                   ->first();
+        
+        return response()->json($meeting);
+        
+
+    }
+
+    public function edit($id){
+
+       $meeting = DB::table('kickoffs')
+                    ->join('resourse_people','resourse_people.id', '=' ,'kickoffs.resourse_person_id')
+                    ->join('dsd_office','dsd_office.ID', '=' ,'kickoffs.dsd')
+                   ->join('branches','branches.id','=','kickoffs.branch_id')
+                   ->select('kickoffs.*','branches.*','kickoffs.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name','dsd_office.*')
+                   ->where('kickoffs.id',$id)
+                   ->first();
+        $participants = DB::table('kickoff_gvt_officials')
+                        ->where('kickoff_id',$id)
+                        ->get();
+
+        $activities = DB::table('activities')->get();
+
+        return view ('Activities.career-guidance.edit.kick-off')->with(['meeting'=> $meeting,'participants'=>$participants,'activities'=>$activities]);
+
+    }
+
+    public function update(Request $request){
+
+        $validator = Validator::make($request->all(),[
+                'meeting_date'  =>'required',
+                'time_start'=>'required',
+                'time_end' =>'required',
+                'venue' =>'required',
+                
+            ]);
+
+        if($validator->passes()){
+        // echo "<script>console.log( 'Debug Objects: " . $meeting_date . "' );</script>";
+
+        $data1 = array(
+            'meeting_date'  =>$request->meeting_date,
+            'time_start'=>$request->time_start,
+            'time_end' =>$request->time_end,
+            'venue' =>$request->venue,
+            'program_cost' =>$request->program_cost,
+            'total_male' => $request->total_male,
+            'total_female'=>$request->total_female,
+            'pwd_male'=>$request->pwd_male,
+            'pwd_female'=>$request->pwd_female,
+            'mode_of_conduct'=>$request->mode_of_conduct,
+            'topics'=>$request->topics,
+            'deliverables'=>$request->deliverables,
+            'no_of_forms'=>$request->no_of_forms,
+            'no_of_selected_youth'=>$request->no_of_selected_youth,
+            'resourse_person_id'=>$request->resourse_person_id,
+        );
+        //dd($data1);
+        DB::table('kickoffs')->whereid($request->m_id)->update($data1);
+
+        $audit = array(
+            'user_type' => 'App\User',
+            'user_id' => Auth::user()->id,
+            'event' => 'updated',
+            'auditable_type' => 'kickoffs',
+            'auditable_id' => $request->m_id,
+            'url' => url()->current(),
+            'ip_address' => request()->ip(),
+            'user_agent' => $request->header('User-Agent'),
+
+        );
+
+        $reports = Audit::create($audit);
+    }
+
+
+    
+
+    else{
+        return response()->json(['error' => $validator->errors()->all()]);
+        }
+    }
+
+    public function update_participants(Request $request){
+
+        $participants = DB::table('kickoff_gvt_officials')
+                        ->whereid($request->id_p)
+                        ->update(['name'=>$request->name,'gender'=>$request->gender,'designation'=> $request->designation,'institute'=> $request->institute]);
+
+    }
+
+    public function add_participants(Request $request){
+
+        $participants = DB::table('kickoff_gvt_officials')
+                        ->insert(['name'=>$request->name,'gender'=>$request->gender,'designation'=> $request->designation,'institute'=> $request->institute, 'kickoff_id'=>$request->m_id]);
+
     }
 }

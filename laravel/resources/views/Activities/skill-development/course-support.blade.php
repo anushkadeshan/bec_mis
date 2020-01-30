@@ -260,7 +260,7 @@
 	          				<label>Institutional review report</label>
 	          				<div class="input-group">                       
 		                        <input data-toggle="tooltip" data-placement="top" title="Search Institiute name and select" type="text" id="review_report" class="form-control" placeholder="Search Institiute name and select">
-		                        <input type="hidden" name="review_report" id="review_report1">
+		                        <input type="hidden" name="review_report" id="review_report1" value="">
 		                        <div style="cursor: pointer" onclick="window.open('{{url('activities/skill-development/institute-review')}}', '_blank');" class="input-group-prepend">
 		                          <span data-toggle="tooltip" data-placement="top" title="Add a Review Report to list" class="input-group-text"><i style="color: blue;" class="fa fa-plus"></i></span>
 		                        </div>  
@@ -352,7 +352,7 @@ $(document).ready(function(){
             }
             else{
                 $('#loading').hide();
-               toastr.error('May be youth details are mismatched !', 'Something Error !')
+               toastr.error('May be youth details are mismatched !', 'Something Error !');
 
              printValidationErrors(data.error);
               

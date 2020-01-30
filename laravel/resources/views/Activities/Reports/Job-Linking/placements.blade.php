@@ -7,12 +7,12 @@
         <div class="row mb-2">
           <div class="col-md-6">
                       
-            <h3>Job Interviews <small class="badge badge-success"> {{count($meetings)}}</small></h3>
+            <h3>Job Fares/ Interviews</h3>
           </div>
           <div class="col-md-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{Route('home')}}">Dashboard</a></li>
-              <li class="breadcrumb-item"><a href="{{url('m&e-reports')}}">Reprots</a></li>
+              <li class="breadcrumb-item"><a href="{{url('m&e-reports')}}">Reports</a></li>
               <li class="breadcrumb-item active">4.2.4</li>
             </ol>
           </div>
@@ -30,7 +30,8 @@
                     <div class="card-body">
                       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false" style="background-color: #5E6971; color: white;">
                         
-                      @can('admin')
+                      <?php $branch_id = Auth::user()->branch; ?> 
+                      @if(is_null($branch_id))
                       <li class="nav-item">
                         <a class="nav-link">
                             <div class="form-group">
@@ -44,6 +45,9 @@
                           </div>
                         </a>
                       </li> 
+                      @else
+                      <input type="hidden" name="branch_id" value="{{$branch_id}}"> 
+                      @endif
                       <li class="nav-item">
                         <a class="nav-link">
                             
@@ -70,9 +74,7 @@
                             <button type="button" name="filter" id="filter" class="btn btn-primary btn-flat"><i class="fas fa-filter"></i> Filter</button>
                             <button type="button" name="refresh" id="refresh" class="btn btn-default btn-flat">Refresh</button>
                           </a>
-                      </li>
-                      @endcan
-                                      
+                      </li>            
                       </ul>
                     </div>
                   </div>
@@ -86,15 +88,18 @@
                 <h3 class="card-title p-3">Data</h3>
                 <ul class="nav nav-pills ml-auto p-2" id="tabs">
                   <li class="nav-item"><a class="nav-link active" href="#tab_1" data-toggle="tab">Summary</a></li>
-                  <li class="nav-item"><a class="nav-link" href="#tab_2" data-toggle="tab">Programs</a></li>
+                  <li class="nav-item"><a class="nav-link" href="#tab_2" data-toggle="tab">Job Fares/Interviews</a></li>
                   <li class="nav-item"><a class="nav-link" href="#tab_3">More</a></li>
+                  <li class="nav-item"><a class="nav-link" href="#tab_4" data-toggle="tab">Ind. Placements</a></li>
+                  <li class="nav-item"><a class="nav-link" href="#tab_5">More</a></li>
                 </ul>
               </div><!-- /.card-header -->
               <div class="card-body">
                 <div class="tab-content">
                   <div class="tab-pane active" id="tab_1">
                     <div>
-                    
+                    <fieldset class="border p-2">
+                          <legend  class="w-auto"><small>Interviews/Job Fairs</small></legend>
                       <a class="btn btn-app zoom">
                         <span class="badge bg-warning" id="total_records"></span>
                         <i class="fa fa-handshake"></i>Interviews
@@ -119,10 +124,19 @@
                         <span class="badge bg-warning" id="total_cost"></span>
                         <i class="fa fa-dollar-sign"></i>Total Cost
                       </a>
+                    </fieldset>
+                    <fieldset class="border p-2">
+                          <legend  class="w-auto"><small>Individual Placements</small></legend>
+                          <a class="btn btn-app zoom">
+                          <span class="badge bg-warning" id="total_records2"></span>
+                          <i class="fa fa-handshake"></i>Placements
+                      </a>
+                    </fieldset>
+
                     </div>
                     <div class="card card-success">
                     <div  class="card-header">
-                     Youth Placed in Jobs
+                     Youth Placed in Jobs - Interviews
                     </div>
                     <div  class="card-body">
                     
@@ -264,6 +278,55 @@
                       </div>
                     </div>
                   </div>
+
+                  <div class="tab-pane" id="tab_4">
+                     <table id="example5" class="table row-border table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Program Date</th>
+                            <th>Youth</th>
+                            <th>Employer</th>
+                            <th>Vacancy</th>
+                            <th>Salary</th>
+                            <th>Branch</th>
+                            <th>Action</th>
+                          
+                        </tr>
+                        <tbody> 
+                        </tbody>
+                    </thead>        
+                 </table>   
+              {{ csrf_field() }}
+                  </div>
+
+                  <div class="tab-pane print" id="tab_5">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="card card-success card-outline">
+                          <div class="card-header">
+                                    <h3 class="card-title">Individual Placements Details</h3>
+                              </div>
+                              <div class="card-body">
+                            <ul class="list-group list-group-flush">
+
+                              <li class="list-group-item border-0"><strong>District : </strong><span class="text-muted" id="district2"></span></li>
+                              <li class="list-group-item border-0"><strong>DSDs : </strong><span class="text-muted" id="dsd2"></span></li>
+                              <li class="list-group-item border-0"><strong>DM Name : </strong><span class="text-muted" id="dm_name2"></span></li>
+                              <li class="list-group-item border-0"><strong>Placement Date : </strong><span class="text-muted" id="meeting_date2"></span></li>
+                              <li class="list-group-item border-0"><strong>Youth Name: </strong><span class="text-muted" id="youth"></span></li>
+
+                              <li class="list-group-item border-0"><strong>Employer: </strong><span class="text-muted" id="employer"></span></li>
+                              <li class="list-group-item border-0"><strong>Vacancy Placed: </strong><span class="text-muted" id="vacancy"></span></li>
+                              <li class="list-group-item border-0"><strong>Type of Support: </strong><span class="text-muted" id="support"></span></li>
+                              <li class="list-group-item border-0"><strong>Salary: </strong><span class="text-muted" id="salary"></span></li>
+                              <li class="list-group-item border-0"><strong>Branch: </strong><span class="text-muted" id="branch2"></span></li>
+                            </ul>
+                          </div>
+                        </div>  
+                      </div>  
+                    </div>
+                  </div>
                   <!-- /.tab-pane -->
                 </div>
                 <!-- /.tab-content -->
@@ -292,7 +355,13 @@ var dataTable = $("#example").DataTable({
                 'copy', 'csv', 'excel', 'pdf', 'print'
             ],
     });
-  
+
+var dataTable2 = $("#example5").DataTable({
+      dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+    });  
   var date = new Date();
 
     $('.input-group').datepicker({
@@ -312,10 +381,18 @@ var dataTable = $("#example").DataTable({
    method:"POST",
    data:{dateStart:dateStart, dateEnd:dateEnd, _token:_token,branch:branch},
    dataType:"json",
+   beforeSend: function(){
+     $("#loading").attr('class', 'fa fa-spinner fa-lg faa-spin animated');
+   },
+   complete: function(){
+     $("#loading").attr('class', 'fas fa-filter');
+    
+   },
    success:function(data)
    {
   
   dataTable.clear().draw();
+  dataTable2.clear().draw();
    var count = 1;
    var male_sum = 0;
    var female_sum = 0;
@@ -324,13 +401,15 @@ var dataTable = $("#example").DataTable({
    var cost_sum = 0;
   $.each(data.data1, function(index, value1) {
     // use data table row.add, then .draw for table refresh
-    dataTable.row.add([count++, value1.program_date, value1.venue, value1.program_cost, value1.branch_name,'<button type="button" name="view" data-id="'+value1.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button>']).draw();
+    dataTable.row.add([count++, value1.program_date, value1.venue, value1.program_cost, value1.branch_name,'<div class="btn-group"><button type="button" name="view" data-id="'+value1.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button><a href="{{url('reports-me/placement')}}/'+value1.m_id+'/edit"><button type="button" name="view" class="btn btn-success btn-flat btn-sm"><i class="fa fa-edit"></i></button></a></div>']).draw();
 
      var total_cost = value1.program_cost;
      if ($.isNumeric(total_cost)) {
           cost_sum += parseFloat(total_cost);
       } 
   });
+
+  
 
   $.each(data.data2, function(index, value2) {
 
@@ -348,11 +427,19 @@ var dataTable = $("#example").DataTable({
    });
    
    $('#total_records').text(data.data1.length);
+   $('#total_records2').text(data.placements.length);
    $('#total_male1').text(male_sum);
    $('#total_female1').text(female_sum);
    $('#total_p_male').text(pwd_m_sum);
    $('#total_p_female').text(pwd_f_sum);
    $('#total_cost').text(cost_sum.toLocaleString());
+
+
+   $.each(data.placements, function(index, value3) {
+    // use data table row.add, then .draw for table refresh
+    dataTable2.row.add([count++, value3.program_date, value3.youth_name, value3.employer_name, value3.vacancy,value3.salary,value3.branch_name,'<div class="btn-group"><button type="button" name="view" data-id="'+value3.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view2"><i class="fa fa-eye"></i></button><a href="{{url('reports-me/individual')}}/'+value3.m_id+'/edit"><button type="button" name="view" class="btn btn-success btn-flat btn-sm"><i class="fa fa-edit"></i></button></a></div>']).draw();
+ 
+  });
     
    }
   });
@@ -443,7 +530,7 @@ $('body').on('click', '.btn_view', function () {
            output2 += '<td><a target="_blank" href="'+SITE_URL+'/youth/'+ data.youths[count].youth_id +'/view">' + data.youths[count].name + '</a></td>';
            output2 += '<td>' + data.youths[count].phone + '</td>';
            output2 += '<td>' + data.youths[count].type_of_support + '</td>';
-           output2 += '<td>' + data.youths[count].employer + '</td>';
+           output2 += '<td>' + data.youths[count].employer_name + '</td>';
            output2 += '<td>' + data.youths[count].vacancies + '</td>';
            output2 += '<td>' + data.youths[count].salary + '</td></tr>';
           }
@@ -454,11 +541,36 @@ $('body').on('click', '.btn_view', function () {
 
    });
 
+//individual placements
+
+$('body').on('click', '.btn_view2', function () {
+
+      var meeting_id = $(this).data('id');
+       
+
+      $.get("{{ url('reports-me/job/ind-placements') }}" +'/' + meeting_id +'/view', function (data) {
 
 
+          $('#tabs a[href="#tab_5"]').tab('show');
+          $('#tabs a[href="#tab_5"]').attr("data-toggle", "tab");
+
+          $('#district2').text(data.district);
+          $('#dsd2').text(data.dsd);
+          $('#dm_name2').text(data.dm_name);
+          $('#meeting_date2').text(data.program_date);
+          $('#youth').text(data.youth_name);
+          $('#employer').text(data.employer_name);
+          $('#support').text(data.type_of_support);
+          $('#vacancy').text(data.vacancy);
+          $('#salary').text(data.salary);
+
+          $('#branch2').text(data.branch_name);
+      })
+
+   });
 $('#print').click(function () {
     $('.print').printThis({
-      pageTitle: "CG Training",
+      pageTitle: "Placements",
     });
 });
 

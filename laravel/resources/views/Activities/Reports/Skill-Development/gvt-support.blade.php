@@ -69,6 +69,7 @@
                           </div>
                         </a>
                       </li>
+                      <!--
                       <li class="nav-item">
                         <a class="nav-link">
                             <div class="form-group">
@@ -95,6 +96,7 @@
                           </div>
                         </a>
                       </li> 
+                    -->
                       <li class="nav-item">
                           <a class="nav-link">
                             <button type="button" name="filter" id="filter" class="btn btn-primary btn-flat"><i id="loading" class="fas fa-filter"></i> Filter <i style="display:none" id="loading" class="fa fa-spinner fa-lg faa-spin animated"></i></button>
@@ -149,7 +151,7 @@
                     </div>
                     <div class="card card-success">
                     <div  class="card-header">
-                     Enrolled Youths
+                     Enrolled Youths <a href="{{Route('view_gvt_youths')}}"><span  class="badge badge-warning float-right" id="row_count">View Youth Report</span></a>
                     </div>
                     <div  class="card-body">
                     
@@ -382,12 +384,12 @@ var dataTable = $("#example").DataTable({
 
  fetch_data();
 
- function fetch_data(dateStart = '', dateEnd = '',branch='' ,course='',institute='')
+ function fetch_data(dateStart = '', dateEnd = '',branch='' /* ,course='',institute=''*/)
  {
   $.ajax({
    url:"{{ Route('reports-me/skill/gvt-support/fetch') }}",
    method:"POST",
-   data:{dateStart:dateStart, dateEnd:dateEnd, _token:_token,branch:branch,course:course,institute:institute},
+   data:{dateStart:dateStart, dateEnd:dateEnd, _token:_token,branch:branch/*,course:course,institute:institute*/},
    dataType:"json",
    beforeSend: function(){
      $("#loading").attr('class', 'fa fa-spinner fa-lg faa-spin animated');
@@ -408,7 +410,7 @@ var dataTable = $("#example").DataTable({
   $.each(data, function(index, value) {
     //console.log(value);
     // use data table row.add, then .draw for table refresh
-    dataTable.row.add([count++, value.meeting_date, value.total_male, value.total_female, value.course_name,value.institute_name,value.end_date,value.ext,'<button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button>']).draw();
+    dataTable.row.add([count++, value.meeting_date, value.total_male, value.total_female, value.course_name,value.institute_name,value.end_date,value.ext,'<div class="btn-group"><button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button><a href="{{url('reports-me/gvt-support')}}/'+value.m_id+'/edit"><button type="button" name="view" class="btn btn-success btn-flat btn-sm"><i class="fa fa-edit"></i></button></a></div>']).draw();
 
      var total_male = value.total_male;
      var total_female = value.total_female;
@@ -435,11 +437,12 @@ var dataTable = $("#example").DataTable({
   var dateStart = $('#dateStart').val();
   var dateEnd = $('#dateEnd').val();
   var branch = $('#branch_id').val();
-  var course = $('#course_id').val();
-  var institute = $('#institute_id').val();
+  /*var course = $('#course_id').val();
+  var institute = $('#institute_id').val();*/
   if(dateStart != '' &&  dateEnd != '')
   {
-   fetch_data(dateStart, dateEnd, branch, course,institute);
+    //alert(branch);
+   fetch_data(dateStart, dateEnd , branch /*, course,institute*/);
   
   }
   else
@@ -452,8 +455,8 @@ var dataTable = $("#example").DataTable({
   $('#dateStart').val('');
   $('#dateEnd').val('');
   $('#branch_id').val('');
-  $('#course_id').val('');
-  $('#institute_id').val('');
+  /*$('#course_id').val('');
+  $('#institute_id').val('');*/
   fetch_data();
  });
  }

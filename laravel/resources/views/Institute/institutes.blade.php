@@ -29,9 +29,8 @@
                         <th>Name</th>
                         <th>Location</th>
                         <th>Address</th>
-                        <th>Email</th>
+                        <th>Contacts</th>
                         <th>Contact Person</th>
-                        <th>Phone</th>
                         <th>TVEC Reg?</th>
                         @can('edit-institute')
                         <th>Action</th>
@@ -46,9 +45,8 @@
                         <td>{{ $institute->name }}</td>
                         <td>{{ $institute->location }}</td>
                         <td>{{ $institute->address }}</td>
-                        <td>{{ $institute->email }}</td>
+                        <td>{{ $institute->phone }} <br> <i class="fas fa-envelope-open-text"></i>&nbsp;{{ $institute->email }}</td>
                         <td>{{ $institute->contact_person }}</td>
-                        <td>{{ $institute->phone }}</td>
                         <td>{{ $institute->is_registerd }}</td>
                         
                         <td>

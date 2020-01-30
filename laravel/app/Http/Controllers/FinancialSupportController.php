@@ -7,6 +7,12 @@ use DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Input;
 use Carbon\Carbon;
+use Auth;
+use Illuminate\Support\Facades\URL;
+use App\Audit;
+use App\User;
+use App\Notifications\CompletionReport;
+
 class FinancialSupportController extends Controller
 {
     public function __construct()
@@ -88,6 +94,25 @@ class FinancialSupportController extends Controller
                     return response()->json(['error' => 'Youth details are mismatched.']);
 
               }
+
+              $audit = array(
+                    'user_type' => 'App\User',
+                    'user_id' => Auth::user()->id,
+                    'event' => 'created',
+                    'auditable_type' => 'finacial_supports',
+                    'auditable_id' => $finacial_support_id,
+                    'url' => url()->current(),
+                    'ip_address' => request()->ip(),
+                    'user_agent' => $request->header('User-Agent'),
+
+                );
+
+                $reports = Audit::create($audit);
+
+                $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin','management' ]);})->get();
+                foreach ($notifyTo as $notifyUser) {
+                    $notifyUser->notify(new CompletionReport($reports));
+                }
             }
             else{
                 return response()->json(['error' => $validator->errors()->all()]);
@@ -146,11 +171,12 @@ class FinancialSupportController extends Controller
      public function fetch(Request $request){
         if($request->ajax())
         {
+            $branch_id = Auth::user()->branch;
+            
             if($request->dateStart != '' && $request->dateEnd != '')
             {
-                
-                switch (true) {
-                  case ($request->branch!=''):
+
+                  if($request->branch!=''){
                     $data = DB::table('finacial_supports') 
                       ->join('branches','branches.id','=','finacial_supports.branch_id')
                       ->join('institutes','institutes.id','=','finacial_supports.institute_id')
@@ -160,100 +186,39 @@ class FinancialSupportController extends Controller
                       ->select('finacial_supports.*','branches.*','finacial_supports.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
                       ->orderBy('program_date', 'desc')
                       ->get();    
-                    break;
+                   }
 
-                  case ($request->branch!='' and $request->course!=''):
-                  $data = DB::table('finacial_supports') 
-                    ->join('branches','branches.id','=','finacial_supports.branch_id')
-                    ->join('institutes','institutes.id','=','finacial_supports.institute_id')
-                    ->join('courses','courses.id', '=' ,'finacial_supports.course_id')
-                    ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
-                    ->where('branch_id',$request->branch)
-                    ->where('course_id',$request->course)
-                    ->select('finacial_supports.*','branches.*','finacial_supports.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
-                    ->orderBy('program_date', 'desc')
-                    ->get();    
-                  break;
+                   else{
 
-                  case ($request->branch!='' and $request->institute !=''):
-                  $data = DB::table('finacial_supports') 
-                    ->join('branches','branches.id','=','finacial_supports.branch_id')
-                    ->join('institutes','institutes.id','=','finacial_supports.institute_id')
-                    ->join('courses','courses.id', '=' ,'finacial_supports.course_id')
-                    ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
-                    ->where('branch_id',$request->branch)
-                    ->where('institute_id',$request->institute)
-                    ->select('finacial_supports.*','branches.*','finacial_supports.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
-                    ->orderBy('program_date', 'desc')
-                    ->get();    
-                  break;
-
-                  case ($request->course!='' and $request->institute !=''):
-                  $data = DB::table('finacial_supports') 
-                    ->join('branches','branches.id','=','finacial_supports.branch_id')
-                    ->join('institutes','institutes.id','=','finacial_supports.institute_id')
-                    ->join('courses','courses.id', '=' ,'finacial_supports.course_id')
-                    ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
-                    ->where('course_id',$request->course)
-                    ->where('institute_id',$request->institute)
-                    ->select('finacial_supports.*','branches.*','finacial_supports.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
-                    ->orderBy('program_date', 'desc')
-                    ->get();    
-                  break;
-
-                  case ($request->course!=''):
-                  $data = DB::table('finacial_supports') 
-                    ->join('branches','branches.id','=','finacial_supports.branch_id')
-                    ->join('institutes','institutes.id','=','finacial_supports.institute_id')
-                    ->join('courses','courses.id', '=' ,'finacial_supports.course_id')
-                    ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
-                    ->where('course_id',$request->course)
-                    ->select('finacial_supports.*','branches.*','finacial_supports.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
-                    ->orderBy('program_date', 'desc')
-                    ->get();    
-                  break;
-
-                  case ($request->institute!=''):
-                  $data = DB::table('finacial_supports') 
-                    ->join('branches','branches.id','=','finacial_supports.branch_id')
-                    ->join('institutes','institutes.id','=','finacial_supports.institute_id')
-                    ->join('courses','courses.id', '=' ,'finacial_supports.course_id')
-                    ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
-                    ->where('institute_id',$request->institute)
-                    ->select('finacial_supports.*','branches.*','finacial_supports.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
-                    ->orderBy('program_date', 'desc')
-                    ->get();    
-                  break;
-
-                  case ($request->institute!='' and $request->course !='' and $request->branch !=''):
-                  $data = DB::table('finacial_supports') 
-                        ->join('branches','branches.id','=','finacial_supports.branch_id')
-                        ->join('institutes','institutes.id','=','finacial_supports.institute_id')
-                        ->join('courses','courses.id', '=' ,'finacial_supports.course_id')
-                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
-                        ->where('branch_id',$request->branch)
-                        ->where('institute_id',$request->institute)
-                        ->where('course_id',$request->course)
-                        ->select('finacial_supports.*','branches.*','finacial_supports.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
-                        ->orderBy('program_date', 'desc')
-                        ->get();    
-                  break;
-                  default:
+                   if(is_null($branch_id)){
                     $data = DB::table('finacial_supports') 
                         ->join('branches','branches.id','=','finacial_supports.branch_id')
                         ->join('institutes','institutes.id','=','finacial_supports.institute_id')
                         ->join('courses','courses.id', '=' ,'finacial_supports.course_id')
-                        ->select('finacial_supports.*','branches.*','finacial_supports.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
                         ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->select('finacial_supports.*','branches.*','finacial_supports.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
                         ->orderBy('program_date', 'desc')
                         ->get();
-                    break;
-                }
+                    }
+                    else{
+                      $data = DB::table('finacial_supports') 
+                        ->join('branches','branches.id','=','finacial_supports.branch_id')
+                        ->join('institutes','institutes.id','=','finacial_supports.institute_id')
+                        ->join('courses','courses.id', '=' ,'finacial_supports.course_id')
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->where('finacial_supports.branch_id','=',$branch_id)
+                        ->select('finacial_supports.*','branches.*','finacial_supports.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
+                        ->orderBy('program_date', 'desc')
+                        ->get();
+                    }
+                  }
+                
                 
             }
         else
             {
+                if(is_null($branch_id)){
+                
                 $data = DB::table('finacial_supports') 
                         ->join('branches','branches.id','=','finacial_supports.branch_id')
                         ->join('institutes','institutes.id','=','finacial_supports.institute_id')
@@ -261,6 +226,17 @@ class FinancialSupportController extends Controller
                         ->select('finacial_supports.*','branches.*','finacial_supports.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
                         ->orderBy('program_date', 'desc')
                         ->get();
+                }
+                else{
+                  $data = DB::table('finacial_supports') 
+                        ->join('branches','branches.id','=','finacial_supports.branch_id')
+                        ->join('institutes','institutes.id','=','finacial_supports.institute_id')
+                        ->join('courses','courses.id', '=' ,'finacial_supports.course_id')
+                        ->where('finacial_supports.branch_id','=',$branch_id)
+                        ->select('finacial_supports.*','branches.*','finacial_supports.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')                        
+                        ->orderBy('program_date', 'desc')
+                        ->get();
+                }
             }
                 return response()->json($data);
         }
@@ -305,5 +281,90 @@ class FinancialSupportController extends Controller
                ];
       // return Storage::download(filePath, Appended Text);
         return response()->file($file,$headers);
+    }
+
+    public function edit($id){
+
+       $meeting = DB::table('finacial_supports')
+                   ->join('branches','branches.id','=','finacial_supports.branch_id')
+                   ->join('institutes','institutes.id','=','finacial_supports.institute_id')
+                   ->join('courses','courses.id', '=' ,'finacial_supports.course_id')
+                   ->join('dsd_office','dsd_office.ID','=','finacial_supports.dsd')
+                   ->select('finacial_supports.*','branches.*','finacial_supports.id as m_id','finacial_supports.course_id as c_id','finacial_supports.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date','dsd_office.*')
+                   ->where('finacial_supports.id',$id)
+                   ->first();
+
+        $youths = DB::table('finacial_supports_youths')
+                  ->join('youths','youths.id','=','finacial_supports_youths.youth_id')
+                  ->select('finacial_supports_youths.*','finacial_supports_youths.id as f_id','youths.*')
+                  ->where('finacial_supports_youths.finacial_support_id',$id)
+                  ->get();
+
+        return view ('Activities.skill-development.edit.financial')->with(['meeting'=> $meeting,'youths'=>$youths]);
+
+    }
+
+     public function update(Request $request){
+
+        $validator = Validator::make($request->all(),[
+                'program_date'  =>'required',
+                
+            ]);
+
+        if($validator->passes()){
+        // echo "<script>console.log( 'Debug Objects: " . $meeting_date . "' );</script>";
+
+        $data1 = array(   
+            'program_date'  =>$request->program_date,
+            'start_date'=>$request->start_date,
+            'end_date' =>$request->end_date,
+            'institute_id'  =>$request->institute_id,
+            'institutional_review' =>$request->institutional_review,
+            'course_id' => $request->course_id,
+            'cost' => $request->cost,
+            'total_male' => $request->total_male,
+            'total_female'=>$request->total_female,
+            'pwd_male'=>$request->pwd_male,
+            'pwd_female'=>$request->pwd_female,
+        );
+        //dd($data1);
+        DB::table('finacial_supports')->whereid($request->m_id)->update($data1);
+
+        $audit = array(
+            'user_type' => 'App\User',
+            'user_id' => Auth::user()->id,
+            'event' => 'updated',
+            'auditable_type' => 'finacial_supports',
+            'auditable_id' => $request->m_id,
+            'url' => url()->current(),
+            'ip_address' => request()->ip(),
+            'user_agent' => $request->header('User-Agent'),
+
+        );
+
+        $reports = Audit::create($audit);
+    }
+
+
+    
+
+    else{
+        return response()->json(['error' => $validator->errors()->all()]);
+        }
+    }
+
+    public function update_youths(Request $request){
+
+        $participants = DB::table('finacial_supports_youths')
+                        ->whereid($request->id_p)
+                        ->update(['approved_amount'=>$request->approved_amount,'installments'=>$request->installments]);
+
+    }
+
+    public function add_youth(Request $request){
+
+        $participants = DB::table('finacial_supports_youths')
+                        ->insert(['youth_id'=>$request->youth_id,'approved_amount'=>$request->approved_amount,'installments'=> $request->installments,'finacial_support_id' => $request->m_id]);
+
     }
 }

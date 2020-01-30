@@ -48,7 +48,15 @@
                       <li class="nav-item">
                         <a href="{{URL::to('activities/job-linking/placements')}}" class="nav-link">
                             <p>
-                              Job Interviews  
+                              Job Placements  
+                              <i class="fa fa-angle-right right"></i>
+                            </p>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a href="{{URL::to('activities/job-linking/individual')}}" class="nav-link">
+                            <p>
+                              Individual Placement  
                               <i class="fa fa-angle-right right"></i>
                             </p>
                         </a>

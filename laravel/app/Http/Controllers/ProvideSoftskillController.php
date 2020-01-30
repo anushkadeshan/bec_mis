@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Input;
 use Carbon\Carbon;
 use Auth;
+use Illuminate\Support\Facades\URL;
+use App\Audit;
+use App\User;
+use App\Notifications\CompletionReport;
 
 class ProvideSoftskillController extends Controller
 {
@@ -40,6 +44,7 @@ class ProvideSoftskillController extends Controller
             if($validator->passes()){
                 $branch_id = auth()->user()->branch;
                 $input = $request->all();
+                $input['mou_report'] = time().'.'.$request->file('mou_report')->getClientOriginalExtension();
             	
                 $data1 = array(
                 	'district' => $request->district,
@@ -93,6 +98,26 @@ class ProvideSoftskillController extends Controller
                 else{
                     return response()->json(['error' => 'Youth Details are Mismatched. Please check and try again']);
                 }
+
+                $audit = array(
+                    'user_type' => 'App\User',
+                    'user_id' => Auth::user()->id,
+                    'event' => 'created',
+                    'auditable_type' => 'provide_soft_skills',
+                    'auditable_id' => $provide_softskill_id,
+                    'url' => url()->current(),
+                    'ip_address' => request()->ip(),
+                    'user_agent' => $request->header('User-Agent'),
+
+                );
+
+                $reports = Audit::create($audit);
+
+                $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin','management' ]);})->get();
+                foreach ($notifyTo as $notifyUser) {
+                    $notifyUser->notify(new CompletionReport($reports));
+                }
+
                 
             }
             else{
@@ -204,10 +229,7 @@ class ProvideSoftskillController extends Controller
             if($request->dateStart != '' && $request->dateEnd != '')
             {
                 
-                
-
-                switch (true) {
-                  case ($request->branch!=''):
+                  if($request->branch!=''){
                     $data = DB::table('provide_soft_skills') 
                       ->join('branches','branches.id','=','provide_soft_skills.branch_id')
                       ->join('institutes','institutes.id','=','provide_soft_skills.institute_id')
@@ -216,52 +238,8 @@ class ProvideSoftskillController extends Controller
                       ->select('provide_soft_skills.*','branches.*','provide_soft_skills.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date')
                       ->orderBy('program_date', 'desc')
                       ->get();    
-                    break;
-
-
-                  case ($request->branch!='' and $request->institute !=''):
-                  $data = DB::table('provide_soft_skills') 
-                    ->join('branches','branches.id','=','provide_soft_skills.branch_id')
-                    ->join('institutes','institutes.id','=','provide_soft_skills.institute_id')
-                    ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
-                    ->where('institute_id',$request->institute)
-                    ->where('provide_soft_skills.branch_id',$request->branch)
-                    ->select('provide_soft_skills.*','branches.*','provide_soft_skills.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date')
-                    ->orderBy('program_date', 'desc')
-                    ->get();    
-                  break;
-
-                
-
-                  case ($request->institute!=''):
-
-                  if(is_null($branch_id)){
-
-                  $data = DB::table('provide_soft_skills') 
-                    ->join('branches','branches.id','=','provide_soft_skills.branch_id')
-                    ->join('institutes','institutes.id','=','provide_soft_skills.institute_id')
-                    ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
-                    ->where('institute_id',$request->institute)
-                    ->select('provide_soft_skills.*','branches.*','provide_soft_skills.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date')
-                    ->orderBy('program_date', 'desc')                      
-                    ->get();  
-                   }
-                   else{
-                  $data = DB::table('provide_soft_skills') 
-                    ->join('branches','branches.id','=','provide_soft_skills.branch_id')
-                    ->join('institutes','institutes.id','=','provide_soft_skills.institute_id')
-                    ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
-                    ->where('institute_id',$request->institute)
-                    ->where('provide_soft_skills.branch_id','=',$branch_id)
-                    ->select('provide_soft_skills.*','branches.*','provide_soft_skills.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date')
-                    ->orderBy('program_date', 'desc')                      
-                    ->get(); 
-                   }  
-                  break;
-
-                  default:
-
-
+                  }
+                  else{
                     if(is_null($branch_id)){
                     $data = DB::table('provide_soft_skills') 
                         ->join('branches','branches.id','=','provide_soft_skills.branch_id')
@@ -281,8 +259,7 @@ class ProvideSoftskillController extends Controller
                         ->orderBy('program_date', 'desc')
                         ->get();
                     }
-                    break;
-                }
+                  }
                 
             }
         else
@@ -349,5 +326,108 @@ class ProvideSoftskillController extends Controller
                ];
       // return Storage::download(filePath, Appended Text);
         return response()->file($file,$headers);
+    }
+
+    public function edit($id){
+
+       $meeting = DB::table('provide_soft_skills')
+                   ->join('branches','branches.id','=','provide_soft_skills.branch_id')
+                   ->join('institutes','institutes.id','=','provide_soft_skills.institute_id')
+                   ->join('dsd_office','dsd_office.ID','=','provide_soft_skills.dsd')
+                   ->select('provide_soft_skills.*','branches.*','provide_soft_skills.id as m_id','provide_soft_skills.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date','dsd_office.*')
+                   ->where('provide_soft_skills.id',$id)
+                   ->first();
+
+        $youths = DB::table('provide_soft_skills_youths')
+                  ->join('youths','youths.id','=','provide_soft_skills_youths.youth_id')
+                  ->where('provide_soft_skills_youths.provide_softskill_id',$id)
+                  ->get();
+
+        return view ('Activities.skill-development.edit.soft-sklls')->with(['meeting'=> $meeting,'youths'=>$youths]);
+
+    }
+
+    public function update(Request $request){
+
+        $validator = Validator::make($request->all(),[
+                'program_date'  =>'required',
+                
+            ]);
+
+        if($validator->passes()){
+        // echo "<script>console.log( 'Debug Objects: " . $meeting_date . "' );</script>";
+
+        $data1 = array( 
+            
+            'program_date'  =>$request->program_date,
+            'start_date'=>$request->start_date,
+            'end_date' =>$request->end_date,
+            'institute_id'  =>$request->institute_id,
+            'institutional_review' =>$request->institutional_review,
+            'mou_signed' => $request->mou_signed,
+            'training_stage' => $request->training_stage,
+            'date_signed' => $request->date_signed,
+            'cost' => $request->cost,
+            'total_male' => $request->total_male,
+            'total_female'=>$request->total_female,
+            'pwd_male'=>$request->pwd_male,
+            'pwd_female'=>$request->pwd_female,
+        );
+        //dd($data1);
+        DB::table('provide_soft_skills')->whereid($request->m_id)->update($data1);
+
+        $audit = array(
+            'user_type' => 'App\User',
+            'user_id' => Auth::user()->id,
+            'event' => 'updated',
+            'auditable_type' => 'provide_soft_skills',
+            'auditable_id' => $request->m_id,
+            'url' => url()->current(),
+            'ip_address' => request()->ip(),
+            'user_agent' => $request->header('User-Agent'),
+
+        );
+
+        $reports = Audit::create($audit);
+    }
+
+
+    
+
+    else{
+        return response()->json(['error' => $validator->errors()->all()]);
+        }
+    }
+
+    public function add_youth(Request $request){
+
+        $participants = DB::table('provide_soft_skills_youths')
+                        ->insert(['youth_id'=>$request->youth_id,'provide_softskill_id' => $request->m_id]);
+
+    }
+
+    public function view_youths(){
+        $branch_id = Auth::user()->branch;
+        if(is_null($branch_id)){
+        $cg_youths = DB::table('provide_soft_skills_youths')
+                    ->join('provide_soft_skills','provide_soft_skills.id','=','provide_soft_skills_youths.provide_softskill_id')
+                    ->join('youths','youths.id','=','provide_soft_skills_youths.youth_id')
+                    ->join('branches','branches.id','=','provide_soft_skills.branch_id')
+                    ->join('institutes','institutes.id','=','provide_soft_skills.institute_id')
+                    ->select('provide_soft_skills.*','branches.*','provide_soft_skills.id as m_id','provide_soft_skills.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date','youths.name as youth_name')
+                    ->get();
+        }
+        else{
+            $cg_youths = DB::table('provide_soft_skills_youths')
+                    ->join('youths','youths.id','=','provide_soft_skills_youths.youth_id')
+                    ->join('provide_soft_skills','provide_soft_skills.id','=','provide_soft_skills_youths.provide_softskill_id')
+                    ->join('branches','branches.id','=','provide_soft_skills.branch_id')
+                    ->join('institutes','institutes.id','=','provide_soft_skills.institute_id')
+                    ->select('provide_soft_skills.*','branches.*','provide_soft_skills.id as m_id','provide_soft_skills.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date','youths.name as youth_name')
+                    ->where('provide_soft_skills.branch_id',$branch_id)
+                    ->get();
+        }
+
+        return view('Activities.Reports.Skill-Development.soft-youth')->with(['youths'=>$cg_youths]);
     }
 }

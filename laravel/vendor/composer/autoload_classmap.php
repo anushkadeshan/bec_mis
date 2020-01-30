@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'App\\Audit' => $baseDir . '/app/Audit.php',
     'App\\Branch' => $baseDir . '/app/Branch.php',
     'App\\CareerGuidance' => $baseDir . '/app/CareerGuidance.php',
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
@@ -76,6 +77,8 @@ return array(
     'App\\Member' => $baseDir . '/app/Member.php',
     'App\\Notifications' => $baseDir . '/app/Notifications.php',
     'App\\Notifications\\Activation' => $baseDir . '/app/Notifications/Activation.php',
+    'App\\Notifications\\AddReport' => $baseDir . '/app/Notifications/AddReport.php',
+    'App\\Notifications\\CompletionReport' => $baseDir . '/app/Notifications/CompletionReport.php',
     'App\\Notifications\\EmployerAdd' => $baseDir . '/app/Notifications/EmployerAdd.php',
     'App\\Notifications\\FollowYouth' => $baseDir . '/app/Notifications/FollowYouth.php',
     'App\\Notifications\\TaskCreated' => $baseDir . '/app/Notifications/TaskCreated.php',

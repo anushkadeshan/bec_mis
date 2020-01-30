@@ -7,7 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Auth;
 use Zipper;
-
+use Illuminate\Support\Facades\URL;
+use App\Audit;
+use App\User;
+use App\Notifications\CompletionReport;
 
 class TvecMeetingController extends Controller
 {
@@ -89,6 +92,25 @@ class TvecMeetingController extends Controller
                 	return response()->json(['error' => 'Submit Participants Details.']);
                 }
 
+                $audit = array(
+                    'user_type' => 'App\User',
+                    'user_id' => Auth::user()->id,
+                    'event' => 'created',
+                    'auditable_type' => 'tvec_meetings',
+                    'auditable_id' => $tvec_id,
+                    'url' => url()->current(),
+                    'ip_address' => request()->ip(),
+                    'user_agent' => $request->header('User-Agent'),
+
+                );
+
+                $reports = Audit::create($audit);
+
+                $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin','management' ]);})->get();
+                foreach ($notifyTo as $notifyUser) {
+                    $notifyUser->notify(new CompletionReport($reports));
+                }
+
                  
             }
             else{
@@ -98,6 +120,8 @@ class TvecMeetingController extends Controller
     }
 
     public function view(){
+        $branch_id = Auth::user()->branch;
+        if(is_null($branch_id)){
         $meetings = DB::table('tvec_meetings')
                       //->leftjoin('mentoring_gvt_officials','mentoring_gvt_officials.mentoring_id','=','mentoring.id')
                       ->join('branches','branches.id','=','tvec_meetings.branch_id')
@@ -124,7 +148,43 @@ class TvecMeetingController extends Controller
             $participants2021 = DB::table('tvec_meetings')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"))
                         ->where(DB::raw('YEAR(program_date)'), '=', '2021' )
-                        ->first();           
+                        ->first(); 
+            }
+            else{
+                $meetings = DB::table('tvec_meetings')
+                      //->leftjoin('mentoring_gvt_officials','mentoring_gvt_officials.mentoring_id','=','mentoring.id')
+                      ->join('branches','branches.id','=','tvec_meetings.branch_id')
+                      ->where('tvec_meetings.branch_id','=',$branch_id)
+                      ->get();                        
+
+        //dd($mentorings);
+
+        $participants2018 = DB::table('tvec_meetings')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"))
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2018' )
+                      ->where('tvec_meetings.branch_id','=',$branch_id)
+                        ->first();
+                        //->groupBy(function ($val) {
+                                // Carbon::parse($val->program_date)->format('Y');
+                        //});
+                        //->groupBy(DB::raw("year(program_date)"))
+                        
+           $participants2019 = DB::table('tvec_meetings')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"))
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2019' )
+                      ->where('tvec_meetings.branch_id','=',$branch_id)
+                        ->first();            
+            $participants2020 = DB::table('tvec_meetings')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"))
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2020' )
+                      ->where('tvec_meetings.branch_id','=',$branch_id)
+                        ->first();   
+            $participants2021 = DB::table('tvec_meetings')                        
+                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"))
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2021' )
+                      ->where('tvec_meetings.branch_id','=',$branch_id)
+                        ->first(); 
+            }          
         //dd($participants2018);
         $branches = DB::table('branches')->get();
         return view('Activities.Reports.Skill-Development.tvec')->with(['meetings'=>$meetings,'branches'=>$branches,'participants2018'=>$participants2018,'participants2019'=>$participants2019,'participants2020'=>$participants2020,'participants2021'=>$participants2021]);
@@ -133,6 +193,8 @@ class TvecMeetingController extends Controller
     public function fetch(Request $request){
         if($request->ajax())
         {
+            $branch_id = Auth::user()->branch;
+        
             if($request->dateStart != '' && $request->dateEnd != '')
             {
                 if($request->branch !=''){
@@ -145,22 +207,44 @@ class TvecMeetingController extends Controller
                         ->get();
                 }
                 else{
+                    if(is_null($branch_id)){
                     $data = DB::table('tvec_meetings') 
                         ->join('branches','branches.id','=','tvec_meetings.branch_id')                        
                         ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->select('tvec_meetings.*','branches.*','tvec_meetings.id as m_id','branches.name as branch_name')
                         ->orderBy('program_date', 'desc')
                         ->get();
+                    }
+                    else{
+                        $data = DB::table('tvec_meetings') 
+                        ->join('branches','branches.id','=','tvec_meetings.branch_id')                        
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->select('tvec_meetings.*','branches.*','tvec_meetings.id as m_id','branches.name as branch_name')         
+                        ->where('tvec_meetings.branch_id','=',$branch_id)
+                        ->orderBy('program_date', 'desc')
+                        ->get();
+                    }
                 }
                 
             }
         else
             {
+                if(is_null($branch_id)){
+                
                 $data = DB::table('tvec_meetings') 
                         ->join('branches','branches.id','=','tvec_meetings.branch_id')
                         ->select('tvec_meetings.*','branches.*','tvec_meetings.id as m_id','branches.name as branch_name')
                         ->orderBy('program_date', 'desc')
                         ->get();
+                }
+                else{
+                   $data = DB::table('tvec_meetings') 
+                        ->join('branches','branches.id','=','tvec_meetings.branch_id')
+                        ->where('tvec_meetings.branch_id','=',$branch_id)      
+                        ->select('tvec_meetings.*','branches.*','tvec_meetings.id as m_id','branches.name as branch_name')
+                        ->orderBy('program_date', 'desc')
+                        ->get(); 
+                }
             }
                 return response()->json($data);
         }

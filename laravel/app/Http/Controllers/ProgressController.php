@@ -8,7 +8,7 @@ use App\Youth;
 use DB;
 use Illuminate\Support\Facades\Validator;
 use App\CareerGuidance;
-
+use Auth;
 
 class ProgressController extends Controller
 {
@@ -222,4 +222,41 @@ public function vtCourseList(Request $request){
                return response()->json(['error' => $validator->errors()->all()]);
         }
     }
+
+    public function view_completion(){
+
+      $branches = DB::table('branches')->get();
+      $branch_id = Auth::user()->branch;
+
+        if(is_null($branch_id)){                    
+
+            $data = DB::table('youths') 
+                ->join('branches','branches.id','=','youths.branch_id')
+                ->join('families','families.id','=','youths.family_id')
+                ->join('dsd_office','dsd_office.ID','=','families.ds_division')
+                ->join('gn_office','gn_office.GN_ID','=','families.gn_division') 
+                ->select('youths.*','families.*','dsd_office.*','gn_office.*','youths.name as youth_name','branches.ext as name','branches.id as branch_id')
+                ->get();                     
+               // echo '<script>console.log("'.$request->vt.'")</script>';
+        }
+        else{
+            $data = DB::table('youths') 
+                ->join('branches','branches.id','=','youths.branch_id')
+                ->join('families','families.id','=','youths.family_id')
+                ->join('dsd_office','dsd_office.ID','=','families.ds_division')
+                ->join('gn_office','gn_office.GN_ID','=','families.gn_division') 
+                ->select('youths.*','families.*','dsd_office.*','gn_office.*','youths.name as youth_name','branches.ext as name','branches.id as branch_id')
+                ->where('youths.branch_id','=',$branch_id)
+                ->get();  
+        }
+
+      return view('Progress.completion')->with(['branches'=>$branches,'youths'=>$data]);
+    }
+
+    public function verify(Request $request){
+        $verify = DB::table($request->table)
+                  ->whereid($request->id)
+                  ->update(['verified'=>1]);
+    }
+
 } 

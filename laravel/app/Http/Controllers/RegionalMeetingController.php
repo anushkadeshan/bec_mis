@@ -6,6 +6,11 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\URL;
+use App\Audit;
+use App\User;
+use App\Notifications\CompletionReport;
+
 
 class RegionalMeetingController extends Controller
 {
@@ -51,6 +56,8 @@ class RegionalMeetingController extends Controller
 	                'branch_id'	=> $branch_id,
                     'created_at' => date('Y-m-d H:i:s')
                 );
+
+
                 $regional_meeting = DB::table('regional_meetings')->insert($data1);
 
                 $regional_meeting_id = DB::getPdo()->lastInsertId();
@@ -66,7 +73,25 @@ class RegionalMeetingController extends Controller
                 	return response()->json(['error' => 'Submit participants details']);
                 } 
 
-            }
+                $audit = array(
+                    'user_type' => 'App\User',
+                    'user_id' => Auth::user()->id,
+                    'event' => 'created',
+                    'auditable_type' => 'regional_meetings',
+                    'auditable_id' => $regional_meeting_id,
+                    'url' => url()->current(),
+                    'ip_address' => request()->ip(),
+                    'user_agent' => $request->header('User-Agent'),
+
+                );
+
+                $reports = Audit::create($audit);
+
+                $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin','management' ]);})->get();
+                foreach ($notifyTo as $notifyUser) {
+                    $notifyUser->notify(new CompletionReport($reports));
+                }
+                }
             else{
                 return response()->json(['error' => $validator->errors()->all()]);
             }
@@ -94,6 +119,8 @@ class RegionalMeetingController extends Controller
                     //->whereRaw('extract(month from meeting_date) = ?', [Carbon::now()->month])
                     ->get();
         }
+
+        
         
         
 
@@ -192,6 +219,99 @@ class RegionalMeetingController extends Controller
             'meeting' => $meeting,
         ));
         
+
+    }
+
+    public function edit($id){
+
+       $meeting = DB::table('regional_meetings')
+                   ->join('branches','branches.id','=','regional_meetings.branch_id')
+                   ->select('regional_meetings.*','branches.*','regional_meetings.id as r_id')
+                   ->where('regional_meetings.id',$id)
+                   ->first();
+
+        $participants = DB::table('regional_meeting_participants')
+                        ->where('regional_meeting_id',$id)
+                        ->get();
+
+        $activities = DB::table('activities')->get();
+
+        return view ('Activities.education.edit.regional_meeting')->with(['meeting'=> $meeting,'participants'=>$participants,'activities'=>$activities]);
+
+    }
+
+    public function update(Request $request){
+
+        $meeting_date  =$request->meeting_date;
+        $time_start=$request->time_start;
+        $time_end =$request->time_end;
+        $venue =$request->venue;
+        $matters =$request->matters;
+        $decisions = $request->decisions;
+        $decisions_to_followed=$request->decisions_to_followed;
+        $validator = Validator::make($request->all(),[
+                'meeting_date'  =>'required',
+                'time_start'=>'required',
+                'time_end' =>'required',
+                'venue' =>'required',
+                'matters' =>'required',
+                
+            ]);
+
+            if($validator->passes()){
+        // echo "<script>console.log( 'Debug Objects: " . $meeting_date . "' );</script>";
+
+        $data1 = array(
+  
+                    'meeting_date'  =>$request->meeting_date,
+                    'time_start'=>$request->time_start,
+                    'time_end' =>$request->time_end,
+                    'venue' =>$request->venue,
+                    'matters' =>$request->matters,
+                    'decisions' => $request->decisions,
+                    'decisions_to_followed'=>$request->decisions_to_followed,
+                    'branch_id' => Auth::user()->branch 
+
+                );
+
+        //dd($data1);
+        DB::table('regional_meetings')->whereid($request->r_id)->update($data1);
+
+        $audit = array(
+                    'user_type' => 'App\User',
+                    'user_id' => Auth::user()->id,
+                    'event' => 'updated',
+                    'auditable_type' => 'regional_meetings',
+                    'auditable_id' => $request->r_id,
+                    'url' => url()->current(),
+                    'ip_address' => request()->ip(),
+                    'user_agent' => $request->header('User-Agent'),
+
+                );
+
+                $reports = Audit::create($audit);
+    }
+
+
+    
+
+    else{
+                return response()->json(['error' => $validator->errors()->all()]);
+            }
+    }
+
+    public function update_participants(Request $request){
+
+        $participants = DB::table('regional_meeting_participants')
+                        ->whereid($request->id_p)
+                        ->update(['name'=>$request->name,'position'=>$request->position,'branch'=> $request->branch]);
+
+    }
+
+    public function add_participants(Request $request){
+
+        $participants = DB::table('regional_meeting_participants')
+                        ->insert(['name'=>$request->name,'position'=>$request->position,'branch'=> $request->branch,'regional_meeting_id'=>$request->r_id]);
 
     }
 }

@@ -433,7 +433,7 @@
                     
                         <div class="card card-success">
                               <div class="card-header">
-                                <h3 class="card-title">Followed Courses Detials</h3>
+                                <h3 class="card-title float-left">Followed Courses Detials </h3><span class="text-right float-right"><button type="button" class="btn btn-warning btn-flat btn-sm" data-toggle="modal" data-target="#add-course-model"><i class="fas fa-lg fa-plus"></i></button></span>
                               </div>
                                 
                               <div class="card-body">
@@ -471,7 +471,63 @@
                   </div>
                   <!-- /.tab-pane -->
                 </div>
+                <!-- add new course -->
+                <div class="modal fade" id="add-course-model" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLongTitle">Add a Followed Courses</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="" id="add-courses">
+                                <div  class="row">
+                                <div  class="col-md-6">
+                                  <div class="form-group">
+                                    <label for="ol_year">Course</label>
+                                      <div class="input-group">
+                                      <input class="form-control" type="text" name="course_name" id="course_name3" placeholder="Search Course">
+                                        <div style="cursor: pointer" onclick="window.open('{{Route('courses/view')}}', '_blank');" class="input-group-prepend">
+                                        <span data-toggle="tooltip" data-placement="top" title="Add a course to list" class="input-group-text"><i style="color: blue;" class="fa fa-plus"></i></span>
+                                        </div>  
+                                      </div>
+                                  <div id="courseList3"></div>
+                                  <input class="form-control" type="hidden" name="course_id" id="course_id3" value="">
+                                  </div>                               
+                              </div>
+                              <input type="hidden" name="status" id="status" value="Followed">
+                              <div  class="col-md-6 form-group">
+                                <label>is supported by Berendina ?</label>
 
+                                <select name="provided_by_bec" class="form-control" id="provided_by_bec1">
+                                  <option value="">Select Option</option>
+                                  <option value="1">Yes</option>
+                                  <option value="0">No</option>
+                                  
+                                </select>
+                              </div>
+                              <div  class="col-md-6">
+                                <div class="form-group">
+                                <label for="completed_at">Completed Date <small class="text-muted">(Approximate)</small></label>
+                                <input type="date" name="completed_at" id="completed_at1" class="form-control">
+                              </div>
+                              </div>
+                            
+                        </div>
+                        {{ csrf_field() }}
+                          <input type="hidden" id="youth_course_id1"  name="youth_id" value="{{$youth->id}}">
+                        </form>
+                    </div>
+                      
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" id="add-course" class="btn btn-primary">Add</button>
+                      </div>
+                  </div>
+               </div>
+            </div>
                 <div class="modal fade" id="update-model" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                 <div class="modal-dialog modal-lg" role="document">
                   <div class="modal-content">
@@ -823,7 +879,7 @@
                                         $industries = array('Agriculture & Food Processing','Automobiles','Banking & Financial Services','BPO or KPO ','Civil & Construction','Consumer Goods & Durables','Consulting','Education','Engineering','Ecommerce & Internet','Events & Entertainment','Export & Import','Government & Public Sector','Healthcare','Hotel, Travel & Leisure','Insurance','IT & Telecom','Logistics & Transportation','Manufacturing','Manpower & Security','News & Media','NGO & Non profit','Pharmaceutical','Real Estate','Wholesale & Retail','Others');
                                       ?>
                                       <select id="industry" name="industry[]" class="form-control" multiple>
-                                        <option value="">Select Option  </option>
+                                        
                                         @foreach($industries as $industry)
                                           <option @if(!is_null($intresting_jobs)) @if(in_array($industry,$intresting_jobs->industry)) selected @endif @endif>{{$industry}}</option>
                                           
@@ -991,7 +1047,7 @@
                                         $industries = array('Agriculture & Food Processing','Automobiles','Banking & Financial Services','BPO or KPO ','Civil & Construction','Consumer Goods & Durables','Consulting','Education','Engineering','Ecommerce & Internet','Events & Entertainment','Export & Import','Government & Public Sector','Healthcare','Hotel, Travel & Leisure','Insurance','IT & Telecom','Logistics & Transportation','Manufacturing','Manpower & Security','News & Media','NGO & Non profit','Pharmaceutical','Real Estate','Wholesale & Retail','Others');
                                       ?>
                                       <select id="industry" name="industry[]" class="form-control" multiple>
-                                        <option value="">Select Option  </option>
+                                        
                                         @foreach($industries as $industry)
                                           <option @if(!is_null($intresting_jobs)) @if(in_array($industry,$intresting_jobs->industry)) selected @endif @endif>{{$industry}}</option>
                                           
@@ -1263,10 +1319,39 @@ $('#preloader-wrapper')
     .ajaxStop(function() {
         $(this).hide();
     });
-	
+
 </script>
 <script type="text/javascript"  src="{{ asset('js/ajax-youth-update.js') }}"></script>
+<script>
+  $(document).ready(function(){
+  // add new course
+        $(document).on('click', '#add-course', function(){
+          var form = $('#add-courses');
 
+          $.ajax({
+            type: 'POST',
+            url: SITE_URL + '/youth/add-new-course',
+            data: form.serialize(),
+                success:function(data){
+                  if($.isEmptyObject(data.error)){
+                      toastr.success('Successfully updated details ! ', 'Congratulations', {timeOut: 5000});
+                      $("#self_employed")[0].reset();
+                      $('#add-course-model').modal('hide');
+                      //window.load();
+                      
+                }
+                else{
+                  printValidationErrors(data.error);
+                }
+                },
+                error:function(data, jqXHR,error){
+                  console.log(jqXHR, error);
+                }
+
+       });
+    });
+});
+</script>
 <style type="text/css" media="screen">
 	#autocomplete, #following, #followed, #family {
     position: absolute;

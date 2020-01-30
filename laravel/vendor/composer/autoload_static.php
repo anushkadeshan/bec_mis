@@ -606,6 +606,7 @@ class ComposerStaticInit96073ded6a8905180378494b1c2bef6c
     );
 
     public static $classMap = array (
+        'App\\Audit' => __DIR__ . '/../..' . '/app/Audit.php',
         'App\\Branch' => __DIR__ . '/../..' . '/app/Branch.php',
         'App\\CareerGuidance' => __DIR__ . '/../..' . '/app/CareerGuidance.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
@@ -676,6 +677,8 @@ class ComposerStaticInit96073ded6a8905180378494b1c2bef6c
         'App\\Member' => __DIR__ . '/../..' . '/app/Member.php',
         'App\\Notifications' => __DIR__ . '/../..' . '/app/Notifications.php',
         'App\\Notifications\\Activation' => __DIR__ . '/../..' . '/app/Notifications/Activation.php',
+        'App\\Notifications\\AddReport' => __DIR__ . '/../..' . '/app/Notifications/AddReport.php',
+        'App\\Notifications\\CompletionReport' => __DIR__ . '/../..' . '/app/Notifications/CompletionReport.php',
         'App\\Notifications\\EmployerAdd' => __DIR__ . '/../..' . '/app/Notifications/EmployerAdd.php',
         'App\\Notifications\\FollowYouth' => __DIR__ . '/../..' . '/app/Notifications/FollowYouth.php',
         'App\\Notifications\\TaskCreated' => __DIR__ . '/../..' . '/app/Notifications/TaskCreated.php',

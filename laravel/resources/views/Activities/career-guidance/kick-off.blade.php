@@ -44,7 +44,6 @@
 	          			<div class="form-group">
 	          				<label for="gn_division">3. GN Divisions Covered</label>
     						<select name="gnd[]" id="gn_division" class="form-control" multiple>
-     							<option value="">Select Option</option>
     						</select>
    						</div>
 	          		</div>

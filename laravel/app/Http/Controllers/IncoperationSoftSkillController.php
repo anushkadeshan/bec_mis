@@ -6,7 +6,11 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Http\Request;
 use Zipper;
-
+use Auth;
+use Illuminate\Support\Facades\URL;
+use App\Audit;
+use App\User;
+use App\Notifications\CompletionReport;
 
 class IncoperationSoftSkillController extends Controller
 {
@@ -66,7 +70,27 @@ class IncoperationSoftSkillController extends Controller
                 	$images = DB::table('incoperation_soft_skills_photos')->insert(['images'=>$imageName,'iss_id'=>$iss_id]);
             		}
                 }
+
+                $audit = array(
+                    'user_type' => 'App\User',
+                    'user_id' => Auth::user()->id,
+                    'event' => 'created',
+                    'auditable_type' => 'incoperation_soft_skills',
+                    'auditable_id' => $iss_id,
+                    'url' => url()->current(),
+                    'ip_address' => request()->ip(),
+                    'user_agent' => $request->header('User-Agent'),
+
+                );
+
+                $reports = Audit::create($audit);
+
+                $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin','management' ]);})->get();
+                foreach ($notifyTo as $notifyUser) {
+                    $notifyUser->notify(new CompletionReport($reports));
+                }
             }
+
             else{
                 return response()->json(['error' => $validator->errors()->all()]);
             }
@@ -74,6 +98,8 @@ class IncoperationSoftSkillController extends Controller
     }
 
     public function view(){
+        $branch_id = Auth::user()->branch;
+        if(is_null($branch_id)){
         $meetings = DB::table('incoperation_soft_skills')
                       //->leftjoin('mentoring_gvt_officials','mentoring_gvt_officials.mentoring_id','=','mentoring.id')
                       ->join('branches','branches.id','=','incoperation_soft_skills.branch_id')
@@ -87,17 +113,36 @@ class IncoperationSoftSkillController extends Controller
                    ->select('institutes.name as institute_name','institutes.*')
                    ->distinct()
                    ->get();
+        }
+        else{
+          $meetings = DB::table('incoperation_soft_skills')
+                      //->leftjoin('mentoring_gvt_officials','mentoring_gvt_officials.mentoring_id','=','mentoring.id')
+                      ->join('branches','branches.id','=','incoperation_soft_skills.branch_id')                      
+                      ->where('incoperation_soft_skills.branch_id','=',$branch_id)
+                      ->get();
+        //dd($mentorings);       
+        //dd($participants2018);
+        $branches = DB::table('branches')->get();
+
+        $institutes = DB::table('incoperation_soft_skills')
+                   ->join('institutes','institutes.id','=','incoperation_soft_skills.institute_id')
+                   ->select('institutes.name as institute_name','institutes.*')
+                   ->where('incoperation_soft_skills.branch_id','=',$branch_id)
+                   ->distinct()
+                   ->get();
+        }
         return view('Activities.Reports.Skill-Development.incoperation')->with(['meetings'=>$meetings,'branches'=>$branches,'institutes'=>$institutes]);
     }
 
     public function fetch(Request $request){
         if($request->ajax())
         {
+            $branch_id = Auth::user()->branch;
+
             if($request->dateStart != '' && $request->dateEnd != '')
             {
-                
-                switch (true) {
-                  case ($request->branch!=''):
+
+                   if($request->branch!=''){
                     $data = DB::table('incoperation_soft_skills') 
                       ->join('branches','branches.id','=','incoperation_soft_skills.branch_id')
                       ->join('institutes','institutes.id','=','incoperation_soft_skills.institute_id')
@@ -106,35 +151,11 @@ class IncoperationSoftSkillController extends Controller
                       ->select('incoperation_soft_skills.*','branches.*','incoperation_soft_skills.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','review_date as meeting_date')
                       ->orderBy('review_date', 'desc')
                       ->get();    
-                    break;
+          
+                   }
+                   else{
 
-
-                  case ($request->branch!='' and $request->institute !=''):
-                  $data = DB::table('incoperation_soft_skills') 
-                    ->join('branches','branches.id','=','incoperation_soft_skills.branch_id')
-                    ->join('institutes','institutes.id','=','incoperation_soft_skills.institute_id')
-                    ->whereBetween('review_date', array($request->dateStart, $request->dateEnd))
-                    ->where('branch_id',$request->branch)
-                    ->where('institute_id',$request->institute)
-                    ->select('incoperation_soft_skills.*','branches.*','incoperation_soft_skills.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','review_date as meeting_date')
-                    ->orderBy('review_date', 'desc')
-                    ->get();    
-                  break;
-
-                
-
-                  case ($request->institute!=''):
-                  $data = DB::table('incoperation_soft_skills') 
-                    ->join('branches','branches.id','=','incoperation_soft_skills.branch_id')
-                    ->join('institutes','institutes.id','=','incoperation_soft_skills.institute_id')
-                    ->whereBetween('review_date', array($request->dateStart, $request->dateEnd))
-                    ->where('institute_id',$request->institute)
-                    ->select('incoperation_soft_skills.*','branches.*','incoperation_soft_skills.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','review_date as meeting_date')
-                    ->orderBy('review_date', 'desc')
-                    ->get();    
-                  break;
-
-                  default:
+                    if(is_null($branch_id)){
                     $data = DB::table('incoperation_soft_skills') 
                         ->join('branches','branches.id','=','incoperation_soft_skills.branch_id')
                         ->join('institutes','institutes.id','=','incoperation_soft_skills.institute_id')
@@ -143,18 +164,40 @@ class IncoperationSoftSkillController extends Controller
                         ->select('incoperation_soft_skills.*','branches.*','incoperation_soft_skills.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','review_date as meeting_date')
                         ->orderBy('review_date', 'desc')
                         ->get();
-                    break;
-                }
-                
+                    }
+                    else{
+                      $data = DB::table('incoperation_soft_skills') 
+                        ->join('branches','branches.id','=','incoperation_soft_skills.branch_id')
+                        ->join('institutes','institutes.id','=','incoperation_soft_skills.institute_id')
+                        ->where('incoperation_soft_skills.branch_id','=',$branch_id)
+                        ->whereBetween('review_date', array($request->dateStart, $request->dateEnd))
+                        ->select('incoperation_soft_skills.*','branches.*','incoperation_soft_skills.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','review_date as meeting_date')
+                        ->orderBy('review_date', 'desc')
+                        ->get();
+                    }
+                    }
+     
             }
         else
             {
+                if(is_null($branch_id)){
+                
                 $data = DB::table('incoperation_soft_skills') 
                         ->join('branches','branches.id','=','incoperation_soft_skills.branch_id')
                         ->join('institutes','institutes.id','=','incoperation_soft_skills.institute_id')
                         ->select('incoperation_soft_skills.*','branches.*','incoperation_soft_skills.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','review_date as meeting_date')
                         ->orderBy('review_date', 'desc')
                         ->get();
+                }
+                else{
+                $data = DB::table('incoperation_soft_skills') 
+                        ->join('branches','branches.id','=','incoperation_soft_skills.branch_id')
+                        ->join('institutes','institutes.id','=','incoperation_soft_skills.institute_id')
+                        ->select('incoperation_soft_skills.*','branches.*','incoperation_soft_skills.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','review_date as meeting_date')
+                        ->where('incoperation_soft_skills.branch_id','=',$branch_id)
+                        ->orderBy('review_date', 'desc')                      
+                        ->get();  
+                }
             }
                 return response()->json($data);
         }
@@ -218,6 +261,62 @@ class IncoperationSoftSkillController extends Controller
         //dd($photos);
        // Zipper::make('mydir/photos.zip')->add($paths);
        // return response()->download(('mydir/photos.zip')); 
+    }
+
+    public function edit($id){
+
+      $meeting = DB::table('incoperation_soft_skills')
+                   ->join('branches','branches.id','=','incoperation_soft_skills.branch_id')
+                   ->join('institutes','institutes.id','=','incoperation_soft_skills.institute_id')
+                   ->select('incoperation_soft_skills.*','branches.*','incoperation_soft_skills.id as m_id','incoperation_soft_skills.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','review_date as meeting_date')
+                   ->where('incoperation_soft_skills.id',$id)
+                   ->first();
+
+        return view ('Activities.skill-development.edit.incoperation')->with(['meeting'=> $meeting]);
+
+    }
+
+    public function update(Request $request){
+
+        $validator = Validator::make($request->all(),[
+                'review_date'  =>'required',
+                
+            ]);
+
+        if($validator->passes()){
+        // echo "<script>console.log( 'Debug Objects: " . $meeting_date . "' );</script>";
+
+        $data1 = array(    
+            'review_date' =>$request->review_date,                 
+            'institute_id'  =>$request->institute_id, 
+            'tvec_ex_date' => $request->tvec_ex_date,
+            'nature_of_assistance' => $request->nature_of_assistance,
+            
+        );
+        //dd($data1);
+        DB::table('incoperation_soft_skills')->whereid($request->m_id)->update($data1);
+
+        $audit = array(
+            'user_type' => 'App\User',
+            'user_id' => Auth::user()->id,
+            'event' => 'updated',
+            'auditable_type' => 'incoperation_soft_skills',
+            'auditable_id' => $request->m_id,
+            'url' => url()->current(),
+            'ip_address' => request()->ip(),
+            'user_agent' => $request->header('User-Agent'),
+
+        );
+
+        $reports = Audit::create($audit);
+    }
+
+
+    
+
+    else{
+        return response()->json(['error' => $validator->errors()->all()]);
+        }
     }
 
     

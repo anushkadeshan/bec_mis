@@ -46,6 +46,14 @@
                         </a>
                       </li>
                       <li class="nav-item">
+                        <a href="{{Route('activities/career-guidance/households')}}" class="nav-link">
+                            <p>
+                              House Hold Surveys  
+                              <i class="fa fa-angle-right right"></i>
+                            </p>
+                        </a>
+                      </li>
+                      <li class="nav-item">
                         <a href="{{Route('activities/career-guidance/tot-cg')}}" class="nav-link">
                             <p>
                               ToT on Career guidance 

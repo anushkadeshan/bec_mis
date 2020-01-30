@@ -22,7 +22,7 @@
         		
         		<div class="col-md-6">
         			<h2 class="card-title">{{$vacancy->title}} - {{$vacancy->location}}</h2> 
-        			<p class="text-muted">at <span class="text-success">{{$vacancy->employer->name}}</span><br><small><i class="fas fa-clock"></i> {{ $vacancy->created_at }}</small></p>
+        			<p class="text-muted"> @cannot('youth') at <span class="text-success">{{$vacancy->employer->name}}</span> @endcannot<br><small><i class="fas fa-clock"></i> {{ $vacancy->created_at }}</small></p>
 
         		</div>
         		@can('apply-vacancy')

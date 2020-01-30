@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Resourse_person;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Facades\Storage;
 
 class ResoursePersonController extends Controller
 {
@@ -69,7 +69,9 @@ class ResoursePersonController extends Controller
      */
     public function show(Resourse_person $resourse_person)
     {
-        //
+        $data = Resourse_person::all();
+
+        return view('reports.resource-people')->with(['resources' => $data]);
     }
 
     /**
@@ -101,8 +103,17 @@ class ResoursePersonController extends Controller
      * @param  \App\Resourse_person  $resourse_person
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Resourse_person $resourse_person)
+    public function download($id)
     {
-        //
+        //$file_name = $request->attendance;
+        $file = storage_path('activities/files/mentoring/images/'.$id.'');
+        //echo "<script>console.log( 'Debug Objects: " . $file_name . "' );</script>";
+
+        $headers = [
+                  'Content-Type' => 'application/pdf',
+                  'Content-Type' => 'application/msword'
+               ];
+      // return Storage::download(filePath, Appended Text);
+        return response()->file($file,$headers);
     }
 }
