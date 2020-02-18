@@ -28,7 +28,7 @@ class IncoperationSoftSkillController extends Controller
 
     public function insert(Request $request){
     	$validator = Validator::make($request->all(),[
-    		    'review_date'  => 'required',
+    		    'program_date'  => 'required',
                 'district' => 'required',
                 'dm_name' =>'required',	
                 'institute_id' => 'required',
@@ -48,7 +48,7 @@ class IncoperationSoftSkillController extends Controller
 	                'dm_name' =>$request->dm_name,
 	                'title_of_action' =>$request->title_of_action,  
                     'activity_code' =>$request->activity_code,	
-	                'review_date'	=>$request->review_date,	               
+	                'program_date'	=>$request->program_date,	               
 	                'institute_id'	=>$request->institute_id, 
 	                'tvec_ex_date' => $request->tvec_ex_date,
 	                'nature_of_assistance' => $request->nature_of_assistance,
@@ -146,10 +146,10 @@ class IncoperationSoftSkillController extends Controller
                     $data = DB::table('incoperation_soft_skills') 
                       ->join('branches','branches.id','=','incoperation_soft_skills.branch_id')
                       ->join('institutes','institutes.id','=','incoperation_soft_skills.institute_id')
-                      ->whereBetween('review_date', array($request->dateStart, $request->dateEnd))
+                      ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                       ->where('branch_id',$request->branch)
-                      ->select('incoperation_soft_skills.*','branches.*','incoperation_soft_skills.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','review_date as meeting_date')
-                      ->orderBy('review_date', 'desc')
+                      ->select('incoperation_soft_skills.*','branches.*','incoperation_soft_skills.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date')
+                      ->orderBy('program_date', 'desc')
                       ->get();    
           
                    }
@@ -159,10 +159,10 @@ class IncoperationSoftSkillController extends Controller
                     $data = DB::table('incoperation_soft_skills') 
                         ->join('branches','branches.id','=','incoperation_soft_skills.branch_id')
                         ->join('institutes','institutes.id','=','incoperation_soft_skills.institute_id')
-                        ->select('incoperation_soft_skills.*','branches.*','incoperation_soft_skills.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','review_date as meeting_date')
-                        ->whereBetween('review_date', array($request->dateStart, $request->dateEnd))
-                        ->select('incoperation_soft_skills.*','branches.*','incoperation_soft_skills.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','review_date as meeting_date')
-                        ->orderBy('review_date', 'desc')
+                        ->select('incoperation_soft_skills.*','branches.*','incoperation_soft_skills.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date')
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->select('incoperation_soft_skills.*','branches.*','incoperation_soft_skills.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                     }
                     else{
@@ -170,9 +170,9 @@ class IncoperationSoftSkillController extends Controller
                         ->join('branches','branches.id','=','incoperation_soft_skills.branch_id')
                         ->join('institutes','institutes.id','=','incoperation_soft_skills.institute_id')
                         ->where('incoperation_soft_skills.branch_id','=',$branch_id)
-                        ->whereBetween('review_date', array($request->dateStart, $request->dateEnd))
-                        ->select('incoperation_soft_skills.*','branches.*','incoperation_soft_skills.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','review_date as meeting_date')
-                        ->orderBy('review_date', 'desc')
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->select('incoperation_soft_skills.*','branches.*','incoperation_soft_skills.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                     }
                     }
@@ -185,17 +185,17 @@ class IncoperationSoftSkillController extends Controller
                 $data = DB::table('incoperation_soft_skills') 
                         ->join('branches','branches.id','=','incoperation_soft_skills.branch_id')
                         ->join('institutes','institutes.id','=','incoperation_soft_skills.institute_id')
-                        ->select('incoperation_soft_skills.*','branches.*','incoperation_soft_skills.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','review_date as meeting_date')
-                        ->orderBy('review_date', 'desc')
+                        ->select('incoperation_soft_skills.*','branches.*','incoperation_soft_skills.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                 }
                 else{
                 $data = DB::table('incoperation_soft_skills') 
                         ->join('branches','branches.id','=','incoperation_soft_skills.branch_id')
                         ->join('institutes','institutes.id','=','incoperation_soft_skills.institute_id')
-                        ->select('incoperation_soft_skills.*','branches.*','incoperation_soft_skills.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','review_date as meeting_date')
+                        ->select('incoperation_soft_skills.*','branches.*','incoperation_soft_skills.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date')
                         ->where('incoperation_soft_skills.branch_id','=',$branch_id)
-                        ->orderBy('review_date', 'desc')                      
+                        ->orderBy('program_date', 'desc')                      
                         ->get();  
                 }
             }
@@ -210,7 +210,7 @@ class IncoperationSoftSkillController extends Controller
         $meeting = DB::table('incoperation_soft_skills')
                    ->join('branches','branches.id','=','incoperation_soft_skills.branch_id')
                    ->join('institutes','institutes.id','=','incoperation_soft_skills.institute_id')
-                   ->select('incoperation_soft_skills.*','branches.*','incoperation_soft_skills.id as m_id','incoperation_soft_skills.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','review_date as meeting_date')
+                   ->select('incoperation_soft_skills.*','branches.*','incoperation_soft_skills.id as m_id','incoperation_soft_skills.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date')
                    ->where('incoperation_soft_skills.id',$id)
                    ->first();
 
@@ -268,7 +268,7 @@ class IncoperationSoftSkillController extends Controller
       $meeting = DB::table('incoperation_soft_skills')
                    ->join('branches','branches.id','=','incoperation_soft_skills.branch_id')
                    ->join('institutes','institutes.id','=','incoperation_soft_skills.institute_id')
-                   ->select('incoperation_soft_skills.*','branches.*','incoperation_soft_skills.id as m_id','incoperation_soft_skills.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','review_date as meeting_date')
+                   ->select('incoperation_soft_skills.*','branches.*','incoperation_soft_skills.id as m_id','incoperation_soft_skills.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date')
                    ->where('incoperation_soft_skills.id',$id)
                    ->first();
 
@@ -279,7 +279,7 @@ class IncoperationSoftSkillController extends Controller
     public function update(Request $request){
 
         $validator = Validator::make($request->all(),[
-                'review_date'  =>'required',
+                'program_date'  =>'required',
                 
             ]);
 
@@ -287,7 +287,7 @@ class IncoperationSoftSkillController extends Controller
         // echo "<script>console.log( 'Debug Objects: " . $meeting_date . "' );</script>";
 
         $data1 = array(    
-            'review_date' =>$request->review_date,                 
+            'program_date' =>$request->program_date,                 
             'institute_id'  =>$request->institute_id, 
             'tvec_ex_date' => $request->tvec_ex_date,
             'nature_of_assistance' => $request->nature_of_assistance,

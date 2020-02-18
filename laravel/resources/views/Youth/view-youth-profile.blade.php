@@ -6,12 +6,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Youth Profile</h1>
+            <h1>Youth Profile  </h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">User Profile</li>
+              <li class="breadcrumb-item">User Profile </li>
+              <li class="breadcrumb-item active"><font class="badge badge-primary">{{request()->route('id')}}</font> </li>
             </ol>
           </div>
         </div>
@@ -33,7 +34,7 @@
                        alt="User profile picture">
                 </div>
 
-                <h3 class="profile-username text-center">{{$youth->name}}</h3>
+                <h3 class="profile-username text-center">{{$youth->name}} </h3> <small> </small>
                 @can('follow-youth')
                 <button class="btn btn-success btn-block" id="select-youth" data-id="{{$youth->id}}">Select This Youth to hire &nbsp;&nbsp;&nbsp;&nbsp;<i style="display:none" id="loading" class="fa fa-spinner fa-lg faa-spin animated"></i></button> 
                 @endcan
@@ -41,10 +42,19 @@
                 
                 <ul class="list-group list-group-unbordered mb-3">
                   <li class="list-group-item">
-                    <b>Gender</b> <a class="float-right">{{$youth->gender}}</a>
+                    <b>Full Name</b> <a class="float-right">{{$youth->full_name}}</a>
                   </li>
                   <li class="list-group-item">
-                    <b>Birth Date</b> <a class="float-right">{{$youth->birth_date}}</a>
+                    <b>Gender</b> <a class="float-right">{{$youth->gender}}</a>
+                  </li>
+                  <?php 
+                    $dateOfBirth = $youth->birth_date;
+                      $today = date("Y-m-d");
+                      $diff = date_diff(date_create($dateOfBirth), date_create($today));
+                      
+                  ?>
+                  <li class="list-group-item">
+                    <b>Birth Date</b> <a class="float-right">{{$youth->birth_date}} <font class="badge badge-primary">Age is {{$diff->format('%y')}}</font></a>
                   </li>
                   <li class="list-group-item">
                     <b>Maritial Status</b> <a class="float-right">{{$youth->maritial_status}}</a>
@@ -53,7 +63,7 @@
                     <b>Driving Licence</b> <a class="float-right">{{$youth->driving_licence}}</a>
                   </li>
                   <li class="list-group-item">
-                    <b>Nationality</b> <a class="float-right">{{$youth->nationality}}</a>
+                    <b>Race</b> <a class="float-right">{{$youth->nationality}}</a>
                   </li>
                   @can('view-youth-contacts')
                   
@@ -65,6 +75,12 @@
                   </li>
                   <li class="list-group-item">
                     <b>Address</b> <a class="float-right">{{$youth->family->address}}</a>
+                  </li>
+                  <li class="list-group-item">
+                    <b>DS Division</b> <a class="float-right">{{$youth->DSD_Name}}</a>
+                  </li>
+                  <li class="list-group-item">
+                    <b>GN Division</b> <a class="float-right">{{$youth->GN_Office}}</a>
                   </li>
                   @endcan
                 </ul>
@@ -377,7 +393,7 @@
                           <div class="timeline-body text-muted">
                             @if(!is_null($cg))
                            <ul class="list-group list-group-flush">
-                            <li class="list-group-item"><strong>Date : </strong><span>{{$cg->date}}</span></li>
+                            <li class="list-group-item"><strong>Date : </strong><span>{{$cg->program_date}}</span></li>
                             <li class="list-group-item"><strong>Vanue : </strong><span>{{$cg->venue}}</span></li>
                             <li class="list-group-item"><strong>Career Field : </strong><span>{{$cg->career_field1}}</span></li>
                             <li class="list-group-item"><strong>Career Field 2 : </strong><span>{{$cg->career_field2}}</span></li>

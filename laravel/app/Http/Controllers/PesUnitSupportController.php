@@ -36,7 +36,7 @@ class PesUnitSupportController extends Controller
           foreach($data as $row)
           {
            $output .= '
-           <li class="nav-item" id="'.$row->id.'"><a href="#" >'.$row->dsd.'('.$row->date.')'.'</a></li>
+           <li class="nav-item" id="'.$row->id.'"><a href="#" >'.$row->dsd.'(' .$row->program_date.')'.'</a></li>
            ';
           }
           $output .= '</ul>';
@@ -52,7 +52,7 @@ class PesUnitSupportController extends Controller
                 'activity_code' =>'required',	
                 'dsd'	=>'required',
                 'visit_date'	=>'required',
-                'support_date'	=>'required',
+                'program_date'	=>'required',
                 'gaps'	=>'required',
                 'pes_identification_id'	=>'required',
                 'photos.*' => 'image|mimes:jpeg,jpg,png,gif,svg',
@@ -71,7 +71,7 @@ class PesUnitSupportController extends Controller
 	                'title_of_action' =>$request->title_of_action,	
 	                'activity_code' =>$request->activity_code,	
 	                'visit_date' =>$request->visit_date,
-	                'support_date'	=>$request->support_date,                
+	                'program_date'	=>$request->program_date,                
                     'gaps' => $request->gaps,
 	                'pes_identification_id' => $request->pes_identification_id,
 	                'created_at' => date('Y-m-d H:i:s'),
@@ -151,7 +151,7 @@ class PesUnitSupportController extends Controller
         //dd($mentorings);
 
         $participants2018 = DB::table('pes_unit_supports')                        
-                        ->where(DB::raw('YEAR(support_date)'), '=', '2018' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2018' )
                         ->count();
                         //->groupBy(function ($val) {
                                 // Carbon::parse($val->meeting_date)->format('Y');
@@ -159,13 +159,13 @@ class PesUnitSupportController extends Controller
                         //->groupBy(DB::raw("year(meeting_date)"))
                         
            $participants2019 = DB::table('pes_unit_supports')                        
-                        ->where(DB::raw('YEAR(support_date)'), '=', '2019' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2019' )
                         ->count();            
             $participants2020 = DB::table('pes_unit_supports')                        
-                        ->where(DB::raw('YEAR(support_date)'), '=', '2020' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2020' )
                         ->count();  
             $participants2021 = DB::table('pes_unit_supports')                        
-                        ->where(DB::raw('YEAR(support_date)'), '=', '2021' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2021' )
                         ->count();    
         }
         else{
@@ -177,7 +177,7 @@ class PesUnitSupportController extends Controller
         //dd($mentorings);
 
         $participants2018 = DB::table('pes_unit_supports')                        
-                        ->where(DB::raw('YEAR(support_date)'), '=', '2018' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2018' )
                         ->where('pes_unit_supports.branch_id','=',$branch_id)
                         ->count();
                         //->groupBy(function ($val) {
@@ -186,15 +186,15 @@ class PesUnitSupportController extends Controller
                         //->groupBy(DB::raw("year(meeting_date)"))
                         
            $participants2019 = DB::table('pes_unit_supports')                        
-                        ->where(DB::raw('YEAR(support_date)'), '=', '2019' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2019' )
                         ->where('pes_unit_supports.branch_id','=',$branch_id)
                         ->count();            
             $participants2020 = DB::table('pes_unit_supports')                        
-                        ->where(DB::raw('YEAR(support_date)'), '=', '2020' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2020' )
                         ->where('pes_unit_supports.branch_id','=',$branch_id)
                         ->count();  
             $participants2021 = DB::table('pes_unit_supports')                        
-                        ->where(DB::raw('YEAR(support_date)'), '=', '2021' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2021' )
                         ->where('pes_unit_supports.branch_id','=',$branch_id)
                         ->count();
         }      
@@ -213,7 +213,7 @@ class PesUnitSupportController extends Controller
                 if($request->branch !=''){
                     $data = DB::table('pes_unit_supports') 
                         ->join('branches','branches.id','=','pes_unit_supports.branch_id')
-                        ->whereBetween('pes_unit_supports.support_date', array($request->dateStart, $request->dateEnd))
+                        ->whereBetween('pes_unit_supports.program_date', array($request->dateStart, $request->dateEnd))
                         ->where('pes_unit_supports.branch_id',$request->branch)
                         ->select('pes_unit_supports.*','branches.*','pes_unit_supports.id as m_id','branches.name as branch_name') 
                         ->get();
@@ -225,7 +225,7 @@ class PesUnitSupportController extends Controller
 
                     $data = DB::table('pes_unit_supports') 
                         ->join('branches','branches.id','=','pes_unit_supports.branch_id')
-                        ->whereBetween('pes_unit_supports.support_date', array($request->dateStart, $request->dateEnd))
+                        ->whereBetween('pes_unit_supports.program_date', array($request->dateStart, $request->dateEnd))
                         ->select('pes_unit_supports.*','branches.*','pes_unit_supports.id as m_id','branches.name as branch_name')
                          //->where('pes_unit_supports.branch_id','=',$branch_id)
                         ->get();                     
@@ -233,7 +233,7 @@ class PesUnitSupportController extends Controller
                 else{
                     $data = DB::table('pes_unit_supports') 
                         ->join('branches','branches.id','=','pes_unit_supports.branch_id')
-                        ->whereBetween('pes_unit_supports.support_date', array($request->dateStart, $request->dateEnd))
+                        ->whereBetween('pes_unit_supports.program_date', array($request->dateStart, $request->dateEnd))
                         ->select('pes_unit_supports.*','branches.*','pes_unit_supports.id as m_id','branches.name as branch_name')
                          ->where('pes_unit_supports.branch_id','=',$branch_id)
                         ->get();
@@ -330,7 +330,7 @@ class PesUnitSupportController extends Controller
        $meeting = DB::table('pes_unit_supports')
                    ->join('branches','branches.id','=','pes_unit_supports.branch_id')
                    ->join('pes_units','pes_units.id','=','pes_unit_supports.pes_identification_id')
-                   ->select('pes_unit_supports.*','branches.*','pes_unit_supports.id as m_id','branches.name as branch_name','pes_units.dsd as pdsd','pes_units.date as pdate')
+                   ->select('pes_unit_supports.*','branches.*','pes_unit_supports.id as m_id','branches.name as branch_name','pes_units.dsd as pdsd','pes_units.program_date as pdate')
                    ->where('pes_unit_supports.id',$id)
                    ->first();
 
@@ -346,7 +346,7 @@ public function update(Request $request){
 
         $validator = Validator::make($request->all(),[
                 'visit_date'  =>'required',
-                'support_date'=>'required',
+                'program_date'=>'required',
                 
             ]);
 
@@ -355,7 +355,7 @@ public function update(Request $request){
 
         $data1 = array(  
             'visit_date' =>$request->visit_date,
-            'support_date'  =>$request->support_date,                
+            'program_date'  =>$request->program_date,                
             'gaps' => $request->gaps,
             'pes_identification_id' => $request->pes_identification_id,
         );

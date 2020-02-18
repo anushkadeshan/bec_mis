@@ -66,7 +66,7 @@ class KickOffController extends Controller
 	                'dm_name' =>$request->dm_name,
 	                'title_of_action' =>$request->title_of_action,	
 	                'activity_code' =>$request->activity_code,	
-	                'meeting_date'	=>$request->meeting_date,
+	                'program_date'	=>$request->program_date,
 	                'time_start'=>$request->time_start,
 	                'time_end' =>$request->time_end,
 	                'venue'	=>$request->venue,
@@ -208,7 +208,7 @@ class KickOffController extends Controller
 
         $participants2018 = DB::table('kickoffs')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2018' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2018' )
                         ->first();
                         //->groupBy(function ($val) {
                                 // Carbon::parse($val->meeting_date)->format('Y');
@@ -217,15 +217,15 @@ class KickOffController extends Controller
                         
            $participants2019 = DB::table('kickoffs')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2019' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2019' )
                         ->first();            
             $participants2020 = DB::table('kickoffs')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2020' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2020' )
                         ->first();   
             $participants2021 = DB::table('kickoffs')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2021' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2021' )
                         ->first(); 
 
             $hhs2018 = DB::table('households')                        
@@ -260,7 +260,7 @@ class KickOffController extends Controller
 
         $participants2018 = DB::table('kickoffs')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2018' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2018' )
                         ->where('kickoffs.branch_id','=',$branch_id)
                         ->first();
                         //->groupBy(function ($val) {
@@ -270,17 +270,17 @@ class KickOffController extends Controller
                         
        $participants2019 = DB::table('kickoffs')                        
                     ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                    ->where(DB::raw('YEAR(meeting_date)'), '=', '2019' )
+                    ->where(DB::raw('YEAR(program_date)'), '=', '2019' )
                     ->where('kickoffs.branch_id','=',$branch_id)
                     ->first();            
         $participants2020 = DB::table('kickoffs')                        
                     ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                    ->where(DB::raw('YEAR(meeting_date)'), '=', '2020' )
+                    ->where(DB::raw('YEAR(program_date)'), '=', '2020' )
                     ->where('kickoffs.branch_id','=',$branch_id)
                     ->first();   
         $participants2021 = DB::table('kickoffs')                        
                     ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                    ->where(DB::raw('YEAR(meeting_date)'), '=', '2021' )
+                    ->where(DB::raw('YEAR(program_date)'), '=', '2021' )
                     ->where('kickoffs.branch_id','=',$branch_id)
                     ->first(); 
 
@@ -326,16 +326,16 @@ class KickOffController extends Controller
                     $data = DB::table('kickoffs') 
                         ->join('branches','branches.id','=','kickoffs.branch_id')
                         ->join('resourse_people','resourse_people.id', '=' ,'kickoffs.resourse_person_id')
-                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->where('branch_id',$request->branch)
                         ->select('kickoffs.*','branches.*','kickoffs.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')
-                        ->orderBy('meeting_date', 'desc')
+                        ->orderBy('program_date', 'desc')
                         ->get();
 
                     $hhs = DB::table('households') 
                         ->join('branches','branches.id','=','households.branch_id')
                         ->select('households.*','branches.*','households.id as m_id','branches.name as branch_name')
-                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->where('branch_id',$request->branch)
                         ->orderBy('meeting_date', 'desc')
                         ->get();
@@ -347,10 +347,10 @@ class KickOffController extends Controller
                     $data = DB::table('kickoffs') 
                         ->join('branches','branches.id','=','kickoffs.branch_id')
                         ->join('resourse_people','resourse_people.id', '=' ,'kickoffs.resourse_person_id')
-                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->select('kickoffs.*','branches.*','kickoffs.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')
                         //->where('kickoffs.branch_id','=',$branch_id)
-                        ->orderBy('meeting_date', 'desc')
+                        ->orderBy('program_date', 'desc')
                         ->get();
 
                     $hhs = DB::table('households') 
@@ -365,10 +365,10 @@ class KickOffController extends Controller
                         $data = DB::table('kickoffs') 
                         ->join('branches','branches.id','=','kickoffs.branch_id')
                         ->join('resourse_people','resourse_people.id', '=' ,'kickoffs.resourse_person_id')
-                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->where('kickoffs.branch_id','=',$branch_id)
                         ->select('kickoffs.*','branches.*','kickoffs.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')
-                        ->orderBy('meeting_date', 'desc')
+                        ->orderBy('program_date', 'desc')
                         ->get();
 
                         $hhs = DB::table('households') 
@@ -391,7 +391,7 @@ class KickOffController extends Controller
                         ->join('branches','branches.id','=','kickoffs.branch_id')
                         ->join('resourse_people','resourse_people.id', '=' ,'kickoffs.resourse_person_id')
                         ->select('kickoffs.*','branches.*','kickoffs.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')
-                        ->orderBy('meeting_date', 'desc')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                 $hhs = DB::table('households') 
                         ->join('branches','branches.id','=','households.branch_id')
@@ -406,7 +406,7 @@ class KickOffController extends Controller
                         ->join('resourse_people','resourse_people.id', '=' ,'kickoffs.resourse_person_id')
                         ->select('kickoffs.*','branches.*','kickoffs.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')
                         ->where('kickoffs.branch_id','=',$branch_id)
-                        ->orderBy('meeting_date', 'desc')                      
+                        ->orderBy('program_date', 'desc')                      
                         ->get();
 
                     $hhs = DB::table('households') 
@@ -523,7 +523,7 @@ class KickOffController extends Controller
     public function update(Request $request){
 
         $validator = Validator::make($request->all(),[
-                'meeting_date'  =>'required',
+                'program_date'  =>'required',
                 'time_start'=>'required',
                 'time_end' =>'required',
                 'venue' =>'required',
@@ -534,7 +534,7 @@ class KickOffController extends Controller
         // echo "<script>console.log( 'Debug Objects: " . $meeting_date . "' );</script>";
 
         $data1 = array(
-            'meeting_date'  =>$request->meeting_date,
+            'program_date'  =>$request->program_date,
             'time_start'=>$request->time_start,
             'time_end' =>$request->time_end,
             'venue' =>$request->venue,

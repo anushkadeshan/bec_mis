@@ -244,7 +244,9 @@ class AuthServiceProvider extends ServiceProvider
          });
 
 
-
+        Gate::define('management', function($user){
+         return $user->hasAccess(['management']);
+         });
         
     }
 }

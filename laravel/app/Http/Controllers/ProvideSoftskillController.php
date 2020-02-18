@@ -87,7 +87,7 @@ class ProvideSoftskillController extends Controller
 
                     if($number>0){
                         for($i=0; $i<$number; $i++){
-                            $participants = DB::table('provide_soft_skills_youths')->insert(['youth_id'=>$request->youth_id[$i],'provide_softskill_id'=>$provide_softskill_id]);
+                            $participants = DB::table('provide_soft_skills_youths')->insert(['youth_id'=>$request->youth_id[$i],'provide_softskill_id'=>$provide_softskill_id,'created_at' => date('Y-m-d H:i:s')]);
                         }
 
                     }
@@ -414,7 +414,7 @@ class ProvideSoftskillController extends Controller
                     ->join('youths','youths.id','=','provide_soft_skills_youths.youth_id')
                     ->join('branches','branches.id','=','provide_soft_skills.branch_id')
                     ->join('institutes','institutes.id','=','provide_soft_skills.institute_id')
-                    ->select('provide_soft_skills.*','branches.*','provide_soft_skills.id as m_id','provide_soft_skills.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date','youths.name as youth_name')
+                    ->select('provide_soft_skills.*','branches.*','provide_soft_skills.id as m_id','provide_soft_skills.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date','youths.name as youth_name','provide_soft_skills_youths.*')
                     ->get();
         }
         else{
@@ -423,7 +423,7 @@ class ProvideSoftskillController extends Controller
                     ->join('provide_soft_skills','provide_soft_skills.id','=','provide_soft_skills_youths.provide_softskill_id')
                     ->join('branches','branches.id','=','provide_soft_skills.branch_id')
                     ->join('institutes','institutes.id','=','provide_soft_skills.institute_id')
-                    ->select('provide_soft_skills.*','branches.*','provide_soft_skills.id as m_id','provide_soft_skills.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date','youths.name as youth_name')
+                    ->select('provide_soft_skills.*','branches.*','provide_soft_skills.id as m_id','provide_soft_skills.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date','youths.name as youth_name','provide_soft_skills_youths.*')
                     ->where('provide_soft_skills.branch_id',$branch_id)
                     ->get();
         }

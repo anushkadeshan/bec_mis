@@ -150,6 +150,7 @@ return [
         Laravel\Passport\PassportServiceProvider::class,
         Chumper\Zipper\ZipperServiceProvider::class,
         OwenIt\Auditing\AuditingServiceProvider::class,
+        Arcanedev\LogViewer\LogViewerServiceProvider::class,
 
         /*
          * Package Service Providers...

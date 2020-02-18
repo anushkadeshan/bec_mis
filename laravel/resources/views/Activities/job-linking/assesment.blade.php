@@ -78,7 +78,7 @@
 	            	<div class="col-md-4">
 	            		<div class="form-group">
 						    <label for="dm_name">6. Date of Assesment</label>
-						    <input type="date" name="review_date" id="review_date" class="form-control">
+						    <input type="date" name="program_date" id="review_date" class="form-control">
 						</div>
 	            	</div>
 	            </div>

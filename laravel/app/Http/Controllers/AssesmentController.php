@@ -7,6 +7,8 @@ use DB;
 use Auth;
 use Illuminate\Support\Facades\URL;
 use App\Audit;
+use App\User;
+use App\Notifications\CompletionReport;
 
 class AssesmentController extends Controller
 {
@@ -44,7 +46,7 @@ class AssesmentController extends Controller
     	$validator = Validator::make($request->all(),[
     		'district' => 'required',
     		'dm_name' => 'required',
-    		'review_date' => 'required',
+    		'program_date' => 'required',
     		'employer_id' => 'required'
     	]);
 
@@ -57,7 +59,7 @@ class AssesmentController extends Controller
     		'dm_name' => $request->dm_name,
     		'title_of_action' => $request->title_of_action,
     		'activity_code' => $request->activity_code,
-    		'review_date' => $request->review_date,
+    		'program_date' => $request->program_date,
     		'employer_id'=> $request->employer_id,
     		'head_of_org' => $request->head_of_org,
     		'registered' => $request->registered,
@@ -173,10 +175,10 @@ class AssesmentController extends Controller
                     $data = DB::table('assesments') 
                         ->join('branches','branches.id','=','assesments.branch_id')
                         ->join('employers','employers.id', '=' ,'assesments.employer_id')
-                        ->whereBetween('review_date', array($request->dateStart, $request->dateEnd))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->where('branch_id',$request->branch)
                         ->select('assesments.*','branches.*','assesments.id as m_id','employers.*','employers.name as e_name','branches.name as branch_name')
-                        ->orderBy('review_date', 'desc')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                 }
                 else{
@@ -184,19 +186,19 @@ class AssesmentController extends Controller
                     $data = DB::table('assesments') 
                         ->join('branches','branches.id','=','assesments.branch_id')
                         ->join('employers','employers.id', '=' ,'assesments.employer_id')
-                        ->whereBetween('review_date', array($request->dateStart, $request->dateEnd))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->select('assesments.*','branches.*','assesments.id as m_id','employers.*','employers.name as e_name','branches.name as branch_name')
-                        ->orderBy('review_date', 'desc')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                     }
                     else{
                         $data = DB::table('assesments') 
                         ->join('branches','branches.id','=','assesments.branch_id')
                         ->join('employers','employers.id', '=' ,'assesments.employer_id')
-                        ->whereBetween('review_date', array($request->dateStart, $request->dateEnd))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->where('assesments.branch_id','=',$branch_id)
                         ->select('assesments.*','branches.*','assesments.id as m_id','employers.*','employers.name as e_name','branches.name as branch_name')
-                        ->orderBy('review_date', 'desc')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                     }
                 }
@@ -210,7 +212,7 @@ class AssesmentController extends Controller
                         ->join('branches','branches.id','=','assesments.branch_id')
                         ->join('employers','employers.id', '=' ,'assesments.employer_id')
                         ->select('assesments.*','branches.*','assesments.id as m_id','employers.*','employers.name as e_name','branches.name as branch_name')
-                        ->orderBy('review_date', 'desc')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                 }
                 else{
@@ -219,7 +221,7 @@ class AssesmentController extends Controller
                         ->join('employers','employers.id', '=' ,'assesments.employer_id')
                         ->where('assesments.branch_id','=',$branch_id)
                         ->select('assesments.*','branches.*','assesments.id as m_id','employers.*','employers.name as e_name','branches.name as branch_name')
-                        ->orderBy('review_date', 'desc')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                 }
             }
@@ -261,7 +263,7 @@ class AssesmentController extends Controller
     public function update(Request $request){
 
         $validator = Validator::make($request->all(),[
-                'review_date'  =>'required',
+                'program_date'  =>'required',
                 
             ]);
 
@@ -270,7 +272,7 @@ class AssesmentController extends Controller
 
         $data1 = array(   
             
-            'review_date' => $request->review_date,
+            'program_date' => $request->program_date,
             'employer_id'=> $request->employer_id,
             'head_of_org' => $request->head_of_org,
             'registered' => $request->registered,

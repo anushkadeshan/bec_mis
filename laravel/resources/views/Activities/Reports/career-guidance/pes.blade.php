@@ -444,7 +444,7 @@ $('body').on('click', '.btn_view', function () {
           $('#dsd').text(data.meeting.dsd);
           $('#gnd').text(data.meeting.gnd);
           $('#dm_name').text(data.meeting.dm_name);
-          $('#meeting_date').text(data.meeting.date);
+          $('#meeting_date').text(data.meeting.program_date);
           $('#responding_officer_name').text(data.meeting.responding_officer_name);
           $('#responding_officer_des').text(data.meeting.responding_officer_des);
           $('#responding_officer_contacts').text(data.meeting.responding_officer_contacts);

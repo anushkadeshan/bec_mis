@@ -172,7 +172,7 @@ class EmployerController extends Controller
             'name' => 'required',
             'phone' => 'required|numeric',
             'address' => 'required',
-            'email' => 'required|email',
+            //'email' => 'required|email',
             'company_type' => 'required',
             'industry' => 'required'
         ]);

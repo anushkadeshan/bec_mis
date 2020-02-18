@@ -1,6 +1,6 @@
 @extends('layouts.main')
 @section('content')
-<div class="container">
+<div class="container-fluid">
     <div class="card">
         <div class="card-header">
         	<div class="row">
@@ -15,7 +15,7 @@
         </div>
         <br>
         <!-- /.card-header -->
-        <div class="container">
+        <div class="container-fluid">
         	<div class="callout callout-danger">
              	<h5><i class="fa fa-info"></i> Note:</h5>
              	Inform to youth and employer abouth this selection and arrange an interview and followup. 		

@@ -84,7 +84,7 @@
 	            	<div class="col-md-4">
 	            		<div class="form-group">
 						    <label for="support_date">7. Date of material transfer to PES unit</label>
-						    <input type="date" name="support_date" id="date" class="form-control">
+						    <input type="date" name="program_date" id="date" class="form-control">
 						</div>
 	            	</div>
 

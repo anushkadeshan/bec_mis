@@ -413,7 +413,7 @@ var dataTable1 = $("#example5").DataTable({
   $.each(data.kick, function(index, value) {
     //console.log(value);
     // use data table row.add, then .draw for table refresh
-    dataTable.row.add([count++, value.meeting_date, value.total_male, value.total_female, value.pwd_male,value.pwd_female,value.venue, value.branch_name,'<div class="btn-group"><button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button><a href="{{url('reports-me/kick-off')}}/'+value.m_id+'/edit"><button type="button" name="view" class="btn btn-success btn-flat btn-sm"><i class="fa fa-edit"></i></button></a></div>']).draw();
+    dataTable.row.add([count++, value.program_date, value.total_male, value.total_female, value.pwd_male,value.pwd_female,value.venue, value.branch_name,'<div class="btn-group"><button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button><a href="{{url('reports-me/kick-off')}}/'+value.m_id+'/edit"><button type="button" name="view" class="btn btn-success btn-flat btn-sm"><i class="fa fa-edit"></i></button></a></div>']).draw();
 
      var total_male = value.total_male;
      var total_female = value.total_female;
@@ -522,7 +522,7 @@ $('body').on('click', '.btn_view', function () {
           $('#dsd').text(data.meeting.DSD_Name);
           $('#gnd').text(data.meeting.gnd);
           $('#dm_name').text(data.meeting.dm_name);
-          $('#meeting_date').text(data.meeting.meeting_date);
+          $('#meeting_date').text(data.meeting.program_date);
           $('#time_start').text(data.meeting.time_start);
           $('#time_end').text(data.meeting.time_end);
           $('#venue').text(data.meeting.venue);

@@ -341,7 +341,19 @@
               </p>
             </a>
           </li>
+          <li class="nav-item">
+            <a href="{{url('log-viewer')}}" class="nav-link" target="_blank">
+             <i class="nav-icon fas fa-exclamation-triangle text-warning"></i>
+              <p>
+                Error Logs
+                <span class="badge badge-info right"></span>
+              </p>
+            </a>
+          </li>
+
           @endcan
+          
+         
           @can('view-M&E-reports')
           
           <li class="nav-item has-treeview">
@@ -358,6 +370,25 @@
                 <a href="{{url('/completion-reports')}}" class="nav-link">
                   <i class="fas fa-plus-square nav-icon text-primary"></i>
                   <p class="text-primary">Add Reports</p>
+                </a>
+              </li>
+              @endcan
+              @if( Gate::check('management') || Gate::check('me-dashboard') )
+              <li class="nav-item">
+                <a href="{{url('completion-reports')}}" class="nav-link">
+                 <i class="nav-icon fas fa-exclamation-triangle text-warning"></i>
+                  <p>
+                    Reports Updation 
+                    <span class="badge badge-info right"></span>
+                  </p>
+                </a>
+              </li>
+              @endif
+              @can('admin')
+              <li class="nav-item">
+                <a href="{{url('/completion_targets')}}" class="nav-link">
+                  <i class="fas fa-plus-square nav-icon text-primary"></i>
+                  <p class="text-primary">Add Completion Targets</p>
                 </a>
               </li>
               @endcan
@@ -518,8 +549,16 @@
                   <p>View Reports</p>
                 </a>
             </li>
-
+          
           @endcan
+           @if( Gate::check('management') || Gate::check('me-dashboard') || Gate::check('admin') ) ) 
+            <li class="nav-item">
+                <a href="{{url('baselines')}}" class="nav-link active">
+                  <i class="fas fa-file-invoice nav-icon"></i>
+                  <p>Base Line Entering </p>
+                </a>
+            </li>
+            @endif 
           @can('youth-search-menu')
           <li class="nav-header">Skill Developments</li>
           <li class="nav-item">

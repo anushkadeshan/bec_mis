@@ -1,6 +1,6 @@
 @extends('layouts.main')
 @section('content')
-<div class="container">
+<div class="container-fluid">
 	<br>
 	<h4>Course Category</h4>
 	<form action="" id="cat">

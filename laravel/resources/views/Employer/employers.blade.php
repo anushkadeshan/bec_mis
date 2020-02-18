@@ -1,7 +1,7 @@
 @extends('layouts.main')
 @section('content')
 
-<div class="container">
+<div class="container-fluid">
     <div class="card">
         <div class="card-header">
         	<div class="row">
@@ -47,14 +47,12 @@
                         <td>{{ $employer->industry }}</td>
                         @can('update-Employer')
                         <td>
-                            <div style="float: left;">
+                            <div class="btn-group">
                                 <form id="userDelete" method="post" action="" >
                                 {{ csrf_field() }}
                                     <button type="button" id="edit-employer" data-id="{{$employer->id}}" data-name="{{$employer->name}}" data-phone="{{$employer->phone}}" data-email="{{$employer->email}}" data-address="{{$employer->address}}"  data-company_type="{{$employer->company_type}}" data-industry="{{$employer->industry}}"class="btn btn-block btn-success btn-flat btn-sm"><i class="fas fa-edit"></i></button>
                                 </form> 
-                            </div>
-                        	
-                            <div style="float: left;">
+                            
                                 <form id="userDelete" method="post" >
                                 {{ csrf_field() }}
                                     <button type="button" id="delete-employer" data-id="{{$employer->id}}" class="btn btn-block btn-danger btn-flat btn-sm"><i class="fas fa-trash-alt"></i></button>

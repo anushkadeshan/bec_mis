@@ -1,6 +1,6 @@
 @extends('layouts.main')
 @section('content')
-<div class="container">
+<div class="container-fluid">
     <div class="card">
         <div class="card-header">
         	<div class="row">
@@ -102,7 +102,8 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Name</th>
+                        <th>Vacancy</th>
+                        <th>Employer</th>
                         <th>Job Type</th>
                         <th>Location</th>
                         <th>Edu. Specialization</th>
@@ -120,6 +121,7 @@
                         <td><a href="{{ URL::to('vacancy/' . $vacancy->id . '/view') }}">{{ $vacancy->title }}</a>
                             <br><i class="fas fa-clock fa-xs"><small> {{$vacancy->dedline}}</small>
                         </td>
+                        <td>{{ $vacancy->employer->name }}</td>
                         <td>{{ $vacancy->job_type }}</td>
                         <td>{{ $vacancy->location }}</td>
                         <td>{{ $vacancy->specializaion }}</td>

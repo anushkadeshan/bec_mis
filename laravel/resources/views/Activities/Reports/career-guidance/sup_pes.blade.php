@@ -429,7 +429,7 @@ var dataTable = $("#example").DataTable({
   $.each(data, function(index, value) {
     //console.log(value);
     // use data table row.add, then .draw for table refresh
-    dataTable.row.add([count++, value.visit_date, value.support_date, value.dsd, value.total_cost,value.branch_name,'<div class="btn-group"><button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button><a href="{{url('reports-me/pes-support')}}/'+value.m_id+'/edit"><button type="button" name="view" class="btn btn-success btn-flat btn-sm"><i class="fa fa-edit"></i></button></a></div>']).draw();
+    dataTable.row.add([count++, value.visit_date, value.program_date, value.dsd, value.total_cost,value.branch_name,'<div class="btn-group"><button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button><a href="{{url('reports-me/pes-support')}}/'+value.m_id+'/edit"><button type="button" name="view" class="btn btn-success btn-flat btn-sm"><i class="fa fa-edit"></i></button></a></div>']).draw();
 
      var total_cost1 = value.total_cost;
      if ($.isNumeric(total_cost1)) {
@@ -480,7 +480,7 @@ $('body').on('click', '.btn_view', function () {
           $('#dsd').text(data.meeting.dsd);
           $('#dm_name').text(data.meeting.dm_name);
           $('#meeting_date').text(data.meeting.visit_date);
-          $('#support_date').text(data.meeting.support_date);
+          $('#support_date').text(data.meeting.program_date);
           $('#program_cost').text(data.meeting.total_cost);
           $('#gaps').html(data.meeting.gaps);
           $('#branch').text(data.meeting.branch_name);
@@ -533,7 +533,7 @@ $('body').on('click', '#review_id', function () {
           $('#dsd1').text(data.meeting.dsd);
           $('#gnd1').text(data.meeting.gnd);
           $('#dm_name1').text(data.meeting.dm_name);
-          $('#meeting_date1').text(data.meeting.date);
+          $('#meeting_date1').text(data.meeting.program_date);
           $('#responding_officer_name').text(data.meeting.responding_officer_name);
           $('#responding_officer_des').text(data.meeting.responding_officer_des);
           $('#responding_officer_contacts').text(data.meeting.responding_officer_contacts);

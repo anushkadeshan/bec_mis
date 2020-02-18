@@ -36,7 +36,7 @@ class StakeHolderMeetingController extends Controller
                 'dm_name' =>'required',
                 'title_of_action' =>'required',	
                 'activity_code' =>'required',	
-                'meeting_date'	=>'required',
+                'program_date'	=>'required',
                 'time_start'=>'required',
                 'time_end' =>'required',
                 'venue'	=>'required',
@@ -58,7 +58,7 @@ class StakeHolderMeetingController extends Controller
 	                'dm_name' =>$request->dm_name,
 	                'title_of_action' =>$request->title_of_action,	
 	                'activity_code' =>$request->activity_code,	
-	                'meeting_date'	=>$request->meeting_date,
+	                'program_date'	=>$request->program_date,
 	                'time_start'=>$request->time_start,
 	                'time_end' =>$request->time_end,
 	                'venue'	=>$request->venue,
@@ -132,7 +132,7 @@ class StakeHolderMeetingController extends Controller
 
             $participants2018 = DB::table('stake_holder_meetings')                        
                             ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"))
-                            ->where(DB::raw('YEAR(meeting_date)'), '=', '2018' )
+                            ->where(DB::raw('YEAR(program_date)'), '=', '2018' )
                             ->first();
                             //->groupBy(function ($val) {
                                     // Carbon::parse($val->meeting_date)->format('Y');
@@ -141,15 +141,15 @@ class StakeHolderMeetingController extends Controller
                             
             $participants2019 = DB::table('stake_holder_meetings')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"))
-                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2019' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2019' )
                         ->first();            
             $participants2020 = DB::table('stake_holder_meetings')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"))
-                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2020' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2020' )
                         ->first();   
             $participants2021 = DB::table('stake_holder_meetings')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"))
-                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2021' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2021' )
                         ->first();  
         }
         else{
@@ -162,7 +162,7 @@ class StakeHolderMeetingController extends Controller
 
             $participants2018 = DB::table('stake_holder_meetings')                        
                             ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"))
-                            ->where(DB::raw('YEAR(meeting_date)'), '=', '2018' )
+                            ->where(DB::raw('YEAR(program_date)'), '=', '2018' )
                             ->where('stake_holder_meetings.branch_id','=',$branch_id)
                             ->first();
                             //->groupBy(function ($val) {
@@ -172,19 +172,19 @@ class StakeHolderMeetingController extends Controller
                             
             $participants2019 = DB::table('stake_holder_meetings')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"))
-                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2019' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2019' )
                         ->where('stake_holder_meetings.branch_id','=',$branch_id)
                         ->first();     
 
             $participants2020 = DB::table('stake_holder_meetings')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"))
-                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2020' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2020' )
                         ->where('stake_holder_meetings.branch_id','=',$branch_id)
                         ->first();   
 
             $participants2021 = DB::table('stake_holder_meetings')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"))
-                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2021' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2021' )
                         ->where('stake_holder_meetings.branch_id','=',$branch_id)
                         ->first(); 
         }         
@@ -203,10 +203,10 @@ class StakeHolderMeetingController extends Controller
                 if($request->branch !=''){
                     $data = DB::table('stake_holder_meetings') 
                         ->join('branches','branches.id','=','stake_holder_meetings.branch_id')
-                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->where('branch_id',$request->branch)
                         ->select('stake_holder_meetings.*','branches.*','stake_holder_meetings.id as m_id')
-                        ->orderBy('meeting_date', 'desc')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                 }
                 else{
@@ -215,19 +215,19 @@ class StakeHolderMeetingController extends Controller
 
                     $data = DB::table('stake_holder_meetings') 
                         ->join('branches','branches.id','=','stake_holder_meetings.branch_id')
-                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->select('stake_holder_meetings.*','branches.*','stake_holder_meetings.id as m_id')
                         //->where('stake_holder_meetings.branch_id','=',$branch_id)
-                        ->orderBy('meeting_date', 'desc')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                     }
                     else{
                         $data = DB::table('stake_holder_meetings') 
                         ->join('branches','branches.id','=','stake_holder_meetings.branch_id')
-                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->select('stake_holder_meetings.*','branches.*','stake_holder_meetings.id as m_id')
                         ->where('stake_holder_meetings.branch_id','=',$branch_id)
-                        ->orderBy('meeting_date', 'desc')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                     }
                 }
@@ -240,7 +240,7 @@ class StakeHolderMeetingController extends Controller
                     $data = DB::table('stake_holder_meetings') 
                         ->join('branches','branches.id','=','stake_holder_meetings.branch_id')
                         ->select('stake_holder_meetings.*','branches.*','stake_holder_meetings.id as m_id')
-                        ->orderBy('meeting_date', 'desc')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                 }
                 else{
@@ -248,7 +248,7 @@ class StakeHolderMeetingController extends Controller
                         ->join('branches','branches.id','=','stake_holder_meetings.branch_id')
                         ->select('stake_holder_meetings.*','branches.*','stake_holder_meetings.id as m_id')
                         ->where('stake_holder_meetings.branch_id','=',$branch_id)
-                        ->orderBy('meeting_date', 'desc')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                 }
                 
@@ -347,7 +347,7 @@ class StakeHolderMeetingController extends Controller
     public function update(Request $request){
 
         $validator = Validator::make($request->all(),[
-                'meeting_date'  =>'required',
+                'program_date'  =>'required',
                 'time_start'=>'required',
                 'time_end' =>'required',
                 'venue' =>'required',
@@ -358,7 +358,7 @@ class StakeHolderMeetingController extends Controller
         // echo "<script>console.log( 'Debug Objects: " . $meeting_date . "' );</script>";
 
         $data1 = array(  
-            'meeting_date'  =>$request->meeting_date,
+            'program_date'  =>$request->program_date,
             'time_start'=>$request->time_start,
             'time_end' =>$request->time_end,
             'venue' =>$request->venue,

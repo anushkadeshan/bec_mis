@@ -86,7 +86,7 @@ class PartnershipTrainingController extends Controller
                 //insert youths
                 if($number>0){
                     for($i=0; $i<$number; $i++){
-                        $youths = DB::table('partner_trainings_youth')->insert(['youth_id'=>$request->youth_id[$i],'approved_amount'=>$request->approved_amount[$i],'partner_trainings_id'=>$partner_trainings_id]);
+                        $youths = DB::table('partner_trainings_youth')->insert(['youth_id'=>$request->youth_id[$i],'approved_amount'=>$request->approved_amount[$i],'partner_trainings_id'=>$partner_trainings_id,'created_at' => date('Y-m-d H:i:s')]);
                     }
 
                 }

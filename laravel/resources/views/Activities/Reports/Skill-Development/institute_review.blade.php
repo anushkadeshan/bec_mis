@@ -306,7 +306,7 @@ var dataTable = $("#example").DataTable({
   $.each(data, function(index, value) {
     //console.log(value);
     // use data table row.add, then .draw for table refresh
-    dataTable.row.add([count++, value.meeting_date, value.institute_name, value.head_of_institute, value.contact,value.commencement_date, value.branch_name,'<div class="btn-group"><button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button><a href="{{url('reports-me/review')}}/'+value.m_id+'/edit"><button type="button" name="view" class="btn btn-success btn-flat btn-sm"><i class="fa fa-edit"></i></button></a></div>']).draw();
+    dataTable.row.add([count++, value.program_date, value.institute_name, value.head_of_institute, value.contact,value.commencement_date, value.branch_name,'<div class="btn-group"><button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button><a href="{{url('reports-me/review')}}/'+value.m_id+'/edit"><button type="button" name="view" class="btn btn-success btn-flat btn-sm"><i class="fa fa-edit"></i></button></a></div>']).draw();
 
   });
    
@@ -355,7 +355,7 @@ $('body').on('click', '.btn_view', function () {
           $('#district').text(data.meeting.district);
           $('#dsd').text(data.meeting.dsd);
           $('#dm_name').text(data.meeting.dm_name);
-          $('#meeting_date').text(data.meeting.meeting_date);
+          $('#meeting_date').text(data.meeting.program_date);
           $('#institute').text(data.meeting.institute_name);
           $('#head').text(data.meeting.head_of_institute);
           $('#contact').text(data.meeting.contact);

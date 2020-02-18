@@ -1,7 +1,12 @@
 @extends('layouts.main')
 @section('content')
-<div class="container">
+<div class="container-fluid">
 	<br>
+  <div class="alert alert-warning alert-dismissible">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <h5><i class="fas fa-exclamation-triangle"></i> Alert!</h5>
+        You have to add more <strong>{{$cg_youths->target - $youths}} </strong> Base Line Applications against your Career Guidance Progress <strong>({{$cg_youths->target }} )</strong> in 2018 and 2019 years. Please Add rest of Baseline applications ASAP.
+  </div>
     <section class="content">
 	    	<div class="row">
           <div class="col-12">
@@ -13,7 +18,7 @@
                   <li class="nav-item"><a class="nav-link active" href="#tab_1" data-toggle="tab">Personal Info</a></li>
                   <li class="nav-item"><a class="nav-link" href="#tab_2">Education</a></li>
                   <li class="nav-item"><a class="nav-link" href="#tab_7">Language Proficiency </a></li>
-                  <li class="nav-item"><a class="nav-link" href="#tab_3"  data-toggle="tab">Courses</a></li>
+                  <li class="nav-item"><a class="nav-link" href="#tab_3">Courses</a></li>
                   <li class="nav-item"><a class="nav-link" href="#tab_4">Current Status</a></li>
                   <li class="nav-item"><a class="nav-link" href="#tab_5">Feedback</a></li>
                   <li class="nav-item"><a class="nav-link" href="#tab_6">Finish</a></li>
@@ -559,7 +564,7 @@
                                 <div class="row">
                                   <div class="col-md-6">
                                     <div class="form-group">
-                                      <label for="industry">Intrsting Industry</label>
+                                      <label for="industry">Preferable Industry</label>
                                       <select id="industry" name="industry[]" class="form-control" multiple>
                                         
                                         <option>Agriculture &amp; Food Processing</option>
@@ -593,7 +598,7 @@
                                   </div>
                                   <div class="col-md-6">
                                     <div class="form-group">
-                                      <label for="location">Intresting Location</label>
+                                      <label for="location">Preferable Location</label>
                                       <select name="location[]" id="location" multiple class="form-control">
                                         <option>Home District</option>
                                         <option>Home Province</option>
@@ -612,15 +617,15 @@
                                 </div>
                                 
                                 <div class="row">
-                                  <div class="col-md-6">
+                                  <div class="col-md-4">
                                     <div class="form-group">
                                       <label for="min_salary">Min. Salary Expectation</label>
                                       <input type="number" step="10000" name="min_salary" id="min_salary" class="form-control">
                                     </div>
                                   </div>
-                                  <div class="col-md-6">
+                                  <div class="col-md-8">
                                     <div class="form-group">
-                                      <label for="intresting_courses">Intresting Courses (if You like to follow)</label>
+                                      <label for="intresting_courses">Preferable Courses (if You like to follow)</label>
                                       <select name="intresting_courses[]" id="intresting_courses"  class="form-control" multiple>
                                         
                                         @foreach($course_categories as $cc)
@@ -632,7 +637,7 @@
                                 </div>
                                 <div style="width: 100%; height: 20px; border-bottom: 1px solid blue; text-align: center;padding-bottom: 10px">
                                   <span class="badge badge-info" style="font-size: 20px; padding: 0 10px; ">
-                                    Intresting Business
+                                    Preferable Business
                                   </span>
                                 </div>
                                 <br>
@@ -752,14 +757,14 @@
                                 </div>
                                 <div style="width: 100%; height: 20px; border-bottom: 1px solid blue; text-align: center;padding-bottom: 10px">
                                   <span class="badge badge-info" style="font-size: 20px; padding: 0 10px; ">
-                                   Intresting Jobs Details
+                                   Preferable Jobs Details
                                   </span>
                                 </div>
                                 <br>  
                                 <div class="row">
                                   <div class="col-md-6">
                                     <div class="form-group">
-                                      <label for="location">1. Intresting Location</label>
+                                      <label for="location">1. Preferable Location</label>
                                       <select name="location[]" id="location" multiple class="form-control">
                                         <option>Home District</option>
                                         <option>Home Province</option>
@@ -772,7 +777,7 @@
                                   </div>
                                   <div class="col-md-6">
                                     <div class="form-group">
-                                      <label for="industry">2. Intrsting Industry</label>
+                                      <label for="industry">2. Preferable Industry</label>
                                       <select id="industry" name="industry[]" class="form-control" multiple>
                                         
                                         <option>Agriculture &amp; Food Processing</option>
@@ -849,7 +854,7 @@
                                 </div>
                                 <div style="width: 100%; height: 20px; border-bottom: 1px solid blue; text-align: center;padding-bottom: 10px">
                                   <span class="badge badge-info" style="font-size: 20px; padding: 0 10px; ">
-                                    Intresting Business
+                                    Preferable Business
                                   </span>
                                 </div>
                                 <br>
@@ -947,14 +952,14 @@
                               <form id="no_jobs">
                                 <div style="width: 100%; height: 20px; border-bottom: 1px solid blue; text-align: center;padding-bottom: 10px">
                                   <span class="badge badge-info" style="font-size: 20px; padding: 0 10px; ">
-                                   Intrsting Jobs Details
+                                   Preferable Jobs Details
                                   </span>
                                 </div>
                                 <br>  
                                 <div class="row">
                                   <div class="col-md-6">
                                     <div class="form-group">
-                                      <label for="industry">Intrsting Industry</label>
+                                      <label for="industry">Preferable Industry</label>
                                       <select id="industry" name="industry[]" class="form-control" multiple>
                                         
                                         <option>Agriculture &amp; Food Processing</option>
@@ -988,7 +993,7 @@
                                   </div>
                                   <div class="col-md-6">
                                     <div class="form-group">
-                                      <label for="location">Intresting Location</label>
+                                      <label for="location">Preferable Location</label>
                                       <select name="location[]" id="location" multiple class="form-control">
                                         <option>Home District</option>
                                         <option>Home Province</option>
@@ -1007,15 +1012,15 @@
                                 </div>
                                 
                                 <div class="row">
-                                  <div class="col-md-6">
+                                  <div class="col-md-4">
                                     <div class="form-group">
                                       <label for="min_salary">Min. Salary Expectation</label>
                                       <input type="number" step="10000" name="min_salary" id="min_salary" class="form-control">
                                     </div>
                                   </div>
-                                  <div class="col-md-6">
+                                  <div class="col-md-8">
                                     <div class="form-group">
-                                      <label for="intresting_courses">Intresting Courses (if You like to follow)</label>
+                                      <label for="intresting_courses">Preferable Courses (if You like to follow)</label>
                                       <select name="intresting_courses[]" id="intresting_courses"  class="form-control" multiple>
                                         
                                         @foreach($course_categories as $cc)
@@ -1027,7 +1032,7 @@
                                 </div>
                                 <div style="width: 100%; height: 20px; border-bottom: 1px solid blue; text-align: center;padding-bottom: 10px">
                                   <span class="badge badge-info" style="font-size: 20px; padding: 0 10px; ">
-                                    Intresting Business
+                                    Preferable Business
                                   </span>
                                 </div>
                                 <br>

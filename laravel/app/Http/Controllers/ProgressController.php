@@ -259,4 +259,86 @@ public function vtCourseList(Request $request){
                   ->update(['verified'=>1]);
     }
 
+    public function completion_targets(){
+      $branches = DB::table('branches')->get();
+      $activities = DB::table('activities')->get();
+      $reports = DB::table('completion_targets')
+                ->join('branches','branches.id','=','completion_targets.branch_id')
+                 ->get();
+      $activities_reports = DB::table('activities')->whereNotNull('report')->get();
+
+      return view('Progress.completion_targets')->with(['branches'=>$branches,'activities'=>$activities,'reports'=>$reports,'activities_reports' =>$activities_reports]);
+    }
+
+    public function completion_targets_add(Request $request){
+
+        $data = DB::table('completion_targets')->insert(['report' => $request->report, 'year' => $request->year, 'target'=> $request->target,'branch_id'=> $request->branch_id, 'table_name' => $request->table_name, 'table_name_youth' => $request->table_name_youth, 'table_name_youth_id' => $request->table_name_youth_id, 'created_at' => date('Y-m-d H:i:s') ]);
+    }
+
+    public function completion_targets_update(Request $request){
+         $data = array(
+            'report' => $request->report, 
+            'year' => $request->year, 
+            'target'=> $request->target,
+            'table_name'=> $request->table_name,
+            'table_name_youth' => $request->table_name_youth,
+            'table_name_youth_id' => $request->table_name_youth_id,
+            'branch_id'=> $request->branch_id
+         );
+        $data = DB::table('completion_targets')->where('id',$request->c_id)->update($data);
+    }
+
+
+     public function completion_reports(){
+      
+      $branch_id = Auth::user()->branch;
+
+      if(is_null($branch_id)){    
+
+        $reports = DB::table('completion_targets')
+                  ->join('branches','branches.id','=','completion_targets.branch_id')
+                  ->where('year','Reports')
+                  ->get();
+
+        $youths = DB::table('completion_targets')
+                  ->join('branches','branches.id','=','completion_targets.branch_id')
+                  ->where('year','Youths')
+                  ->get();
+
+        $baselines = Youth::count();
+
+      }
+      else{
+        $reports = DB::table('completion_targets')
+                ->join('branches','branches.id','=','completion_targets.branch_id')
+                ->where('year','Reports')
+                ->where('branch_id',$branch_id)
+                ->get();
+
+        $youths = DB::table('completion_targets')
+                  ->join('branches','branches.id','=','completion_targets.branch_id')
+                  ->where('year','Youths')
+                  ->where('branch_id',$branch_id)
+                  ->get();
+      }
+      $branches = DB::table('branches')->get();
+      
+
+       return view('Activities.landing')->with(['branches'=>$branches,'reports'=> $reports,'youths' =>$youths ]);
+    }
+
+    public function baselines(){
+
+        $cg_youths = DB::table('completion_targets')
+                  ->join('branches','branches.id','=','completion_targets.branch_id')
+                  ->where('table_name','career_guidances')
+                  ->get();      
+      
+    
+      $branches = DB::table('branches')->get();
+      
+
+       return view('reports.baselines')->with(['branches'=>$branches ,'cg_youths'=> $cg_youths]);
+    }
+
 } 

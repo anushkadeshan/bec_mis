@@ -707,6 +707,74 @@
 			        	</div>
 		        	</div>
 		        </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                  <div class="card-success">
+                    <div class="card-header">
+                      <h3 class="card-title">My Tasks Wall</h3>
+                      <div class="card-tools">
+                        <span class="badge badge-success"></span>
+                      </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body p-0">
+                        <table class="table table-striped" id="example5">
+                        <tr>
+                          <th>Task</th>
+                          <th>Target (to be added)</th>
+                          <th>#Added</th>
+                          <th>#Balance to be added</th>
+                          <th></th>
+                        </tr>
+                        <tr>
+                          <td>Add Baseline Applications </td>
+                          <td>{{$cg_youths->target}}</td>
+                          <td>{{$count_youth}}</td>
+                          <td>{{$cg_youths->target-$count_youth}}</td>
+                          <td>@if($count_youth< $cg_youths->target) <small class="badge badge-danger">{{"Not Completed"}}</small> @else <small class="badge badge-success">{{"Completed"}}</small> @endif</td>
+                        </tr>
+                         @foreach ($reports as $report)
+                         <?php $count = DB::table($report->table_name)->where('branch_id',$report->branch_id)->count(); ?>
+                         @if($count<$report->target)
+                          <tr class="employer{{$report->id}}">
+                              <td> Add {{ $report->report }}</td>
+                              <td>{{ $report->target }}</td>
+                              <td> {{ $count }}</td>
+                              <td>{{ $report->target - $count }}</td>
+                              <td>
+                                  @if($count< $report->target) <small class="badge badge-danger">{{"Not Completed"}}</small> @else <small class="badge badge-success">{{"Completed"}}</small> @endif
+                              </td>
+                          </tr>
+                          @endif
+                          @endforeach
+
+                           @foreach ($youths as $youth)
+                           <?php $count2 = DB::table($youth->table_name_youth)->join($youth->table_name,$youth->table_name.'.id','=',$youth->table_name_youth.'.'.$youth->table_name_youth_id)->where($youth->table_name.'.branch_id',$youth->branch_id)->whereIn(DB::raw('YEAR(program_date)'), [2018,2019] )->count(); $individual = DB::table('placement_individual')->where('branch_id',$youth->branch_id)->count()?>
+                           @if($count2<$youth->target)
+                           <tr class="employer{{$youth->id}}">
+                              <td> Add Youths for {{ $youth->report }}</td>
+                              <td>{{ $youth->target }}</td>
+                              
+                              <td> @if($youth->report=='Job Interviews/Placements') {{ $count2 + $individual }} @else{{$count2}}@endif</td>
+
+                              <td>{{ $youth->target-$count2 }}</td>
+
+                              
+                              
+                              <td>
+                                  @if($youth->target ==$count2 ) <small class="badge badge-success">{{"Completed"}}</small> @elseif( $youth->target <= $count2) <small class="badge badge-success">{{"Completed"}}</small> @else <small class="badge badge-danger">{{"Not Completed"}}</small> @endif
+                              </td>
+                          </tr>
+                          @endif
+                          @endforeach
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                  </div>
+                </div>
+            </div>
+
              <div class="row">
                 <div class="col-md-12">
                   <div class="card">
@@ -718,7 +786,7 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body p-0">
-                        <table class="table table-responsive">
+                        <table class="table table-striped" id="example3">
                         <tr>
                           <th>Task</th>
                           <th>Due Date</th>
@@ -1321,6 +1389,8 @@
         
         } );
       } );
+
+
     </script>
 @endcan
 @can('me-dashboard')
@@ -1462,6 +1532,20 @@
 
         chart.draw(data, google.charts.Bar.convertOptions(options));
       }
+
+      $(document).ready(function() {
+        
+        $('#example3').DataTable( {
+            dom: 'Bfrtip',
+            buttons: [
+                
+            ],
+
+            bFilter: false
+
+        
+        } );
+      } );
     </script>
 
 

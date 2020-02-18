@@ -56,7 +56,7 @@ class MentoringController extends Controller
                 'dm_name' =>'required',
                 'title_of_action' =>'required',	
                 'activity_code' =>'required',	
-                'meeting_date'	=>'required',
+                'program_date'	=>'required',
                 'time_start'=>'required',
                 'time_end' =>'required',
                 'venue'	=>'required',
@@ -77,7 +77,7 @@ class MentoringController extends Controller
 	                'dm_name' =>$request->dm_name,
 	                'title_of_action' =>$request->title_of_action,	
 	                'activity_code' =>$request->activity_code,	
-	                'meeting_date'	=>$request->meeting_date,
+	                'program_date'	=>$request->program_date,
 	                'time_start'=>$request->time_start,
 	                'time_end' =>$request->time_end,
 	                'venue'	=>$request->venue,
@@ -160,19 +160,19 @@ class MentoringController extends Controller
 
             $participants2018 = DB::table('mentoring')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2018' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2018' )
                         ->first();
             $participants2019 = DB::table('mentoring')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2019' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2019' )
                         ->first();            
             $participants2020 = DB::table('mentoring')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2020' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2020' )
                         ->first();   
             $participants2021 = DB::table('mentoring')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2021' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2021' )
                         ->first();
 
         }
@@ -188,7 +188,7 @@ class MentoringController extends Controller
 
         $participants2018 = DB::table('mentoring')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2018' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2018' )
                         ->where('mentoring.branch_id','=',$branch_id)
                         ->first();
                         //->groupBy(function ($val) {
@@ -198,19 +198,19 @@ class MentoringController extends Controller
                         
            $participants2019 = DB::table('mentoring')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2019' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2019' )
                         ->where('mentoring.branch_id','=',$branch_id)
 
                         ->first();            
             $participants2020 = DB::table('mentoring')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2020' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2020' )
                         ->where('mentoring.branch_id','=',$branch_id)
 
                         ->first();   
             $participants2021 = DB::table('mentoring')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2021' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2021' )
                         ->where('mentoring.branch_id','=',$branch_id)
 
                         ->first();           
@@ -231,10 +231,10 @@ class MentoringController extends Controller
                     $data = DB::table('mentoring') 
                         ->join('branches','branches.id','=','mentoring.branch_id')
                         ->join('resourse_people','resourse_people.id', '=' ,'mentoring.resourse_person_id')
-                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->where('branch_id',$request->branch)
                         ->select('mentoring.*','branches.*','mentoring.id as m_id','resourse_people.*','resourse_people.name as r_name')
-                        ->orderBy('meeting_date', 'desc')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                 }
                 else{
@@ -244,20 +244,20 @@ class MentoringController extends Controller
                     $data = DB::table('mentoring') 
                         ->join('branches','branches.id','=','mentoring.branch_id')
                         ->join('resourse_people','resourse_people.id', '=', 'mentoring.resourse_person_id')
-                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         //->where('mentoring.branch_id','=',$branch_id)
                         ->select('mentoring.*','branches.*','mentoring.id as m_id','resourse_people.*','resourse_people.name as r_name')
-                        ->orderBy('meeting_date', 'desc')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                     }
                     else{
                         $data = DB::table('mentoring') 
                         ->join('branches','branches.id','=','mentoring.branch_id')
                         ->join('resourse_people','resourse_people.id', '=', 'mentoring.resourse_person_id')
-                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->where('mentoring.branch_id','=',$branch_id)
                         ->select('mentoring.*','branches.*','mentoring.id as m_id','resourse_people.*','resourse_people.name as r_name')
-                        ->orderBy('meeting_date', 'desc')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                     }
                 }
@@ -272,7 +272,7 @@ class MentoringController extends Controller
                         ->join('branches','branches.id','=','mentoring.branch_id')
                         ->join('resourse_people','resourse_people.id', '=' ,'mentoring.resourse_person_id')
                         ->select('mentoring.*','branches.*','mentoring.id as m_id','resourse_people.*','resourse_people.name as r_name')
-                        ->orderBy('meeting_date', 'desc')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                 }
                 else{
@@ -281,7 +281,7 @@ class MentoringController extends Controller
                         ->join('resourse_people','resourse_people.id', '=' ,'mentoring.resourse_person_id')
                         ->select('mentoring.*','branches.*','mentoring.id as m_id','resourse_people.*','resourse_people.name as r_name')
                         ->where('mentoring.branch_id','=',$branch_id)
-                        ->orderBy('meeting_date', 'desc')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                 }
                 

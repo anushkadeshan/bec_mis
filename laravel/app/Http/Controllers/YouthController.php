@@ -52,8 +52,33 @@ class YouthController extends Controller
     public function create(){
       $course_categories = DB::table('course_categories')->get();
       $branches = DB::table('branches')->get();
+
+      $branch_id = Auth::user()->branch;
+
+      if(is_null($branch_id)){    
+
+        $cg_youths = DB::table('completion_targets')
+                  ->join('branches','branches.id','=','completion_targets.branch_id')
+                  ->select(DB::raw("SUM(target) as target"))
+                  ->where('table_name','career_guidances')
+                  ->first();
+        $youths = Youth::count();
+
+      }
+      else{
+
+        $cg_youths = DB::table('completion_targets')
+                  ->join('branches','branches.id','=','completion_targets.branch_id')
+                  ->select(DB::raw("SUM(target) as target"))
+                  ->where('table_name','career_guidances')
+                  ->where('branch_id',$branch_id)
+                  ->first();
+
+        $youths = Youth::where('branch_id',$branch_id)->count();
+
+      }
        
-    	return view('Youth.add-youth')->with(['course_categories'=> $course_categories, 'branches' => $branches]);
+    	return view('Youth.add-youth')->with(['course_categories'=> $course_categories, 'branches' => $branches,'cg_youths'=> $cg_youths,'youths'=>$youths]);
     }
 
     public function familyList(Request $request){
@@ -1032,7 +1057,12 @@ public function update_following_course(Request $request){
       $course_categories = DB::table('course_categories')->get();
       $branches = DB::table('branches')->get();
 
-      $youth_data = Youth::with('family')->whereid($id)->first();
+      $youth_data = Youth::where('youths.id', $id)
+                    ->join('families','families.id','=','youths.family_id')
+                    ->join('dsd_office','dsd_office.ID','=','families.ds_division')
+                    ->join('gn_office','gn_office.GN_ID','=','families.gn_division')
+                    ->first();
+                    
       $results = DB::table('results')->whereyouth_id($id)->first();
       $language = DB::table('language')->whereyouth_id($id)->first();
 
@@ -1213,7 +1243,12 @@ public function update_following_course(Request $request){
       $course_categories = DB::table('course_categories')->get();
       $branches = DB::table('branches')->get();
 
-      $youth_data = Youth::with('family')->whereid($id)->first();
+      $youth_data = Youth::where('youths.id', $id)
+                    ->join('families','families.id','=','youths.family_id')
+                    ->join('dsd_office','dsd_office.ID','=','families.ds_division')
+                    ->join('gn_office','gn_office.GN_ID','=','families.gn_division')
+                    ->first();
+
       $results = DB::table('results')->whereyouth_id($id)->first();
       $language = DB::table('language')->whereyouth_id($id)->first();
 

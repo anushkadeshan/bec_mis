@@ -95,6 +95,8 @@ return array(
     'Chumper\\Zipper\\' => array($vendorDir . '/chumper/zipper/src/Chumper/Zipper'),
     'BeyondCode\\LaravelWebSockets\\' => array($vendorDir . '/beyondcode/laravel-websockets/src'),
     'BeyondCode\\DumpServer\\' => array($vendorDir . '/beyondcode/laravel-dump-server/src'),
+    'Arcanedev\\Support\\' => array($vendorDir . '/arcanedev/support/src'),
+    'Arcanedev\\LogViewer\\' => array($vendorDir . '/arcanedev/log-viewer/src'),
     'App\\' => array($baseDir . '/app'),
     '' => array($vendorDir . '/nesbot/carbon/src'),
 );

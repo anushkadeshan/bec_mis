@@ -49,10 +49,10 @@ class FinancialSupportController extends Controller
             	}
                 $data1 = array(
                 	'district' => $request->district,
-                	'dsd' => $request->dsd,
+                	'dsd' => json_encode($request->dsd),
 	                'dm_name' =>$request->dm_name,
 	                'title_of_action' =>$request->title_of_action,  
-                    'activity_code' =>$request->activity_code,	
+                  'activity_code' =>$request->activity_code,	
 	                'program_date'	=>$request->program_date,
 	                'start_date'=>$request->start_date,
 	                'end_date' =>$request->end_date,
@@ -67,7 +67,7 @@ class FinancialSupportController extends Controller
 	                'review_report' => $request->review_report,
 	                'mou_report' => $input['mou_report'],
 	                'branch_id'	=> $branch_id,
-                    'created_at' => date('Y-m-d H:i:s')
+                  'created_at' => date('Y-m-d H:i:s')
                 );
 
                 $total_youth = ($request->total_male+$request->total_female);
@@ -82,7 +82,7 @@ class FinancialSupportController extends Controller
                 //insert youths
                 if($number>0){
                     for($i=0; $i<$number; $i++){
-                        $participants = DB::table('finacial_supports_youths')->insert(['youth_id'=>$request->youth_id[$i],'approved_amount'=>$request->approved_amount[$i],'installments'=>$request->installments[$i],'finacial_support_id'=>$finacial_support_id]);
+                        $participants = DB::table('finacial_supports_youths')->insert(['youth_id'=>$request->youth_id[$i],'approved_amount'=>$request->approved_amount[$i],'installments'=>$request->installments[$i],'finacial_support_id'=>$finacial_support_id,'created_at' => date('Y-m-d H:i:s')]);
                     }
 
                 }
@@ -289,8 +289,8 @@ class FinancialSupportController extends Controller
                    ->join('branches','branches.id','=','finacial_supports.branch_id')
                    ->join('institutes','institutes.id','=','finacial_supports.institute_id')
                    ->join('courses','courses.id', '=' ,'finacial_supports.course_id')
-                   ->join('dsd_office','dsd_office.ID','=','finacial_supports.dsd')
-                   ->select('finacial_supports.*','branches.*','finacial_supports.id as m_id','finacial_supports.course_id as c_id','finacial_supports.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date','dsd_office.*')
+                   //->join('dsd_office','dsd_office.ID','=','finacial_supports.dsd')
+                   ->select('finacial_supports.*','branches.*','finacial_supports.id as m_id','finacial_supports.course_id as c_id','finacial_supports.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
                    ->where('finacial_supports.id',$id)
                    ->first();
 
@@ -299,7 +299,7 @@ class FinancialSupportController extends Controller
                   ->select('finacial_supports_youths.*','finacial_supports_youths.id as f_id','youths.*')
                   ->where('finacial_supports_youths.finacial_support_id',$id)
                   ->get();
-
+        //dd($meeting);
         return view ('Activities.skill-development.edit.financial')->with(['meeting'=> $meeting,'youths'=>$youths]);
 
     }

@@ -32,7 +32,7 @@ class InstituteReviewController extends Controller
                 'dm_name' =>'required',	
                 'institute_id' => 'required',
                 'course_id' => 'required',
-                'review_date'=> 'required'
+                'program_date'=> 'required'
             ]);
 
             if($validator->passes()){
@@ -43,7 +43,7 @@ class InstituteReviewController extends Controller
 	                'dm_name' =>$request->dm_name,
 	                'title_of_action' =>json_encode($request->title_of_action),  
                     'activity_code' =>json_encode($request->activity_code),	
-	                'review_date'	=>$request->review_date,
+	                'program_date'	=>$request->program_date,
 	                'institute_id'	=>$request->institute_id,
 	                'head_of_institute' =>$request->head_of_institute,
 	                'contact' => $request->contact,
@@ -74,9 +74,9 @@ class InstituteReviewController extends Controller
                         $courses = DB::table('institute_review_courses')->insert(['course_id'=>$request->course_id[$i],'period_intake'=>$request->period_intake[$i],'intake_per_batch'=>$request->intake_per_batch[$i],'current_following'=>$request->current_following[$i],'passed_out'=>$request->passed_out[$i],'institute_reviews_id'=>$institute_reviews_id]);
                     }
 
-                    for($i=0; $i<$number; $i++){
-                        $courses_instiutes = DB::table('courses_institutes')->insert(['course_id'=>$request->course_id[$i],'institute_id'=>$request->institute_id]);
-                    }
+                    //for($i=0; $i<$number; $i++){
+                       // $courses_instiutes = DB::table('courses_institutes')->insert(['course_id'=>$request->course_id[$i],'institute_id'=>$request->institute_id]);
+                    //}
 
                 }
                 else{
@@ -157,10 +157,10 @@ class InstituteReviewController extends Controller
                     $data = DB::table('institute_reviews') 
                       ->join('branches','branches.id','=','institute_reviews.branch_id')
                       ->join('institutes','institutes.id','=','institute_reviews.institute_id')
-                      ->whereBetween('review_date', array($request->dateStart, $request->dateEnd))
+                      ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                       ->where('branch_id',$request->branch)
-                      ->select('institute_reviews.*','branches.*','institute_reviews.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','review_date as meeting_date')
-                      ->orderBy('review_date', 'desc')
+                      ->select('institute_reviews.*','branches.*','institute_reviews.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date')
+                      ->orderBy('program_date', 'desc')
                       ->get();    
                   }
                   else{
@@ -168,9 +168,9 @@ class InstituteReviewController extends Controller
                     $data = DB::table('institute_reviews') 
                         ->join('branches','branches.id','=','institute_reviews.branch_id')
                         ->join('institutes','institutes.id','=','institute_reviews.institute_id')
-                        ->whereBetween('review_date', array($request->dateStart, $request->dateEnd))
-                        ->select('institute_reviews.*','branches.*','institute_reviews.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','review_date as meeting_date')
-                        ->orderBy('review_date', 'desc')
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->select('institute_reviews.*','branches.*','institute_reviews.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                   }
                   else{
@@ -178,9 +178,9 @@ class InstituteReviewController extends Controller
                         ->join('branches','branches.id','=','institute_reviews.branch_id')
                         ->join('institutes','institutes.id','=','institute_reviews.institute_id')
                         ->where('institute_reviews.branch_id','=',$branch_id)
-                        ->whereBetween('review_date', array($request->dateStart, $request->dateEnd))
-                        ->select('institute_reviews.*','branches.*','institute_reviews.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','review_date as meeting_date')
-                        ->orderBy('review_date', 'desc')
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->select('institute_reviews.*','branches.*','institute_reviews.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                   }
                 
@@ -195,8 +195,8 @@ class InstituteReviewController extends Controller
                 $data = DB::table('institute_reviews') 
                         ->join('branches','branches.id','=','institute_reviews.branch_id')
                         ->join('institutes','institutes.id','=','institute_reviews.institute_id')
-                        ->select('institute_reviews.*','branches.*','institute_reviews.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','review_date as meeting_date')
-                        ->orderBy('review_date', 'desc')
+                        ->select('institute_reviews.*','branches.*','institute_reviews.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                 }
                 else{
@@ -204,8 +204,8 @@ class InstituteReviewController extends Controller
                         ->join('branches','branches.id','=','institute_reviews.branch_id')
                         ->join('institutes','institutes.id','=','institute_reviews.institute_id')
                         ->where('institute_reviews.branch_id','=',$branch_id)
-                        ->select('institute_reviews.*','branches.*','institute_reviews.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','review_date as meeting_date')
-                        ->orderBy('review_date', 'desc')
+                        ->select('institute_reviews.*','branches.*','institute_reviews.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                 }
             }
@@ -218,7 +218,7 @@ class InstituteReviewController extends Controller
         $meeting = DB::table('institute_reviews')
                    ->join('branches','branches.id','=','institute_reviews.branch_id')
                    ->join('institutes','institutes.id','=','institute_reviews.institute_id')
-                   ->select('institute_reviews.*','branches.*','institute_reviews.id as m_id','institute_reviews.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','review_date as meeting_date')
+                   ->select('institute_reviews.*','branches.*','institute_reviews.id as m_id','institute_reviews.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date')
                    ->where('institute_reviews.id',$id)
                    ->first();
         $courses = DB::table('institute_review_courses')
@@ -244,7 +244,7 @@ class InstituteReviewController extends Controller
       $meeting = DB::table('institute_reviews')
                    ->join('branches','branches.id','=','institute_reviews.branch_id')
                    ->join('institutes','institutes.id','=','institute_reviews.institute_id')
-                   ->select('institute_reviews.*','branches.*','institute_reviews.id as m_id','institute_reviews.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','review_date as meeting_date')
+                   ->select('institute_reviews.*','branches.*','institute_reviews.id as m_id','institute_reviews.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date')
                    ->where('institute_reviews.id',$id)
                    ->first();
         $courses = DB::table('institute_review_courses')
@@ -260,7 +260,7 @@ class InstituteReviewController extends Controller
     public function update(Request $request){
 
         $validator = Validator::make($request->all(),[
-            'review_date' =>'required',
+            'program_date' =>'required',
             'institute_id'  =>'required',
                 
             ]);
@@ -269,7 +269,7 @@ class InstituteReviewController extends Controller
         // echo "<script>console.log( 'Debug Objects: " . $meeting_date . "' );</script>";
 
         $data1 = array(   
-            'review_date' =>$request->review_date,
+            'program_date' =>$request->program_date,
             'institute_id'  =>$request->institute_id,
             'head_of_institute' =>$request->head_of_institute,
             'contact' => $request->contact,

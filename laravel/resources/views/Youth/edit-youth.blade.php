@@ -1,6 +1,6 @@
 @extends('layouts.main')
 @section('content')
-<div class="container">
+<div class="container-fluid">
 	<br>
     <section class="content">
 	    	<div class="row">
@@ -666,7 +666,7 @@
                                 <div class="row">
                                   <div class="col-md-6">
                                     <div class="form-group">
-                                      <label for="industry">Intrsting Industry</label>
+                                      <label for="industry">Preferable Industry</label>
                                       <?php 
                                         $industries = array('Agriculture & Food Processing','Automobiles','Banking & Financial Services','BPO or KPO ','Civil & Construction','Consumer Goods & Durables','Consulting','Education','Engineering','Ecommerce & Internet','Events & Entertainment','Export & Import','Government & Public Sector','Healthcare','Hotel, Travel & Leisure','Insurance','IT & Telecom','Logistics & Transportation','Manufacturing','Manpower & Security','News & Media','NGO & Non profit','Pharmaceutical','Real Estate','Wholesale & Retail','Others');
                                       ?>
@@ -680,7 +680,7 @@
                                   </div>
                                   <div class="col-md-6">
                                     <div class="form-group">
-                                      <label for="location">Intresting Location</label>
+                                      <label for="location">Preferable Location</label>
                                       <?php 
                                         $locations = array('Home District','Home Province','Other City','Colombo','Industrial Zone','Abroad');
                                       ?>
@@ -699,15 +699,15 @@
                                 </div>
                                 
                                 <div class="row">
-                                  <div class="col-md-6">
+                                  <div class="col-md-4">
                                     <div class="form-group">
                                       <label for="min_salary">Min. Salary Expectation</label>
                                       <input value="@if(!is_null($intresting_jobs)){{$intresting_jobs->min_salary}}@endif" type="number" step="10000" name="min_salary" id="min_salary" class="form-control">
                                     </div>
                                   </div>
-                                  <div class="col-md-6">
+                                  <div class="col-md-8">
                                     <div class="form-group">
-                                      <label for="intresting_courses">Intresting Courses (if You like to follow)</label>
+                                      <label for="intresting_courses">Preferable Courses (if You like to follow)</label>
                                       <select name="intresting_courses[]" id="intresting_courses"  class="form-control" multiple>
                                         <option value="">Select Option</option>
                                         @foreach($course_categories as $cc)
@@ -720,7 +720,7 @@
                                 <input type="hidden" name="i_jobs_id" value="@if(!is_null($intresting_jobs)){{$intresting_jobs->id}}@endif">
                                 <div style="width: 100%; height: 20px; border-bottom: 1px solid blue; text-align: center;padding-bottom: 10px">
                                   <span class="badge badge-info" style="font-size: 20px; padding: 0 10px; ">
-                                    Intresting Business
+                                    Preferable Business
                                   </span>
                                 </div>
                                 <br>
@@ -854,14 +854,14 @@
                                 </div>
                                 <div style="width: 100%; height: 20px; border-bottom: 1px solid blue; text-align: center;padding-bottom: 10px">
                                   <span class="badge badge-info" style="font-size: 20px; padding: 0 10px; ">
-                                   Intresting Jobs Details
+                                   Preferable Jobs Details
                                   </span>
                                 </div>
                                 <br>  
                                 <div class="row">
                                   <div class="col-md-6">
                                     <div class="form-group">
-                                      <label for="location">1. Intresting Location</label>
+                                      <label for="location">1. Preferable Location</label>
                                       <?php 
                                         $locations = array('Home District','Home Province','Other City','Colombo','Industrial Zone','Abroad');
                                       ?>
@@ -874,7 +874,7 @@
                                   </div>
                                   <div class="col-md-6">
                                     <div class="form-group">
-                                      <label for="industry">2. Intresting Industry</label>
+                                      <label for="industry">2. Preferable Industry</label>
                                       <?php 
                                         $industries = array('Agriculture & Food Processing','Automobiles','Banking & Financial Services','BPO or KPO ','Civil & Construction','Consumer Goods & Durables','Consulting','Education','Engineering','Ecommerce & Internet','Events & Entertainment','Export & Import','Government & Public Sector','Healthcare','Hotel, Travel & Leisure','Insurance','IT & Telecom','Logistics & Transportation','Manufacturing','Manpower & Security','News & Media','NGO & Non profit','Pharmaceutical','Real Estate','Wholesale & Retail','Others');
                                       ?>
@@ -933,7 +933,7 @@
                                 <input type="hidden" name="i_jobs_id" value="@if(!is_null($intresting_jobs)){{$intresting_jobs->id}}@endif">
                                 <div style="width: 100%; height: 20px; border-bottom: 1px solid blue; text-align: center;padding-bottom: 10px">
                                   <span class="badge badge-info" style="font-size: 20px; padding: 0 10px; ">
-                                    Intresting Business
+                                    Preferable Business
                                   </span>
                                 </div>
                                 <br>
@@ -1035,14 +1035,14 @@
                               <form id="no_jobs">
                                 <div style="width: 100%; height: 20px; border-bottom: 1px solid blue; text-align: center;padding-bottom: 10px">
                                   <span class="badge badge-info" style="font-size: 20px; padding: 0 10px; ">
-                                   Intrsting Jobs Details
+                                   Preferable Jobs Details
                                   </span>
                                 </div>
                                 <br>  
                                 <div class="row">
                                   <div class="col-md-6">
                                     <div class="form-group">
-                                      <label for="industry">1. Intresting Industry</label>
+                                      <label for="industry">1. Preferable Industry</label>
                                       <?php 
                                         $industries = array('Agriculture & Food Processing','Automobiles','Banking & Financial Services','BPO or KPO ','Civil & Construction','Consumer Goods & Durables','Consulting','Education','Engineering','Ecommerce & Internet','Events & Entertainment','Export & Import','Government & Public Sector','Healthcare','Hotel, Travel & Leisure','Insurance','IT & Telecom','Logistics & Transportation','Manufacturing','Manpower & Security','News & Media','NGO & Non profit','Pharmaceutical','Real Estate','Wholesale & Retail','Others');
                                       ?>
@@ -1057,7 +1057,7 @@
                                   </div>
                                   <div class="col-md-6">
                                     <div class="form-group">
-                                      <label for="location">2. Intresting Location</label>
+                                      <label for="location">2. Preferable Location</label>
                                       <?php 
                                         $locations = array('Home District','Home Province','Other City','Colombo','Industrial Zone','Abroad');
                                       ?>
@@ -1076,15 +1076,15 @@
                                 </div>
                                 
                                 <div class="row">
-                                  <div class="col-md-6">
+                                  <div class="col-md-4">
                                     <div class="form-group">
                                       <label for="min_salary">Min. Salary Expectation</label>
                                       <input type="number" value="@if(!is_null($intresting_jobs)){{$intresting_jobs->min_salary}}@endif" step="10000" name="min_salary" id="min_salary" class="form-control">
                                     </div>
                                   </div>
-                                  <div class="col-md-6">
+                                  <div class="col-md-8">
                                     <div class="form-group">
-                                      <label for="intresting_courses">Intresting Courses (if You like to follow)</label>
+                                      <label for="intresting_courses">Preferable Courses (if You like to follow)</label>
                                       <select name="intresting_courses[]" id="intresting_courses"  class="form-control" multiple>
                                         <option value="">Select Option</option>
                                         @foreach($course_categories as $cc)
@@ -1097,7 +1097,7 @@
                                 <input type="hidden" name="i_jobs_id" value="@if(!is_null($intresting_jobs)){{$intresting_jobs->id}}@endif">
                                 <div style="width: 100%; height: 20px; border-bottom: 1px solid blue; text-align: center;padding-bottom: 10px">
                                   <span class="badge badge-info" style="font-size: 20px; padding: 0 10px; ">
-                                    Intresting Business
+                                    Preferable Business
                                   </span>
                                 </div>
                                 <br>

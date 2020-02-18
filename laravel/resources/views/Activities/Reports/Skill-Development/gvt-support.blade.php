@@ -490,7 +490,7 @@ $('body').on('click', '.btn_view', function () {
           $('#review_id').data("id",data.meeting.review_report);
           
 
-          $("#link").attr("href",url);
+          //$("#link").attr("href",url);
 
           var course = data.meeting.c_id;
           var url2 = SITE_URL+ '/courses/'+course+'/view';

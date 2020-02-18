@@ -46,7 +46,7 @@
                         <td>{{ $no++ }}</td>
                         <td>{{ $cg->district }}</td>
                         <td>{{ $cg->ds_division }}</td>
-                        <td>{{ $cg->date }}</td>
+                        <td>{{ $cg->program_date }}</td>
                         <td>{{ $cg->time }}</td>
                         <td>{{ $cg->venue }}</td>
                         <td>{{ $cg->male }}</td>

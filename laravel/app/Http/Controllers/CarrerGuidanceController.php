@@ -39,7 +39,7 @@ class CarrerGuidanceController extends Controller
                 'dm_name' =>'required',
                 'title_of_action' =>'required', 
                 'activity_code' =>'required',   
-                'date'  =>'required',
+                'program_date'  =>'required',
                 'time_start'=>'required',
                 'time_end' =>'required',
                 'venue' =>'required',
@@ -61,7 +61,7 @@ class CarrerGuidanceController extends Controller
                     'dm_name' =>$request->dm_name,
                     'title_of_action' =>json_encode($request->title_of_action),  
                     'activity_code' =>json_encode($request->activity_code),  
-                    'date'  =>$request->date,
+                    'program_date'  =>$request->program_date,
                     'time_start'=>$request->time_start,
                     'time_end' =>$request->time_end,
                     'venue' =>$request->venue,
@@ -106,7 +106,7 @@ class CarrerGuidanceController extends Controller
               
                 if($number3>0){
                     for($i=0; $i<$number3; $i++){
-                        $youth = DB::table('cg_youths')->insert(['youth_id'=>$request->youth_id[$i],'career_field1'=>$request->career_field1[$i], 'career_field2'=>$request->career_field2[$i],'career_field3'=>$request->career_field3[$i],'career_guidances_id'=>$career_guidances_id]);
+                        $youth = DB::table('cg_youths')->insert(['youth_id'=>$request->youth_id[$i],'career_field1'=>$request->career_field1[$i], 'career_field2'=>$request->career_field2[$i],'career_field3'=>$request->career_field3[$i],'career_guidances_id'=>$career_guidances_id, 'created_at' => date('Y-m-d H:i:s'),]);
                     }
 
                 }
@@ -290,7 +290,7 @@ class CarrerGuidanceController extends Controller
 
         $participants2018 = DB::table('career_guidances')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(date)'), '=', '2018' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2018' )
                         ->first();
                         //->groupBy(function ($val) {
                                 // Carbon::parse($val->meeting_date)->format('Y');
@@ -299,15 +299,15 @@ class CarrerGuidanceController extends Controller
                         
            $participants2019 = DB::table('career_guidances')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(date)'), '=', '2019' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2019' )
                         ->first();            
             $participants2020 = DB::table('career_guidances')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(date)'), '=', '2020' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2020' )
                         ->first();   
             $participants2021 = DB::table('career_guidances')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(date)'), '=', '2021' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2021' )
                         ->first();           
         //dd($participants2018);
         }
@@ -321,7 +321,7 @@ class CarrerGuidanceController extends Controller
 
         $participants2018 = DB::table('career_guidances')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(date)'), '=', '2018' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2018' )
                       ->where('career_guidances.branch_id','=',$branch_id)
                         ->first();
                         //->groupBy(function ($val) {
@@ -331,17 +331,17 @@ class CarrerGuidanceController extends Controller
                         
            $participants2019 = DB::table('career_guidances')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(date)'), '=', '2019' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2019' )
                         ->where('career_guidances.branch_id','=',$branch_id)
                         ->first();            
             $participants2020 = DB::table('career_guidances')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(date)'), '=', '2020' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2020' )
                         ->where('career_guidances.branch_id','=',$branch_id)
                         ->first();   
             $participants2021 = DB::table('career_guidances')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(date)'), '=', '2021' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2021' )
                         ->where('career_guidances.branch_id','=',$branch_id)
                         ->first(); 
         }
@@ -360,15 +360,15 @@ class CarrerGuidanceController extends Controller
                     $data = DB::table('career_guidances') 
                         ->join('branches','branches.id','=','career_guidances.branch_id')
                         ->join('resourse_people','resourse_people.id', '=' ,'career_guidances.resourse_person_id')
-                        ->whereBetween('date', array($request->dateStart, $request->dateEnd))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->where('branch_id','=',$request->branch)
-                        ->select('career_guidances.*','branches.*','career_guidances.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name','date as meeting_date')
-                        ->orderBy('date', 'desc')
+                        ->select('career_guidances.*','branches.*','career_guidances.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name','program_date as meeting_date')
+                        ->orderBy('program_date', 'desc')
                         ->get();
 
                     $data1 = DB::table('cg_youth_selected') 
                         ->join('career_guidances','career_guidances.id', '=' ,'cg_youth_selected.career_guidances_id')
-                        ->whereBetween('date', array($request->dateStart, $request->dateEnd))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->where('career_guidances.branch_id','=',$request->branch)
                         ->select('cg_youth_selected.*',DB::raw("SUM(male) as total_male"),DB::raw("SUM(female) as total_female"))
                         ->orderBy('cg_youth_selected.id','asc')
@@ -385,15 +385,15 @@ class CarrerGuidanceController extends Controller
                     $data = DB::table('career_guidances') 
                         ->join('branches','branches.id','=','career_guidances.branch_id')
                         ->join('resourse_people','resourse_people.id', '=' ,'career_guidances.resourse_person_id')
-                        ->whereBetween('date', array($request->dateStart, $request->dateEnd))
-                        ->select('career_guidances.*','branches.*','career_guidances.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name','date as meeting_date')
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->select('career_guidances.*','branches.*','career_guidances.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name','program_date as meeting_date')
                         //->where('career_guidances.branch_id','=',$branch_id)
-                        ->orderBy('date', 'desc')
+                        ->orderBy('program_date', 'desc')
                         ->get();
 
                     $data1 = DB::table('cg_youth_selected') 
                         ->join('career_guidances','career_guidances.id', '=' ,'cg_youth_selected.career_guidances_id')
-                        ->whereBetween('date', array($request->dateStart, $request->dateEnd))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->select('cg_youth_selected.*',DB::raw("SUM(male) as total_male"),DB::raw("SUM(female) as total_female"))
                         ->groupBy('requirement')
                         //->where('career_guidances.branch_id','=',$branch_id)
@@ -404,15 +404,15 @@ class CarrerGuidanceController extends Controller
                     $data = DB::table('career_guidances') 
                         ->join('branches','branches.id','=','career_guidances.branch_id')
                         ->join('resourse_people','resourse_people.id', '=' ,'career_guidances.resourse_person_id')
-                        ->whereBetween('date', array($request->dateStart, $request->dateEnd))
-                        ->select('career_guidances.*','branches.*','career_guidances.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name','date as meeting_date')
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->select('career_guidances.*','branches.*','career_guidances.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name','program_date as meeting_date')
                         ->where('career_guidances.branch_id','=',$branch_id)
-                        ->orderBy('date', 'desc')
+                        ->orderBy('program_date', 'desc')
                         ->get();
 
                     $data1 = DB::table('cg_youth_selected') 
                         ->join('career_guidances','career_guidances.id', '=' ,'cg_youth_selected.career_guidances_id')
-                        ->whereBetween('date', array($request->dateStart, $request->dateEnd))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->select('cg_youth_selected.*',DB::raw("SUM(male) as total_male"),DB::raw("SUM(female) as total_female"))
                         ->groupBy('requirement')
                         ->where('career_guidances.branch_id','=',$branch_id)
@@ -430,8 +430,8 @@ class CarrerGuidanceController extends Controller
                 $data = DB::table('career_guidances') 
                         ->join('branches','branches.id','=','career_guidances.branch_id')
                         ->join('resourse_people','resourse_people.id', '=' ,'career_guidances.resourse_person_id')
-                        ->select('career_guidances.*','branches.*','career_guidances.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name','date as meeting_date')
-                        ->orderBy('date', 'desc')
+                        ->select('career_guidances.*','branches.*','career_guidances.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name','program_date as meeting_date')
+                        ->orderBy('program_date', 'desc')
                         ->get();
 
                 $data1 = DB::table('cg_youth_selected') 
@@ -446,9 +446,9 @@ class CarrerGuidanceController extends Controller
                      $data = DB::table('career_guidances') 
                         ->join('branches','branches.id','=','career_guidances.branch_id')
                         ->join('resourse_people','resourse_people.id', '=' ,'career_guidances.resourse_person_id')
-                        ->select('career_guidances.*','branches.*','career_guidances.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name','date as meeting_date')
+                        ->select('career_guidances.*','branches.*','career_guidances.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name','program_date as meeting_date')
                         ->where('career_guidances.branch_id','=',$branch_id)
-                        ->orderBy('date', 'desc')                     
+                        ->orderBy('program_date', 'desc')                     
                         ->get();
 
                 $data1 = DB::table('cg_youth_selected') 
@@ -466,7 +466,7 @@ class CarrerGuidanceController extends Controller
                     'data1' => $data1,
                 ));
 
-                echo "<script>console.log('Debug Objects: " . $data1 . "' );</script>";
+                //echo "<script>console.log('Debug Objects: " . $data1 . "' );</script>";
                 //dd($data1);
         }
     
@@ -585,7 +585,7 @@ class CarrerGuidanceController extends Controller
     public function update(Request $request){
 
         $validator = Validator::make($request->all(),[
-                'date'  =>'required',
+                'program_date'  =>'required',
                 'time_start'=>'required',
                 'time_end' =>'required',
                 'venue' =>'required',
@@ -597,7 +597,7 @@ class CarrerGuidanceController extends Controller
 
         $data1 = array(
             
-            'date'  =>$request->date,
+            'program_date'  =>$request->program_date,
             'time_start'=>$request->time_start,
             'time_end' =>$request->time_end,
             'venue' =>$request->venue,

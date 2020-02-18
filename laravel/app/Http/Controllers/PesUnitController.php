@@ -31,7 +31,7 @@ class PesUnitController extends Controller
                 'dm_name' =>'required',
                 'title_of_action' =>'required',	
                 'activity_code' =>'required',	
-                'date'	=>'required',
+                'program_date'	=>'required',
                 'records' => 'required',
                 'unit_available'=> 'required',
 	            'space_available'=> 'required',
@@ -55,7 +55,7 @@ class PesUnitController extends Controller
 	                'dm_name' =>$request->dm_name,
 	                'title_of_action' =>$request->title_of_action,	
 	                'activity_code' =>$request->activity_code,	
-	                'date'	=>$request->date,
+	                'program_date'	=>$request->program_date,
 	                'pwd_male'=>$request->pwd_male,
 	                'pwd_female'=>$request->pwd_female,
 	                'responding_officer_name'=> $request->responding_officer_name,
@@ -166,10 +166,10 @@ class PesUnitController extends Controller
                 if($request->branch !=''){
                     $data = DB::table('pes_units') 
                         ->join('branches','branches.id','=','pes_units.branch_id')
-                        ->whereBetween('date', array($request->dateStart, $request->dateEnd))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->where('branch_id',$request->branch)
-                        ->select('pes_units.*','branches.*','pes_units.id as m_id','branches.name as branch_name','date as meeting_date')
-                        ->orderBy('date', 'desc')
+                        ->select('pes_units.*','branches.*','pes_units.id as m_id','branches.name as branch_name','program_date as meeting_date')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                 }
                 else{
@@ -178,19 +178,19 @@ class PesUnitController extends Controller
 
                     $data = DB::table('pes_units') 
                         ->join('branches','branches.id','=','pes_units.branch_id')
-                        ->whereBetween('date', array($request->dateStart, $request->dateEnd))
-                        ->select('pes_units.*','branches.*','pes_units.id as m_id','branches.name as branch_name','date as meeting_date')
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->select('pes_units.*','branches.*','pes_units.id as m_id','branches.name as branch_name','program_date as meeting_date')
                         //->where('pes_units.branch_id','=',$branch_id)
-                        ->orderBy('date', 'desc')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                     }
                     else{
                     $data = DB::table('pes_units') 
                         ->join('branches','branches.id','=','pes_units.branch_id')
-                        ->whereBetween('date', array($request->dateStart, $request->dateEnd))
-                        ->select('pes_units.*','branches.*','pes_units.id as m_id','branches.name as branch_name','date as meeting_date')
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->select('pes_units.*','branches.*','pes_units.id as m_id','branches.name as branch_name','program_date as meeting_date')
                         ->where('pes_units.branch_id','=',$branch_id)
-                        ->orderBy('date', 'desc')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                     }
                 }
@@ -203,16 +203,16 @@ class PesUnitController extends Controller
                 
                     $data = DB::table('pes_units') 
                             ->join('branches','branches.id','=','pes_units.branch_id')
-                            ->select('pes_units.*','branches.*','pes_units.id as m_id','branches.name as branch_name','date as meeting_date')
-                            ->orderBy('date', 'desc')
+                            ->select('pes_units.*','branches.*','pes_units.id as m_id','branches.name as branch_name','program_date as meeting_date')
+                            ->orderBy('program_date', 'desc')
                             ->get();
                 }
                 else{
                     $data = DB::table('pes_units') 
                         ->join('branches','branches.id','=','pes_units.branch_id')
-                        ->select('pes_units.*','branches.*','pes_units.id as m_id','branches.name as branch_name','date as meeting_date')
+                        ->select('pes_units.*','branches.*','pes_units.id as m_id','branches.name as branch_name','program_date as meeting_date')
                          ->where('pes_units.branch_id','=',$branch_id)
-                        ->orderBy('date', 'desc')                     
+                        ->orderBy('program_date', 'desc')                     
 
                         ->get();
                 }
@@ -262,7 +262,7 @@ class PesUnitController extends Controller
     public function update(Request $request){
 
         $validator = Validator::make($request->all(),[
-                'date'  =>'required',
+                'program_date'  =>'required',
                 
             ]);
 
@@ -270,7 +270,7 @@ class PesUnitController extends Controller
         // echo "<script>console.log( 'Debug Objects: " . $meeting_date . "' );</script>";
 
         $data1 = array(
-            'date'  =>$request->date,
+            'program_date'  =>$request->program_date,
             'pwd_male'=>$request->pwd_male,
             'pwd_female'=>$request->pwd_female,
             'responding_officer_name'=> $request->responding_officer_name,

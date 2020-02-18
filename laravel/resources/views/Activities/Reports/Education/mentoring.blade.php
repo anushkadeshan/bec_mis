@@ -186,7 +186,7 @@
           									  <li class="list-group-item border-0"><strong>District : </strong><span id="district"></span></li>
           									  <li class="list-group-item border-0"><strong>DSDs : </strong><span id="dsd"></span></li>
           									  <li class="list-group-item border-0"><strong>DM Name : </strong><span id="dm_name"></span></li>
-          									  <li class="list-group-item border-0"><strong>Meeting Date : </strong><span id="meeting_date"></span></li>
+          									  <li class="list-group-item border-0"><strong>Program Date : </strong><span id="meeting_date"></span></li>
           									  <li class="list-group-item border-0"><strong>Time Start : </strong><span id="time_start"></span></li>
           									  <li class="list-group-item border-0"><strong>Time End : </strong><span id="time_end"></span></li>
           									  <li class="list-group-item border-0"><strong>Venue : </strong><span id="venue"></span></li>
@@ -327,7 +327,7 @@ var dataTable = $("#example").DataTable({
   $.each(data, function(index, value) {
     console.log(value);
     // use data table row.add, then .draw for table refresh
-    dataTable.row.add([count++, value.meeting_date, value.total_male, value.total_female, value.pwd_male,value.pwd_female,value.fathers, value.mothers, value.male_gurdians, value.female_gurdians, value.ext,'<div class="btn-group"><button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button></div>',value.verified]).draw();
+    dataTable.row.add([count++, value.program_date, value.total_male, value.total_female, value.pwd_male,value.pwd_female,value.fathers, value.mothers, value.male_gurdians, value.female_gurdians, value.ext,'<div class="btn-group"><button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button></div>',value.verified]).draw();
 
      var total_male = value.total_male;
      var total_female = value.total_female;
@@ -400,7 +400,7 @@ $('body').on('click', '.btn_view', function () {
           $('#district').text(data.meeting.district);
           $('#dsd').text(data.meeting.dsd);
           $('#dm_name').text(data.meeting.dm_name);
-          $('#meeting_date').text(data.meeting.meeting_date);
+          $('#meeting_date').text(data.meeting.program_date);
           $('#time_start').text(data.meeting.time_start);
           $('#time_end').text(data.meeting.time_end);
           $('#venue').text(data.meeting.venue);

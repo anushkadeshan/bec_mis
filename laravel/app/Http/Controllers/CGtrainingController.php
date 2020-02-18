@@ -36,7 +36,7 @@ class CGtrainingController extends Controller
                 'dm_name' =>'required',
                 'title_of_action' =>'required',	
                 'activity_code' =>'required',	
-                'meeting_date'	=>'required',
+                'program_date'	=>'required',
                 'time_start'=>'required',
                 'time_end' =>'required',
                 'venue'	=>'required',
@@ -62,7 +62,7 @@ class CGtrainingController extends Controller
 	                'dm_name' =>$request->dm_name,
 	                'title_of_action' =>$request->title_of_action,	
 	                'activity_code' =>$request->activity_code,	
-	                'meeting_date'	=>$request->meeting_date,
+	                'program_date'	=>$request->program_date,
 	                'time_start'=>$request->time_start,
 	                'time_end' =>$request->time_end,
 	                'venue'	=>$request->venue,
@@ -133,7 +133,7 @@ class CGtrainingController extends Controller
 
         $participants2018 = DB::table('cg_trainings')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2018' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2018' )
                         ->first();
                         //->groupBy(function ($val) {
                                 // Carbon::parse($val->meeting_date)->format('Y');
@@ -142,15 +142,15 @@ class CGtrainingController extends Controller
                         
            $participants2019 = DB::table('cg_trainings')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2019' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2019' )
                         ->first();            
             $participants2020 = DB::table('cg_trainings')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2020' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2020' )
                         ->first();   
             $participants2021 = DB::table('cg_trainings')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2021' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2021' )
                         ->first();           
         //dd($participants2018);
         }
@@ -164,7 +164,7 @@ class CGtrainingController extends Controller
 
         $participants2018 = DB::table('cg_trainings')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2018' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2018' )
                       ->where('cg_trainings.branch_id','=',$branch_id)
                         ->first();
                         //->groupBy(function ($val) {
@@ -174,17 +174,17 @@ class CGtrainingController extends Controller
                         
            $participants2019 = DB::table('cg_trainings')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2019' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2019' )
                       ->where('cg_trainings.branch_id','=',$branch_id)
                         ->first();            
             $participants2020 = DB::table('cg_trainings')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2020' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2020' )
                       ->where('cg_trainings.branch_id','=',$branch_id)
                         ->first();   
             $participants2021 = DB::table('cg_trainings')                        
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(meeting_date)'), '=', '2021' )
+                        ->where(DB::raw('YEAR(program_date)'), '=', '2021' )
                         ->where('cg_trainings.branch_id','=',$branch_id)
                         ->first();           
         //dd($participants2018);
@@ -203,10 +203,10 @@ class CGtrainingController extends Controller
                     $data = DB::table('cg_trainings') 
                         ->join('branches','branches.id','=','cg_trainings.branch_id')
                         ->join('resourse_people','resourse_people.id', '=' ,'cg_trainings.resourse_person_id')
-                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->where('branch_id',$request->branch)
                         ->select('cg_trainings.*','branches.*','cg_trainings.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')
-                        ->orderBy('meeting_date', 'desc')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                 }
                 else{
@@ -216,20 +216,20 @@ class CGtrainingController extends Controller
                     $data = DB::table('cg_trainings') 
                         ->join('branches','branches.id','=','cg_trainings.branch_id')
                         ->join('resourse_people','resourse_people.id', '=' ,'cg_trainings.resourse_person_id')
-                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->select('cg_trainings.*','branches.*','cg_trainings.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')                     
                         //->where('cg_trainings.branch_id','=',$branch_id)
-                        ->orderBy('meeting_date', 'desc')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                 }
                 else{
                     $data = DB::table('cg_trainings') 
                         ->join('branches','branches.id','=','cg_trainings.branch_id')
                         ->join('resourse_people','resourse_people.id', '=' ,'cg_trainings.resourse_person_id')
-                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->where('cg_trainings.branch_id','=',$branch_id)
                         ->select('cg_trainings.*','branches.*','cg_trainings.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')                     
-                        ->orderBy('meeting_date', 'desc')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                 }
                 }
@@ -243,7 +243,7 @@ class CGtrainingController extends Controller
                         ->join('branches','branches.id','=','cg_trainings.branch_id')
                         ->join('resourse_people','resourse_people.id', '=' ,'cg_trainings.resourse_person_id')
                         ->select('cg_trainings.*','branches.*','cg_trainings.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')
-                        ->orderBy('meeting_date', 'desc')
+                        ->orderBy('program_date', 'desc')
                         ->get();
                 }
                 else{
@@ -251,7 +251,7 @@ class CGtrainingController extends Controller
                         ->join('branches','branches.id','=','cg_trainings.branch_id')
                         ->join('resourse_people','resourse_people.id', '=' ,'cg_trainings.resourse_person_id')
                         ->select('cg_trainings.*','branches.*','cg_trainings.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')
-                        ->orderBy('meeting_date', 'desc')                      
+                        ->orderBy('program_date', 'desc')                      
                         ->where('cg_trainings.branch_id','=',$branch_id)
                         ->get();
                 }
@@ -343,7 +343,7 @@ class CGtrainingController extends Controller
     public function update(Request $request){
 
         $validator = Validator::make($request->all(),[
-                'meeting_date'  =>'required',
+                'program_date'  =>'required',
                 'time_start'=>'required',
                 'time_end' =>'required',
                 'venue' =>'required',
@@ -354,7 +354,7 @@ class CGtrainingController extends Controller
         // echo "<script>console.log( 'Debug Objects: " . $meeting_date . "' );</script>";
 
         $data1 = array( 
-            'meeting_date'  =>$request->meeting_date,
+            'program_date'  =>$request->program_date,
             'time_start'=>$request->time_start,
             'time_end' =>$request->time_end,
             'venue' =>$request->venue,

@@ -33,9 +33,8 @@
 	          		<div class="col-md-4">
 	          			<div class="form-group">
 						    <label for="dsd">2. DSD </label>
-						    <select name="dsd" id="dsd" class="form-control">
-								<option value="">Select Option</option>
-								
+						    <select name="dsd[]" id="dsd" class="form-control" multiple>
+							
     					   </select>
 						</div>
 	          		</div>
@@ -266,7 +265,7 @@
 	          		</div>
 	          		<div class="col-md-6">
 	          			<div class="form-group">
-	          				<label>MOU</label>
+	          				<label>Approval email of scholaships</label>
 	          				<input type="file" name="mou_report" class="form-control">
 	          			</div>	
 	          		</div>
@@ -301,7 +300,7 @@
    	  			$('#dsd').empty();
 
    	  			$.each(data, function(index, dsObj){
-   	  				$('#dsd').append('<option value="'+dsObj.ID+'">'+dsObj.DSD_Name+'</option>');
+   	  				$('#dsd').append('<option value="'+dsObj.DSD_Name+'">'+dsObj.DSD_Name+'</option>');
 
    	  			});
    	  		});

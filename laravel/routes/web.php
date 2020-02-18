@@ -181,9 +181,7 @@ Route::get('/home/admin', 'DashboardController@admin')->name('home/admin')->midd
 
 //M&E
 
-Route::get('/completion-reports', function () {	
-    return view('Activities.landing');
-});
+Route::get('/completion-reports', 'ProgressController@completion_reports')->middleware('can:view-M&E-reports');
 
 Route::get('/education', function () {	
     return view('Activities.education.landing-page');
@@ -498,8 +496,15 @@ Route::post('/activity/job-linking/update-individual', 'PlacementController@upda
 
 Route::get('/stake-holders', 'StakeHolderMeetingController@participants')->middleware('can:view-M&E-reports');
 
+Route::get('/completion_targets', 'ProgressController@completion_targets')->middleware('can:admin');
+Route::post('/completion_targets-add', 'ProgressController@completion_targets_add')->middleware('can:admin');
+Route::post('/completion_targets-update', 'ProgressController@completion_targets_update')->middleware('can:admin');
+Route::get('/baselines', 'ProgressController@baselines')->name('baselines');
+
 Route::get('event', function () {
     event(new userLogin('User Logged'));
 });
+
+
 
 });

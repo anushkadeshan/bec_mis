@@ -109,7 +109,7 @@ class CourseSupportController extends Controller
                 	'dsd' => $request->dsd,
 	                'dm_name' =>$request->dm_name,
 	                'title_of_action' =>json_encode($request->title_of_action),  
-                    'activity_code' =>json_encode($request->activity_code),	
+                  'activity_code' =>json_encode($request->activity_code),	
 	                'program_date'	=>$request->program_date,
 	                'start_date'=>$request->start_date,
 	                'end_date' =>$request->end_date,
@@ -136,7 +136,7 @@ class CourseSupportController extends Controller
                 //insert youths
                 if($number>0){
                     for($i=0; $i<$number; $i++){
-                        $participants = DB::table('course_supports_youth')->insert(['youth_id'=>$request->youth_id[$i],'nature_of_support'=>$request->nature_of_support[$i],'institute_type'=> $request->institute_type[$i],'course_support_id'=>$course_support_id]);
+                        $participants = DB::table('course_supports_youth')->insert(['youth_id'=>$request->youth_id[$i],'nature_of_support'=>$request->nature_of_support[$i],'institute_type'=> $request->institute_type[$i],'course_support_id'=>$course_support_id,'created_at' => date('Y-m-d H:i:s'),]);
                     }
 
                 }
@@ -401,7 +401,7 @@ class CourseSupportController extends Controller
                    ->join('institutes','institutes.id','=','course_supports.institute_id')
                    ->join('courses','courses.id', '=' ,'course_supports.course_id')
                    ->join('institute_reviews','institute_reviews.id', '=' ,'course_supports.review_report')
-                   ->select('course_supports.*','branches.*','course_supports.id as m_id','course_supports.course_id as c_id','course_supports.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
+                   ->select('course_supports.*','branches.*','course_supports.id as m_id','course_supports.course_id as c_id','course_supports.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','course_supports.program_date as meeting_date')
                    ->where('course_supports.id',$id)
                    ->first();
         $youths = DB::table('course_supports_youth')
@@ -486,7 +486,7 @@ class CourseSupportController extends Controller
                     ->join('branches','branches.id','=','course_supports.branch_id')
                     ->join('institutes','institutes.id','=','course_supports.institute_id')
                     ->join('courses','courses.id', '=' ,'course_supports.course_id')
-                    ->select('course_supports.*','branches.*','course_supports.id as m_id','course_supports.course_id as c_id','course_supports.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','youths.name as youth_name')
+                    ->select('course_supports.*','branches.*','course_supports.id as m_id','course_supports.course_id as c_id','course_supports.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','youths.name as youth_name','youths.id as youth_id')
                     ->get();
         }
         else{
@@ -496,7 +496,7 @@ class CourseSupportController extends Controller
                     ->join('branches','branches.id','=','course_supports.branch_id')
                     ->join('institutes','institutes.id','=','course_supports.institute_id')
                     ->join('courses','courses.id', '=' ,'course_supports.course_id')
-                    ->select('course_supports.*','branches.*','course_supports.id as m_id','course_supports.course_id as c_id','course_supports.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','youths.name as youth_name')
+                    ->select('course_supports.*','branches.*','course_supports.id as m_id','course_supports.course_id as c_id','course_supports.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','youths.name as youth_name','youths.id as youth_id')
                     ->where('course_supports.branch_id',$branch_id)
                     ->get();
         }
