@@ -233,6 +233,7 @@ class CarrerGuidanceController extends Controller
                     'resourse_person_id'=>$request->resourse_person_id,
                     'attendance' => $input['attendance'],
                     'training_report' => $input['training_report'],
+                    'created_at' => date('Y-m-d H:i:s'),
                     'branch_id' => $branch_id
                 );
 
@@ -343,7 +344,10 @@ class CarrerGuidanceController extends Controller
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
                         ->where(DB::raw('YEAR(program_date)'), '=', '2021' )
                         ->where('career_guidances.branch_id','=',$branch_id)
-                        ->first(); 
+                        ->first();  
+
+
+
         }
         $branches = DB::table('branches')->get();
         return view('Activities.Reports.career-guidance.cg')->with(['meetings'=>$meetings,'branches'=>$branches,'participants2018'=>$participants2018,'participants2019'=>$participants2019,'participants2020'=>$participants2020,'participants2021'=>$participants2021]);
@@ -706,13 +710,35 @@ class CarrerGuidanceController extends Controller
         return view('Activities.Reports.career-guidance.cg-youths')->with(['youths'=>$cg_youths]);
     }
 
-     public function view_tot(){
-
+    public function youth_progress(){
         $branch_id = Auth::user()->branch;
         if(is_null($branch_id)){
+        $cg_youths = DB::table('cg_youths')
+                    ->join('youths','youths.id','=','cg_youths.youth_id')
+                    ->join('career_guidances','career_guidances.id','=','cg_youths.career_guidances_id')
+                    ->join('branches','branches.id','=','career_guidances.branch_id')
+                    ->select('cg_youths.*','youths.*','youths.id as youth_id','branches.*','career_guidances.*','youths.name as youth_name')
+                    ->get();
+
+        }
+        else{
+            $cg_youths = DB::table('cg_youths')
+                    ->join('youths','youths.id','=','cg_youths.youth_id')
+                    ->join('career_guidances','career_guidances.id','=','cg_youths.career_guidances_id')
+                    ->join('branches','branches.id','=','career_guidances.branch_id')
+                    ->where('career_guidances.branch_id',$branch_id)
+                    ->select('cg_youths.*','youths.*','youths.id as youth_id','branches.*','career_guidances.*','youths.name as youth_name')
+                    ->get();
+        }
+        $branches = DB::table('branches')->get();
+
+        return view('Youth.youth-prgress')->with(['youths'=>$cg_youths,'branches'=> $branches]);
+    }
+
+     public function view_tot(){
+
         $meetings = DB::table('tot_cg')
                       //->leftjoin('mentoring_gvt_officials','mentoring_gvt_officials.mentoring_id','=','mentoring.id')
-                      ->join('branches','branches.id','=','tot_cg.branch_id')
                       ->get();
         //dd($mentorings);
 
@@ -756,73 +782,8 @@ class CarrerGuidanceController extends Controller
                         ->where('organization','PVT. Training Institutes')
                         ->first();    
         //dd($participants2018);
-        }
-        else{
-            $meetings = DB::table('tot_cg')
-                      //->leftjoin('mentoring_gvt_officials','mentoring_gvt_officials.mentoring_id','=','mentoring.id')
-                      ->join('branches','branches.id','=','tot_cg.branch_id')                       
-                      ->where('tot_cg.branch_id','=',$branch_id)
-                      ->get();
-        //dd($mentorings);
-
-        $participants2018 = DB::table('tot_cg_participants')                   
-                        ->join('tot_cg','tot_cg.id','=','tot_cg_participants.tot_cg_id')                  
-                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(program_date)'), '=', '2018' )
-                        ->where('tot_cg.branch_id','=',$branch_id)
-                        ->first();
-                        //->groupBy(function ($val) {
-                                // Carbon::parse($val->meeting_date)->format('Y');
-                        //});
-                        //->groupBy(DB::raw("year(meeting_date)"))
-                        
-           $participants2019 = DB::table('tot_cg_participants')                   
-                        ->join('tot_cg','tot_cg.id','=','tot_cg_participants.tot_cg_id')                  
-                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(program_date)'), '=', '2019' )
-                        ->where('tot_cg.branch_id','=',$branch_id)
-                        ->first();  
-
-            $participants2020 = DB::table('tot_cg_participants')                   
-                        ->join('tot_cg','tot_cg.id','=','tot_cg_participants.tot_cg_id')                  
-                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(program_date)'), '=', '2020' )
-                        ->where('tot_cg.branch_id','=',$branch_id)
-                        ->first();
-
-            $participants2021 =DB::table('tot_cg_participants')                   
-                        ->join('tot_cg','tot_cg.id','=','tot_cg_participants.tot_cg_id')                  
-                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where(DB::raw('YEAR(program_date)'), '=', '2021' )
-                        ->where('tot_cg.branch_id','=',$branch_id)
-                        ->first(); 
-
-            $bec = DB::table('tot_cg_participants') 
-                        ->join('tot_cg','tot_cg.id','=','tot_cg_participants.tot_cg_id')                  
-                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where('tot_cg.branch_id','=',$branch_id)
-                        ->where('organization','BEC')
-                       ->first();
-                        
-           $gvt = DB::table('tot_cg_participants')                   
-                        ->join('tot_cg','tot_cg.id','=','tot_cg_participants.tot_cg_id')                  
-                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where('tot_cg.branch_id','=',$branch_id)
-                        ->where('organization','GVT. Officials')
-                        ->first();  
-            $gvt_TI = DB::table('tot_cg_participants')                   
-                        ->join('tot_cg','tot_cg.id','=','tot_cg_participants.tot_cg_id')                  
-                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where('tot_cg.branch_id','=',$branch_id)
-                        ->where('organization','GVT. Training Institutes')
-                        ->first();
-            $pvt_TI =DB::table('tot_cg_participants')                   
-                        ->join('tot_cg','tot_cg.id','=','tot_cg_participants.tot_cg_id')                  
-                        ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
-                        ->where('tot_cg.branch_id','=',$branch_id)
-                        ->where('organization','PVT. Training Institutes')
-                        ->first();    
-        }
+      
+        
         $branches = DB::table('branches')->get();
        // dd($participants2018);
         return view('Activities.Reports.career-guidance.tot')->with(['meetings'=>$meetings,'branches'=>$branches,'participants2018'=>$participants2018,'participants2019'=>$participants2019,'participants2020'=>$participants2020,'participants2021'=>$participants2021,'bec'=> $bec,'gvt' => $gvt,'gvt_TI'=>$gvt_TI,'pvt_TI'=>$pvt_TI]);
@@ -833,33 +794,11 @@ class CarrerGuidanceController extends Controller
         {
             if($request->dateStart != '' && $request->dateEnd != '')
             {
-                $branch_id = Auth::user()->branch;
-                if($request->branch !=''){
-                    
-
+        
+     
                     $data = DB::table('tot_cg') 
-                        ->join('branches','branches.id','=','tot_cg.branch_id')
                         ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
-                        ->where('branch_id',$request->branch)
-                        ->select('tot_cg.*','branches.*','tot_cg.id as m_id','branches.name as branch_name')
-                        ->orderBy('meeting_date', 'desc')
-                        ->get();
-
-                    $data1 = DB::table('tot_cg_participants') 
-                        ->join('tot_cg','tot_cg.id','=','tot_cg_participants.tot_cg_id')
-                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
-                        ->where('branch_id',$request->branch)
-                        ->orderBy('meeting_date', 'desc')
-                        ->get();
-                }
-                else{
-                    
-                    if(is_null($branch_id)){
-
-                    $data = DB::table('tot_cg') 
-                        ->join('branches','branches.id','=','tot_cg.branch_id')
-                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
-                        ->select('tot_cg.*','branches.*','tot_cg.id as m_id','branches.name as branch_name')
+                        ->select('tot_cg.*','tot_cg.id as m_id')
                        // ->where('branch_id',$branch_id)
                         ->orderBy('meeting_date', 'desc')
                         ->get();
@@ -870,35 +809,13 @@ class CarrerGuidanceController extends Controller
                        // ->where('tot_cg.branch_id',$branch_id)
                         ->orderBy('meeting_date', 'desc')
                         ->get();
-                    }
-                    else{
-                        $data = DB::table('tot_cg') 
-                        ->join('branches','branches.id','=','tot_cg.branch_id')
-                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
-                        ->select('tot_cg.*','branches.*','tot_cg.id as m_id','branches.name as branch_name')
-                        ->where('branch_id',$branch_id)
-                        ->orderBy('meeting_date', 'desc')
-                        ->get();
-
-                    $data1 = DB::table('tot_cg_participants') 
-                        ->join('tot_cg','tot_cg.id','=','tot_cg_participants.tot_cg_id')
-                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
-                        ->where('tot_cg.branch_id',$branch_id)
-                        ->orderBy('meeting_date', 'desc')
-                        ->get();
-                    }
-
-                }
-                
+                  
             }
         else
             {
-                $branch_id = Auth::user()->branch;
-                if(is_null($branch_id)){
-
+                
                 $data = DB::table('tot_cg') 
-                        ->join('branches','branches.id','=','tot_cg.branch_id')
-                        ->select('tot_cg.*','branches.*','tot_cg.id as m_id','branches.name as branch_name')
+                        ->select('tot_cg.*','tot_cg.id as m_id')
                         ->orderBy('meeting_date', 'desc')                        
                         ->get();
 
@@ -906,21 +823,8 @@ class CarrerGuidanceController extends Controller
                         ->join('tot_cg','tot_cg.id','=','tot_cg_participants.tot_cg_id')
                         ->orderBy('meeting_date', 'desc')
                         ->get();
-                }
-                else{
-                    $data = DB::table('tot_cg') 
-                        ->join('branches','branches.id','=','tot_cg.branch_id')
-                        ->select('tot_cg.*','branches.*','tot_cg.id as m_id','branches.name as branch_name')
-                        ->where('tot_cg.branch_id',$branch_id)
-                        ->orderBy('meeting_date', 'desc')
-                        ->get();
-
-                    $data1 = DB::table('tot_cg_participants') 
-                        ->join('tot_cg','tot_cg.id','=','tot_cg_participants.tot_cg_id')
-                        ->where('tot_cg.branch_id',$branch_id)
-                        ->orderBy('meeting_date', 'desc')
-                        ->get();
-                }
+                
+           
             }
                 return response()->json(array( 
                     'data1' => $data,
@@ -932,9 +836,8 @@ class CarrerGuidanceController extends Controller
 
     public function view_meeting_tot($id){
         $meeting = DB::table('tot_cg')
-                   ->join('branches','branches.id','=','tot_cg.branch_id')
                    ->join('resourse_people','resourse_people.id','=','tot_cg.resourse_person_id')
-                   ->select('tot_cg.*','branches.*','tot_cg.id as m_id','branches.name as branch_name','resourse_people.name as r_name')
+                   ->select('tot_cg.*','tot_cg.id as m_id','resourse_people.name as r_name')
                    ->where('tot_cg.id',$id)
                    ->first();
 

@@ -13,7 +13,7 @@
           <div class="col-md-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{Route('home')}}">Dashboard</a></li>
-              <li class="breadcrumb-item"><a href="{{url('m&e-reports')}}">Reprots</a></li>
+              <li class="breadcrumb-item"><a href="{{url('m&e-reports')}}">Reports</a></li>
               <li class="breadcrumb-item active">2.1.3</li>
             </ol>
           </div>
@@ -30,25 +30,7 @@
                     </div>
                     <div class="card-body">
                       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false" style="background-color: #5E6971; color: white;">
-                        
-                      <?php $branch_id = Auth::user()->branch; ?> 
-                      @if(is_null($branch_id)) 
-                      <li class="nav-item">
-                        <a class="nav-link">
-                            <div class="form-group">
-                            <label for="disability">Branch &nbsp;&nbsp;</label>
-                            <select name="branch_id" id="branch_id" class="form-control">
-                              <option value="">All</option>
-                              @foreach($branches as $branch)
-                              <option value="{{$branch->id}}">{{$branch->name}}</option>
-                              @endforeach
-                            </select>
-                          </div>
-                        </a>
-                      </li> 
-                      @else
-                      <input type="hidden" name="branch_id" value="{{$branch_id}}"> 
-                      @endif
+                     
                       <li class="nav-item">
                         <a class="nav-link">
                             
@@ -167,7 +149,6 @@
                             <th>No of Days</th>
                             <th>Venue</th>
                             <th>Program Cost</th>
-                            <th>Branch</th>
                             <th>Action</th>
                           
                         </tr>
@@ -277,12 +258,12 @@ var dataTable = $("#example").DataTable({
 
  fetch_data();
 
- function fetch_data(dateStart = '', dateEnd = '',branch='')
+ function fetch_data(dateStart = '', dateEnd = '')
  {
   $.ajax({
    url:"{{ Route('reports-me/cg/tot/fetch') }}",
    method:"POST",
-   data:{dateStart:dateStart, dateEnd:dateEnd, _token:_token,branch:branch},
+   data:{dateStart:dateStart, dateEnd:dateEnd, _token:_token},
    dataType:"json",
 
    beforeSend: function(){
@@ -305,7 +286,7 @@ var dataTable = $("#example").DataTable({
   $.each(data.data1, function(index, value) {
     //console.log(value);
     // use data table row.add, then .draw for table refresh
-    dataTable.row.add([count++, value.meeting_date, value.days, value.venue, value.program_cost,value.branch_name,'<button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button>']).draw();
+    dataTable.row.add([count++, value.meeting_date, value.days, value.venue, value.program_cost,'<button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button>']).draw();
     
     var total_cost = value.program_cost;
     if ($.isNumeric(total_cost)) {
@@ -344,10 +325,9 @@ var dataTable = $("#example").DataTable({
   $('#filter').click(function(){
   var dateStart = $('#dateStart').val();
   var dateEnd = $('#dateEnd').val();
-  var branch = $('#branch_id').val();
   if(dateStart != '' &&  dateEnd != '')
   {
-   fetch_data(dateStart, dateEnd, branch);
+   fetch_data(dateStart, dateEnd);
   }
   else
   {
@@ -358,7 +338,6 @@ var dataTable = $("#example").DataTable({
  $('#refresh').click(function(){
   $('#dateStart').val('');
   $('#dateEnd').val('');
-  $('#branch_id').val('');
   fetch_data();
  });
  }

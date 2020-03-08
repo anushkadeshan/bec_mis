@@ -466,7 +466,7 @@ class CourseSupportController extends Controller
 
         $participants = DB::table('course_supports_youth')
                         ->whereid($request->id_p)
-                        ->update(['nature_of_support'=>$request->nature_of_support,'institute_type'=> $request->institute_type]);
+                        ->update(['nature_of_support'=>$request->nature_of_support,'institute_type'=> $request->institute_type,'dropout'=>$request->dropout,'reoson_to_dropout'=> $request->reoson_to_dropout]);
 
     }
 
@@ -486,8 +486,19 @@ class CourseSupportController extends Controller
                     ->join('branches','branches.id','=','course_supports.branch_id')
                     ->join('institutes','institutes.id','=','course_supports.institute_id')
                     ->join('courses','courses.id', '=' ,'course_supports.course_id')
-                    ->select('course_supports.*','branches.*','course_supports.id as m_id','course_supports.course_id as c_id','course_supports.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','youths.name as youth_name','youths.id as youth_id')
+                    ->select('course_supports_youth.dropout as dropout','course_supports.*','branches.*','course_supports.id as m_id','course_supports.course_id as c_id','course_supports.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','youths.name as youth_name','youths.id as youth_id')
                     ->get();
+        $courses = DB::table('course_supports')
+                   ->join('courses','courses.id','=','course_supports.course_id')
+                   ->select('courses.name as course_name')
+                   ->distinct()
+                   ->get();
+
+        $institutes = DB::table('course_supports')
+                   ->join('institutes','institutes.id','=','course_supports.institute_id')
+                   ->select('institutes.name as institute_name')
+                   ->distinct()
+                   ->get();
         }
         else{
             $cg_youths = DB::table('course_supports_youth')
@@ -496,12 +507,29 @@ class CourseSupportController extends Controller
                     ->join('branches','branches.id','=','course_supports.branch_id')
                     ->join('institutes','institutes.id','=','course_supports.institute_id')
                     ->join('courses','courses.id', '=' ,'course_supports.course_id')
-                    ->select('course_supports.*','branches.*','course_supports.id as m_id','course_supports.course_id as c_id','course_supports.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','youths.name as youth_name','youths.id as youth_id')
+                    ->select('course_supports_youth.dropout as dropout','course_supports.*','branches.*','course_supports.id as m_id','course_supports.course_id as c_id','course_supports.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','youths.name as youth_name','youths.id as youth_id')
                     ->where('course_supports.branch_id',$branch_id)
                     ->get();
+
+          $courses = DB::table('course_supports')
+                   ->join('courses','courses.id','=','course_supports.course_id')
+                   ->select('courses.name as course_name')
+                   ->where('course_supports.branch_id',$branch_id)
+                   ->distinct('')
+                   ->get();
+
+            $institutes = DB::table('course_supports')
+                   ->join('institutes','institutes.id','=','course_supports.institute_id')
+                   ->select('institutes.name as institute_name')
+                   ->where('course_supports.branch_id',$branch_id)
+                   ->distinct()
+                   ->get();
         }
 
-        return view('Activities.Reports.Skill-Development.gvt-youth')->with(['youths'=>$cg_youths]);
+        $branches = DB::table('branches')->get();
+
+
+        return view('Activities.Reports.Skill-Development.gvt-youth')->with(['youths'=>$cg_youths,'branches'=> $branches,'courses'=>$courses,'institutes' => $institutes]);
     }
 } 
 

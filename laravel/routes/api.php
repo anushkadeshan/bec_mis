@@ -17,5 +17,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/vacancies', 'VacancyController@vacancies_api');
+
+
+Route::post('login', 'PassportController@login');
+Route::post('register', 'PassportController@register');
+ 
+Route::middleware('auth:api')->group(function () {
+    Route::get('user', 'PassportController@details');
+    Route::get('/vacancies', 'VacancyController@vacancies_api');;
+});
 

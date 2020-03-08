@@ -12,7 +12,7 @@
           <div class="col-md-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{Route('home')}}">Dashboard</a></li>
-              <li class="breadcrumb-item"><a href="{{url('m&e-reports')}}">Reprots</a></li>
+              <li class="breadcrumb-item"><a href="{{url('m&e-reports')}}">Reports</a></li>
               <li class="breadcrumb-item active">1.2.2</li>
             </ol>
           </div>
@@ -169,6 +169,23 @@
 		                    </tr>
 		                    <tbody>	
 		                    </tbody>
+                        <tfoot>
+                  <tr>
+                    <th></th>
+                    <th>Total</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                  </tr>
+                </tfoot>   
 		                </thead>        
             		 </table>   
             	{{ csrf_field() }}
@@ -273,6 +290,7 @@ var dataTable = $("#example").DataTable({
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
             ],
+
       "createdRow": function ( row, data, index ) {
             if ( data[12] == 0 ) {
                 $('td', row).eq(0).addClass('highlight');
@@ -290,7 +308,24 @@ var dataTable = $("#example").DataTable({
             }
         ],
     });
-  
+
+  dataTable.columns( '.sum' ).every( function () {
+    var column = this;
+
+            var sum = column
+                .data()
+                .reduce(function (a, b) { 
+                   a = parseInt(a, 10);
+                   if(isNaN(a)){ a = 0; }                   
+
+                   b = parseInt(b, 10);
+                   if(isNaN(b)){ b = 0; }
+
+                   return a + b;
+                });
+ 
+    $( this.footer() ).html( sum );
+} );
 	var date = new Date();
 
     $('.input-group').datepicker({

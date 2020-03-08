@@ -104,6 +104,7 @@ class YouthController extends Controller
     public function create_personal(Request $request){
     	$validator = Validator::make($request->all(),[
                 'name' => 'required',
+                'bss' => 'required',
                 'full_name' => 'required|unique:youths',
                 'gender' => 'required',
                 'phone' => 'required',
@@ -185,9 +186,27 @@ class YouthController extends Controller
             ]);
 
             if($validator->passes()){
-              $location= json_encode($request->location);
-              $intresting_courses= json_encode($request->intresting_courses);
-              $industry= json_encode($request->industry);
+              if(is_null($request->location)){
+                $location = '[""]';
+              }
+              else{
+                $location= json_encode($request->location);
+              }
+
+              if(is_null($request->industry)){
+                $industry = '[""]';
+              }
+              else{
+                $industry= json_encode($request->industry);
+              }
+
+              if(is_null($request->intresting_courses)){
+                $intresting_courses = '[""]';
+              }
+              else{
+                $intresting_courses= json_encode($request->intresting_courses);
+              }
+             
               $data = array(
                   'intresting_business' => $request->intresting_business,
                   'need_help' => $request->need_help,
@@ -230,8 +249,21 @@ class YouthController extends Controller
             ]);
 
             if($validator->passes()){
-              $location= json_encode($request->location);
-              $industry= json_encode($request->industry);
+              if(is_null($request->location)){
+                $location = '[""]';
+              }
+              else{
+                $location= json_encode($request->location);
+              }
+
+              if(is_null($request->industry)){
+                $industry = '[""]';
+              }
+              else{
+                $industry= json_encode($request->industry);
+              }
+              
+             
 
               $data = array(
                   'course_id' => $request->course_id,
@@ -282,9 +314,26 @@ class YouthController extends Controller
             ]);
 
             if($validator->passes()){
-              $location= json_encode($request->location);
-              $intresting_courses= json_encode($request->intresting_courses);
-              $industry= json_encode($request->industry);
+              if(is_null($request->location)){
+                $location = '[""]';
+              }
+              else{
+                $location= json_encode($request->location);
+              }
+
+              if(is_null($request->industry)){
+                $industry = '[""]';
+              }
+              else{
+                $industry= json_encode($request->industry);
+              }
+
+              if(is_null($request->intresting_courses)){
+                $intresting_courses = '[""]';
+              }
+              else{
+                $intresting_courses= json_encode($request->intresting_courses);
+              }
 
 
               $data = array(
@@ -513,6 +562,7 @@ class YouthController extends Controller
 
               $youth = Youth::find($request->id);
               $youth->name = $request->name;
+              $youth->bss = $request->bss;
               $youth->full_name = $request->full_name;
               $youth->gender = $request->gender;
               $youth->phone = $request->phone;
@@ -652,9 +702,26 @@ public function update_tempory_jobs(Request $request){
             ]);
 
             if($validator->passes()){
-              $location= json_encode($request->location);
-              $intresting_courses= json_encode($request->intresting_courses);
-              $industry= json_encode($request->industry);
+              if(is_null($location)){
+                $location = '[""]';
+              }
+              else{
+                $location= json_encode($request->location);
+              }
+
+              if(is_null($industry)){
+                $industry = '[""]';
+              }
+              else{
+                $industry= json_encode($request->industry);
+              }
+
+              if(is_null($intresting_courses)){
+                $intresting_courses = '[""]';
+              }
+              else{
+                $intresting_courses= json_encode($request->intresting_courses);
+              }
 
               $data = array(
                   'intresting_business' => $request->intresting_business,
@@ -724,8 +791,19 @@ public function update_following_course(Request $request){
             ]);
 
             if($validator->passes()){
-              $location= json_encode($request->location);
-              $industry= json_encode($request->industry);
+              if(is_null($request->location)){
+                $location = '[""]';
+              }
+              else{
+                $location= json_encode($request->location);
+              }
+
+              if(is_null($request->industry)){
+                $industry = '[""]';
+              }
+              else{
+                $industry= json_encode($request->industry);
+              }
 
               $data = array(
                   'course_id' => $request->course_id,
@@ -811,9 +889,26 @@ public function update_following_course(Request $request){
             ]);
 
             if($validator->passes()){
-              $location= json_encode($request->location);
-              $intresting_courses= json_encode($request->intresting_courses);
-              $industry= json_encode($request->industry);
+             if(is_null($request->location)){
+                $location = '[""]';
+              }
+              else{
+                $location= json_encode($request->location);
+              }
+
+              if(is_null($request->industry)){
+                $industry = '[""]';
+              }
+              else{
+                $industry= json_encode($request->industry);
+              }
+
+              if(is_null($request->intresting_courses)){
+                $intresting_courses = '[""]';
+              }
+              else{
+                $intresting_courses= json_encode($request->intresting_courses);
+              }
 
               $data = array(
                   'intresting_business' => $request->intresting_business,
@@ -1424,6 +1519,7 @@ public function update_following_course(Request $request){
             ->join('institutes','institutes.id','=','provide_soft_skills.institute_id')
             ->where('provide_soft_skills_youths.youth_id',$id)
             ->first();
+            
 
       $gvt = DB::table('course_supports_youth')
             ->join('course_supports','course_supports.id','=','course_supports_youth.course_support_id')

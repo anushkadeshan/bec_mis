@@ -459,6 +459,7 @@ Route::post('/activity/cg/add-new-youth', 'CourseSupportController@add_youth')->
 Route::get('/reports-me/soft-skill/{id}/edit', 'ProvideSoftskillController@edit')->middleware('can:edit-M&E-reports');
 Route::post('/activity/skill/update-provide-soft', 'ProvideSoftskillController@update')->middleware('can:edit-M&E-reports');
 Route::post('/activity/skill/add-new-ss-youth', 'ProvideSoftskillController@add_youth')->middleware('can:edit-M&E-reports');
+Route::post('/activity/skill/update-youth-soft', 'ProvideSoftskillController@update_youths')->middleware('can:edit-M&E-reports');
 
 Route::get('/reports-me/financial/{id}/edit', 'FinancialSupportController@edit')->middleware('can:edit-M&E-reports');
 Route::post('/activity/skill/update-finacial-support', 'FinancialSupportController@update')->middleware('can:edit-M&E-reports');
@@ -500,6 +501,9 @@ Route::get('/completion_targets', 'ProgressController@completion_targets')->midd
 Route::post('/completion_targets-add', 'ProgressController@completion_targets_add')->middleware('can:admin');
 Route::post('/completion_targets-update', 'ProgressController@completion_targets_update')->middleware('can:admin');
 Route::get('/baselines', 'ProgressController@baselines')->name('baselines');
+Route::get('/youth_progress', 'CarrerGuidanceController@youth_progress')->name('youth_progress');
+Route::get('/financial-youth', 'FinancialSupportController@view_youths')->name('financial_youth');
+
 
 Route::get('event', function () {
     event(new userLogin('User Logged'));

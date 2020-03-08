@@ -29,16 +29,16 @@ class FinancialSupportController extends Controller
 
     public function insert(Request $request){
     	$validator = Validator::make($request->all(),[
-    		    'program_date'  => 'required',
-    		    'total_male'  => 'required',
-    		    'total_female'  => 'required',
-                'district' => 'required',
-                'dm_name' =>'required',	
-                'review_report' => 'required',
-                'mou_report' => 'mimes:jpeg,jpg,png,gif,svg,pdf',
-                'institute_id' => 'required',
-                'course_id' => 'required'
-            ]);
+	        'program_date'  => 'required',
+	        'total_male'  => 'required',
+	        'total_female'  => 'required',
+          'district' => 'required',
+          'dm_name' =>'required',	
+          'review_report' => 'required',
+          'mou_report' => 'mimes:jpeg,jpg,png,gif,svg,pdf',
+          'institute_id' => 'required',
+          'course_id' => 'required'
+      ]);
 
             if($validator->passes()){
                 $branch_id = auth()->user()->branch;
@@ -357,7 +357,7 @@ class FinancialSupportController extends Controller
 
         $participants = DB::table('finacial_supports_youths')
                         ->whereid($request->id_p)
-                        ->update(['approved_amount'=>$request->approved_amount,'installments'=>$request->installments]);
+                        ->update(['approved_amount'=>$request->approved_amount,'installments'=>$request->installments,'dropout'=>$request->dropout,'reoson_to_dropout'=> $request->reoson_to_dropout]);
 
     }
 
@@ -366,5 +366,64 @@ class FinancialSupportController extends Controller
         $participants = DB::table('finacial_supports_youths')
                         ->insert(['youth_id'=>$request->youth_id,'approved_amount'=>$request->approved_amount,'installments'=> $request->installments,'finacial_support_id' => $request->m_id]);
 
+    }
+
+    public function view_youths(){
+        $branch_id = Auth::user()->branch;
+        if(is_null($branch_id)){
+        $cg_youths = DB::table('finacial_supports_youths')
+                    ->join('youths','youths.id','=','finacial_supports_youths.youth_id')
+                    ->join('finacial_supports','finacial_supports.id','=','finacial_supports_youths.finacial_support_id')
+                    ->join('branches','branches.id','=','finacial_supports.branch_id')
+                    ->join('institutes','institutes.id','=','finacial_supports.institute_id')
+                    ->join('courses','courses.id', '=' ,'finacial_supports.course_id')
+                    ->select('finacial_supports_youths.dropout as dropout','finacial_supports.*','branches.*','finacial_supports.id as m_id','finacial_supports.course_id as c_id','finacial_supports.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','youths.name as youth_name','youths.id as youth_id')
+                    ->get();
+
+        $courses = DB::table('finacial_supports')
+                   ->join('courses','courses.id','=','finacial_supports.course_id')
+                   ->select('courses.name as course_name')
+                   ->distinct()
+                   ->get();
+
+        $institutes = DB::table('finacial_supports')
+                   ->join('institutes','institutes.id','=','finacial_supports.institute_id')
+                   ->select('institutes.name as institute_name')
+                   ->distinct()
+                   ->get();
+
+        }
+        else{
+            $cg_youths = DB::table('finacial_supports_youths')
+                    ->join('youths','youths.id','=','finacial_supports_youths.youth_id')
+                    ->join('finacial_supports','finacial_supports.id','=','finacial_supports_youths.finacial_support_id')
+                    ->join('branches','branches.id','=','finacial_supports.branch_id')
+                    ->join('institutes','institutes.id','=','finacial_supports.institute_id')
+                    ->join('courses','courses.id', '=' ,'finacial_supports.course_id')
+                    ->select('finacial_supports_youths.dropout as dropout','finacial_supports.*','branches.*','finacial_supports.id as m_id','finacial_supports.course_id as c_id','finacial_supports.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','youths.name as youth_name','youths.id as youth_id')
+                    ->where('finacial_supports.branch_id',$branch_id)
+                    ->get();
+
+            $courses = DB::table('finacial_supports')
+                   ->join('courses','courses.id','=','finacial_supports.course_id')
+                   ->select('courses.name as course_name')
+                   ->where('finacial_supports.branch_id',$branch_id)
+                   ->distinct()
+                   ->get();
+
+            $institutes = DB::table('finacial_supports')
+                   ->join('institutes','institutes.id','=','finacial_supports.institute_id')
+                   ->select('institutes.name as institute_name')
+                   ->where('finacial_supports.branch_id',$branch_id)
+                   ->distinct()
+                   ->get();
+        }
+
+        $branches = DB::table('branches')->get();
+
+
+
+
+        return view('Activities.Reports.Skill-Development.finacial-youth')->with(['youths'=>$cg_youths,'branches'=> $branches,'courses'=>$courses,'institutes' => $institutes]);
     }
 }

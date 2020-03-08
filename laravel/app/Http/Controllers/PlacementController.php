@@ -515,9 +515,10 @@ class PlacementController extends Controller
                   ->where('placements_id',$id)
                   ->select('placements_photos.images')
                   ->get();
+        $headers = ["Content-Type"=>"application/zip"];
         foreach($photos as $photo){
             //echo $photo->images;
-            $headers = ["Content-Type"=>"application/zip"];
+            
             //$paths = storage_path('activities/files/mentoring/images/'.$photo->image.'');
             $zipper = Zipper::make(storage_path('activities/files/job-linking/placements/images/'.$id.'.zip'))->add(storage_path('activities/files/job-linking/placements/images/'.$photo->images.''))->close();
         }

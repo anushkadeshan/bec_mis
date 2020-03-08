@@ -7,13 +7,13 @@
         <div class="row mb-2">
           <div class="col-md-6">
                       
-            <h3>Gap identification of PES unit 
+            <h3>Gap identification of CIC unit 
               <small class="badge badge-success"> {{count($meetings)}}</small></h3>
           </div>
           <div class="col-md-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{Route('home')}}">Dashboard</a></li>
-              <li class="breadcrumb-item"><a href="{{url('m&e-reports')}}">Reprots</a></li>
+              <li class="breadcrumb-item"><a href="{{url('m&e-reports')}}">Reports</a></li>
               <li class="breadcrumb-item active">2.2.1</li>
             </ol>
           </div>
@@ -103,14 +103,14 @@
                           <legend  class="w-auto"><small>Idetified</small></legend>
                           <a class="btn btn-app zoom">
                           <span class="badge bg-warning" id="total_records"></span>
-                          <i class="fa fa-handshake"></i>PES Units
+                          <i class="fa fa-handshake"></i>CIC Units
                           </a>
                         </fieldset>
 
                       </div>
                       <div class="col-md-10">
                         <fieldset class="border p-2">
-                        <legend  class="w-auto"><small>Youth Catered by PES Units</small></legend>
+                        <legend  class="w-auto"><small>Youth Catered by CIC Units</small></legend>
                         <a class="btn btn-app zoom">
                         <span class="badge bg-warning"  id="total_male1"></span>
                         <i class="fa fa-mars" style="color:blue"></i>Total Male
@@ -158,7 +158,7 @@
                       <div class="col-md-12">
                         <div class="card card-success card-outline">
                           <div class="card-header">
-                                    <h3 class="card-title">PES Unit Identification Details</h3>
+                                    <h3 class="card-title">CIC Unit Identification Details</h3>
                               </div>
                               <div class="card-body">
                             <ul class="list-group list-group-flush">
@@ -166,7 +166,7 @@
                               <li class="list-group-item border-0"><strong>DSDs : </strong><span id="dsd"></span></li>
                               <li class="list-group-item border-0"><strong>GNDs : </strong><span id="gnd"></span></li>
                               <li class="list-group-item border-0"><strong>DM Name : </strong><span id="dm_name"></span></li>
-                              <li class="list-group-item border-0"><strong>Date of visit to PES Unit : </strong><span id="meeting_date"></span></li>
+                              <li class="list-group-item border-0"><strong>Date of visit to CIC Unit : </strong><span id="meeting_date"></span></li>
                             </ul>
                             <fieldset class="border p-2 list-group-flush">
                             <legend  class="w-auto text-primary"><small> Responding Officer</small></legend>

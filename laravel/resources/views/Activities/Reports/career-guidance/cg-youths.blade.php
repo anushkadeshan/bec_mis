@@ -1,6 +1,6 @@
  @extends('layouts.main')
 @section('content')
-<div class="container">
+<div class="container-fluid">
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Youth Information who completed Career Guidance <small class="badge badge-success"> {{count($youths)}}</small></h3>

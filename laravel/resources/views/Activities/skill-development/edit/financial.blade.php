@@ -1,6 +1,6 @@
 @extends('layouts.main')
 @section('content')
-<div class="container">
+<div class="container-fluid">
 
 <div class="row">
 	  <div class="col-12">
@@ -187,7 +187,7 @@
 						      <th>{{$youth->name}}</th>
 						      <td style="text-align: center">{{$youth->approved_amount}}</td>
 						      <td>{{$youth->installments}}</td>
-						      <td><button type="button" class="btn btn-success btn-flat btn-sm" data-id="{{$youth->f_id}}" data-approved_amount="{{$youth->approved_amount}}" data-installments="{{$youth->installments}}" id="edit2"><i class="fas fa-edit"></i></button></td>
+						      <td><button type="button" class="btn btn-success btn-flat btn-sm" data-id="{{$youth->f_id}}" data-approved_amount="{{$youth->approved_amount}}" data-installments="{{$youth->installments}}" data-dropout="{{$youth->dropout}}" data-reoson="{{$youth->reoson_to_dropout}}" id="edit2"><i class="fas fa-edit"></i></button></td>
 						    </tr>
 						    @endforeach
 						  </tbody>
@@ -215,6 +215,19 @@
 					                    <label for="name">No of Installments</label>
 					                    <input type="number" class="form-control" id="installments1" name="installments" >
 					                  </div>
+					                 <div class="form-group">
+					                    <label for="name">is Youth Dropout ?</label>
+					                    <select name="dropout" class="form-control" id="dropout1">
+									      	<option value="">Select Option</option>
+									      	<option value="1">Yes</option>
+									      	<option value="0">No</option>
+									    </select>
+					                     
+					                  </div>
+					                  <div class="form-group">
+					                 	<label for="name">If yes reoson to dropout</label>
+					                 	<textarea class="form-control" name="reoson_to_dropout" id="reason1"></textarea>
+					                 </div>	
 					                  <input type="hidden" id="id_p" name="id_p"></input>
 					              </form>
 					          </div>
@@ -467,6 +480,8 @@ $(document).ready(function(){
         $('#id_p').val($(this).data('id'));
         $('#approved_amount1').val($(this).data('approved_amount'));
         $('#installments1').val($(this).data('installments'));
+        $('#dropout1').val($(this).data('dropout'));
+         $('#reason1').val($(this).data('reoson'));
         $('#updateModel').modal('show');
         
     });

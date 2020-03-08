@@ -1,6 +1,6 @@
 @extends('layouts.main')
 @section('content')
-<div class="container">
+<div class="container-fluid">
 
 <div class="row">
 	  <div class="col-12">
@@ -117,7 +117,7 @@
 	            </div>
 	            <div style="width: 100%; height: 20px; border-bottom: 1px solid blue; text-align: center;padding-bottom: 10px">
 	                  <span class="badge badge-info" style="font-size: 20px; padding: 0 10px; ">
-	                    No of Youth Participated
+	                    No of Officers Participated
 	                  </span>
                 </div>
                 <br>		

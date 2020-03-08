@@ -340,6 +340,7 @@ class ProvideSoftskillController extends Controller
 
         $youths = DB::table('provide_soft_skills_youths')
                   ->join('youths','youths.id','=','provide_soft_skills_youths.youth_id')
+                  ->select('provide_soft_skills_youths.*','provide_soft_skills_youths.id as c_id','youths.*')
                   ->where('provide_soft_skills_youths.provide_softskill_id',$id)
                   ->get();
 
@@ -406,6 +407,15 @@ class ProvideSoftskillController extends Controller
 
     }
 
+    public function update_youths(Request $request){
+
+        $participants = DB::table('provide_soft_skills_youths')
+                        ->whereid($request->id_p)
+                        ->update(['dropout'=>$request->dropout,'reoson_to_dropout'=> $request->reoson_to_dropout]);
+
+    }
+
+
     public function view_youths(){
         $branch_id = Auth::user()->branch;
         if(is_null($branch_id)){
@@ -416,6 +426,12 @@ class ProvideSoftskillController extends Controller
                     ->join('institutes','institutes.id','=','provide_soft_skills.institute_id')
                     ->select('provide_soft_skills.*','branches.*','provide_soft_skills.id as m_id','provide_soft_skills.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date','youths.name as youth_name','provide_soft_skills_youths.*')
                     ->get();
+        $institutes = DB::table('provide_soft_skills')
+                   ->join('institutes','institutes.id','=','provide_soft_skills.institute_id')
+                   ->select('institutes.name as institute_name')
+                   ->distinct()
+                   ->get();
+
         }
         else{
             $cg_youths = DB::table('provide_soft_skills_youths')
@@ -426,8 +442,17 @@ class ProvideSoftskillController extends Controller
                     ->select('provide_soft_skills.*','branches.*','provide_soft_skills.id as m_id','provide_soft_skills.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date','youths.name as youth_name','provide_soft_skills_youths.*')
                     ->where('provide_soft_skills.branch_id',$branch_id)
                     ->get();
-        }
 
-        return view('Activities.Reports.Skill-Development.soft-youth')->with(['youths'=>$cg_youths]);
+            $institutes = DB::table('provide_soft_skills')
+                   ->join('institutes','institutes.id','=','provide_soft_skills.institute_id')
+                   ->select('institutes.name as institute_name')
+                   ->where('provide_soft_skills.branch_id',$branch_id)
+                   ->distinct()
+                   ->get();
+        }
+        $branches = DB::table('branches')->get();
+
+
+        return view('Activities.Reports.Skill-Development.soft-youth')->with(['youths'=>$cg_youths,'branches'=> $branches,'institutes' => $institutes]);
     }
 }

@@ -61,6 +61,15 @@
                                 @endforeach
                             </select>
                           </div>
+
+                          <div class="form-group">
+                            <label for="nic">16. is Youth a BSS beneficiary? &nbsp;&nbsp;</label>
+                            <select name="bss" id="bss" class="form-control">
+                              <option value="">Select Option</option>
+                              <option @if($youth->bss==1) selected @endif value="1">Yes</option>
+                              <option @if($youth->bss==0) selected @endif value="0">No</option>
+                            </select>
+                          </div>
 	                  		</div>
 	                  		<div class="col-md-4">
 	                  			<div class="form-group">
@@ -671,6 +680,7 @@
                                         $industries = array('Agriculture & Food Processing','Automobiles','Banking & Financial Services','BPO or KPO ','Civil & Construction','Consumer Goods & Durables','Consulting','Education','Engineering','Ecommerce & Internet','Events & Entertainment','Export & Import','Government & Public Sector','Healthcare','Hotel, Travel & Leisure','Insurance','IT & Telecom','Logistics & Transportation','Manufacturing','Manpower & Security','News & Media','NGO & Non profit','Pharmaceutical','Real Estate','Wholesale & Retail','Others');
                                       ?>
                                       <select id="industry" name="industry[]" class="form-control" multiple>
+                                        <option value="">Not Mentioned</option>
                                         @foreach($industries as $industry)
                                           <option @if(!is_null($intresting_jobs)) @if(in_array($industry,$intresting_jobs->industry)) selected @endif @endif>{{$industry}}</option>
                                           
@@ -685,6 +695,7 @@
                                         $locations = array('Home District','Home Province','Other City','Colombo','Industrial Zone','Abroad');
                                       ?>
                                       <select name="location[]" id="location" multiple class="form-control">
+                                        <option value="">Not Mentioned</option>
                                         @foreach($locations as $location) 
                                         <option  @if(!is_null($intresting_jobs)) @if(in_array($location,$intresting_jobs->location)) selected @endif @endif>{{$location}}</option>
                                         @endforeach  
@@ -709,7 +720,7 @@
                                     <div class="form-group">
                                       <label for="intresting_courses">Preferable Courses (if You like to follow)</label>
                                       <select name="intresting_courses[]" id="intresting_courses"  class="form-control" multiple>
-                                        <option value="">Select Option</option>
+                                        <option value="">Not Mentioned</option>
                                         @foreach($course_categories as $cc)
                                            <option @if(!is_null($intresting_jobs)) @if(in_array($cc->id,$intresting_jobs->intresting_courses)) selected @endif @endif value="{{$cc->id}}">{{$cc->course_category}}</option>
                                         @endforeach
@@ -866,6 +877,7 @@
                                         $locations = array('Home District','Home Province','Other City','Colombo','Industrial Zone','Abroad');
                                       ?>
                                       <select name="location[]" id="location" multiple class="form-control">
+                                        <option value="">Not Mentioned</option>
                                         @foreach($locations as $location) 
                                         <option  @if(!is_null($intresting_jobs)) @if(in_array($location,$intresting_jobs->location)) selected @endif @endif>{{$location}}</option>
                                         @endforeach  
@@ -879,7 +891,7 @@
                                         $industries = array('Agriculture & Food Processing','Automobiles','Banking & Financial Services','BPO or KPO ','Civil & Construction','Consumer Goods & Durables','Consulting','Education','Engineering','Ecommerce & Internet','Events & Entertainment','Export & Import','Government & Public Sector','Healthcare','Hotel, Travel & Leisure','Insurance','IT & Telecom','Logistics & Transportation','Manufacturing','Manpower & Security','News & Media','NGO & Non profit','Pharmaceutical','Real Estate','Wholesale & Retail','Others');
                                       ?>
                                       <select id="industry" name="industry[]" class="form-control" multiple>
-                                        
+                                        <option value="">Not Mentioned</option>
                                         @foreach($industries as $industry)
                                           <option @if(!is_null($intresting_jobs)) @if(in_array($industry,$intresting_jobs->industry)) selected @endif @endif>{{$industry}}</option>
                                           
@@ -1047,7 +1059,7 @@
                                         $industries = array('Agriculture & Food Processing','Automobiles','Banking & Financial Services','BPO or KPO ','Civil & Construction','Consumer Goods & Durables','Consulting','Education','Engineering','Ecommerce & Internet','Events & Entertainment','Export & Import','Government & Public Sector','Healthcare','Hotel, Travel & Leisure','Insurance','IT & Telecom','Logistics & Transportation','Manufacturing','Manpower & Security','News & Media','NGO & Non profit','Pharmaceutical','Real Estate','Wholesale & Retail','Others');
                                       ?>
                                       <select id="industry" name="industry[]" class="form-control" multiple>
-                                        
+                                        <option value="">Not Mentioned</option>
                                         @foreach($industries as $industry)
                                           <option @if(!is_null($intresting_jobs)) @if(in_array($industry,$intresting_jobs->industry)) selected @endif @endif>{{$industry}}</option>
                                           
@@ -1062,6 +1074,7 @@
                                         $locations = array('Home District','Home Province','Other City','Colombo','Industrial Zone','Abroad');
                                       ?>
                                       <select name="location[]" id="location" multiple class="form-control">
+                                        <option value="">Not Mentioned</option>
                                         @foreach($locations as $location) 
                                         <option  @if(!is_null($intresting_jobs)) @if(in_array($location,$intresting_jobs->location)) selected @endif @endif>{{$location}}</option>
                                         @endforeach  
@@ -1086,7 +1099,7 @@
                                     <div class="form-group">
                                       <label for="intresting_courses">Preferable Courses (if You like to follow)</label>
                                       <select name="intresting_courses[]" id="intresting_courses"  class="form-control" multiple>
-                                        <option value="">Select Option</option>
+                                        <option value="">Not Mentioned</option>
                                         @foreach($course_categories as $cc)
                                            <option  @if(!is_null($intresting_jobs)) @if(in_array($cc->id,$intresting_jobs->intresting_courses)) selected @endif @endif value="{{$cc->id}}">{{$cc->course_category}}</option>
                                         @endforeach

@@ -451,7 +451,7 @@ class PartnershipTrainingController extends Controller
 
         $participants = DB::table('partner_trainings_youth')
                         ->whereid($request->id_p)
-                        ->update(['approved_amount'=>$request->approved_amount]);
+                        ->update(['approved_amount'=>$request->approved_amount,'reoson_to_dropout'=> $request->reoson_to_dropout]);
 
     }
 

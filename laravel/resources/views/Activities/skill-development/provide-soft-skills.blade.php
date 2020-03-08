@@ -1,6 +1,6 @@
 @extends('layouts.main')
 @section('content')
-<div class="container">
+<div class="container-fluid">
 
 <div class="row">
 	  <div class="col-12">
@@ -272,7 +272,7 @@
 	          				<div class="input-group">                       
 		                        <input data-toggle="tooltip" data-placement="top" title="Search Institiute name and select" type="text" id="review_report" class="form-control" placeholder="Search Institiute name and select">
 		                        <input type="hidden" name="review_report" id="review_report1">
-		                        <div style="cursor: pointer" onclick="window.open('{{Route('youth/add')}}', '_blank');" class="input-group-prepend">
+		                        <div style="cursor: pointer" onclick="window.open('{{url('activities/skill-development/institute-review')}}', '_blank');" class="input-group-prepend">
 		                          <span data-toggle="tooltip" data-placement="top" title="Add a Review Report to list" class="input-group-text"><i style="color: blue;" class="fa fa-plus"></i></span>
 		                        </div>  
 		                    </div>

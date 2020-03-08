@@ -2,7 +2,7 @@
 @section('content')
 @cannot('management')
 @cannot('me-dashboard')
-<div class="container">
+<div class="container-fluid">
     <br>    
         <div class="row">
           <div class="col-md-3 col-sm-6 col-12">
@@ -205,7 +205,17 @@
                         
                         
                         <td>
-                            @if($youth->target ==$count2 ) <small class="badge badge-success">{{"Completed"}}</small> @elseif( $youth->target <= $count2) <small class="badge badge-success">{{"Completed"}}</small> @else <small class="badge badge-danger">{{"Not Completed"}}</small> @endif
+                          @switch($individual)
+                              @case(!is_null($individual))
+                                  @if($youth->target ==$count2+$individual ) <small class="badge badge-success">{{"Completed"}}</small> @elseif( $youth->target <= $count2+$individual) <small class="badge badge-success">{{"Completed"}}</small> @else <small class="badge badge-danger">{{"Not Completed"}}</small> @endif
+                                  @break
+                          
+                              @default
+                              @if($youth->target ==$count2 ) <small class="badge badge-success">{{"Completed"}}</small> @elseif( $youth->target <= $count2) <small class="badge badge-success">{{"Completed"}}</small> @else <small class="badge badge-danger">{{"Not Completed"}}</small> @endif
+                          @endswitch
+                          
+                            
+
                         </td>
                     </tr>
                     @endforeach

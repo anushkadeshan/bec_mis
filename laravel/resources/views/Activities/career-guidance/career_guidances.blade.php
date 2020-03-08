@@ -1,6 +1,6 @@
 @extends('layouts.main')
 @section('content')
-<div class="container">
+<div class="container-fluid">
 	<div class="card">
         <div class="card-header">
         	<div class="row">
@@ -125,7 +125,7 @@
              	<div class="col-md-6">
              		<div class="form-group">
 	          			<label for="date">Date</label>
-    					<input type="date" name="date" id="date" class="form-control">
+    					<input type="date" name="program_date" id="date" class="form-control">
    					</div>
              		 
              	</div>

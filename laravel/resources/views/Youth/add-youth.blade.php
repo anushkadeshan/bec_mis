@@ -67,6 +67,14 @@
                                 @endforeach
                             </select>
                           </div>
+                          <div class="form-group">
+                            <label for="nic">16. is Youth a BSS beneficiary ? &nbsp;&nbsp;</label>
+                            <select name="bss" id="bss" class="form-control">
+                              <option value="">Select Option</option>
+                              <option value="1">Yes</option>
+                              <option value="0">No</option>
+                            </select>
+                          </div>
 	                  		</div>
 	                  		<div class="col-md-4">
 	                  			<div class="form-group">
@@ -82,7 +90,7 @@
                             <input type="email" name="email" id="email" class="form-control">
                           </div>
                    				<div class="form-group">
-                   					<label for="nationality">11. Nationility: &nbsp;&nbsp;</label>
+                   					<label for="nationality">11. Race: &nbsp;&nbsp;</label>
                    					<select name="nationality" id="nationality" class="form-control">
                    						<option value="">Select Option</option>
                    						<option>Sinhala</option>
@@ -566,7 +574,7 @@
                                     <div class="form-group">
                                       <label for="industry">Preferable Industry</label>
                                       <select id="industry" name="industry[]" class="form-control" multiple>
-                                        
+                                        <option value="">Not Mentioned</option>
                                         <option>Agriculture &amp; Food Processing</option>
                                         <option>Automobiles</option>
                                         <option>Banking &amp; Financial Services</option>
@@ -600,6 +608,7 @@
                                     <div class="form-group">
                                       <label for="location">Preferable Location</label>
                                       <select name="location[]" id="location" multiple class="form-control">
+                                        <option value="">Not Mentioned</option>
                                         <option>Home District</option>
                                         <option>Home Province</option>
                                         <option>Other City</option>
@@ -627,7 +636,7 @@
                                     <div class="form-group">
                                       <label for="intresting_courses">Preferable Courses (if You like to follow)</label>
                                       <select name="intresting_courses[]" id="intresting_courses"  class="form-control" multiple>
-                                        
+                                        <option value="">Not Mentioned</option>
                                         @foreach($course_categories as $cc)
                                            <option value="{{$cc->id}}">{{$cc->course_category}}</option>
                                         @endforeach
@@ -766,6 +775,7 @@
                                     <div class="form-group">
                                       <label for="location">1. Preferable Location</label>
                                       <select name="location[]" id="location" multiple class="form-control">
+                                        <option value="">Not Mentioned</option>
                                         <option>Home District</option>
                                         <option>Home Province</option>
                                         <option>Other City</option>
@@ -779,7 +789,7 @@
                                     <div class="form-group">
                                       <label for="industry">2. Preferable Industry</label>
                                       <select id="industry" name="industry[]" class="form-control" multiple>
-                                        
+                                        <option value="">Not Mentioned</option>
                                         <option>Agriculture &amp; Food Processing</option>
                                         <option>Automobiles</option>
                                         <option>Banking &amp; Financial Services</option>
@@ -961,7 +971,7 @@
                                     <div class="form-group">
                                       <label for="industry">Preferable Industry</label>
                                       <select id="industry" name="industry[]" class="form-control" multiple>
-                                        
+                                        <option value="">Not Mentioned</option>
                                         <option>Agriculture &amp; Food Processing</option>
                                         <option>Automobiles</option>
                                         <option>Banking &amp; Financial Services</option>
@@ -995,6 +1005,7 @@
                                     <div class="form-group">
                                       <label for="location">Preferable Location</label>
                                       <select name="location[]" id="location" multiple class="form-control">
+                                        <option value="">Not Mentioned</option>
                                         <option>Home District</option>
                                         <option>Home Province</option>
                                         <option>Other City</option>

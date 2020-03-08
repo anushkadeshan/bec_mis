@@ -12,7 +12,7 @@
           <div class="col-md-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{Route('home')}}">Dashboard</a></li>
-              <li class="breadcrumb-item"><a href="{{url('m&e-reports')}}">Reprots</a></li>
+              <li class="breadcrumb-item"><a href="{{url('m&e-reports')}}">Reports</a></li>
               <li class="breadcrumb-item active">2.1.1</li>
             </ol>
           </div>

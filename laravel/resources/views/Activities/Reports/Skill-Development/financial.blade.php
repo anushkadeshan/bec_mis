@@ -156,7 +156,7 @@
                     </div>
                     <div class="card card-success">
                     <div  class="card-header">
-                     Financially supported youth 
+                     Financially supported youth  <a href="{{url('financial-youth')}}"><span  class="badge badge-warning float-right" id="row_count">View Youth Report</span></a>
                     </div>
                     <div  class="card-body">
                     
@@ -617,7 +617,7 @@ google.charts.load('current', {'packages':['corechart']});
           title: '',
           curveType: 'function',
           chartArea:{
-          left:25,
+          left:35,
           top: 20,
           bottom:20,
           },

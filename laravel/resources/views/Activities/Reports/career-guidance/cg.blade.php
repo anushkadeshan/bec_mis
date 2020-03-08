@@ -13,7 +13,7 @@
           <div class="col-md-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{Route('home')}}">Dashboard</a></li>
-              <li class="breadcrumb-item"><a href="{{url('m&e-reports')}}">Reprots</a></li>
+              <li class="breadcrumb-item"><a href="{{url('m&e-reports')}}">Reports</a></li>
               <li class="breadcrumb-item active">2.1.6</li>
             </ol>
           </div>
@@ -378,8 +378,9 @@ var dataTable = $("#example").DataTable({
    var pwd_m_sum = 0;
    var pwd_f_sum = 0;
    var cost_sum = 0;
-
+   
   $.each(data.data2, function(index, value) {
+
     //console.log(value);
     // use data table row.add, then .draw for table refresh
     dataTable.row.add([count++, value.meeting_date, value.total_male, value.total_female, value.pwd_male,value.pwd_female,value.venue, value.branch_name,'<div class="btn-group"><button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button><a href="{{url('reports-me/cg')}}/'+value.m_id+'/edit"><button type="button" name="view" class="btn btn-success btn-flat btn-sm"><i class="fa fa-edit"></i></button></a></div>']).draw();
@@ -456,10 +457,12 @@ $('body').on('click', '.btn_view', function () {
       $.get("{{ url('reports-me/cg/cg') }}" +'/' + meeting_id +'/view', function (data) {
           $('#tabs a[href="#tab_3"]').tab('show');
           $('#tabs a[href="#tab_3"]').attr("data-toggle", "tab");
-
+          var array = data.meeting.gnd;
+          var args = Array.prototype.slice.call(array);
+          var stt = array.toString();
           $('#district').text(data.meeting.district);
           $('#dsd').text(data.meeting.dsd);
-          $('#gnd').text(data.meeting.gnd);
+          $('#gnd').text(stt);
           $('#dm_name').text(data.meeting.dm_name);
           $('#meeting_date').text(data.meeting.date);
           $('#time_start').text(data.meeting.time_start);
@@ -552,6 +555,8 @@ $('body').on('click', '.btn_view', function () {
           $('#example5 tbody').html(output4);
 
 
+
+
       })
 
    });
@@ -582,7 +587,7 @@ google.charts.load('current', {'packages':['corechart']});
           title: '',
           curveType: 'function',
           chartArea:{
-          left:25,
+          left:45,
           top: 20,
           bottom:20,
           right : 10,
@@ -602,6 +607,8 @@ google.charts.load('current', {'packages':['corechart']});
       }
 
 </script>
+
+
 <style>
   th { font-size: 15px; }
   td { font-size: 14px; }

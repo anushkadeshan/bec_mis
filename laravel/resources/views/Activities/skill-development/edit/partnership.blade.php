@@ -1,6 +1,6 @@
 @extends('layouts.main')
 @section('content')
-<div class="container">
+<div class="container-fluid">
 
 <div class="row">
     <div class="col-12">
@@ -231,7 +231,7 @@
                 <tr>
                   <th>{{$youth->name}}</th>
                   <td>{{$youth->approved_amount}}</td>
-                  <td><button type="button" class="btn btn-success btn-flat btn-sm" data-id="{{$youth->p_id}}" data-approved_amount="{{$youth->approved_amount}}" id="edit2"><i class="fas fa-edit"></i></button></td>
+                  <td><button type="button" class="btn btn-success btn-flat btn-sm" data-id="{{$youth->p_id}}" data-approved_amount="{{$youth->approved_amount}}" data-reoson="{{$youth->reoson_to_dropout}}" id="edit2"><i class="fas fa-edit"></i></button></td>
                 </tr>
                 @endforeach
               </tbody>
@@ -255,6 +255,10 @@
                               <label for="name">Approved Amount</label>
                               <input type="number" class="form-control" id="approved_amount1" name="approved_amount" >
                             </div>
+                            <div class="form-group">
+                            <label for="name">If yes reoson to dropout</label>
+                            <textarea class="form-control" name="reoson_to_dropout" id="reason1"></textarea>
+                           </div> 
                             <input type="hidden" id="id_p" name="id_p"></input>
                         </form>
                     </div>
@@ -476,7 +480,8 @@ $(document).ready(function(){
   $(document).on('click', '#edit2', function(){
         var id = $(this).data('id');
         $('#id_p').val($(this).data('id'));
-        $('#approved_amount1').val($(this).data('approved_amount'));
+        $('#approved_amount1').val($(this).data('approved_amount')); 
+        $('#reason1').val($(this).data('reoson'));
         $('#updateModel').modal('show');
         
     });

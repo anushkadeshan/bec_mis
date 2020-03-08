@@ -1,6 +1,6 @@
 @extends('layouts.main')
 @section('content')
-<div class="container">
+<div class="container-fluid">
 
 <div class="row">
 	  <div class="col-12">
@@ -195,16 +195,56 @@
 						  <thead>
 						    <tr>
 						      <th scope="col" width="250">Youth Name</th>
+						       <th scope="col"></th>
 						    </tr>
 						  </thead>
 						  <tbody>
 						  	@foreach($youths as $youth)
 						    <tr>
 						      <th>{{$youth->name}}</th>
+						      <td><button type="button" class="btn btn-success btn-flat btn-sm" data-id="{{$youth->c_id}}" data-dropout="{{$youth->dropout}}" data-reoson="{{$youth->reoson_to_dropout}}" id="edit2"><i class="fas fa-edit"></i></button></td>
 						    </tr>
 						    @endforeach
 						  </tbody>
 						</table>
+						<div class="modal fade" id="updateModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+					      <div class="modal-dialog" role="document">
+					        <div class="modal-content">
+					          <div class="modal-header">
+					            <h5 class="modal-title" id="exampleModalLongTitle">Update Participants Information</h5>
+					            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					              <span aria-hidden="true">&times;</span>
+					            </button>
+					          </div>
+					          <div class="modal-body">
+					              <!-- form start -->
+					                  
+					              <form role="form" method="get" id="myForm1">
+					                  {{ csrf_field() }}
+					                 
+					                  <div class="form-group">
+					                    <label for="name">is Youth Dropout ?</label>
+					                    <select name="dropout" class="form-control" id="dropout1">
+									      	<option value="">Select Option</option>
+									      	<option value="1">Yes</option>
+									      	<option value="0">No</option>
+									    </select>
+					                     
+					                  </div>
+					                 <div class="form-group">
+					                 	<label for="name">If yes reoson to dropout</label>
+					                 	<textarea class="form-control" name="reoson_to_dropout" id="reason1"></textarea>
+					                 </div>	
+					                  <input type="hidden" id="id_p" name="id_p"></input>
+					              </form>
+					          </div>
+					          <div class="modal-footer">
+					            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					            <button type="button" id="update-part" class="btn btn-primary">Update changes</button>
+					          </div>
+					        </div>
+					      </div>
+					    </div>
 						
 	          	</div>	
 	          	<h5>Add a Youth ( if you have missed )</h5>
@@ -502,6 +542,55 @@ $(document).ready(function(){
   @endif  
 
 	new ClipboardJS('.copy');
+
+//edit 
+
+  $(document).on('click', '#edit2', function(){
+        var id = $(this).data('id');
+        $('#id_p').val($(this).data('id'));
+        $('#dropout1').val($(this).data('dropout'));
+         $('#reason1').val($(this).data('reoson'));
+        $('#updateModel').modal('show');
+        
+    });
+
+  //update
+   $(document).ready(function(){
+     $(document).on('click' , '#update-part' ,function (){
+        var form = $('#myForm1');
+        $.ajax({
+            type: 'POST',
+            url: SITE_URL + '/activity/skill/update-youth-soft',
+                      
+            data: form.serialize(),
+
+            beforeSend: function(){
+              $('#loading').show();
+            },
+            complete: function(){
+              $('#loading').hide();
+            },          
+            success: function(data) {
+              if($.isEmptyObject(data.error)){              
+              toastr.success('Succesfully updated the report ! ', 'Congratulations', {timeOut: 5000});
+              $("#myForm1")[0].reset();
+              location.reload();
+
+
+            }
+            else{
+             printValidationErrors(data.error);
+              
+            }         
+        },
+
+            error: function (jqXHR, exception) {    
+                console.log(jqXHR);
+                toastr.error('Error !', 'Something Error')
+            },
+        });
+    });
+  });
 </script>
 
 <script src="{{ asset('js/bootstrap3-wysihtml5.all.min.js') }}"></script>

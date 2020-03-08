@@ -1,6 +1,6 @@
 @extends('layouts.main')
 @section('content')
-<div class="container">
+<div class="container-fluid">
 
 <div class="row">
 	  <div class="col-12">
@@ -177,7 +177,7 @@
 						      <td>{{$youth->name}}</td>
 						      <td>{{$youth->nature_of_support}}</td>
 						      <td>{{$youth->institute_type}}</td>
-						      <td><button type="button" class="btn btn-success btn-flat btn-sm" data-id="{{$youth->cid}}"  data-nature_of_support="{{$youth->nature_of_support}}" data-institute_type="{{$youth->institute_type}}" id="edit2"><i class="fas fa-edit"></i></button></td>
+						      <td><button type="button" class="btn btn-success btn-flat btn-sm" data-id="{{$youth->cid}}"  data-nature_of_support="{{$youth->nature_of_support}}" data-institute_type="{{$youth->institute_type}}" data-dropout="{{$youth->dropout}}" data-reoson="{{$youth->reoson_to_dropout}}" id="edit2"><i class="fas fa-edit"></i></button></td>
 						    </tr>
 						    @endforeach
 						    
@@ -213,7 +213,20 @@
 									    </select>
 					                     
 					                  </div>
-					                 
+					                  <div class="form-group">
+
+					                    <label for="name">is Youth Dropout ?</label>
+					                    <select name="dropout" class="form-control" id="dropout1">
+									      	<option value="">Select Option</option>
+									      	<option value="1">Yes</option>
+									      	<option value="0">No</option>
+									    </select>
+					                     
+					                  </div>
+					                 <div class="form-group">
+					                 	<label for="name">If yes reoson to dropout</label>
+					                 	<textarea class="form-control" name="reoson_to_dropout" id="reason1"></textarea>
+					                 </div>	
 					                  <input type="hidden" id="id_p" name="id_p"></input>
 					              </form>
 					          </div>
@@ -513,6 +526,8 @@ $(document).ready(function(){
         $('#id_p').val($(this).data('id'));
         $('#institute_type1').val($(this).data('institute_type'));
         $('#nature_of_support1').val($(this).data('nature_of_support'));
+        $('#dropout1').val($(this).data('dropout'));
+        $('#reason1').val($(this).data('reoson'));
         $('#updateModel').modal('show');
         
     });

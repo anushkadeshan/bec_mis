@@ -24,7 +24,7 @@ class VacancyController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth');
+        //$this->middleware('auth');
     }
     /**
      * Display a listing of the resource.
@@ -60,8 +60,8 @@ class VacancyController extends Controller
 
                else{
                   $vacancies = Vacancy::with('employer')
-                              ->where('dedline','>',Carbon::today())
-                              ->latest()->get();
+                              ->where('dedline','>=',date('Y-m-d'))
+                              ->get();
                }
                 
                 //dd($vacancy->toArray());
@@ -337,6 +337,6 @@ class VacancyController extends Controller
     public function vacancies_api(){
       $vacancies = Vacancy::with('employer')->get();
 
-      return response()->json($vacancies);
+      return response()->json($vacancies); 
     }
 }

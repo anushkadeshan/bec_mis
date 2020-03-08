@@ -7,13 +7,13 @@
         <div class="row mb-2">
           <div class="col-md-6">
                       
-            <h3>Material support for PES units
+            <h3>Material support for CIC units
               <small class="badge badge-success"> {{count($meetings)}}</small></h3>
           </div>
           <div class="col-md-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{Route('home')}}">Dashboard</a></li>
-              <li class="breadcrumb-item"><a href="{{url('m&e-reports')}}">Reprots</a></li>
+              <li class="breadcrumb-item"><a href="{{url('m&e-reports')}}">Reports</a></li>
               <li class="breadcrumb-item active">2.2.2</li>
             </ol>
           </div>
@@ -92,7 +92,7 @@
                   <li class="nav-item"><a class="nav-link active" href="#tab_1" data-toggle="tab">Summary</a></li>
                   <li class="nav-item"><a class="nav-link" href="#tab_2" data-toggle="tab">List</a></li>
                   <li class="nav-item"><a class="nav-link" href="#tab_3">More</a></li>
-                  <li class="nav-item"><a class="nav-link" href="#tab_4">PES Identification Report</a></li>
+                  <li class="nav-item"><a class="nav-link" href="#tab_4">CIC Identification Report</a></li>
                 </ul>
               </div><!-- /.card-header -->
               <div class="card-body">
@@ -112,7 +112,7 @@
                     <br>
                     <div class="card card-success">
                     <div  class="card-header">
-                      No of PES units supported
+                      No of CIC units supported
                     </div>
                     <div  class="card-body">
                     
@@ -152,7 +152,7 @@
                       <div class="col-md-12">
                         <div class="card card-success card-outline">
                           <div class="card-header">
-                                    <h3 class="card-title">PES Unit Support Details Details</h3>
+                                    <h3 class="card-title">CIC Unit Support Details Details</h3>
                               </div>
                               <div class="card-body">
                             <ul class="list-group list-group-flush">
@@ -162,7 +162,7 @@
                               <li class="list-group-item border-0"><strong>Visit Date : </strong><span id="meeting_date"></span></li>
                               <li class="list-group-item border-0"><strong>Support Date : </strong><span id="support_date"></span></li>
                               <li class="list-group-item border-0"><strong>Total Cost: </strong><span id="program_cost"></span></li>
-                              <li class="list-group-item border-0"><strong>Type of gaps identified in the PES unit: </strong><span id="gaps"></span></li>
+                              <li class="list-group-item border-0"><strong>Type of gaps identified in the CIC unit: </strong><span id="gaps"></span></li>
                               <li class="list-group-item border-0"><strong>Branch: </strong><span id="branch"></span></li>
                             </ul>
                           </div>
@@ -207,7 +207,7 @@
                       <div class="col-md-12">
                         <div class="card card-success card-outline">
                           <div class="card-header">
-                                    <h3 class="card-title">PES Unit Identification Details</h3>
+                                    <h3 class="card-title">CIC Unit Identification Details</h3>
                               </div>
                               <div class="card-body">
                             <ul class="list-group list-group-flush">
@@ -215,7 +215,7 @@
                               <li class="list-group-item border-0"><strong>DSDs : </strong><span id="dsd1"></span></li>
                               <li class="list-group-item border-0"><strong>GNDs : </strong><span id="gnd1"></span></li>
                               <li class="list-group-item border-0"><strong>DM Name : </strong><span id="dm_name1"></span></li>
-                              <li class="list-group-item border-0"><strong>Date of visit to PES Unit : </strong><span id="meeting_date1"></span></li>
+                              <li class="list-group-item border-0"><strong>Date of visit to CIC Unit : </strong><span id="meeting_date1"></span></li>
                             </ul>
                             <fieldset class="border p-2 list-group-flush">
                             <legend  class="w-auto text-primary"><small> Responding Officer</small></legend>

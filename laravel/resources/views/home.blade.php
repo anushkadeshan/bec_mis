@@ -252,10 +252,12 @@
             </div>
             <!-- /.card -->
           </div>
+
+          
         	<div class="col-12 col-sm-6 col-md-6">
         		<div class="card">
 	              <div class="card-header">
-	                <h3 class="card-title">Goal Completion    <a href="{{Route('view_completion')}}"><span  class="badge badge-success float-right" id="row_count">View Report</span></a></h3>
+	                <h3 class="card-title">Goal Completion    <a href="{{Route('youth_progress')}}"><span  class="badge badge-success float-right" id="row_count">View Report</span></a></h3>
 	                <div class="card-tools">
 	                  
 	                </div>
@@ -654,7 +656,7 @@
 		        	<div class="col-md-4">
 		        		<div class="card">
 			              <div class="card-header">
-			                <h5 class="card-title">Goal Completion <a href="{{Route('view_completion')}}"><span  class="badge badge-success float-right" id="row_count">View Report</span></a></h5>
+			                <h5 class="card-title">Goal Completion <a href="{{Route('youth_progress')}}"><span  class="badge badge-success float-right" id="row_count">View Report</span></a></h5>
 
 			                
 			              </div>
@@ -1069,7 +1071,7 @@
           <div class="col-12 col-sm-6 col-md-6">
             <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Goal Completion    <a href="{{Route('view_completion')}}"><span  class="badge badge-success float-right" id="row_count">View Report</span></a></h3>
+                  <h3 class="card-title">Goal Completion    <a href="{{Route('youth_progress')}}"><span  class="badge badge-success float-right" id="row_count">View Report</span></a></h3>
                   <div class="card-tools">
                     
                   </div>
@@ -1243,7 +1245,7 @@
           <div class="col-12 col-sm-6 col-md-6">
             <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Goal Completion    <a href="{{Route('view_completion')}}"><span  class="badge badge-success float-right" id="row_count">View Report</span></a></h3>
+                  <h3 class="card-title">Goal Completion    <a href="{{Route('youth_progress')}}"><span  class="badge badge-success float-right" id="row_count">View Report</span></a></h3>
                   <div class="card-tools">
                     
                   </div>
