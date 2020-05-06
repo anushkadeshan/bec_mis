@@ -50,7 +50,27 @@ return [
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
-            'strict' => true,
+            'strict' => false,
+            'engine' => null,
+            'dump' => [
+               'dump_binary_path' => '/usr/bin/', // only the path, so without `mysqldump` or `pg_dump`
+               'use_single_transaction',
+               'timeout' => 60 * 5, // 5 minute timeout
+            ]
+        ],
+
+        'mysql2' => [
+            'driver' => 'mysql',
+            'host' => '194.55.13.171',
+            'port' => '3307',
+            'database' => 'becsyste_bss_system',
+            'username' => 'becsyste_root',
+            'password' => '}3m!f8$bc{9+',
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => false,
             'engine' => null,
         ],
 
@@ -77,6 +97,8 @@ return [
             'charset' => 'utf8',
             'prefix' => '',
         ],
+
+
 
     ],
 

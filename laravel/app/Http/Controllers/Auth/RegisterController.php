@@ -7,7 +7,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
-
+use Illuminate\Http\Request;
+use Illuminate\Auth\Events\Registered;
+use App\Notifications\notifyAdmin;
 class RegisterController extends Controller
 {
     /*
@@ -28,7 +30,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/login';
 
     /**
      * Create a new controller instance.
@@ -52,7 +54,10 @@ class RegisterController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
+            'role' =>'required',
         ]);
+        $data = $request->all();
+
     }
 
     /**
@@ -63,10 +68,34 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        $user= User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'role_id'
         ]);
+
+        $user->roles()->attach($data['role']);
+        return $user;
+
+    }
+
+    public function register(Request $request)
+    {
+        $this->validator($request->all())->validate();
+
+        event(new Registered($user = $this->create($request->all())));
+        // $this->guard()->login($user);
+        $admin = User::where('id',1) -> first();
+
+        $admin->notify(new notifyAdmin($user));
+        return $this->registered($request, $user)
+                        ?: redirect($this->redirectPath())->with('status', 'Register was successful!. Please check the email in few minutes to access BEC MIS');
+    }
+
+    public function showRegistrationForm()
+    {
+        $roles=\App\Role::pluck('name','id')->except(['id'=>1,7,2]);
+        return view('auth.register',compact('roles'));
     }
 }

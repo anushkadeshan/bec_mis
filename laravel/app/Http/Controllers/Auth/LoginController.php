@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+
+use Pusher\Pusher;
 
 class LoginController extends Controller
 {
@@ -35,5 +38,27 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    protected function credentials(Request $request){
+        $credentials = $request->only($this->username(), 'password');
+        $credentials['isActive']=1;
+
+        return $credentials;
+
+        $options = array(
+                        'cluster' => env('PUSHER_APP_CLUSTER'),
+                        'encrypted' => true
+                        );
+        $pusher = new Pusher(
+                            env('PUSHER_APP_KEY'),
+                            env('PUSHER_APP_SECRET'),
+                            env('PUSHER_APP_ID'), 
+                            $options
+                        );
+
+        $data['message'] = 'hellO welcome';
+        $pusher->trigger('user-channel', 'App\Events\userLogin', $data);
+
     }
 }

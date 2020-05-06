@@ -13,7 +13,13 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        'App\Console\Commands\EmailCourseFinished',
+        'App\Console\Commands\SoftSkillCompleted',
+        'App\Console\Commands\GvtCompleted',
+        'App\Console\Commands\financial_notInJob',
+        'App\Console\Commands\softSkills_notInJob',
+        'App\Console\Commands\courseSupport_notInJob',
+        'App\Console\Commands\sendPushNotifications',
     ];
 
     /**
@@ -25,7 +31,47 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')
-        //          ->hourly();
+                 // ->hourly();
+        $schedule->command('backup:clean')->daily()->at('22:17')->timezone('Asia/Colombo')
+                 ->withoutOverlapping();
+       $schedule->command('backup:run')->daily()->at('22:20')->timezone('Asia/Colombo')
+                 ->withoutOverlapping();
+        $schedule->command('notify:course_finished')
+                 ->dailyAt('9:07')
+                 ->timezone('Asia/Colombo')
+                 ->withoutOverlapping();
+
+       $schedule->command('notify:soft_skills_finished')
+                 ->dailyAt('9:40')
+                 ->timezone('Asia/Colombo')
+                 ->withoutOverlapping();    
+
+        $schedule->command('notify:gvt_finished')
+                 ->dailyAt('12:24')
+                 ->timezone('Asia/Colombo')
+                 ->withoutOverlapping();   
+
+        $schedule->command('notify:financial_notInJobs')
+                  ->weekly()->mondays()->at('9:00')
+                 ->timezone('Asia/Colombo')
+                 ->withoutOverlapping(); 
+
+        $schedule->command('notify:softskills_notInJobs')
+                  ->weekly()->mondays()->at('12:43')
+                 ->timezone('Asia/Colombo')
+                 ->withoutOverlapping();
+
+        $schedule->command('notify:course_supports_notInJobs')
+                  ->weekly()->mondays()->at('12:56')
+                 ->timezone('Asia/Colombo')
+                 ->withoutOverlapping();
+
+
+        $schedule->command('notify:push')
+                  ->twiceDaily(10, 4)
+                 ->timezone('Asia/Colombo')
+                 ->withoutOverlapping();
+
     }
 
     /**

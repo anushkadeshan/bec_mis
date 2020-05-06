@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'BEC MIS'),
 
     /*
     |--------------------------------------------------------------------------
@@ -52,7 +52,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'https://bec.southeastasia.cloudapp.azure.com'),
 
     /*
     |--------------------------------------------------------------------------
@@ -65,7 +65,8 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Colombo',
+    //'timezone' => 'America/Chicago',
 
     /*
     |--------------------------------------------------------------------------
@@ -146,7 +147,14 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-
+        Kim\Activity\ActivityServiceProvider::class,
+        Laravel\Passport\PassportServiceProvider::class,
+        Chumper\Zipper\ZipperServiceProvider::class,
+        OwenIt\Auditing\AuditingServiceProvider::class,
+        Arcanedev\LogViewer\LogViewerServiceProvider::class,
+        Spatie\Backup\BackupServiceProvider::class,
+        Matthewbdaly\LaravelAzureStorage\AzureStorageServiceProvider::class,
+        RenatoMarinho\LaravelPageSpeed\ServiceProvider::class,
         /*
          * Package Service Providers...
          */
@@ -156,9 +164,13 @@ return [
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
+        App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        //App\Providers\DropboxFilesystemServiceProvider::class
+        
+        //BackupManager\Laravel\Laravel55ServiceProvider::class,
+        //Barryvdh\DomPDF\ServiceProvider::class,
 
     ],
 
@@ -208,6 +220,9 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+        'Activity' => Kim\Activity\ActivityFacade::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
+        'Zipper' => Chumper\Zipper\Zipper::class
 
     ],
 
