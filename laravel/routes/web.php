@@ -17,9 +17,24 @@ use App\Events\userLogin;
 Route::get('/', function () {
     return view('welcome');
 });
-
+Route::get('/privacy', function () {
+    return view('privacy');
+});
 Auth::routes();
 Route::group(['middleware' => ['auth']], function() {
+
+Route::get('/analysis-job', 'AnalysisController@job')->name('analysis-job');
+Route::post('/analysis-job-fetch', 'AnalysisController@fetch_job')->name('analysis-job-fetch');
+Route::get('/analysis-cg', 'AnalysisController@cg')->name('analysis-cg');
+Route::post('/analysis-cg-fetch', 'AnalysisController@fetch_cg')->name('analysis-cg-fetch');
+Route::get('/analysis-gvt', 'AnalysisController@gvt')->name('analysis-gvt');
+Route::post('/analysis-gvt-fetch', 'AnalysisController@fetch_gvt')->name('analysis-gvt-fetch');
+Route::get('/analysis-soft', 'AnalysisController@soft')->name('analysis-soft');
+Route::post('/analysis-soft-fetch', 'AnalysisController@fetch_soft')->name('analysis-soft-fetch');
+Route::get('/analysis-financial', 'AnalysisController@financial')->name('analysis-financial');
+Route::post('/analysis-financial-fetch', 'AnalysisController@fetch_financial')->name('analysis-financial-fetch');
+
+Route::get('/person/api/details', 'AuditContrller@get_api_data');
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/ds', 'UserController@ds')->name('ds');
@@ -492,6 +507,8 @@ Route::post('/activity/skill/add-new-employer', 'PlacementController@add_employe
 Route::post('/activity/skill/update-youth-placement', 'PlacementController@update_youths')->middleware('can:edit-M&E-reports');
 Route::post('/activity/cg/add-new-placement-youth', 'PlacementController@add_youth')->middleware('can:edit-M&E-reports');
 
+Route::get('/youth-placed-in-jobs', 'PlacementController@youths')->middleware('can:view-M&E-reports');
+
 Route::get('/reports-me/individual/{id}/edit', 'PlacementController@edit_i')->middleware('can:edit-M&E-reports');
 Route::post('/activity/job-linking/update-individual', 'PlacementController@update_i')->middleware('can:edit-M&E-reports');
 
@@ -508,6 +525,16 @@ Route::get('/financial-youth', 'FinancialSupportController@view_youths')->name('
 Route::get('event', function () {
     event(new userLogin('User Logged'));
 });
+
+
+Route::get('/financial-youth/days/{branch}/{date}', 'FinancialSupportController@youths_30_days')->name('30-days');
+Route::get('/soft-skills-youth/days/{branch}/{date}', 'ProvideSoftskillController@youths_course_finished')->name('youths_course_finished');
+Route::get('/gvt-support-youth/days/{branch}/{date}', 'CourseSupportController@youths_course_finished');
+Route::get('/finacial-not-in-job/{branch}/{date}', 'FinancialSupportController@not_in_job');
+Route::get('/soft-skills-not-in-job/{branch}/{date}', 'ProvideSoftskillController@not_in_job');
+Route::get('/course-supports-not-in-job/{branch}/{date}', 'CourseSupportController@not_in_job');
+Route::get('/files-to-backup', 'HomeController@backups');
+Route::get('/download-backup/{filename}', 'HomeController@backup');
 
 
 

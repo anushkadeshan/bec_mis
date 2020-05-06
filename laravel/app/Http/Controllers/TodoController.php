@@ -22,7 +22,7 @@ class TodoController extends Controller
     	$tasks = Todo::create($data);
 
     	//send notofications 
-        $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['branch' , 'admin' ]);})->get();
+        $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', [ 'admin' ]);})->get();
         foreach ($notifyTo as $notifyUser) {
             $notifyUser->notify(new TaskCreated($tasks));
         }

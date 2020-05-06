@@ -174,7 +174,7 @@
               toastr.success('Succesfully apply for the vacancy ! ', 'Congratulations', {timeOut: 5000});
             }
             else{
-            toastr.error('Error !', ""+data.error+"");
+            toastr.error('Error !', ""+data.error+"",{closeButton: true});
               
             }         
         },

@@ -66,6 +66,7 @@ return [
     */
 
     'timezone' => 'Asia/Colombo',
+    //'timezone' => 'America/Chicago',
 
     /*
     |--------------------------------------------------------------------------
@@ -151,7 +152,9 @@ return [
         Chumper\Zipper\ZipperServiceProvider::class,
         OwenIt\Auditing\AuditingServiceProvider::class,
         Arcanedev\LogViewer\LogViewerServiceProvider::class,
-
+        Spatie\Backup\BackupServiceProvider::class,
+        Matthewbdaly\LaravelAzureStorage\AzureStorageServiceProvider::class,
+        RenatoMarinho\LaravelPageSpeed\ServiceProvider::class,
         /*
          * Package Service Providers...
          */
@@ -164,6 +167,8 @@ return [
         App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        //App\Providers\DropboxFilesystemServiceProvider::class
+        
         //BackupManager\Laravel\Laravel55ServiceProvider::class,
         //Barryvdh\DomPDF\ServiceProvider::class,
 

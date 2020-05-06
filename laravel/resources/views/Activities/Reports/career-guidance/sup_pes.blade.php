@@ -108,6 +108,24 @@
                         <span class="badge bg-warning" id="total_cost"></span>
                         <i class="fa fa-dollar-sign"></i>Total Cost
                       </a>
+
+                      @cannot('branch')
+                        <div class="col-md-12">
+                          <table id="example10" class="table row-border table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Branch</th>
+                                        <th>No of Supports</th>
+                                        <th>Total Cost</th>
+                                    </tr>
+                                    <tbody> 
+                                    </tbody>
+                                </thead>        
+                            </table>
+                          
+                        </div>
+                        @endcan
                     </fieldset>
                     <br>
                     <div class="card card-success">
@@ -115,6 +133,7 @@
                       No of CIC units supported
                     </div>
                     <div  class="card-body">
+                    
                     
                     <div class="row">
                         <div class="col-md-12">
@@ -390,10 +409,20 @@ $(document).ready(function() {
 var dataTable = $("#example").DataTable({
       dom: 'Bfrtip',
             buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+                'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
             ],
     });
-  
+  var dataTable2 = $("#example10").DataTable({
+      dom: 'Bfrtip',
+            buttons: [
+                
+            ],
+
+            "bFilter": false,
+            "bPaginate": false,
+            "info":     false,
+
+    });
   var date = new Date();
 
     $('.input-group').datepicker({
@@ -425,11 +454,18 @@ var dataTable = $("#example").DataTable({
   dataTable.clear().draw();
    var count = 1;
    var cost_sum = 0;
+  
+  dataTable2.clear().draw();
+    var count2 = 1;
+    $.each(data.summary, function(index, value2) {
+    // use data table row.add, then .draw for table refresh
+    dataTable2.row.add([count2++, value2.name, value2.total,  parseFloat(value2.cost).toLocaleString()]).draw();
+    });
 
-  $.each(data, function(index, value) {
+  $.each(data.data, function(index, value) {
     //console.log(value);
     // use data table row.add, then .draw for table refresh
-    dataTable.row.add([count++, value.visit_date, value.program_date, value.dsd, value.total_cost,value.branch_name,'<div class="btn-group"><button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button><a href="{{url('reports-me/pes-support')}}/'+value.m_id+'/edit"><button type="button" name="view" class="btn btn-success btn-flat btn-sm"><i class="fa fa-edit"></i></button></a></div>']).draw();
+    dataTable.row.add([count++, value.visit_date, value.program_date, value.dsd, value.total_cost.toLocaleString(),value.branch_name,'<div class="btn-group"><button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button><a href="{{url('reports-me/pes-support')}}/'+value.m_id+'/edit"><button type="button" name="view" class="btn btn-success btn-flat btn-sm"><i class="fa fa-edit"></i></button></a></div>']).draw();
 
      var total_cost1 = value.total_cost;
      if ($.isNumeric(total_cost1)) {
@@ -437,7 +473,7 @@ var dataTable = $("#example").DataTable({
       } 
   });
    
-   $('#total_records').text(data.length);
+   $('#total_records').text(data.data.length);
    $('#total_cost').text(cost_sum.toLocaleString());
     
    }

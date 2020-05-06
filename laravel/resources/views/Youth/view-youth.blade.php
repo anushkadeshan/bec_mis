@@ -67,7 +67,7 @@
                         @can('admin')
                         <th>Branch</th>
                         @endcan
-                        <th>Progress</th>
+                        {{--<th>Progress</th>--}}
         				<th>Action</th>
                         @endcan
                         @can('search-youth')
@@ -91,6 +91,7 @@
                         @can('admin')
                         <td>{{ $youth->ext }}</td>
                         @endcan
+                        {{--
         				<td width="180">
         					<form id="cg" style="margin-bottom: 5px;">
         						{{csrf_field()}}
@@ -126,6 +127,7 @@
 								<input type="checkbox" class="jobs" data-id="{{$youth->youth_id}}" @if ($youth->jobs) checked @endif>
 								<label>&nbsp; Job</label>
 							</form>
+                        
                             <form id="bss" name="bss" style="margin-bottom: 5px;">
                                 {{csrf_field()}}
 
@@ -133,19 +135,22 @@
                                 <label>&nbsp; BSS Beneficiary</label>
                             </form>
         				</td>
+                        --}}
         				<td>
         					@can('view-youth')
                         	<div class="btn-group">
-                                @can('admin')
+                             {{--   @can('admin')
                         		<a href="{{ URL::to('youth/' . $youth->youth_id . '/view-progress') }}" target="_blank">
                                     <button type="button" id="view-progress" data-id="{{$youth->youth_id}}" class="btn btn-block btn-primary btn-flat btn-sm" ><i class="fas fa-tasks"></i> </button>
                                 </a>
                                 @endcan
+                                --}}
                                 <a href="{{ URL::to('youth/' . $youth->youth_id . '/view') }}" target="_blank">
                                     <button type="button" id="view-youth" data-id="{{$youth->youth_id}}" class="btn btn-block btn-warning btn-flat btn-sm" ><i class="fas fa-eye"></i> </button>
                                 </a>
-                            
+                             
                             @endcan
+
                             @can('edit-youth')
                             <a href="{{ URL::to('youth/' . $youth->youth_id . '/edit') }}" target="_blank" title="">
                                     <button type="submit" id="edit-youth" data-id="{{$youth->youth_id}}" class="btn btn-block btn-success btn-flat btn-sm"><i class="fas fa-edit"></i></button>
@@ -184,7 +189,6 @@
 $(document).ready(function() {
     $('#example').DataTable( {
         dom: 'Bfrtip',
-        "pageLength": 5,
 
         buttons: [
             'copy', 'csv', 'excel', 'pdf', 'print'

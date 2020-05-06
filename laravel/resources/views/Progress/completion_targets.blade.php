@@ -47,7 +47,7 @@
                             <div class="btn-group">
                                 
                                 {{ csrf_field() }}
-                                    <button type="button" id="edit-target" data-id="{{$report->id}}"  data-report="{{$report->report}}" data-year="{{$report->year}}" data-target="{{$report->target}}" data-table_name="{{$report->table_name}}" data-table_name_youth="{{$report->table_name_youth}}" data-table_name_youth_id="{{$report->table_name_youth_id}}"data-branch_id="{{$report->branch_id}}" class="btn btn-block btn-success btn-flat btn-sm"><i class="fas fa-edit"></i></button>
+                                    <button type="button" id="edit-target" data-c_id="{{$report->c_id}}"  data-report="{{$report->report}}" data-year="{{$report->year}}" data-target="{{$report->target}}" data-table_name="{{$report->table_name}}" data-table_name_youth="{{$report->table_name_youth}}" data-table_name_youth_id="{{$report->table_name_youth_id}}"data-branch_id="{{$report->branch_id}}" class="btn btn-block btn-success btn-flat btn-sm"><i class="fas fa-edit"></i></button>
                             </div>
                             
                         </td>
@@ -388,7 +388,7 @@ $(document).on('click', '#edit-target', function(){
         $('#table_name_youth1').val($(this).data('table_name_youth'));
         $('#table_name_youth_id1').val($(this).data('table_name_youth_id'));
         $('#branch_id1').val($(this).data('branch_id'));
-        $('#c_id').val($(this).data('id'));
+        $('#c_id').val($(this).data('c_id'));
 
         $('#updateModel').modal('show');
 

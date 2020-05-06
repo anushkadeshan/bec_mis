@@ -124,6 +124,24 @@
                         <span class="badge bg-warning" id="total_cost"></span>
                         <i class="fa fa-dollar-sign"></i>Total Cost
                       </a>
+
+                      @cannot('branch')
+                        <div class="col-md-12">
+                          <table id="example10" class="table row-border table-hover">
+                                <thead>
+                                    <tr>
+                                        <th width="20">#</th>
+                                        <th>Branch</th>
+                                        <th>No of Job Fairs </th>
+                                        <th>Total Cost </th>
+                                    </tr>
+                                    <tbody> 
+                                    </tbody>
+                                </thead>        
+                            </table>
+                          
+                        </div>
+                        @endcan  
                     </fieldset>
                     <fieldset class="border p-2">
                           <legend  class="w-auto"><small>Individual Placements</small></legend>
@@ -131,6 +149,25 @@
                           <span class="badge bg-warning" id="total_records2"></span>
                           <i class="fa fa-handshake"></i>Placements
                       </a>
+
+                      @cannot('branch')
+                        <div class="col-md-12">
+                          <table id="example11" class="table row-border table-hover">
+                                <thead>
+                                    <tr>
+                                        <th width="20">#</th>
+                                        <th>Branch</th>
+                                        <th>No of Placements </th>
+                                        <th>Total Male </th>
+                                        <th>Total Female </th>
+                                    </tr>
+                                    <tbody> 
+                                    </tbody>
+                                </thead>        
+                            </table>
+                          
+                        </div>
+                        @endcan  
                     </fieldset>
 
                     </div>
@@ -287,6 +324,7 @@
                             <th>Program Date</th>
                             <th>Youth</th>
                             <th>Employer</th>
+                            <th>Industry</th>
                             <th>Vacancy</th>
                             <th>Salary</th>
                             <th>Branch</th>
@@ -352,16 +390,44 @@ $(document).ready(function() {
 var dataTable = $("#example").DataTable({
       dom: 'Bfrtip',
             buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+                'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
             ],
     });
 
 var dataTable2 = $("#example5").DataTable({
       dom: 'Bfrtip',
             buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+                'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
             ],
+    }); 
+
+var dataTable3 = $("#example10").DataTable({
+      dom: 'Bfrtip',
+            buttons: [
+                
+            ],
+
+            "bFilter": false,
+            "bPaginate": false,
+            "info":     false,
+
+            
+
     });  
+
+var dataTable4 = $("#example11").DataTable({
+      dom: 'Bfrtip',
+            buttons: [
+                
+            ],
+
+            "bFilter": false,
+            "bPaginate": false,
+            "info":     false,
+
+            
+
+    }); 
   var date = new Date();
 
     $('.input-group').datepicker({
@@ -399,6 +465,21 @@ var dataTable2 = $("#example5").DataTable({
    var pwd_m_sum = 0;
    var pwd_f_sum = 0;
    var cost_sum = 0;
+
+   dataTable3.clear().draw();
+    var count5 = 1;
+    $.each(data.summaryJ, function(index, value5) {
+     
+    dataTable3.row.add([count5++, value5.name, value5.total, value5.cost]).draw();
+    });
+
+dataTable4.clear().draw();
+    var count6 = 1;
+    $.each(data.summaryI, function(index, value6) {
+     
+    dataTable4.row.add([count6++, value6.name, value6.total, value6.male, value6.female]).draw();
+    });
+
   $.each(data.data1, function(index, value1) {
     // use data table row.add, then .draw for table refresh
     dataTable.row.add([count++, value1.program_date, value1.venue, value1.program_cost, value1.branch_name,'<div class="btn-group"><button type="button" name="view" data-id="'+value1.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button><a href="{{url('reports-me/placement')}}/'+value1.m_id+'/edit"><button type="button" name="view" class="btn btn-success btn-flat btn-sm"><i class="fa fa-edit"></i></button></a></div>']).draw();
@@ -437,7 +518,7 @@ var dataTable2 = $("#example5").DataTable({
 
    $.each(data.placements, function(index, value3) {
     // use data table row.add, then .draw for table refresh
-    dataTable2.row.add([count++, value3.program_date, value3.youth_name, value3.employer_name, value3.vacancy,value3.salary,value3.branch_name,'<div class="btn-group"><button type="button" name="view" data-id="'+value3.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view2"><i class="fa fa-eye"></i></button><a href="{{url('reports-me/individual')}}/'+value3.m_id+'/edit"><button type="button" name="view" class="btn btn-success btn-flat btn-sm"><i class="fa fa-edit"></i></button></a></div>']).draw();
+    dataTable2.row.add([count++, value3.program_date, value3.youth_name, value3.employer_name,value3.industry, value3.vacancy,value3.salary,value3.branch_name,'<div class="btn-group"><button type="button" name="view" data-id="'+value3.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view2"><i class="fa fa-eye"></i></button><a href="{{url('reports-me/individual')}}/'+value3.m_id+'/edit"><button type="button" name="view" class="btn btn-success btn-flat btn-sm"><i class="fa fa-edit"></i></button></a></div>']).draw();
  
   });
     
@@ -531,7 +612,7 @@ $('body').on('click', '.btn_view', function () {
            output2 += '<td>' + data.youths[count].phone + '</td>';
            output2 += '<td>' + data.youths[count].type_of_support + '</td>';
            output2 += '<td>' + data.youths[count].employer_name + '</td>';
-           output2 += '<td>' + data.youths[count].vacancies + '</td>';
+           output2 += '<td>' + data.youths[count].vacancy + '</td>';
            output2 += '<td>' + data.youths[count].salary + '</td></tr>';
           }
           $('#example3 tbody').html(output2);

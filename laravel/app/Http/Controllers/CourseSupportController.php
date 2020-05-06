@@ -309,6 +309,16 @@ class CourseSupportController extends Controller
                       ->orderBy('program_date', 'desc')
                       ->get();  
 
+                    $summary = DB::table('course_supports_youth') 
+                        ->join('course_supports','course_supports.id','=','course_supports_youth.course_support_id')
+                        ->join('youths','youths.id','=','course_supports_youth.youth_id')
+                        ->join('branches','branches.id','=','course_supports.branch_id')
+                        ->select('branches.name', 'course_supports.*','gender',DB::raw('COUNT(DISTINCT course_supports_youth.course_support_id) as progs'),DB::raw("COUNT( ( CASE WHEN gender = 'male' THEN course_supports_youth.youth_id END ) ) AS male"),DB::raw("COUNT( ( CASE WHEN gender = 'female' THEN course_supports_youth.youth_id END ) ) AS female"), DB::raw('COUNT( ( CASE WHEN course_supports.end_date > CURDATE() THEN  course_support_id END)) as status'))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd)) 
+                        ->where('course_supports.branch_id',$request->branch)
+                        ->groupBy('course_supports.branch_id')
+                        ->get();
+
                   }
 
                   else{
@@ -322,6 +332,16 @@ class CourseSupportController extends Controller
                         //->where('course_supports.branch_id','=',$branch_id)
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                    $summary = DB::table('course_supports_youth') 
+                        ->join('course_supports','course_supports.id','=','course_supports_youth.course_support_id')
+                        ->join('youths','youths.id','=','course_supports_youth.youth_id')
+                        ->join('branches','branches.id','=','course_supports.branch_id')
+                        ->select('branches.name', 'course_supports.*','gender',DB::raw('COUNT(DISTINCT course_supports_youth.course_support_id) as progs'),DB::raw("COUNT( ( CASE WHEN gender = 'male' THEN course_supports_youth.youth_id END ) ) AS male"),DB::raw("COUNT( ( CASE WHEN gender = 'female' THEN course_supports_youth.youth_id END ) ) AS female"), DB::raw('COUNT( ( CASE WHEN course_supports.end_date > CURDATE() THEN  course_support_id END)) as status'))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd)) 
+                        ->groupBy('course_supports.branch_id')
+                        ->get();
+
                     }
                     else{
                       $data = DB::table('course_supports') 
@@ -333,6 +353,9 @@ class CourseSupportController extends Controller
                         ->select('course_supports.*','branches.*','course_supports.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                      $summary = null;
+
                     }
                   }
                 
@@ -348,6 +371,14 @@ class CourseSupportController extends Controller
                         ->select('course_supports.*','branches.*','course_supports.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                $summary = DB::table('course_supports_youth') 
+                        ->join('course_supports','course_supports.id','=','course_supports_youth.course_support_id')
+                        ->join('youths','youths.id','=','course_supports_youth.youth_id')
+                        ->join('branches','branches.id','=','course_supports.branch_id')
+                        ->select('branches.name', 'course_supports.*','gender',DB::raw('COUNT(DISTINCT course_supports_youth.course_support_id) as progs'),DB::raw("COUNT( ( CASE WHEN gender = 'male' THEN course_supports_youth.youth_id END ) ) AS male"),DB::raw("COUNT( ( CASE WHEN gender = 'female' THEN course_supports_youth.youth_id END ) ) AS female"), DB::raw('COUNT( ( CASE WHEN course_supports.end_date > CURDATE() THEN  course_support_id END)) as status'))
+                        ->groupBy('course_supports.branch_id')
+                        ->get();
                 }
                 else{
 
@@ -359,9 +390,15 @@ class CourseSupportController extends Controller
                         ->where('course_supports.branch_id','=',$branch_id)
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                $summary = null;
                 }
             }
-                return response()->json($data);
+                return response()->json(array(
+
+                  'data' => $data,
+                  'summary' => $summary,
+                ));
         }
     
         
@@ -530,6 +567,46 @@ class CourseSupportController extends Controller
 
 
         return view('Activities.Reports.Skill-Development.gvt-youth')->with(['youths'=>$cg_youths,'branches'=> $branches,'courses'=>$courses,'institutes' => $institutes]);
+    }
+
+
+    public function youths_course_finished($branch,$date){
+        $youths = DB::table('course_supports_youth')
+                    ->join('youths','youths.id','=','course_supports_youth.youth_id')
+                    ->join('course_supports','course_supports.id','=','course_supports_youth.course_support_id')
+                    ->join('branches','branches.id','=','course_supports.branch_id')
+                    ->join('institutes','institutes.id','=','course_supports.institute_id')
+                    ->join('courses','courses.id', '=' ,'course_supports.course_id')
+                    ->select('course_supports_youth.dropout as dropout','course_supports.*','branches.*','course_supports.id as m_id','course_supports.course_id as c_id','course_supports.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','youths.name as youth_name','youths.id as youth_id')
+                    ->where('course_supports.end_date',$date)
+                    ->where('course_supports.branch_id',$branch)
+                    ->get();
+        //dd($youths);
+        return view('mail-notifications.gvt-finished')->with(['youths'=>$youths]);
+    }
+
+    public function not_in_job($branch, $date){
+        $placements = DB::table('placements_youths')
+                  ->pluck('youth_id')->toArray();
+
+        $individual = DB::table('placement_individual')
+                  ->pluck('youth_id')->toArray();
+
+        $youths = array_merge($placements,$individual);
+
+        $not_placed = DB::table('course_supports_youth')
+                    ->join('youths','youths.id','=','course_supports_youth.youth_id')
+                    ->join('course_supports','course_supports.id','=','course_supports_youth.course_support_id')
+                    ->join('branches','branches.id','=','course_supports.branch_id')
+                    ->join('institutes','institutes.id','=','course_supports.institute_id')
+                    ->join('courses','courses.id', '=' ,'course_supports.course_id')
+                    ->where('end_date', '<', $date)
+                    ->select('course_supports_youth.dropout as dropout','course_supports.*','branches.*','course_supports.id as m_id','course_supports.course_id as c_id','course_supports.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','youths.name as youth_name','youths.id as youth_id','youths.phone as youth_phone')
+                    ->where('course_supports.branch_id',$branch)
+                    ->whereNotIn('youth_id', $youths)
+                    ->get();
+        //dd($not_placed);
+        return view('mail-notifications.gvt_whereNotInJob')->with(['youths'=>$not_placed]);
     }
 } 
 

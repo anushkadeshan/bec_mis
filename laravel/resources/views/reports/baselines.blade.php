@@ -35,7 +35,6 @@
                      ?>
                     @foreach ($cg_youths as $cg_youth)
                     <?php $count = DB::table('youths')->where('branch_id',$cg_youth->branch_id)->count(); ?>
-                   @if($count< $cg_youth->target) <tr class="employer{{$cg_youth->id}}">
                         <td>{{ $no++ }}</td>
                         <th>{{ $cg_youth->name }}</th>
                         <td>{{ $cg_youth->target }}</td>
@@ -50,7 +49,6 @@
                             @if($count< $cg_youth->target) <small class="badge badge-danger">{{"Not Completed"}}</small> @else <small class="badge badge-success">{{"Completed"}}</small> @endif
                         </td>
                     </tr>
-                    @endif
                     @endforeach
                 <tbody> 
                 <tfoot>

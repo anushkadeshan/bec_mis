@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Dashboard - BEC MIS</title>
+    <meta name="userId" content="{{ Auth::check() ? Auth::user()->id : '' }}">
+    <title>@yield('title')  BEC MIS</title>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <!-- Ionicons -->
@@ -63,6 +64,7 @@
         td { font-size: 14px; }
         
     </style>
+    @livewireStyles
     </head>
     <body class="hold-transition sidebar-mini">
     <div class="preloader-wrapper">
@@ -340,7 +342,7 @@
         $('#example1').DataTable( {
             dom: 'Bfrtip',
             buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+                'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
             ]
         } );
        } );
@@ -392,7 +394,10 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.colVis.min.js"></script>
+
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50704959-3"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -401,5 +406,6 @@
   gtag('config', 'UA-50704959-3');
 </script>
 @yield('scripts')
+@livewireScripts
 </body>
 </html>

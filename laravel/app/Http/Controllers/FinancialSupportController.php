@@ -185,7 +185,19 @@ class FinancialSupportController extends Controller
                       ->where('branch_id',$request->branch)
                       ->select('finacial_supports.*','branches.*','finacial_supports.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
                       ->orderBy('program_date', 'desc')
-                      ->get();    
+                      ->get();  
+
+                    $summary = DB::table('finacial_supports_youths') 
+                        ->join('finacial_supports','finacial_supports.id','=','finacial_supports_youths.finacial_support_id')
+                        ->join('youths','youths.id','=','finacial_supports_youths.youth_id')
+                        ->join('branches','branches.id','=','finacial_supports.branch_id')
+                        ->select('branches.name', 'finacial_supports.*','gender',DB::raw('COUNT(DISTINCT finacial_supports_youths.finacial_support_id) as progs'),DB::raw("COUNT( ( CASE WHEN gender = 'male' THEN finacial_supports_youths.youth_id END ) ) AS male"),DB::raw("COUNT( ( CASE WHEN gender = 'female' THEN finacial_supports_youths.youth_id END ) ) AS female"), DB::raw("COUNT( ( CASE WHEN dropout = '1' THEN finacial_supports_youths.youth_id END ) ) AS dropout"), DB::raw('sum(DISTINCT finacial_supports.cost) as total_cost'), DB::raw('COUNT( ( CASE WHEN finacial_supports.end_date > CURDATE() THEN  finacial_support_id END)) as status'))
+                      ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                      ->where('finacial_supports.branch_id',$request->branch)
+                        ->groupBy('finacial_supports.branch_id')
+                        ->get();  
+
+
                    }
 
                    else{
@@ -199,6 +211,16 @@ class FinancialSupportController extends Controller
                         ->select('finacial_supports.*','branches.*','finacial_supports.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
                         ->orderBy('program_date', 'desc')
                         ->get();
+                        
+                    $summary = DB::table('finacial_supports_youths') 
+                        ->join('finacial_supports','finacial_supports.id','=','finacial_supports_youths.finacial_support_id')
+                        ->join('youths','youths.id','=','finacial_supports_youths.youth_id')
+                        ->join('branches','branches.id','=','finacial_supports.branch_id')
+                        ->select('branches.name', 'finacial_supports.*','gender',DB::raw('COUNT(DISTINCT finacial_supports_youths.finacial_support_id) as progs'),DB::raw("COUNT( ( CASE WHEN gender = 'male' THEN finacial_supports_youths.youth_id END ) ) AS male"),DB::raw("COUNT( ( CASE WHEN gender = 'female' THEN finacial_supports_youths.youth_id END ) ) AS female"), DB::raw("COUNT( ( CASE WHEN dropout = '1' THEN finacial_supports_youths.youth_id END ) ) AS dropout"), DB::raw('sum(DISTINCT finacial_supports.cost) as total_cost'), DB::raw('COUNT( ( CASE WHEN finacial_supports.end_date > CURDATE() THEN  finacial_support_id END)) as status'))
+                      ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->groupBy('finacial_supports.branch_id')
+                        ->get(); 
+
                     }
                     else{
                       $data = DB::table('finacial_supports') 
@@ -210,6 +232,8 @@ class FinancialSupportController extends Controller
                         ->select('finacial_supports.*','branches.*','finacial_supports.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                      $summary = null;
                     }
                   }
                 
@@ -226,6 +250,14 @@ class FinancialSupportController extends Controller
                         ->select('finacial_supports.*','branches.*','finacial_supports.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                $summary = DB::table('finacial_supports_youths') 
+                        ->join('finacial_supports','finacial_supports.id','=','finacial_supports_youths.finacial_support_id')
+                        ->join('youths','youths.id','=','finacial_supports_youths.youth_id')
+                        ->join('branches','branches.id','=','finacial_supports.branch_id')
+                        ->select('branches.name', 'finacial_supports.*','gender',DB::raw('COUNT(DISTINCT finacial_supports_youths.finacial_support_id) as progs'),DB::raw("COUNT( ( CASE WHEN gender = 'male' THEN finacial_supports_youths.youth_id END ) ) AS male"),DB::raw("COUNT( ( CASE WHEN gender = 'female' THEN finacial_supports_youths.youth_id END ) ) AS female"), DB::raw("COUNT( ( CASE WHEN dropout = '1' THEN finacial_supports_youths.youth_id END ) ) AS dropout"), DB::raw('sum(DISTINCT finacial_supports.cost) as total_cost'), DB::raw('COUNT( ( CASE WHEN finacial_supports.end_date > CURDATE() THEN  finacial_support_id END)) as status'))
+                        ->groupBy('finacial_supports.branch_id')
+                        ->get();
                 }
                 else{
                   $data = DB::table('finacial_supports') 
@@ -236,9 +268,14 @@ class FinancialSupportController extends Controller
                         ->select('finacial_supports.*','branches.*','finacial_supports.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','program_date as meeting_date')                        
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                  $summary = null;
                 }
             }
-                return response()->json($data);
+                return response()->json(array(
+                    'data' => $data,
+                    'summary' => $summary,
+                ));
         }
     
         
@@ -425,5 +462,44 @@ class FinancialSupportController extends Controller
 
 
         return view('Activities.Reports.Skill-Development.finacial-youth')->with(['youths'=>$cg_youths,'branches'=> $branches,'courses'=>$courses,'institutes' => $institutes]);
+    } 
+
+    public function youths_30_days($branch,$date){
+        $youths = DB::table('finacial_supports_youths')
+                    ->join('youths','youths.id','=','finacial_supports_youths.youth_id')
+                    ->join('finacial_supports','finacial_supports.id','=','finacial_supports_youths.finacial_support_id')
+                    ->join('branches','branches.id','=','finacial_supports.branch_id')
+                    ->join('institutes','institutes.id','=','finacial_supports.institute_id')
+                    ->join('courses','courses.id', '=' ,'finacial_supports.course_id')
+                    ->where('end_date', '=', $date)
+                    ->select('finacial_supports_youths.dropout as dropout','finacial_supports.*','branches.*','finacial_supports.id as m_id','finacial_supports.course_id as c_id','finacial_supports.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','youths.name as youth_name','youths.id as youth_id')
+                    ->where('finacial_supports.branch_id',$branch)
+                    ->get();
+        //dd($youths);
+        return view('mail-notifications.finacial-30-days')->with(['youths'=>$youths]);
+    }
+
+    public function not_in_job($branch, $date){
+        $placements = DB::table('placements_youths')
+                  ->pluck('youth_id')->toArray();
+
+        $individual = DB::table('placement_individual')
+                  ->pluck('youth_id')->toArray();
+
+        $youths = array_merge($placements,$individual);
+
+        $not_placed = DB::table('finacial_supports_youths')
+                    ->join('youths','youths.id','=','finacial_supports_youths.youth_id')
+                    ->join('finacial_supports','finacial_supports.id','=','finacial_supports_youths.finacial_support_id')
+                    ->join('branches','branches.id','=','finacial_supports.branch_id')
+                    ->join('institutes','institutes.id','=','finacial_supports.institute_id')
+                    ->join('courses','courses.id', '=' ,'finacial_supports.course_id')
+                    ->where('end_date', '<', $date)
+                    ->select('finacial_supports_youths.dropout as dropout','finacial_supports.*','branches.*','finacial_supports.id as m_id','finacial_supports.course_id as c_id','finacial_supports.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','courses.*','courses.name as course_name','youths.name as youth_name','youths.id as youth_id','youths.phone as youth_phone')
+                    ->where('finacial_supports.branch_id',$branch)
+                    ->whereNotIn('youth_id', $youths)
+                    ->get();
+        //dd($not_placed);
+        return view('mail-notifications.finacial_whereNotInJob')->with(['youths'=>$not_placed]);
     }
 }

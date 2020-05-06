@@ -104,7 +104,7 @@
 	            	<div class="col-md-3">
 	            		<div class="form-group">
 						    <label for="dm_name">10. Program Cost</label>
-						    <input type="text" name="program_cost" id="program_cost" class="form-control">
+						    <input type="number" name="program_cost" id="program_cost" class="form-control">
 						</div>
 	            	</div>
 	            </div>

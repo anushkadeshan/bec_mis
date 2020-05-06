@@ -124,6 +124,26 @@
                       </a>
                       
                     </div>
+                    @cannot('branch')
+                        <div class="col-md-12">
+                          <table id="example10" class="table row-border table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Programs</th>
+                                        <th>Male</th>
+                                        <th>Female</th>
+                                        <th>Total Youths</th>
+                                        <th>Cost</th>
+                                    </tr>
+                                    <tbody> 
+                                    </tbody>
+                                </thead>        
+                            </table>
+                          
+                        </div>
+                        @endcan
                     <div  class="row">
                       <div  class="col-md-5">
                         <div class="card card-primary">
@@ -220,7 +240,7 @@
                       <div class="col-md-6">
                         <div class="card card-primary card-outline">
                           <div class="card-header">
-                                    <h3 class="card-title">Company/ Institute Participants <small class="badge badge-danger" id="total_participants"></small></h3>
+                                    <h3 class="card-title">Company/ Institute Participants <small class="badge badge-danger" id="total_participants2"></small></h3>
                               </div>
                               <div class="card-body">
                                 <table id="example2" class="table row-border table-hover">
@@ -339,8 +359,27 @@ $(document).ready(function() {
 var dataTable = $("#example").DataTable({
       dom: 'Bfrtip',
             buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+                'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
             ],
+    });
+
+var dataTable3 = $("#example10").DataTable({
+      dom: 'Bfrtip',
+            buttons: [
+                
+            ],
+
+            "bFilter": false,
+            "bPaginate": false,
+            "info":     false,
+
+           'columnDefs': [
+            {
+                "targets": [6], // your case first column
+                "className": "text-right",
+                "width": "4%"
+           }],
+
     });
   
   var date = new Date();
@@ -378,10 +417,15 @@ var dataTable = $("#example").DataTable({
    var pwd_m_sum = 0;
    var pwd_f_sum = 0;
    var cost_sum = 0;
-   
+    dataTable3.clear().draw();
+    var count2 = 1;
+    $.each(data.summary, function(index, value2) {
+    // use data table row.add, then .draw for table refresh
+    dataTable3.row.add([count2++, value2.name, value2.progs, value2.male,value2.female, value2.male+value2.female,value2.cost.toLocaleString()]).draw();
+    });
   $.each(data.data2, function(index, value) {
 
-    //console.log(value);
+    //console.log(value); 
     // use data table row.add, then .draw for table refresh
     dataTable.row.add([count++, value.meeting_date, value.total_male, value.total_female, value.pwd_male,value.pwd_female,value.venue, value.branch_name,'<div class="btn-group"><button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button><a href="{{url('reports-me/cg')}}/'+value.m_id+'/edit"><button type="button" name="view" class="btn btn-success btn-flat btn-sm"><i class="fa fa-edit"></i></button></a></div>']).draw();
 
@@ -493,7 +537,7 @@ $('body').on('click', '.btn_view', function () {
           //alert(url1)
 
           var output1 = '';
-          $('#total_participants').text(data.participants.length);
+          $('#total_participants2').text(data.participants.length);
 
           for(var count = 0; count < data.participants.length; count++)
           {

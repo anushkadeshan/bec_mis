@@ -9,6 +9,7 @@ use App\User;
 use App\Notifications\courseAdd;
 use App\Institute;
 use DB;
+use Pusher\Pusher;
 
 class CourseController extends Controller
 {
@@ -20,7 +21,7 @@ class CourseController extends Controller
     public function index(){
     	$courses = Course::get();
       $course_categories = DB::table('course_categories')->get();
-
+            
     	return view('Courses.courses')->with(['courses'=> $courses, 'course_categories' => $course_categories]);
     }
 
@@ -58,6 +59,8 @@ class CourseController extends Controller
               );
 
               $course = Course::create($data);
+
+              
 
               $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['admin' , 'branch','youth']);})->get();
 

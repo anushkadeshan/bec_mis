@@ -151,6 +151,15 @@ class IncoperationSoftSkillController extends Controller
                       ->select('incoperation_soft_skills.*','branches.*','incoperation_soft_skills.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date')
                       ->orderBy('program_date', 'desc')
                       ->get();    
+
+                      $summary =DB::table('incoperation_soft_skills') 
+                        ->join('branches','branches.id','=','incoperation_soft_skills.branch_id')
+                        ->join('institutes','institutes.id','=','incoperation_soft_skills.institute_id')
+                        ->select('branches.name', DB::raw('count(*) as total'), DB::raw("COUNT((CASE WHEN is_registerd = 'Yes' THEN is_registerd END)) as tvec"))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->where('branch_id',$request->branch)
+                        ->groupBy('branch_id')
+                        ->get();
           
                    }
                    else{
@@ -164,6 +173,15 @@ class IncoperationSoftSkillController extends Controller
                         ->select('incoperation_soft_skills.*','branches.*','incoperation_soft_skills.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                    $summary =DB::table('incoperation_soft_skills') 
+                        ->join('branches','branches.id','=','incoperation_soft_skills.branch_id')
+                        ->join('institutes','institutes.id','=','incoperation_soft_skills.institute_id')
+                        ->select('branches.name', DB::raw('count(*) as total'), DB::raw("COUNT((CASE WHEN is_registerd = 'Yes' THEN is_registerd END)) as tvec"))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->groupBy('branch_id')
+                        ->get();
+
                     }
                     else{
                       $data = DB::table('incoperation_soft_skills') 
@@ -174,6 +192,9 @@ class IncoperationSoftSkillController extends Controller
                         ->select('incoperation_soft_skills.*','branches.*','incoperation_soft_skills.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                  $summary = null;
+
                     }
                     }
      
@@ -188,6 +209,14 @@ class IncoperationSoftSkillController extends Controller
                         ->select('incoperation_soft_skills.*','branches.*','incoperation_soft_skills.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                $summary =DB::table('incoperation_soft_skills') 
+                        ->join('branches','branches.id','=','incoperation_soft_skills.branch_id')
+                        ->join('institutes','institutes.id','=','incoperation_soft_skills.institute_id')
+                        ->select('branches.name', DB::raw('count(*) as total'), DB::raw("COUNT((CASE WHEN is_registerd = 'Yes' THEN is_registerd END)) as tvec"))
+                        ->groupBy('branch_id')
+                        ->get();
+
                 }
                 else{
                 $data = DB::table('incoperation_soft_skills') 
@@ -197,9 +226,15 @@ class IncoperationSoftSkillController extends Controller
                         ->where('incoperation_soft_skills.branch_id','=',$branch_id)
                         ->orderBy('program_date', 'desc')                      
                         ->get();  
+
+                  $summary = null;
+
                 }
             }
-                return response()->json($data);
+                return response()->json(array(
+                    'data' => $data,
+                    'summary' => $summary
+                ));
         }
     
         

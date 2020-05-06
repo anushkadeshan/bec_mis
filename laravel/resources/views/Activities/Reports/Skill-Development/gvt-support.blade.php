@@ -149,6 +149,28 @@
                         <i class="fa fa-wheelchair" style="color:#FF00CD"></i>PWD Female
                       </a>
                     </div>
+
+                    @cannot('branch')
+                        <div class="col-md-12">
+                          <table id="example10" class="table row-border table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Branch</th>
+                                        <th>No of Times</th>
+                                        <th>Total Male</th>
+                                        <th>Total Female</th>
+                                        <th>Total Youths</th>
+                                        <th>Youths still in courses</th>
+                                    </tr>
+                                    <tbody> 
+                                    </tbody>
+                                </thead>        
+                            </table>
+                          
+                        </div>
+                        @endcan
+
                     <div class="card card-success">
                     <div  class="card-header">
                      Enrolled Youths <a href="{{Route('view_gvt_youths')}}"><span  class="badge badge-warning float-right" id="row_count">View Youth Report</span></a>
@@ -368,10 +390,21 @@ $(document).ready(function() {
 var dataTable = $("#example").DataTable({
       dom: 'Bfrtip',
             buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+                'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
             ],
     });
-  
+
+  var dataTable2 = $("#example10").DataTable({
+      dom: 'Bfrtip',
+            buttons: [
+                
+            ],
+
+            "bFilter": false,
+            "bPaginate": false,
+            "info":     false,
+
+    });
   var date = new Date();
 
     $('.input-group').datepicker({
@@ -407,7 +440,16 @@ var dataTable = $("#example").DataTable({
    var female_sum = 0;
    var pwd_m_sum = 0;
    var pwd_f_sum = 0;
-  $.each(data, function(index, value) {
+
+   dataTable2.clear().draw();
+    var count2 = 1;
+    $.each(data.summary, function(index, value2) {
+    // use data table row.add, then .draw for table refresh
+    dataTable2.row.add([count2++, value2.name, value2.progs, value2.male, value2.female, value2.male+value2.female, value2.status]).draw();
+    });
+
+
+  $.each(data.data, function(index, value) {
     //console.log(value);
     // use data table row.add, then .draw for table refresh
     dataTable.row.add([count++, value.meeting_date, value.total_male, value.total_female, value.course_name,value.institute_name,value.end_date,value.ext,'<div class="btn-group"><button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button><a href="{{url('reports-me/gvt-support')}}/'+value.m_id+'/edit"><button type="button" name="view" class="btn btn-success btn-flat btn-sm"><i class="fa fa-edit"></i></button></a></div>']).draw();
@@ -424,7 +466,7 @@ var dataTable = $("#example").DataTable({
       } 
   });
    
-   $('#total_records').text(data.length);
+   $('#total_records').text(data.data.length);
    $('#total_male1').text(male_sum);
    $('#total_female1').text(female_sum);
    $('#total_p_male').text(pwd_m_sum);
@@ -606,7 +648,7 @@ google.charts.load('current', {'packages':['corechart']});
           title: '',
           curveType: 'function',
           chartArea:{
-          left:25,
+          left:45,
           top: 20,
           bottom:20,
           },

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
      <meta name="csrf-token" content="{{ csrf_token() }}">
+     <meta name="userId" content="{{ Auth::check() ? Auth::user()->id : '' }}">
     <title>Dashboard - BEC MIS</title>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
@@ -68,6 +69,9 @@
     </style>
     </head>
     <body class="hold-transition sidebar-mini">
+    <div id="app">
+        
+    </div>
     <div class="preloader-wrapper">
       <div class="preloader">
           <img src="{{ URL::asset('images/preloader.svg')}}">
@@ -315,6 +319,7 @@
           @can('userList',Auth::User())
           <li class="nav-header">System</li>
           <li class="nav-item">
+            
             <a href="{{Route('users')}}" class="nav-link">
               <i class="nav-icon fas fa-users"></i>
               <p>
@@ -350,7 +355,6 @@
               </p>
             </a>
           </li>
-
           @endcan
           
          
@@ -541,6 +545,17 @@
           @endcan 
           @endcan
           @can('view-reports')
+          <li class="nav-header">Progress Analysis Reports</li>
+
+            <li class="nav-item">
+                <a href="{{Route('analysis-job')}}" class="nav-link active">
+                  <i class="fas fa-file-invoice nav-icon"></i>
+                  <p>Placement Analysis</p>
+                </a>
+            </li>
+          
+          @endcan
+          @can('view-reports')
           <li class="nav-header">Base Line Reports</li>
 
             <li class="nav-item">
@@ -551,7 +566,7 @@
             </li>
           
           @endcan
-           @if( Gate::check('management') || Gate::check('me-dashboard') || Gate::check('admin') ) ) 
+           @if( Gate::check('me-dashboard') || Gate::check('admin') ) ) 
             <li class="nav-item">
                 <a href="{{url('baselines')}}" class="nav-link active">
                   <i class="fas fa-file-invoice nav-icon"></i>
@@ -586,6 +601,7 @@
 </div>
 
     <!-- REQUIRED SCRIPTS -->
+    <script src="{{ asset('js/app.js') }}"></script>
 
     <!-- jquery -->
     <script src="{{ asset('vendors/jquery/dist/jquery.min.js') }}"></script>
@@ -621,9 +637,9 @@
     
     <!-- toastr notifications -->
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-    <!-- PAGE SCRIPTS -->
+    
     <script src="{{ asset('vendors/adminLTE/js/dashboard2.js') }}"></script>
-    <script type="text/javascript"  src="{{ asset('js/popover.js') }}"></script>
+   <!-- PAGE SCRIPTS <script type="text/javascript"   src="{{ asset('js/popover.js') }}"></script> -->
     <script type="text/javascript"  src="{{ asset('js/bootstrap-confirmation.min.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/dropdown.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
@@ -635,7 +651,7 @@
         $('#example1').DataTable( {
             dom: 'Bfrtip',
             buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+                'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
             ],
 
         
@@ -688,6 +704,7 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.colVis.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50704959-3"></script>
@@ -698,7 +715,29 @@
 
   gtag('config', 'UA-50704959-3');
 </script>
+<script src="https://js.pusher.com/4.1/pusher.min.js"></script>
+<script>
+   var pusher = new Pusher('{{env("MIX_PUSHER_APP_KEY")}}', {
+      cluster: '{{env("PUSHER_APP_CLUSTER")}}',
+      encrypted: true
+    });
+    var channel = pusher.subscribe('user-channel');
+    channel.bind('App\\Events\\userLogin', function(data) {
+        toastr.error(data.name, data.message, {closeButton: true, timeOut: 5000000});
+      //alert(data.message);
+    });
 
+
+  </script>
+  <script>
+  var userId = $('meta[name="userId"]').attr('content');
+    Echo.private('App.User.' + userId)
+    .notification((notification) => {
+        console.log(notification.title);
+        toastr.warning(notification.title, notification.title, {closeButton: true, timeOut: 5000000});
+    });
+
+  </script>
 @yield('scripts')
 
 </body>

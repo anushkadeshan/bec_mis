@@ -200,6 +200,15 @@ class AwarenessController extends Controller
                         ->select('awareness.*','branches.*','awareness.id as m_id','branches.name as branch_name')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                    $summary =DB::table('awareness') 
+                        ->join('branches','branches.id','=','awareness.branch_id')
+                        ->select('branches.name', DB::raw('count(*) as total'), DB::raw('sum(total_male) as male'), DB::raw('sum(total_female) as female'), DB::raw('sum(cost) as cost'))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->where('branch_id',$request->branch)
+                        ->groupBy('branch_id')
+                        ->get();
+                        
                 }
                 else{
                     if(is_null($branch_id)){
@@ -209,6 +218,14 @@ class AwarenessController extends Controller
                         ->select('awareness.*','branches.*','awareness.id as m_id','branches.name as branch_name')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                    $summary =DB::table('awareness') 
+                        ->join('branches','branches.id','=','awareness.branch_id')
+                        ->select('branches.name', DB::raw('count(*) as total'), DB::raw('sum(total_male) as male'), DB::raw('sum(total_female) as female'), DB::raw('sum(cost) as cost'))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->groupBy('branch_id')
+                        ->get();
+
                     }
                     else{
                        $data = DB::table('awareness') 
@@ -218,6 +235,9 @@ class AwarenessController extends Controller
                         ->select('awareness.*','branches.*','awareness.id as m_id','branches.name as branch_name')
                         ->orderBy('program_date', 'desc')
                         ->get(); 
+
+                    $summary = null;
+
                     }
                 }
                 
@@ -230,6 +250,13 @@ class AwarenessController extends Controller
                         ->select('awareness.*','branches.*','awareness.id as m_id','branches.name as branch_name')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                $summary =DB::table('awareness') 
+                        ->join('branches','branches.id','=','awareness.branch_id')
+                        ->select('branches.name', DB::raw('count(*) as total'), DB::raw('sum(total_male) as male'), DB::raw('sum(total_female) as female'), DB::raw('sum(cost) as cost'))
+                        ->groupBy('branch_id')
+                        ->get();
+
                 }
                 else{
                     $data = DB::table('awareness') 
@@ -238,9 +265,14 @@ class AwarenessController extends Controller
                         ->select('awareness.*','branches.*','awareness.id as m_id','branches.name as branch_name')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                    $summary = null;
                 }
             }
-                return response()->json($data);
+                return response()->json(array(
+                    'data' => $data,
+                    'summary' => $summary
+                ));
         }
     }
 

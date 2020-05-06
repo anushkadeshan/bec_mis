@@ -119,7 +119,24 @@
                         <i class="fa fa-graduation-cap"></i>Institutes
                       </a>
                     </div>
-                
+                      @cannot('branch')
+                        <div class="col-md-12">
+                          <table id="example10" class="table row-border table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Branch</th>
+                                        <th>No of Reviewed Instiitutes </th>
+                                        <th>No of Registered Instiitutes in TVEC </th>
+                                        
+                                    </tr>
+                                    <tbody> 
+                                    </tbody>
+                                </thead>        
+                            </table>
+                          
+                        </div>
+                        @endcan  
                   </div>
                   <!-- /.tab-pane -->
                   <div class="tab-pane" id="tab_2">
@@ -267,8 +284,22 @@ $(document).ready(function() {
 var dataTable = $("#example").DataTable({
       dom: 'Bfrtip',
             buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+                'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
             ],
+    });
+
+var dataTable2 = $("#example10").DataTable({
+      dom: 'Bfrtip',
+            buttons: [
+                
+            ],
+
+            "bFilter": false,
+            "bPaginate": false,
+            "info":     false,
+
+            
+
     });
   
   var date = new Date();
@@ -302,15 +333,23 @@ var dataTable = $("#example").DataTable({
   
   dataTable.clear().draw();
    var count = 1;
-
-  $.each(data, function(index, value) {
+   
+  dataTable2.clear().draw();
+    var count2 = 1;
+    $.each(data.summary, function(index, value2) {
+     // status = (value2.status/value2.status)
+      //if(isNaN(status) ) { status = 0;} else{ status}
+    // use data table row.add, then .draw for table refresh
+    dataTable2.row.add([count2++, value2.name, value2.total, value2.tvec]).draw();
+    });
+  $.each(data.data, function(index, value) {
     //console.log(value);
     // use data table row.add, then .draw for table refresh
     dataTable.row.add([count++, value.program_date, value.institute_name, value.head_of_institute, value.contact,value.commencement_date, value.branch_name,'<div class="btn-group"><button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button><a href="{{url('reports-me/review')}}/'+value.m_id+'/edit"><button type="button" name="view" class="btn btn-success btn-flat btn-sm"><i class="fa fa-edit"></i></button></a></div>']).draw();
 
   });
    
-   $('#total_records').text(data.length);
+   $('#total_records').text(data.data.length);
 
     
    }

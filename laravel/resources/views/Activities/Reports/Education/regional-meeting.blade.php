@@ -102,7 +102,24 @@
                   			<i class="fa fa-handshake"></i>Meetings
                 		</a>
                   	</div>
-                    
+                    <div  class="row">
+                      @cannot('branch')
+                      <div class="col-md-6">
+                        <table id="example3" class="table row-border table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Branch</th>
+                                <th>No of Meetings</th>
+                            </tr>
+                            <tbody> 
+                            </tbody>
+                        </thead>        
+                     </table>
+                      </div>
+                      @endcan
+                    </div>
+                      
                   </div>
                   <!-- /.tab-pane -->
                   <div class="tab-pane" id="tab_2">
@@ -154,17 +171,17 @@
                             	</div>
                             	<div class="card-body">
                             		<table id="example2" class="table row-border table-hover">
-						                <thead>
-						                    <tr>
-						                        <th>#</th>
-						                        <th>Name</th>
-						                        <th>Position</th>
-						                        <th>Branch</th>
-						                    </tr>
-						                    <tbody>	
-						                    </tbody>
-						                </thead>        
-            		 				</table>
+    						                <thead>
+    						                    <tr>
+    						                        <th>#</th>
+    						                        <th>Name</th>
+    						                        <th>Position</th>
+    						                        <th>Branch</th>
+    						                    </tr>
+    						                    <tbody>	
+    						                    </tbody>
+    						                </thead>        
+                		 				</table>
                             	</div>
                           </div>
                          
@@ -198,8 +215,19 @@ $(document).ready(function() {
   var dataTable = $("#example").DataTable({
       dom: 'Bfrtip',
             buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+                'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
             ],
+    });
+
+  var dataTable2 = $("#example3").DataTable({
+      dom: 'Bfrtip',
+            buttons: [
+                
+            ],
+
+            "bFilter": false,
+            "bPaginate": false,
+            "info":     false
     });
   
 	var date = new Date();
@@ -232,13 +260,22 @@ $(document).ready(function() {
 
     dataTable.clear().draw();
     var count = 1;
-    $.each(data, function(index, value) {
+    $.each(data.data, function(index, value) {
     console.log(value);
     // use data table row.add, then .draw for table refresh
     dataTable.row.add([count++, value.meeting_date, value.district, value.name, '<div class="btn-group"><button type="button" name="view" data-id="'+value.r_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button><a href="{{url('reports-me/regional')}}/'+value.r_id+'/edit"><button type="button" name="view" class="btn btn-success btn-flat btn-sm"><i class="fa fa-edit"></i></button></a></div>']).draw();
     });
+
+    dataTable2.clear().draw();
+    var count2 = 1;
+    $.each(data.summary, function(index, value2) {
+    // use data table row.add, then .draw for table refresh
+    dataTable2.row.add([count2++, value2.name, value2.total]).draw();
+    });
     var output = '';
-   $('#total_records').text(data.length);
+   $('#total_records').text(data.data.length);
+
+
    }
   });
 
@@ -282,6 +319,7 @@ $('body').on('click', '.btn_view', function () {
           $('#time_start').text(data.meeting.time_start);
           $('#time_end').text(data.meeting.time_end);
           $('#venue').text(data.meeting.venue);
+          $('#matters').html(data.meeting.matters);
           $('#decisions').text(data.meeting.decisions);
           $('#decisions_to_followed').text(data.meeting.decisions_to_followed);
           $('#branch').text(data.meeting.name);

@@ -271,7 +271,7 @@
 						      <th>{{$youth->name}}</th>
 						      <td>{{$youth->type_of_support}}</td>
 						      <td>{{$youth->employer_name}}</td>
-						      <td>{{$youth->vacancies}}</td>
+						      <td>{{$youth->vacancy}}</td>
 						      <td>{{$youth->salary}}</td>
 						      <td><button type="button" class="btn btn-success btn-flat btn-sm" data-id="{{$youth->y_id}}" data-type_of_support="{{$youth->type_of_support}}" data-employer="{{$youth->employer}}" data-vacancies="{{$youth->vacancies}}" data-salary="{{$youth->salary}}" id="edit3"><i class="fas fa-edit"></i></button></td>
 						    </tr>

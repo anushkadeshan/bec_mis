@@ -109,7 +109,7 @@
                  {{$results->degree}} at {{$results->university}}
                </li>
                @endif
-               @if(!is_null($results->other_professional_qualifications))
+               @if(!is_null($results))
                <li class="list-group-item text-muted">
                  {{$results->other_professional_qualifications}}
                </li>
@@ -176,9 +176,14 @@
 
               <li class="list-group-item"><strong>Family Type : </strong><span>{{$youth->family->family_type}}</span></li>
 
-              <li class="list-group-item"><strong>Total Income : </strong><span>{{$youth->family->total_income}}</span></li>
+              <li class="list-group-item"><strong>Total Income : </strong><span>{{number_format($youth->family->total_income,2)}}</span></li>
               <li class="list-group-item"><strong>Total Family Members : </strong><span>{{$youth->family->total_members}}</span></li>
-              <li class="list-group-item"><strong>PCI : </strong><span>@if(!is_null($youth->family->total_members)){{$youth->family->total_income / $youth->family->total_members}}@endif</span></li>
+              <li class="list-group-item"><strong>PCI : </strong><span>@if(!is_null($youth->family->total_members))
+                <?php
+                $pci = $youth->family->total_income / $youth->family->total_members
+                ?>
+                {{number_format($pci,2)}}
+              @endif</span></li>
             </ul>
             @else
             Content is not allowed
@@ -600,7 +605,7 @@
     <!-- /.timeline-label -->
     <!-- timeline item -->
     <li>
-      @if(is_null($placement) || is_null($individual))<i class="fa fa-briefcase bg-default"></i>@else <i class="fa fa-briefcase bg-success"></i>@endif
+      @if(!is_null($placement) || !is_null($individual))<i class="fa fa-briefcase bg-default"></i>@else <i class="fa fa-briefcase bg-success"></i>@endif
       <div class="timeline-item">
         
         <h3 class="timeline-header">Job Placement <span  style="float: right" class="text-success">@if(!is_null($placement) || !is_null($individual))<i class="far fa-check-circle"></i>@endif</span></h3>

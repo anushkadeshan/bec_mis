@@ -264,6 +264,7 @@ public function vtCourseList(Request $request){
       $activities = DB::table('activities')->get();
       $reports = DB::table('completion_targets')
                 ->join('branches','branches.id','=','completion_targets.branch_id')
+                ->select('completion_targets.*','branches.*','completion_targets.id as c_id')
                  ->get();
       $activities_reports = DB::table('activities')->whereNotNull('report')->get();
 
@@ -283,8 +284,11 @@ public function vtCourseList(Request $request){
             'table_name'=> $request->table_name,
             'table_name_youth' => $request->table_name_youth,
             'table_name_youth_id' => $request->table_name_youth_id,
-            'branch_id'=> $request->branch_id
+            'branch_id'=> $request->branch_id,
+          
          );
+
+         //dd($data);
         $data = DB::table('completion_targets')->where('id',$request->c_id)->update($data);
     }
 

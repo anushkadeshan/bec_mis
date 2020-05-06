@@ -378,6 +378,16 @@ class CarrerGuidanceController extends Controller
                         ->orderBy('cg_youth_selected.id','asc')
                         ->groupBy('requirement')
                         ->get();
+                
+                    $summary = DB::table('cg_youths') 
+                        ->join('career_guidances','career_guidances.id','=','cg_youths.career_guidances_id')
+                        ->join('youths','youths.id','=','cg_youths.youth_id')
+                        ->join('branches','branches.id','=','career_guidances.branch_id')
+                        ->select('branches.name', 'career_guidances.*','gender',DB::raw('COUNT(DISTINCT cg_youths.career_guidances_id) as progs'),DB::raw("COUNT( ( CASE WHEN gender = 'male' THEN cg_youths.youth_id END ) ) AS male"),DB::raw("COUNT( ( CASE WHEN gender = 'female' THEN cg_youths.youth_id END ) ) AS female"),DB::raw('sum(program_cost) as cost'))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->where('career_guidances.branch_id','=',$request->branch)
+                        ->groupBy('career_guidances.branch_id')
+                        ->get();
 
                     //echo "<script>console.log( 'Debug Objects: " . $file_name . "' );</script>";
 
@@ -403,6 +413,16 @@ class CarrerGuidanceController extends Controller
                         //->where('career_guidances.branch_id','=',$branch_id)
                         ->orderBy('cg_youth_selected.id','asc')
                         ->get();
+
+                $summary = DB::table('cg_youths') 
+                        ->join('career_guidances','career_guidances.id','=','cg_youths.career_guidances_id')
+                        ->join('youths','youths.id','=','cg_youths.youth_id')
+                        ->join('branches','branches.id','=','career_guidances.branch_id')
+                        ->select('branches.name', 'career_guidances.*','gender',DB::raw('COUNT(DISTINCT cg_youths.career_guidances_id) as progs'),DB::raw("COUNT( ( CASE WHEN gender = 'male' THEN cg_youths.youth_id END ) ) AS male"),DB::raw("COUNT( ( CASE WHEN gender = 'female' THEN cg_youths.youth_id END ) ) AS female"),DB::raw('sum(program_cost) as cost'))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->groupBy('career_guidances.branch_id')
+                        ->get();
+
                 }
                 else{
                     $data = DB::table('career_guidances') 
@@ -422,6 +442,9 @@ class CarrerGuidanceController extends Controller
                         ->where('career_guidances.branch_id','=',$branch_id)
                         ->orderBy('cg_youth_selected.id','asc')
                         ->get();
+
+                $summary = null;
+
                 }
                 }
                 
@@ -444,6 +467,15 @@ class CarrerGuidanceController extends Controller
                         ->groupBy('requirement')
                         ->orderBy('cg_youth_selected.id','asc')
                         ->get();
+
+                $summary = DB::table('cg_youths') 
+                        ->join('career_guidances','career_guidances.id','=','cg_youths.career_guidances_id')
+                        ->join('youths','youths.id','=','cg_youths.youth_id')
+                        ->join('branches','branches.id','=','career_guidances.branch_id')
+                        ->select('branches.name', 'career_guidances.*','gender',DB::raw('COUNT(DISTINCT cg_youths.career_guidances_id) as progs'),DB::raw("COUNT( ( CASE WHEN gender = 'male' THEN cg_youths.youth_id END ) ) AS male"),DB::raw("COUNT( ( CASE WHEN gender = 'female' THEN cg_youths.youth_id END ) ) AS female"),DB::raw('sum(program_cost) as cost'))
+                        ->groupBy('career_guidances.branch_id')
+                        ->get();
+
                 }
 
                 else{
@@ -462,12 +494,15 @@ class CarrerGuidanceController extends Controller
                         ->where('career_guidances.branch_id','=',$branch_id)
                         ->orderBy('cg_youth_selected.id','asc')
                         ->get();
+
+                $summary = null;
                 }
             }
                 //return response()->json($data);
                 return response()->json(array( 
                     'data2' => $data,
                     'data1' => $data1,
+                    'summary' => $summary
                 ));
 
                 //echo "<script>console.log('Debug Objects: " . $data1 . "' );</script>";

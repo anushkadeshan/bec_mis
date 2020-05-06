@@ -133,7 +133,29 @@
                         <span class="badge bg-warning" id="selected"></span>
                         <i class="fa fa-file-signature"></i>Selected
                       </a>
+                      @cannot('branch')
+                        <div class="col-md-12">
+                          <table id="example3" class="table row-border table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Programs</th>
+                                        <th>Male</th>
+                                        <th>Female</th>
+                                        <th>Cost</th>
+                                        <th># Applications</th>
+                                        <th># Selected</th>
+                                    </tr>
+                                    <tbody> 
+                                    </tbody>
+                                </thead>        
+                            </table>
+                          
+                        </div>
+                        @endcan
                       </fieldset>
+                      
                     </div>
                     <div>
                     <fieldset class="border p-2">
@@ -166,8 +188,31 @@
                         <span class="badge bg-warning" id="selected2"></span>
                         <i class="fa fa-file-signature"></i>Selected
                       </a>
+
+                      @cannot('branch')
+                        <div class="col-md-12">
+                          <table id="example4" class="table row-border table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Programs</th>
+                                        <th>Male</th>
+                                        <th>Female</th>
+                                        <th>#Forms Collected</th>
+                                        <th>Selected for BEC Program</th>
+                                    </tr>
+                                    <tbody> 
+                                    </tbody>
+                                </thead>        
+                            </table>
+                          
+                        </div>
+                        @endcan
                     </fieldset>
+
                     </div>
+                    <br>
                     <div class="card card-success">
                     <div  class="card-header">
                       Youth Participation for Kick Offs
@@ -175,6 +220,7 @@
                     <div  class="card-body">
                     
                     <div class="row">
+                      
                         <div class="col-md-12">
                           <div id="curve_chart" style=" height: 400px"></div>
                           
@@ -190,6 +236,7 @@
                     <div  class="card-body">
                     
                     <div class="row">
+                      
                         <div class="col-md-12">
                           <div id="curve_chart1" style=" height: 400px"></div>
                           
@@ -201,7 +248,7 @@
                   </div>
                   <!-- /.tab-pane -->
                   <div class="tab-pane" id="tab_2">
-                     <table id="example" class="table row-border table-hover">
+                     <table id="example" class="table  row-border table-hover">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -360,16 +407,46 @@ $(document).ready(function() {
 var dataTable = $("#example").DataTable({
       dom: 'Bfrtip',
             buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+                'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
             ],
     });
 
 var dataTable1 = $("#example5").DataTable({
       dom: 'Bfrtip',
             buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+                'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
             ],
     });  
+
+var dataTable2 = $("#example3").DataTable({
+      dom: 'Bfrtip',
+            buttons: [
+                
+            ],
+
+            "bFilter": false,
+            "bPaginate": false,
+            "info":     false,
+
+            'columnDefs': [
+            {
+                "targets": [5,6,7], // your case first column
+                "className": "text-right",
+                "width": "4%"
+           }],
+    });
+
+var dataTable3 = $("#example4").DataTable({
+      dom: 'Bfrtip',
+            buttons: [
+                
+            ],
+
+            "bFilter": false,
+            "bPaginate": false,
+            "info":     false,
+
+    });
   var date = new Date();
 
     $('.input-group').datepicker({
@@ -409,6 +486,19 @@ var dataTable1 = $("#example5").DataTable({
    var sum_applications = 0;
    var sum_selected = 0;
 
+   dataTable2.clear().draw();
+    var count2 = 1;
+    $.each(data.summaryK, function(index, value2) {
+    // use data table row.add, then .draw for table refresh
+    dataTable2.row.add([count2++, value2.name, value2.total, value2.total_male, value2.total_female, value2.program_cost.toLocaleString(), value2.no_of_forms, value2.no_of_selected_youth]).draw();
+    });
+
+    dataTable3.clear().draw();
+    var count3 = 1;
+    $.each(data.summaryH, function(index, value3) {
+    // use data table row.add, then .draw for table refresh
+    dataTable3.row.add([count3++, value3.name, value3.total, value3.total_male, value3.total_female, value3.no_of_forms, value3.no_of_selected_youth]).draw();
+    });
 
   $.each(data.kick, function(index, value) {
     //console.log(value);
@@ -513,7 +603,6 @@ $('body').on('click', '.btn_view', function () {
 
       var meeting_id = $(this).data('id');
        
-
       $.get("{{ url('reports-me/cg/kick-off') }}" +'/' + meeting_id +'/view', function (data) {
           $('#tabs a[href="#tab_3"]').tab('show');
           $('#tabs a[href="#tab_3"]').attr("data-toggle", "tab");

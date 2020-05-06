@@ -14,15 +14,14 @@ class userLogin implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $vacancy;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($vacancy)
+    public function __construct()
     {
-        $this->vacancy = $vacancy;
+    
     }
 
     /**
@@ -32,6 +31,7 @@ class userLogin implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('bec-channel');
+        return new PrivateChannel('user-channel');
+        return new PrivateChannel('placement-channel');
     }
 }

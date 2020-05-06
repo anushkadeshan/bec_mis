@@ -162,6 +162,16 @@ class InstituteReviewController extends Controller
                       ->select('institute_reviews.*','branches.*','institute_reviews.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date')
                       ->orderBy('program_date', 'desc')
                       ->get();    
+
+
+                    $summary =DB::table('institute_reviews') 
+                        ->join('branches','branches.id','=','institute_reviews.branch_id')
+                        ->join('institutes','institutes.id','=','institute_reviews.institute_id')
+                        ->select('branches.name', DB::raw('count(*) as total'), DB::raw("COUNT((CASE WHEN is_registerd = 'Yes' THEN is_registerd END)) as tvec"))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->where('branch_id',$request->branch)
+                        ->groupBy('branch_id')
+                        ->get();
                   }
                   else{
                   if(is_null($branch_id)){
@@ -171,6 +181,14 @@ class InstituteReviewController extends Controller
                         ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->select('institute_reviews.*','branches.*','institute_reviews.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date')
                         ->orderBy('program_date', 'desc')
+                        ->get();
+
+                    $summary =DB::table('institute_reviews') 
+                        ->join('branches','branches.id','=','institute_reviews.branch_id')
+                        ->join('institutes','institutes.id','=','institute_reviews.institute_id')
+                        ->select('branches.name', DB::raw('count(*) as total'), DB::raw("COUNT((CASE WHEN is_registerd = 'Yes' THEN is_registerd END)) as tvec"))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->groupBy('branch_id')
                         ->get();
                   }
                   else{
@@ -182,6 +200,9 @@ class InstituteReviewController extends Controller
                         ->select('institute_reviews.*','branches.*','institute_reviews.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                  $summary = null;
+
                   }
                 
             }
@@ -198,6 +219,13 @@ class InstituteReviewController extends Controller
                         ->select('institute_reviews.*','branches.*','institute_reviews.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                $summary =DB::table('institute_reviews') 
+                        ->join('branches','branches.id','=','institute_reviews.branch_id')
+                        ->join('institutes','institutes.id','=','institute_reviews.institute_id')
+                        ->select('branches.name', DB::raw('count(*) as total'), DB::raw("COUNT((CASE WHEN is_registerd = 'Yes' THEN is_registerd END)) as tvec"))
+                        ->groupBy('branch_id')
+                        ->get();
                 }
                 else{
                   $data = DB::table('institute_reviews') 
@@ -207,9 +235,14 @@ class InstituteReviewController extends Controller
                         ->select('institute_reviews.*','branches.*','institute_reviews.id as m_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                  $summary = null;
                 }
             }
-                return response()->json($data);
+                return response()->json(array(
+                  'data' => $data,
+                  'summary' => $summary,
+                ));
         }
 
 }

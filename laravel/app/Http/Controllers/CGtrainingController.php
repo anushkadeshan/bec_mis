@@ -57,7 +57,7 @@ class CGtrainingController extends Controller
                 }
                 $data1 = array(
                 	'district' => $request->district,
-                	'dsd' => $request->dsd,
+                	'dsd' => json_encode($request->dsd),
                 	'gnd' => json_encode($request->gnd),
 	                'dm_name' =>$request->dm_name,
 	                'title_of_action' =>$request->title_of_action,	
@@ -208,6 +208,14 @@ class CGtrainingController extends Controller
                         ->select('cg_trainings.*','branches.*','cg_trainings.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                    $summary = DB::table('cg_trainings') 
+                        ->join('branches','branches.id','=','cg_trainings.branch_id')
+                        ->select('branches.name','dsd',DB::raw('count(*) as total'), DB::raw('sum(total_male) as male'), DB::raw('sum(total_female) as female'), DB::raw('sum(program_cost) as cost'))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->where('branch_id',$request->branch)
+                        ->groupBy('branch_id')
+                        ->get();
                 }
                 else{
                     
@@ -221,6 +229,13 @@ class CGtrainingController extends Controller
                         //->where('cg_trainings.branch_id','=',$branch_id)
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                    $summary = DB::table('cg_trainings') 
+                        ->join('branches','branches.id','=','cg_trainings.branch_id')
+                        ->select('branches.name','dsd',DB::raw('count(*) as total'), DB::raw('sum(total_male) as male'), DB::raw('sum(total_female) as female'), DB::raw('sum(program_cost) as cost'))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->groupBy('branch_id')
+                        ->get();
                 }
                 else{
                     $data = DB::table('cg_trainings') 
@@ -231,6 +246,8 @@ class CGtrainingController extends Controller
                         ->select('cg_trainings.*','branches.*','cg_trainings.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')                     
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                    $summary = null;
                 }
                 }
                 
@@ -245,6 +262,13 @@ class CGtrainingController extends Controller
                         ->select('cg_trainings.*','branches.*','cg_trainings.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                $summary = DB::table('cg_trainings') 
+                        ->join('branches','branches.id','=','cg_trainings.branch_id')
+                        ->select('branches.name','dsd',DB::raw('count(*) as total'), DB::raw('sum(total_male) as male'), DB::raw('sum(total_female) as female'), DB::raw('sum(program_cost) as cost'))
+                        ->groupBy('branch_id')
+                        ->get();
+
                 }
                 else{
                     $data = DB::table('cg_trainings') 
@@ -254,9 +278,15 @@ class CGtrainingController extends Controller
                         ->orderBy('program_date', 'desc')                      
                         ->where('cg_trainings.branch_id','=',$branch_id)
                         ->get();
+
+                    $summary = null;
                 }
             }
-                return response()->json($data);
+                return response()->json(array(
+                    'data' =>  $data,
+                    'summary' => $summary
+
+                ));
         }
     }
 

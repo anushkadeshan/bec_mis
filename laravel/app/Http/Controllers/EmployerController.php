@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Validator;
 use DB;
 use Auth;
 use App\Notifications\FollowYouth;
+use Pusher\Pusher;
 
 class EmployerController extends Controller
 {
@@ -68,8 +69,28 @@ class EmployerController extends Controller
 
             }
                 $dataAddUser = $request->user_id;
-                $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['admin' , 'branch']);})->get();
+                
 
+                $options = array(
+                    'cluster' => env('PUSHER_APP_CLUSTER'),
+                    'encrypted' => true
+                );
+                $pusher = new Pusher(
+                            env('PUSHER_APP_KEY'),
+                            env('PUSHER_APP_SECRET'),
+                            env('PUSHER_APP_ID'), 
+                            $options
+                        );
+
+        //$data['message'] = 'hellO welcome';
+
+                $data = array(
+                    'message' => 'Course is added',
+                  'name' => $request->name
+              );
+
+                $pusher->trigger('user-channel', 'App\Events\userLogin', $data);
+                $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['admin' , 'branch']);})->get();
                 foreach ($notifyTo as $notifyUser) {
                      $notifyUser->notify(new EmployerAdd($employer));
                 }

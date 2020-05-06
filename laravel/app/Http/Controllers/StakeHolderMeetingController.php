@@ -208,6 +208,14 @@ class StakeHolderMeetingController extends Controller
                         ->select('stake_holder_meetings.*','branches.*','stake_holder_meetings.id as m_id')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                    $summary  = DB::table('stake_holder_meetings') 
+                        ->join('branches','branches.id','=','stake_holder_meetings.branch_id')
+                        ->where('branch_id',$request->branch)
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->select('branches.name',DB::raw('count(*) as total'), DB::raw('sum(total_male) as total_male'), DB::raw('sum(total_female) as total_female'), DB::raw('sum(program_cost) as program_cost'))
+                        ->groupBy('branch_id')
+                        ->get();
                 }
                 else{
                     
@@ -220,6 +228,14 @@ class StakeHolderMeetingController extends Controller
                         //->where('stake_holder_meetings.branch_id','=',$branch_id)
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                    $summary  = DB::table('stake_holder_meetings') 
+                        ->join('branches','branches.id','=','stake_holder_meetings.branch_id')
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->select('branches.name',DB::raw('count(*) as total'), DB::raw('sum(total_male) as total_male'), DB::raw('sum(total_female) as total_female'), DB::raw('sum(program_cost) as program_cost'))
+                        ->groupBy('branch_id')
+                        ->get();
+
                     }
                     else{
                         $data = DB::table('stake_holder_meetings') 
@@ -229,6 +245,8 @@ class StakeHolderMeetingController extends Controller
                         ->where('stake_holder_meetings.branch_id','=',$branch_id)
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                        $summary = null;
                     }
                 }
                 
@@ -242,6 +260,12 @@ class StakeHolderMeetingController extends Controller
                         ->select('stake_holder_meetings.*','branches.*','stake_holder_meetings.id as m_id')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                    $summary  = DB::table('stake_holder_meetings') 
+                        ->join('branches','branches.id','=','stake_holder_meetings.branch_id')
+                        ->select('branches.name',DB::raw('count(*) as total'), DB::raw('sum(total_male) as total_male'), DB::raw('sum(total_female) as total_female'), DB::raw('sum(program_cost) as program_cost'))
+                        ->groupBy('branch_id')
+                        ->get();
                 }
                 else{
                     $data = DB::table('stake_holder_meetings') 
@@ -250,10 +274,16 @@ class StakeHolderMeetingController extends Controller
                         ->where('stake_holder_meetings.branch_id','=',$branch_id)
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                    $summary = null;
                 }
                 
             }
-                return response()->json($data);
+                return response()->json(array(
+                        'data' => $data,
+                        'summary' => $summary,
+
+                ));
         }
     
         

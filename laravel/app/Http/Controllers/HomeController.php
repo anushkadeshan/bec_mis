@@ -13,7 +13,8 @@ use App\Institute;
 use App\Course;
 use DB;
 use Carbon\Carbon;
-
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
 class HomeController extends Controller
 {
     /**
@@ -36,6 +37,17 @@ class HomeController extends Controller
 
         $role = Auth::user()->roles()->first()->slug;
 
+        $url = 'https://www.hpb.health.gov.lk/api/get-current-statistical';
+        $options = array('http' => array(
+            'method'  => 'GET'
+        ));
+        $context  = stream_context_create($options);
+        $body = file_get_contents($url, false, $context);
+        $response =  json_decode($body);
+
+        //$json = json_decode(file_get_contents('http://testingbec.southeastasia.cloudapp.azure.com/api/person/'));
+  
+
         switch ($role) {
             //admin dashboard
             case 'admin':
@@ -55,57 +67,176 @@ class HomeController extends Controller
 
 
                 //count VT branch wise
-                $count_NE_vt = Youth::where('vt',1)->where('branch_id',1)->count();
-                $count_TRIN_vt = Youth::where('vt',1)->where('branch_id',2)->count();
-                $count_KEG_vt = Youth::where('vt',1)->where('branch_id',3)->count();
-                $count_GINI_vt = Youth::where('vt',1)->where('branch_id',5)->count();
-                $count_BAT_vt = Youth::where('vt',1)->where('branch_id','=',6)->count();
-                $count_ANU_vt = Youth::where('vt',1)->where('branch_id',7)->count();
-                $count_MUL_vt = Youth::where('vt',1)->where('branch_id',8)->count();
+                $count_NE_vt =  DB::table('finacial_supports_youths')
+                               ->join('finacial_supports','finacial_supports.id','=','finacial_supports_youths.finacial_support_id')
+                               ->join('courses','courses.id','=','finacial_supports.course_id')
+                               ->where('course_type','Vocational Training')
+                               ->where('branch_id',1)->count();
+                $count_TRIN_vt = DB::table('finacial_supports_youths')
+                               ->join('finacial_supports','finacial_supports.id','=','finacial_supports_youths.finacial_support_id')
+                               ->join('courses','courses.id','=','finacial_supports.course_id')
+                               ->where('course_type','Vocational Training')
+                               ->where('branch_id',2)->count();
+                $count_KEG_vt = DB::table('finacial_supports_youths')
+                               ->join('finacial_supports','finacial_supports.id','=','finacial_supports_youths.finacial_support_id')
+                               ->join('courses','courses.id','=','finacial_supports.course_id')
+                               ->where('course_type','Vocational Training')
+                               ->where('branch_id',3)->count();
+                $count_GINI_vt = DB::table('finacial_supports_youths')
+                               ->join('finacial_supports','finacial_supports.id','=','finacial_supports_youths.finacial_support_id')
+                               ->join('courses','courses.id','=','finacial_supports.course_id')
+                               ->where('course_type','Vocational Training')
+                               ->where('branch_id',5)->count();
+                $count_BAT_vt = DB::table('finacial_supports_youths')
+                               ->join('finacial_supports','finacial_supports.id','=','finacial_supports_youths.finacial_support_id')
+                               ->join('courses','courses.id','=','finacial_supports.course_id')
+                               ->where('course_type','Vocational Training')
+                               ->where('branch_id',6)->count();
+                $count_ANU_vt = DB::table('finacial_supports_youths')
+                               ->join('finacial_supports','finacial_supports.id','=','finacial_supports_youths.finacial_support_id')
+                               ->join('courses','courses.id','=','finacial_supports.course_id')
+                               ->where('course_type','Vocational Training')
+                               ->where('branch_id',7)->count();
+                $count_MUL_vt = DB::table('finacial_supports_youths')
+                               ->join('finacial_supports','finacial_supports.id','=','finacial_supports_youths.finacial_support_id')
+                               ->join('courses','courses.id','=','finacial_supports.course_id')
+                               ->where('course_type','Vocational Training')
+                               ->where('branch_id',8)->count();
 
                 $actual_vt = ($count_NE_vt+$count_TRIN_vt+$count_KEG_vt+$count_GINI_vt+$count_BAT_vt+$count_ANU_vt+$count_MUL_vt);
 
                 //count CG branch wise
-                $count_NE_cg = Youth::where('cg',1)->where('branch_id',1)->count();
-                $count_TRIN_cg = Youth::where('cg',1)->where('branch_id',2)->count();
-                $count_KEG_cg = Youth::where('cg',1)->where('branch_id',3)->count();
-                $count_GINI_cg = Youth::where('cg',1)->where('branch_id',5)->count();
-                $count_BAT_cg = Youth::where('cg',1)->where('branch_id','=',6)->count();
-                $count_ANU_cg = Youth::where('cg',1)->where('branch_id',7)->count();
-                $count_MUL_cg = Youth::where('cg',1)->where('branch_id',8)->count();
+                $count_NE_cg = DB::table('cg_youths')
+                               ->join('career_guidances','career_guidances.id','=','cg_youths.career_guidances_id')
+                               ->where('branch_id',1)->count();
+                $count_TRIN_cg = DB::table('cg_youths')
+                               ->join('career_guidances','career_guidances.id','=','cg_youths.career_guidances_id')
+                               ->where('branch_id',2)->count();
+                $count_KEG_cg = DB::table('cg_youths')
+                               ->join('career_guidances','career_guidances.id','=','cg_youths.career_guidances_id')
+                               ->where('branch_id',3)->count();
+                $count_GINI_cg = DB::table('cg_youths')
+                               ->join('career_guidances','career_guidances.id','=','cg_youths.career_guidances_id')
+                               ->where('branch_id',5)->count();
+                $count_BAT_cg = DB::table('cg_youths')
+                               ->join('career_guidances','career_guidances.id','=','cg_youths.career_guidances_id')
+                               ->where('branch_id',6)->count();
+                $count_ANU_cg = DB::table('cg_youths')
+                               ->join('career_guidances','career_guidances.id','=','cg_youths.career_guidances_id')
+                               ->where('branch_id',7)->count();
+                $count_MUL_cg = DB::table('cg_youths')
+                               ->join('career_guidances','career_guidances.id','=','cg_youths.career_guidances_id')
+                               ->where('branch_id',8)->count();
 
                 $actual_cg = ($count_NE_cg+$count_TRIN_cg+$count_KEG_cg+$count_GINI_cg+$count_BAT_cg+$count_ANU_cg+$count_MUL_cg);
 
                 //count soft branch wise
-                $count_NE_soft_skills = Youth::where('soft_skills',1)->where('branch_id',1)->count();
-                $count_TRIN_soft_skills = Youth::where('soft_skills',1)->where('branch_id',2)->count();
-                $count_KEG_soft_skills = Youth::where('soft_skills',1)->where('branch_id',3)->count();
-                $count_GINI_soft_skills = Youth::where('soft_skills',1)->where('branch_id',5)->count();
-                $count_BAT_soft_skills = Youth::where('soft_skills',1)->where('branch_id','=',6)->count();
-                $count_ANU_soft_skills = Youth::where('soft_skills',1)->where('branch_id',7)->count();
-                $count_MUL_soft_skills = Youth::where('soft_skills',1)->where('branch_id',8)->count();
+                $count_NE_soft_skills = DB::table('provide_soft_skills_youths')
+                               ->join('provide_soft_skills','provide_soft_skills.id','=','provide_soft_skills_youths.provide_softskill_id')
+                               ->where('branch_id',1)->count();
+                $count_TRIN_soft_skills = DB::table('provide_soft_skills_youths')
+                               ->join('provide_soft_skills','provide_soft_skills.id','=','provide_soft_skills_youths.provide_softskill_id')
+                               ->where('branch_id',2)->count();
+                $count_KEG_soft_skills = DB::table('provide_soft_skills_youths')
+                               ->join('provide_soft_skills','provide_soft_skills.id','=','provide_soft_skills_youths.provide_softskill_id')
+                               ->where('branch_id',3)->count();
+                $count_GINI_soft_skills = DB::table('provide_soft_skills_youths')
+                               ->join('provide_soft_skills','provide_soft_skills.id','=','provide_soft_skills_youths.provide_softskill_id')
+                               ->where('branch_id',5)->count();
+                $count_BAT_soft_skills = DB::table('provide_soft_skills_youths')
+                               ->join('provide_soft_skills','provide_soft_skills.id','=','provide_soft_skills_youths.provide_softskill_id')
+                               ->where('branch_id',6)->count();
+                $count_ANU_soft_skills = DB::table('provide_soft_skills_youths')
+                               ->join('provide_soft_skills','provide_soft_skills.id','=','provide_soft_skills_youths.provide_softskill_id')
+                               ->where('branch_id',7)->count();
+                $count_MUL_soft_skills = DB::table('provide_soft_skills_youths')
+                               ->join('provide_soft_skills','provide_soft_skills.id','=','provide_soft_skills_youths.provide_softskill_id')
+                               ->where('branch_id',8)->count();
 
                 $actual_soft_skills = ($count_NE_soft_skills+$count_TRIN_soft_skills+$count_KEG_soft_skills+$count_GINI_soft_skills+$count_BAT_soft_skills+$count_ANU_soft_skills+$count_MUL_soft_skills);
 
                 //count Prof branch wise
-                $count_NE_prof = Youth::where('prof',1)->where('branch_id',1)->count();
-                $count_TRIN_prof = Youth::where('prof',1)->where('branch_id',2)->count();
-                $count_KEG_prof = Youth::where('prof',1)->where('branch_id',3)->count();
-                $count_GINI_prof = Youth::where('prof',1)->where('branch_id',5)->count();
-                $count_BAT_prof = Youth::where('prof',1)->where('branch_id','=',6)->count();
-                $count_ANU_prof = Youth::where('prof',1)->where('branch_id',7)->count();
-                $count_MUL_prof = Youth::where('prof',1)->where('branch_id',8)->count();
+                $count_NE_prof = DB::table('finacial_supports_youths')
+                               ->join('finacial_supports','finacial_supports.id','=','finacial_supports_youths.finacial_support_id')
+                               ->join('courses','courses.id','=','finacial_supports.course_id')
+                               ->where('course_type','Proffessional Training')
+                               ->where('branch_id',1)->count();
+                $count_TRIN_prof = DB::table('finacial_supports_youths')
+                               ->join('finacial_supports','finacial_supports.id','=','finacial_supports_youths.finacial_support_id')
+                               ->join('courses','courses.id','=','finacial_supports.course_id')
+                               ->where('course_type','Proffessional Training')
+                               ->where('branch_id',2)->count();
+                $count_KEG_prof = DB::table('finacial_supports_youths')
+                               ->join('finacial_supports','finacial_supports.id','=','finacial_supports_youths.finacial_support_id')
+                               ->join('courses','courses.id','=','finacial_supports.course_id')
+                               ->where('course_type','Proffessional Training')
+                               ->where('branch_id',3)->count();
+                $count_GINI_prof = DB::table('finacial_supports_youths')
+                               ->join('finacial_supports','finacial_supports.id','=','finacial_supports_youths.finacial_support_id')
+                               ->join('courses','courses.id','=','finacial_supports.course_id')
+                               ->where('course_type','Proffessional Training')
+                               ->where('branch_id',5)->count();
+                $count_BAT_prof = DB::table('finacial_supports_youths')
+                               ->join('finacial_supports','finacial_supports.id','=','finacial_supports_youths.finacial_support_id')
+                               ->join('courses','courses.id','=','finacial_supports.course_id')
+                               ->where('course_type','Proffessional Training')
+                               ->where('branch_id',6)->count();
+                $count_ANU_prof = DB::table('finacial_supports_youths')
+                               ->join('finacial_supports','finacial_supports.id','=','finacial_supports_youths.finacial_support_id')
+                               ->join('courses','courses.id','=','finacial_supports.course_id')
+                               ->where('course_type','Proffessional Training')
+                               ->where('branch_id',7)->count();
+                $count_MUL_prof = DB::table('finacial_supports_youths')
+                               ->join('finacial_supports','finacial_supports.id','=','finacial_supports_youths.finacial_support_id')
+                               ->join('courses','courses.id','=','finacial_supports.course_id')
+                               ->where('course_type','Proffessional Training')
+                               ->where('branch_id',8)->count();
 
                 $actual_prof = ($count_NE_prof+$count_TRIN_prof+$count_KEG_prof+$count_GINI_prof+$count_BAT_prof+$count_ANU_prof+$count_MUL_prof);
 
                 //count jobs branch wise
-                $count_NE_jobs = Youth::where('jobs',1)->where('branch_id',1)->count();
-                $count_TRIN_jobs = Youth::where('jobs',1)->where('branch_id',2)->count();
-                $count_KEG_jobs = Youth::where('jobs',1)->where('branch_id',3)->count();
-                $count_GINI_jobs = Youth::where('jobs',1)->where('branch_id',5)->count();
-                $count_BAT_jobs = Youth::where('jobs',1)->where('branch_id','=',6)->count();
-                $count_ANU_jobs = Youth::where('jobs',1)->where('branch_id',7)->count();
-                $count_MUL_jobs = Youth::where('jobs',1)->where('branch_id',8)->count();
+                $jobs_fair_NE = DB::table('placements_youths')
+                                ->join('placements','placements.id','=','placements_youths.placements_id')
+                                ->where('branch_id',1)->count();
+                $jobs_fair_TRIN = DB::table('placements_youths')
+                                ->join('placements','placements.id','=','placements_youths.placements_id')
+                                ->where('branch_id',2)->count();
+                $jobs_fair_KEG = DB::table('placements_youths')
+                                ->join('placements','placements.id','=','placements_youths.placements_id')
+                                ->where('branch_id',3)->count();
+                $jobs_fair_GINI = DB::table('placements_youths')
+                                ->join('placements','placements.id','=','placements_youths.placements_id')
+                                ->where('branch_id',5)->count();
+                $jobs_fair_BAT = DB::table('placements_youths')
+                                ->join('placements','placements.id','=','placements_youths.placements_id')
+                                ->where('branch_id',6)->count();
+                $jobs_fair_ANU = DB::table('placements_youths')
+                                ->join('placements','placements.id','=','placements_youths.placements_id')
+                                ->where('branch_id',7)->count();
+                $jobs_fair_MUL = DB::table('placements_youths')
+                                ->join('placements','placements.id','=','placements_youths.placements_id')
+                                ->where('branch_id',8)->count();
+                $count_NE_jobs = DB::table('placement_individual')
+                                ->where('branch_id',1)
+                                ->count()+$jobs_fair_NE;
+                $count_TRIN_jobs = DB::table('placement_individual')
+                                ->where('branch_id',2)
+                                ->count()+$jobs_fair_TRIN;
+                $count_KEG_jobs = DB::table('placement_individual')
+                                ->where('branch_id',3)
+                                ->count()+$jobs_fair_KEG;
+                $count_GINI_jobs = DB::table('placement_individual')
+                                ->where('branch_id',5)
+                                ->count()+$jobs_fair_GINI;
+                $count_BAT_jobs = DB::table('placement_individual')
+                                ->where('branch_id',6)
+                                ->count()+$jobs_fair_BAT;
+                $count_ANU_jobs = DB::table('placement_individual')
+                                ->where('branch_id',7)
+                                ->count()+$jobs_fair_ANU;
+                $count_MUL_jobs = DB::table('placement_individual')
+                                ->where('branch_id',8)
+                                ->count()+$jobs_fair_MUL;
 
                 $actual_jobs = ($count_NE_jobs+$count_TRIN_jobs+$count_KEG_jobs+$count_GINI_jobs+$count_BAT_jobs+$count_ANU_jobs+$count_MUL_jobs);
 
@@ -192,7 +323,7 @@ class HomeController extends Controller
                                       
                   $leasts = Activity::users()->orderByUsers('email')->get();
 
-                return view('home')->with(['users_count'=>$users_count,'active_users' =>$active_users,'users_to_active'=>$users_to_active,'total_youths'=>$total_youths,'count_NE_youth'=>$count_NE_youth,'count_TRIN_youth'=>$count_TRIN_youth,'count_KEG_youth'=>$count_KEG_youth,'count_GINI_youth'=>$count_GINI_youth,'count_BAT_youth'=>$count_BAT_youth,'count_ANU_youth'=>$count_ANU_youth,'count_MUL_youth'=>$count_MUL_youth,'count_NE_vt'=> $count_NE_vt,'count_TRIN_vt'=> $count_TRIN_vt,'count_KEG_vt'=> $count_KEG_vt,'count_GINI_vt'=> $count_GINI_vt,'count_BAT_vt'=> $count_BAT_vt,'count_ANU_vt'=> $count_ANU_vt,'count_MUL_vt'=> $count_MUL_vt,'count_NE_cg'=> $count_NE_cg,'count_TRIN_cg'=> $count_TRIN_cg,'count_KEG_cg'=> $count_KEG_cg,'count_GINI_cg'=> $count_GINI_cg,'count_BAT_cg'=> $count_BAT_cg,'count_ANU_cg'=> $count_ANU_cg,'count_MUL_cg'=> $count_MUL_cg,'count_NE_soft_skills'=> $count_NE_soft_skills,'count_TRIN_soft_skills'=> $count_TRIN_soft_skills,'count_KEG_soft_skills'=> $count_KEG_soft_skills,'count_GINI_soft_skills'=> $count_GINI_soft_skills,'count_BAT_soft_skills'=> $count_BAT_soft_skills,'count_ANU_soft_skills'=> $count_ANU_soft_skills,'count_MUL_soft_skills'=> $count_MUL_soft_skills,'count_NE_prof'=> $count_NE_prof,'count_TRIN_prof'=> $count_TRIN_prof,'count_KEG_prof'=> $count_KEG_prof,'count_GINI_prof'=> $count_GINI_prof,'count_BAT_prof'=> $count_BAT_prof,'count_ANU_prof'=> $count_ANU_prof,'count_MUL_prof'=> $count_MUL_prof,'count_NE_jobs'=> $count_NE_jobs,'count_TRIN_jobs'=> $count_TRIN_jobs,'count_KEG_jobs'=> $count_KEG_jobs,'count_GINI_jobs'=> $count_GINI_jobs,'count_BAT_jobs'=> $count_BAT_jobs,'count_ANU_jobs'=> $count_ANU_jobs,'count_MUL_jobs'=> $count_MUL_jobs,'employers_count'=>$employers_count,'vacancies_count'=>$vacancies_count,'institutes_count'=>$institutes_count,'courses_count'=>$courses_count,'applications'=>$applications,'new_application_count'=> $new_application_count,'last_activities'=>$last_activities,'followers'=>$followers,'new_follower_count'=>$new_follower_count,'total_cg'=>$total_cg,'total_soft'=>$total_soft,'total_vt'=>$total_vt,'total_prof'=>$total_prof,'total_jobs'=>$total_jobs,'actual_cg'=>$actual_cg,'actual_jobs'=>$actual_jobs,'actual_vt'=>$actual_vt,'actual_prof'=>$actual_prof,'actual_soft_skills'=>$actual_soft_skills,'audits' =>$audits,'recent_activities'=>$recent_activities,'count_NE_bss'=> $count_NE_bss,'count_MUL_bss'=>$count_MUL_bss,'count_ANU_bss'=> $count_ANU_bss,'count_BAT_bss'=>$count_BAT_bss,'count_GINI_bss'=>$count_GINI_bss,'count_KEG_bss'=>$count_KEG_bss,'count_TRIN_bss'=>$count_TRIN_bss,'total_reports'=>$total_reports,'total_reports_day'=>$total_reports_day,'leasts'=> $leasts]);
+                return view('home')->with(['users_count'=>$users_count,'active_users' =>$active_users,'users_to_active'=>$users_to_active,'total_youths'=>$total_youths,'count_NE_youth'=>$count_NE_youth,'count_TRIN_youth'=>$count_TRIN_youth,'count_KEG_youth'=>$count_KEG_youth,'count_GINI_youth'=>$count_GINI_youth,'count_BAT_youth'=>$count_BAT_youth,'count_ANU_youth'=>$count_ANU_youth,'count_MUL_youth'=>$count_MUL_youth,'count_NE_vt'=> $count_NE_vt,'count_TRIN_vt'=> $count_TRIN_vt,'count_KEG_vt'=> $count_KEG_vt,'count_GINI_vt'=> $count_GINI_vt,'count_BAT_vt'=> $count_BAT_vt,'count_ANU_vt'=> $count_ANU_vt,'count_MUL_vt'=> $count_MUL_vt,'count_NE_cg'=> $count_NE_cg,'count_TRIN_cg'=> $count_TRIN_cg,'count_KEG_cg'=> $count_KEG_cg,'count_GINI_cg'=> $count_GINI_cg,'count_BAT_cg'=> $count_BAT_cg,'count_ANU_cg'=> $count_ANU_cg,'count_MUL_cg'=> $count_MUL_cg,'count_NE_soft_skills'=> $count_NE_soft_skills,'count_TRIN_soft_skills'=> $count_TRIN_soft_skills,'count_KEG_soft_skills'=> $count_KEG_soft_skills,'count_GINI_soft_skills'=> $count_GINI_soft_skills,'count_BAT_soft_skills'=> $count_BAT_soft_skills,'count_ANU_soft_skills'=> $count_ANU_soft_skills,'count_MUL_soft_skills'=> $count_MUL_soft_skills,'count_NE_prof'=> $count_NE_prof,'count_TRIN_prof'=> $count_TRIN_prof,'count_KEG_prof'=> $count_KEG_prof,'count_GINI_prof'=> $count_GINI_prof,'count_BAT_prof'=> $count_BAT_prof,'count_ANU_prof'=> $count_ANU_prof,'count_MUL_prof'=> $count_MUL_prof,'count_NE_jobs'=> $count_NE_jobs,'count_TRIN_jobs'=> $count_TRIN_jobs,'count_KEG_jobs'=> $count_KEG_jobs,'count_GINI_jobs'=> $count_GINI_jobs,'count_BAT_jobs'=> $count_BAT_jobs,'count_ANU_jobs'=> $count_ANU_jobs,'count_MUL_jobs'=> $count_MUL_jobs,'employers_count'=>$employers_count,'vacancies_count'=>$vacancies_count,'institutes_count'=>$institutes_count,'courses_count'=>$courses_count,'applications'=>$applications,'new_application_count'=> $new_application_count,'last_activities'=>$last_activities,'followers'=>$followers,'new_follower_count'=>$new_follower_count,'total_cg'=>$total_cg,'total_soft'=>$total_soft,'total_vt'=>$total_vt,'total_prof'=>$total_prof,'total_jobs'=>$total_jobs,'actual_cg'=>$actual_cg,'actual_jobs'=>$actual_jobs,'actual_vt'=>$actual_vt,'actual_prof'=>$actual_prof,'actual_soft_skills'=>$actual_soft_skills,'audits' =>$audits,'recent_activities'=>$recent_activities,'count_NE_bss'=> $count_NE_bss,'count_MUL_bss'=>$count_MUL_bss,'count_ANU_bss'=> $count_ANU_bss,'count_BAT_bss'=>$count_BAT_bss,'count_GINI_bss'=>$count_GINI_bss,'count_KEG_bss'=>$count_KEG_bss,'count_TRIN_bss'=>$count_TRIN_bss,'total_reports'=>$total_reports,'total_reports_day'=>$total_reports_day,'leasts'=> $leasts,'corona'=> $response]);
 
 
                 break;
@@ -296,7 +427,7 @@ class HomeController extends Controller
                             ->where('branch_id',$branch_id)
                             ->get();
 
-                    return view('home')->with(['employers_count'=>$employers_count,'vacancies_count'=>$vacancies_count,'institutes_count'=>$institutes_count,'courses_count'=>$courses_count,'count_cg'=>$count_cg,'count_soft_skills'=> $count_soft_skills,'count_vt'=>$count_vt,'count_prof'=>$count_prof,'count_jobs'=>$count_jobs,'count_youth'=>$count_youth,'targets'=>$targets,'applications'=>$applications,'new_application_count'=> $new_application_count,'followers'=>$followers,'new_follower_count'=>$new_follower_count,'tasks'=>$tasks,'count_bss'=>$count_bss,'cg_youths' => $cg_youths,'reports'=> $reports,'youths' =>$youths ]);
+                    return view('home')->with(['employers_count'=>$employers_count,'vacancies_count'=>$vacancies_count,'institutes_count'=>$institutes_count,'courses_count'=>$courses_count,'count_cg'=>$count_cg,'count_soft_skills'=> $count_soft_skills,'count_vt'=>$count_vt,'count_prof'=>$count_prof,'count_jobs'=>$count_jobs,'count_youth'=>$count_youth,'targets'=>$targets,'applications'=>$applications,'new_application_count'=> $new_application_count,'followers'=>$followers,'new_follower_count'=>$new_follower_count,'tasks'=>$tasks,'count_bss'=>$count_bss,'cg_youths' => $cg_youths,'reports'=> $reports,'youths' =>$youths,'corona'=> $response ]);
                 break;
 
                 case 'dm':
@@ -366,7 +497,7 @@ class HomeController extends Controller
                    //tasks
 
                    $tasks = DB::table('todos')->orderBy('todos.id','DESC')->take(50)->get();
-                    return view('home')->with(['employers_count'=>$employers_count,'vacancies_count'=>$vacancies_count,'institutes_count'=>$institutes_count,'courses_count'=>$courses_count,'count_cg'=>$count_cg,'count_soft_skills'=> $count_soft_skills,'count_vt'=>$count_vt,'count_prof'=>$count_prof,'count_jobs'=>$count_jobs,'count_youth'=>$count_youth,'targets'=>$targets,'applications'=>$applications,'new_application_count'=> $new_application_count,'followers'=>$followers,'new_follower_count'=>$new_follower_count,'tasks'=>$tasks,'count_bss'=>$count_bss]);
+                    return view('home')->with(['employers_count'=>$employers_count,'vacancies_count'=>$vacancies_count,'institutes_count'=>$institutes_count,'courses_count'=>$courses_count,'count_cg'=>$count_cg,'count_soft_skills'=> $count_soft_skills,'count_vt'=>$count_vt,'count_prof'=>$count_prof,'count_jobs'=>$count_jobs,'count_youth'=>$count_youth,'targets'=>$targets,'applications'=>$applications,'new_application_count'=> $new_application_count,'followers'=>$followers,'new_follower_count'=>$new_follower_count,'tasks'=>$tasks,'count_bss'=>$count_bss,'corona'=> $response]);
                 break;
 
                 case 'employer':
@@ -484,7 +615,7 @@ class HomeController extends Controller
                                       ->count();
 
 
-                    return view('home')->with(['count_NE_youth'=>$count_NE_youth,'count_TRIN_youth'=>$count_TRIN_youth,'count_KEG_youth'=>$count_KEG_youth,'count_GINI_youth'=>$count_GINI_youth,'count_BAT_youth'=>$count_BAT_youth,'count_ANU_youth'=>$count_ANU_youth,'count_MUL_youth'=>$count_MUL_youth,'count_NE_vt'=> $count_NE_vt,'count_TRIN_vt'=> $count_TRIN_vt,'count_KEG_vt'=> $count_KEG_vt,'count_GINI_vt'=> $count_GINI_vt,'count_BAT_vt'=> $count_BAT_vt,'count_ANU_vt'=> $count_ANU_vt,'count_MUL_vt'=> $count_MUL_vt,'count_NE_cg'=> $count_NE_cg,'count_TRIN_cg'=> $count_TRIN_cg,'count_KEG_cg'=> $count_KEG_cg,'count_GINI_cg'=> $count_GINI_cg,'count_BAT_cg'=> $count_BAT_cg,'count_ANU_cg'=> $count_ANU_cg,'count_MUL_cg'=> $count_MUL_cg,'count_NE_soft_skills'=> $count_NE_soft_skills,'count_TRIN_soft_skills'=> $count_TRIN_soft_skills,'count_KEG_soft_skills'=> $count_KEG_soft_skills,'count_GINI_soft_skills'=> $count_GINI_soft_skills,'count_BAT_soft_skills'=> $count_BAT_soft_skills,'count_ANU_soft_skills'=> $count_ANU_soft_skills,'count_MUL_soft_skills'=> $count_MUL_soft_skills,'count_NE_prof'=> $count_NE_prof,'count_TRIN_prof'=> $count_TRIN_prof,'count_KEG_prof'=> $count_KEG_prof,'count_GINI_prof'=> $count_GINI_prof,'count_BAT_prof'=> $count_BAT_prof,'count_ANU_prof'=> $count_ANU_prof,'count_MUL_prof'=> $count_MUL_prof,'count_NE_jobs'=> $count_NE_jobs,'count_TRIN_jobs'=> $count_TRIN_jobs,'count_KEG_jobs'=> $count_KEG_jobs,'count_GINI_jobs'=> $count_GINI_jobs,'count_BAT_jobs'=> $count_BAT_jobs,'count_ANU_jobs'=> $count_ANU_jobs,'count_MUL_jobs'=> $count_MUL_jobs,'total_cg'=>$total_cg,'total_soft'=>$total_soft,'total_vt'=>$total_vt,'total_prof'=>$total_prof,'total_jobs'=>$total_jobs,'actual_cg'=>$actual_cg,'actual_jobs'=>$actual_jobs,'actual_vt'=>$actual_vt,'actual_prof'=>$actual_prof,'actual_soft_skills'=>$actual_soft_skills,'count_NE_bss'=> $count_NE_bss,'count_MUL_bss'=>$count_MUL_bss,'count_ANU_bss'=> $count_ANU_bss,'count_BAT_bss'=>$count_BAT_bss,'count_GINI_bss'=>$count_GINI_bss,'count_KEG_bss'=>$count_KEG_bss,'count_TRIN_bss'=>$count_TRIN_bss,'total_reports'=>$total_reports,'total_reports_day'=>$total_reports_day]);
+                    return view('home')->with(['count_NE_youth'=>$count_NE_youth,'count_TRIN_youth'=>$count_TRIN_youth,'count_KEG_youth'=>$count_KEG_youth,'count_GINI_youth'=>$count_GINI_youth,'count_BAT_youth'=>$count_BAT_youth,'count_ANU_youth'=>$count_ANU_youth,'count_MUL_youth'=>$count_MUL_youth,'count_NE_vt'=> $count_NE_vt,'count_TRIN_vt'=> $count_TRIN_vt,'count_KEG_vt'=> $count_KEG_vt,'count_GINI_vt'=> $count_GINI_vt,'count_BAT_vt'=> $count_BAT_vt,'count_ANU_vt'=> $count_ANU_vt,'count_MUL_vt'=> $count_MUL_vt,'count_NE_cg'=> $count_NE_cg,'count_TRIN_cg'=> $count_TRIN_cg,'count_KEG_cg'=> $count_KEG_cg,'count_GINI_cg'=> $count_GINI_cg,'count_BAT_cg'=> $count_BAT_cg,'count_ANU_cg'=> $count_ANU_cg,'count_MUL_cg'=> $count_MUL_cg,'count_NE_soft_skills'=> $count_NE_soft_skills,'count_TRIN_soft_skills'=> $count_TRIN_soft_skills,'count_KEG_soft_skills'=> $count_KEG_soft_skills,'count_GINI_soft_skills'=> $count_GINI_soft_skills,'count_BAT_soft_skills'=> $count_BAT_soft_skills,'count_ANU_soft_skills'=> $count_ANU_soft_skills,'count_MUL_soft_skills'=> $count_MUL_soft_skills,'count_NE_prof'=> $count_NE_prof,'count_TRIN_prof'=> $count_TRIN_prof,'count_KEG_prof'=> $count_KEG_prof,'count_GINI_prof'=> $count_GINI_prof,'count_BAT_prof'=> $count_BAT_prof,'count_ANU_prof'=> $count_ANU_prof,'count_MUL_prof'=> $count_MUL_prof,'count_NE_jobs'=> $count_NE_jobs,'count_TRIN_jobs'=> $count_TRIN_jobs,'count_KEG_jobs'=> $count_KEG_jobs,'count_GINI_jobs'=> $count_GINI_jobs,'count_BAT_jobs'=> $count_BAT_jobs,'count_ANU_jobs'=> $count_ANU_jobs,'count_MUL_jobs'=> $count_MUL_jobs,'total_cg'=>$total_cg,'total_soft'=>$total_soft,'total_vt'=>$total_vt,'total_prof'=>$total_prof,'total_jobs'=>$total_jobs,'actual_cg'=>$actual_cg,'actual_jobs'=>$actual_jobs,'actual_vt'=>$actual_vt,'actual_prof'=>$actual_prof,'actual_soft_skills'=>$actual_soft_skills,'count_NE_bss'=> $count_NE_bss,'count_MUL_bss'=>$count_MUL_bss,'count_ANU_bss'=> $count_ANU_bss,'count_BAT_bss'=>$count_BAT_bss,'count_GINI_bss'=>$count_GINI_bss,'count_KEG_bss'=>$count_KEG_bss,'count_TRIN_bss'=>$count_TRIN_bss,'total_reports'=>$total_reports,'total_reports_day'=>$total_reports_day,'corona'=> $response]);
 
                     break;
 
@@ -589,18 +720,29 @@ class HomeController extends Controller
                                       ->count();
 
 
-                    return view('home')->with(['count_NE_youth'=>$count_NE_youth,'count_TRIN_youth'=>$count_TRIN_youth,'count_KEG_youth'=>$count_KEG_youth,'count_GINI_youth'=>$count_GINI_youth,'count_BAT_youth'=>$count_BAT_youth,'count_ANU_youth'=>$count_ANU_youth,'count_MUL_youth'=>$count_MUL_youth,'count_NE_vt'=> $count_NE_vt,'count_TRIN_vt'=> $count_TRIN_vt,'count_KEG_vt'=> $count_KEG_vt,'count_GINI_vt'=> $count_GINI_vt,'count_BAT_vt'=> $count_BAT_vt,'count_ANU_vt'=> $count_ANU_vt,'count_MUL_vt'=> $count_MUL_vt,'count_NE_cg'=> $count_NE_cg,'count_TRIN_cg'=> $count_TRIN_cg,'count_KEG_cg'=> $count_KEG_cg,'count_GINI_cg'=> $count_GINI_cg,'count_BAT_cg'=> $count_BAT_cg,'count_ANU_cg'=> $count_ANU_cg,'count_MUL_cg'=> $count_MUL_cg,'count_NE_soft_skills'=> $count_NE_soft_skills,'count_TRIN_soft_skills'=> $count_TRIN_soft_skills,'count_KEG_soft_skills'=> $count_KEG_soft_skills,'count_GINI_soft_skills'=> $count_GINI_soft_skills,'count_BAT_soft_skills'=> $count_BAT_soft_skills,'count_ANU_soft_skills'=> $count_ANU_soft_skills,'count_MUL_soft_skills'=> $count_MUL_soft_skills,'count_NE_prof'=> $count_NE_prof,'count_TRIN_prof'=> $count_TRIN_prof,'count_KEG_prof'=> $count_KEG_prof,'count_GINI_prof'=> $count_GINI_prof,'count_BAT_prof'=> $count_BAT_prof,'count_ANU_prof'=> $count_ANU_prof,'count_MUL_prof'=> $count_MUL_prof,'count_NE_jobs'=> $count_NE_jobs,'count_TRIN_jobs'=> $count_TRIN_jobs,'count_KEG_jobs'=> $count_KEG_jobs,'count_GINI_jobs'=> $count_GINI_jobs,'count_BAT_jobs'=> $count_BAT_jobs,'count_ANU_jobs'=> $count_ANU_jobs,'count_MUL_jobs'=> $count_MUL_jobs,'total_cg'=>$total_cg,'total_soft'=>$total_soft,'total_vt'=>$total_vt,'total_prof'=>$total_prof,'total_jobs'=>$total_jobs,'actual_cg'=>$actual_cg,'actual_jobs'=>$actual_jobs,'actual_vt'=>$actual_vt,'actual_prof'=>$actual_prof,'actual_soft_skills'=>$actual_soft_skills,'count_NE_bss'=> $count_NE_bss,'count_MUL_bss'=>$count_MUL_bss,'count_ANU_bss'=> $count_ANU_bss,'count_BAT_bss'=>$count_BAT_bss,'count_GINI_bss'=>$count_GINI_bss,'count_KEG_bss'=>$count_KEG_bss,'count_TRIN_bss'=>$count_TRIN_bss,'total_reports'=>$total_reports,'total_reports_day'=>$total_reports_day]);
+                    return view('home')->with(['count_NE_youth'=>$count_NE_youth,'count_TRIN_youth'=>$count_TRIN_youth,'count_KEG_youth'=>$count_KEG_youth,'count_GINI_youth'=>$count_GINI_youth,'count_BAT_youth'=>$count_BAT_youth,'count_ANU_youth'=>$count_ANU_youth,'count_MUL_youth'=>$count_MUL_youth,'count_NE_vt'=> $count_NE_vt,'count_TRIN_vt'=> $count_TRIN_vt,'count_KEG_vt'=> $count_KEG_vt,'count_GINI_vt'=> $count_GINI_vt,'count_BAT_vt'=> $count_BAT_vt,'count_ANU_vt'=> $count_ANU_vt,'count_MUL_vt'=> $count_MUL_vt,'count_NE_cg'=> $count_NE_cg,'count_TRIN_cg'=> $count_TRIN_cg,'count_KEG_cg'=> $count_KEG_cg,'count_GINI_cg'=> $count_GINI_cg,'count_BAT_cg'=> $count_BAT_cg,'count_ANU_cg'=> $count_ANU_cg,'count_MUL_cg'=> $count_MUL_cg,'count_NE_soft_skills'=> $count_NE_soft_skills,'count_TRIN_soft_skills'=> $count_TRIN_soft_skills,'count_KEG_soft_skills'=> $count_KEG_soft_skills,'count_GINI_soft_skills'=> $count_GINI_soft_skills,'count_BAT_soft_skills'=> $count_BAT_soft_skills,'count_ANU_soft_skills'=> $count_ANU_soft_skills,'count_MUL_soft_skills'=> $count_MUL_soft_skills,'count_NE_prof'=> $count_NE_prof,'count_TRIN_prof'=> $count_TRIN_prof,'count_KEG_prof'=> $count_KEG_prof,'count_GINI_prof'=> $count_GINI_prof,'count_BAT_prof'=> $count_BAT_prof,'count_ANU_prof'=> $count_ANU_prof,'count_MUL_prof'=> $count_MUL_prof,'count_NE_jobs'=> $count_NE_jobs,'count_TRIN_jobs'=> $count_TRIN_jobs,'count_KEG_jobs'=> $count_KEG_jobs,'count_GINI_jobs'=> $count_GINI_jobs,'count_BAT_jobs'=> $count_BAT_jobs,'count_ANU_jobs'=> $count_ANU_jobs,'count_MUL_jobs'=> $count_MUL_jobs,'total_cg'=>$total_cg,'total_soft'=>$total_soft,'total_vt'=>$total_vt,'total_prof'=>$total_prof,'total_jobs'=>$total_jobs,'actual_cg'=>$actual_cg,'actual_jobs'=>$actual_jobs,'actual_vt'=>$actual_vt,'actual_prof'=>$actual_prof,'actual_soft_skills'=>$actual_soft_skills,'count_NE_bss'=> $count_NE_bss,'count_MUL_bss'=>$count_MUL_bss,'count_ANU_bss'=> $count_ANU_bss,'count_BAT_bss'=>$count_BAT_bss,'count_GINI_bss'=>$count_GINI_bss,'count_KEG_bss'=>$count_KEG_bss,'count_TRIN_bss'=>$count_TRIN_bss,'total_reports'=>$total_reports,'total_reports_day'=>$total_reports_day,'corona'=> $response]);
                     break;
             default:
                 # code...
                 break;
         }
-        
-        
-        
-
-        
-        
-        
     }
+
+    public function backups(){
+      $directory= storage_path(). "/app/BEC-MIS";
+      $backups = File::allFiles($directory);
+      
+     // dd($backups);
+      return view('dashboards.backups', compact('backups'));
+    }
+    public function backup($filename){
+        //Suppose profile.docx file is stored under project/public/download/profile.docx
+        $file= storage_path(). "/app/BEC-MIS/". $filename;
+        $headers = array(
+              'Content-Type: application/zip',
+            );
+        return Response::download($file, $filename, $headers);
+}
+
+
 }

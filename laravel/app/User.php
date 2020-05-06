@@ -70,4 +70,9 @@ class User extends Authenticatable implements Auditable
     public function isOnline(){
         return Cache::has('user-is-online-'.$this->id);
     }
+
+     public function receivesBroadcastNotificationsOn()
+    {
+        return 'App.User.'.$this->id;
+    }
 }

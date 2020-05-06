@@ -115,8 +115,8 @@
 	          		</div>
 	          		<div class="col-md-4">
 	          			<div class="form-group">
-						    <label for="dsd">10. Vacancy Placed</label>
-						    <input type="text" name="vacancy" class="form-control position-list">
+						    <label for="dsd">10. Vacancy Placed (Position)</label>
+						    <input type="text" placeholder="Ex: Sales Manager" name="vacancy" class="form-control position-list">
 						</div>
 	          		</div>
 	          		<div class="col-md-4">

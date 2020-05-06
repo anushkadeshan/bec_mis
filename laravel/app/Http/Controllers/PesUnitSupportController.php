@@ -218,6 +218,14 @@ class PesUnitSupportController extends Controller
                         ->select('pes_unit_supports.*','branches.*','pes_unit_supports.id as m_id','branches.name as branch_name') 
                         ->get();
 
+                    $summary = DB::table('pes_unit_supports') 
+                        ->join('branches','branches.id','=','pes_unit_supports.branch_id')
+                        ->select('branches.name','dsd',DB::raw('count(*) as total'), DB::raw('sum(total_cost) as cost'))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->where('pes_unit_supports.branch_id',$request->branch)
+                        ->groupBy('branch_id')
+                        ->get();
+
 
                 }
                 else{
@@ -228,7 +236,16 @@ class PesUnitSupportController extends Controller
                         ->whereBetween('pes_unit_supports.program_date', array($request->dateStart, $request->dateEnd))
                         ->select('pes_unit_supports.*','branches.*','pes_unit_supports.id as m_id','branches.name as branch_name')
                          //->where('pes_unit_supports.branch_id','=',$branch_id)
-                        ->get();                     
+                        ->get();     
+
+                    $summary = DB::table('pes_unit_supports') 
+                        ->join('branches','branches.id','=','pes_unit_supports.branch_id')
+                        ->select('branches.name','dsd',DB::raw('count(*) as total'), DB::raw('sum(total_cost) as cost'))
+                        ->whereBetween('pes_unit_supports.program_date', array($request->dateStart, $request->dateEnd))
+                        ->groupBy('branch_id')
+                        ->get();
+
+
                 }
                 else{
                     $data = DB::table('pes_unit_supports') 
@@ -237,6 +254,8 @@ class PesUnitSupportController extends Controller
                         ->select('pes_unit_supports.*','branches.*','pes_unit_supports.id as m_id','branches.name as branch_name')
                          ->where('pes_unit_supports.branch_id','=',$branch_id)
                         ->get();
+
+                    $summary = null;
                 }
 
                 }
@@ -251,18 +270,32 @@ class PesUnitSupportController extends Controller
                         ->join('branches','branches.id','=','pes_unit_supports.branch_id')
                         ->select('pes_unit_supports.*','branches.*','pes_unit_supports.id as m_id','branches.name as branch_name')
                         ->get();
+
+                $summary = DB::table('pes_unit_supports') 
+                        ->join('branches','branches.id','=','pes_unit_supports.branch_id')
+                        ->select('branches.name','dsd',DB::raw('count(*) as total'), DB::raw('sum(total_cost) as cost'))
+                        ->groupBy('branch_id')
+                        ->get();
+
                 }
                 else{
                     $data = DB::table('pes_unit_supports') 
                         ->join('branches','branches.id','=','pes_unit_supports.branch_id')
                         ->select('pes_unit_supports.*','branches.*','pes_unit_supports.id as m_id','branches.name as branch_name')
                         ->where('pes_unit_supports.branch_id','=',$branch_id)
-                        ->get();                         
+                        ->get();  
+
+                    $summary = null;                       
 
                 }
 
             }
-                return response()->json($data);
+                return response()->json(array(
+
+                    'data' => $data,
+                    'summary' => $summary
+
+                ));
 
                 //return dd($data);
         }

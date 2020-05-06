@@ -180,6 +180,14 @@ class AssesmentController extends Controller
                         ->select('assesments.*','branches.*','assesments.id as m_id','employers.*','employers.name as e_name','branches.name as branch_name')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                        $summary =DB::table('assesments') 
+                        ->join('branches','branches.id','=','assesments.branch_id')
+                        ->select('branches.name', DB::raw('count(*) as total'))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->where('branch_id',$request->branch)
+                        ->groupBy('branch_id')
+                        ->get();
                 }
                 else{
                     if(is_null($branch_id)){
@@ -190,6 +198,14 @@ class AssesmentController extends Controller
                         ->select('assesments.*','branches.*','assesments.id as m_id','employers.*','employers.name as e_name','branches.name as branch_name')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                    $summary =DB::table('assesments') 
+                        ->join('branches','branches.id','=','assesments.branch_id')
+                        ->select('branches.name', DB::raw('count(*) as total'))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->groupBy('branch_id')
+                        ->get();
+
                     }
                     else{
                         $data = DB::table('assesments') 
@@ -200,6 +216,9 @@ class AssesmentController extends Controller
                         ->select('assesments.*','branches.*','assesments.id as m_id','employers.*','employers.name as e_name','branches.name as branch_name')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                    $summary = null;
+                        
                     }
                 }
                 
@@ -214,6 +233,13 @@ class AssesmentController extends Controller
                         ->select('assesments.*','branches.*','assesments.id as m_id','employers.*','employers.name as e_name','branches.name as branch_name')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                $summary =DB::table('assesments') 
+                        ->join('branches','branches.id','=','assesments.branch_id')
+                        ->select('branches.name', DB::raw('count(*) as total'))
+                        ->groupBy('branch_id')
+                        ->get();
+
                 }
                 else{
                     $data = DB::table('assesments') 
@@ -223,9 +249,14 @@ class AssesmentController extends Controller
                         ->select('assesments.*','branches.*','assesments.id as m_id','employers.*','employers.name as e_name','branches.name as branch_name')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                    $summary = null;
                 }
             }
-                return response()->json($data);
+                return response()->json(array(
+                    'data' => $data,
+                    'summary' => $summary
+                ));
         }
     }
 

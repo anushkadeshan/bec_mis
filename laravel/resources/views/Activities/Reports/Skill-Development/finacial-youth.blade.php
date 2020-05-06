@@ -1,4 +1,4 @@
- @extends('layouts.reports')
+@extends('layouts.reports')
 @section('content')
 <div class="container-fluid">
     <div class="row">
@@ -165,25 +165,21 @@
 <script type="">
   $(document).ready(function() {
    var table2 = $('#example2').DataTable( {
-
         dom: 'Bfrtip',
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print'
             ],
     } );
-
     $('#bank_account').on('change', function () {
           table2.columns(3).search( this.value ).draw();
           var info = $('#example2').DataTable().page.info();
           $('#row_count').text(info.recordsDisplay+ ' youths filtered out of  ' +info.recordsTotal);
       } );
-
     $('#bank_account1').on('change', function () {
           table2.columns(2).search( this.value ).draw();
           var info = $('#example2').DataTable().page.info();
           $('#row_count').text(info.recordsDisplay+ ' youths filtered out of  ' +info.recordsTotal);
       } );
-
     $('#smart_phone').on('change', function () {
           table2.columns(6).search( this.value ).draw();
           var info = $('#example2').DataTable().page.info();
@@ -194,13 +190,11 @@
           var info = $('#example2').DataTable().page.info();
           $('#row_count').text(info.recordsDisplay+ ' youths filtered out of  ' +info.recordsTotal);
       } );
-
       $('#branch_id').on('change', function () {
           table2.columns(8).search( this.value ).draw();
           var info = $('#example2').DataTable().page.info();
           $('#row_count').text(info.recordsDisplay+ ' youths filtered out of  ' +info.recordsTotal);
       } );
-
 });
 </script>
 @endsection

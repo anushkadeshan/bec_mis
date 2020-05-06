@@ -145,6 +145,14 @@ class RegionalMeetingController extends Controller
                         ->select('regional_meetings.*','branches.*','regional_meetings.id as r_id')
                         ->orderBy('meeting_date', 'desc')
                         ->get();
+
+                    $summary = DB::table('regional_meetings')
+                        ->join('branches','branches.id','=','regional_meetings.branch_id')
+                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->where('branch_id',$request->branch)
+                        ->select('branches.name',DB::raw('count(*) as total'))
+                        ->groupBy('branch_id')
+                        ->get();
                 }
                 else{
                 if(is_null($branch_id)){
@@ -155,6 +163,13 @@ class RegionalMeetingController extends Controller
                         ->select('regional_meetings.*','branches.*','regional_meetings.id as r_id')
                         ->orderBy('meeting_date', 'desc')
                         ->get();
+
+                    $summary = DB::table('regional_meetings')
+                        ->join('branches','branches.id','=','regional_meetings.branch_id')
+                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->select('branches.name',DB::raw('count(*) as total'))
+                        ->groupBy('branch_id')
+                        ->get();
                 }
                 else{
                     $data = DB::table('regional_meetings') 
@@ -164,6 +179,8 @@ class RegionalMeetingController extends Controller
                         ->where('branch_id',$branch_id)
                         ->orderBy('meeting_date', 'desc')
                         ->get();
+
+                    $summary = null;
                 }
                 }
                // echo "<script>console.log( 'Debug Objects: " . $request->branch . "' );</script>";
@@ -181,6 +198,12 @@ class RegionalMeetingController extends Controller
                         ->select('regional_meetings.*','branches.*','regional_meetings.id as r_id')
                         ->orderBy('meeting_date', 'desc')
                         ->get(); 
+
+                    $summary = DB::table('regional_meetings')
+                        ->join('branches','branches.id','=','regional_meetings.branch_id')
+                        ->select('branches.name',DB::raw('count(*) as total'))
+                        ->groupBy('branch_id')
+                        ->get();
                 }
                 else{
                     $data = DB::table('regional_meetings') 
@@ -189,12 +212,18 @@ class RegionalMeetingController extends Controller
                         ->select('regional_meetings.*','branches.*','regional_meetings.id as r_id')
                         ->orderBy('meeting_date', 'desc')
                         ->get(); 
+
+                    $summary = null;
                 }
                 
             }
-                echo json_encode($data);
 
+                return response()->json(array(
+                    'data' => $data,
+                    'summary' => $summary
+                ));
 
+              //  echo json_encode($data);
 
         }
     

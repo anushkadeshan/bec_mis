@@ -130,7 +130,7 @@
 @endcan
   <div class="card card-success">
     <div class="card-header">
-      <h3 class="card-title">Completion Reports to be added ( from 2018 to 2019 ) <span  class="badge badge-success float-right" id="row_count"></span></h3>
+      <h3 class="card-title">Completion Reports to be added ( from 2018 to 2020 ) <span  class="badge badge-success float-right" id="row_count"></span></h3>
     </div>
     <div class="card-body">
    <table id="example2" class="table row-border table-hover ">
@@ -156,7 +156,7 @@
                         <td>{{ $report->report }}</td>
                         <td>{{ $report->target }}</td>
                         <td><?php $count = DB::table($report->table_name)->where('branch_id',$report->branch_id)->count(); ?> {{ $count }}</td>
-                        <td><?php $count2 = DB::table($report->table_name)->where('branch_id',$report->branch_id)->whereIn(DB::raw('YEAR(program_date)'), [2018,2019] )->whereDate($report->table_name.'.created_at', '=', date('Y-m-d'))->count(); ?> {{ $count2 }}</td>
+                        <td><?php $count2 = DB::table($report->table_name)->where('branch_id',$report->branch_id)->whereIn(DB::raw('YEAR(program_date)'), [2018,2019,2020] )->whereDate($report->table_name.'.created_at', '=', date('Y-m-d'))->count(); ?> {{ $count2 }}</td>
                         
                         
                         <td>
@@ -171,7 +171,7 @@
     <hr>
   <div class="card card-success">
     <div class="card-header">
-        <h3 class="card-title">Youths to be added from Completion Reports( from 2018 to 2019 ) <span  class="badge badge-success float-right" id="row_count1"></span></h3>
+        <h3 class="card-title">Youths to be added from Completion Reports( from 2018 to 2020 ) <span  class="badge badge-success float-right" id="row_count1"></span></h3>
      </div>
     <div class="card-body"> 
    <table id="example3" class="table row-border table-hover ">
@@ -182,15 +182,24 @@
                         <th>Report</th>
                         <th>Youths to be entered</th>
                         <th>Youths Added</th>
-                        @cannot('branch')<th>Today Added</th>
-                        @endcan
-                       
+                        <th>Today Added</th>
+                        <th>This Week Added</th>
+                        <th>Last Week Added</th>
                         <th>Status</th>
 
                     </tr>
                 </thead> 
                 <tbody>
                     <?php  $no=1; ?>
+
+                    <?php  
+                        $no=1;
+                        $previous_week = strtotime("-1 week +1 day");
+                        $start_week = strtotime("last sunday midnight",$previous_week);
+                        $end_week = strtotime("next saturday",$start_week);
+                        $start_week = date("Y-m-d",$start_week);
+                        $end_week = date("Y-m-d",$end_week);
+                     ?>
                     @foreach ($youths as $youth)
                      <tr class="employer{{$youth->id}}">
                         <td>{{ $no++ }}</td>
@@ -198,21 +207,70 @@
                         <td>{{ $youth->report }}</td>
                         <td>{{ $youth->target }}</td>
                         
-                        <td><?php $count2 = DB::table($youth->table_name_youth)->join($youth->table_name,$youth->table_name.'.id','=',$youth->table_name_youth.'.'.$youth->table_name_youth_id)->where($youth->table_name.'.branch_id',$youth->branch_id)->whereIn(DB::raw('YEAR(program_date)'), [2018,2019] )->count(); $individual = DB::table('placement_individual')->where('branch_id',$youth->branch_id)->count()?> @if($youth->report=='Job Interviews/Placements') {{ $count2 + $individual }} @else{{$count2}}@endif</td>
+                        <td>
 
-                        @cannot('branch')<td><?php $count = DB::table($youth->table_name_youth)->join($youth->table_name,$youth->table_name.'.id','=',$youth->table_name_youth.'.'.$youth->table_name_youth_id)->where($youth->table_name.'.branch_id',$youth->branch_id)->whereIn(DB::raw('YEAR(program_date)'), [2018,2019] )->whereDate($youth->table_name_youth.'.created_at', '=', date('Y-m-d'))->count(); ?> {{ $count }}</td>@endcan
+                          <?php $count2 = DB::table($youth->table_name_youth)->join($youth->table_name,$youth->table_name.'.id','=',$youth->table_name_youth.'.'.$youth->table_name_youth_id)->where($youth->table_name.'.branch_id',$youth->branch_id)->whereIn(DB::raw('YEAR(program_date)'), [2018,2019,2020] )->count(); 
+
+                          $individual = DB::table('placement_individual')->where('branch_id',$youth->branch_id)->count()?> 
+
+                          @if($youth->report=='Job Interviews/Placements') {{ $count2 + $individual }} @else{{$count2}}@endif
+
+                        </td>
+
+                        <td>
+                          @if($youth->report=='Job Interviews/Placements')
+                            <?php $count = DB::table($youth->table_name_youth)->join($youth->table_name,$youth->table_name.'.id','=',$youth->table_name_youth.'.'.$youth->table_name_youth_id)->where($youth->table_name.'.branch_id',$youth->branch_id)->whereIn(DB::raw('YEAR(program_date)'), [2018,2019,2020] )->whereDate($youth->table_name_youth.'.created_at', '=', date('Y-m-d'))->count(); 
+
+                            $today_individual = DB::table('placement_individual')->where('branch_id',$youth->branch_id)->whereDate('created_at', '=', date('Y-m-d'))->count();
+                            ?> 
+                          {{ $count + $today_individual }}</td>
+                          @else
+                            <?php $count = DB::table($youth->table_name_youth)->join($youth->table_name,$youth->table_name.'.id','=',$youth->table_name_youth.'.'.$youth->table_name_youth_id)->where($youth->table_name.'.branch_id',$youth->branch_id)->whereIn(DB::raw('YEAR(program_date)'), [2018,2019,2020] )->whereDate($youth->table_name_youth.'.created_at', '=', date('Y-m-d'))->count(); ?> {{ $count }}</td>
+                          @endif
+                          
+                        <td>
+
+                          @if($youth->report=='Job Interviews/Placements')
+                            <?php $count_thisweek = DB::table($youth->table_name_youth)->join($youth->table_name,$youth->table_name.'.id','=',$youth->table_name_youth.'.'.$youth->table_name_youth_id)->where($youth->table_name.'.branch_id',$youth->branch_id)->whereIn(DB::raw('YEAR(program_date)'), [2018,2019,2020] )->whereBetween($youth->table_name_youth.'.created_at', [Carbon\Carbon::now()->startOfWeek(), Carbon\Carbon::now()->endOfWeek()])->count();
+
+                            $this_individual = DB::table('placement_individual')->where('branch_id',$youth->branch_id)->whereBetween('created_at', [Carbon\Carbon::now()->startOfWeek(), Carbon\Carbon::now()->endOfWeek()])->count();
+                             ?> 
+                             {{ $count_thisweek + $this_individual }}
+                          @else
+                            <?php $count_thisweek = DB::table($youth->table_name_youth)->join($youth->table_name,$youth->table_name.'.id','=',$youth->table_name_youth.'.'.$youth->table_name_youth_id)->where($youth->table_name.'.branch_id',$youth->branch_id)->whereIn(DB::raw('YEAR(program_date)'), [2018,2019,2020] )->whereBetween($youth->table_name_youth.'.created_at', [Carbon\Carbon::now()->startOfWeek(), Carbon\Carbon::now()->endOfWeek()])->count(); ?> {{ $count_thisweek }}
+                          @endif
+                          
+
+                        </td>
+
+                        <td>
+                          @if($youth->report=='Job Interviews/Placements')
+                            <?php $count_last_week = DB::table($youth->table_name_youth)->join($youth->table_name,$youth->table_name.'.id','=',$youth->table_name_youth.'.'.$youth->table_name_youth_id)->where($youth->table_name.'.branch_id',$youth->branch_id)->whereIn(DB::raw('YEAR(program_date)'), [2018,2019,2020] )->whereBetween($youth->table_name_youth.'.created_at', [$start_week, $end_week])->count();
+
+                            $lastWeek_individual = DB::table('placement_individual')->where('branch_id',$youth->branch_id)->whereBetween('created_at', [$start_week, $end_week])->count();
+
+                             ?> 
+
+                            {{ $count_last_week + $lastWeek_individual }}
+                          @else
+                            <?php $count_last_week = DB::table($youth->table_name_youth)->join($youth->table_name,$youth->table_name.'.id','=',$youth->table_name_youth.'.'.$youth->table_name_youth_id)->where($youth->table_name.'.branch_id',$youth->branch_id)->whereIn(DB::raw('YEAR(program_date)'), [2018,2019,2020] )->whereBetween($youth->table_name_youth.'.created_at', [$start_week, $end_week])->count(); ?> 
+
+                            {{ $count_last_week }}
+                          @endif
+                          
+
+
+                        </td>
+                        
 
                         
                         
                         <td>
-                          @switch($individual)
-                              @case(!is_null($individual))
-                                  @if($youth->target ==$count2+$individual ) <small class="badge badge-success">{{"Completed"}}</small> @elseif( $youth->target <= $count2+$individual) <small class="badge badge-success">{{"Completed"}}</small> @else <small class="badge badge-danger">{{"Not Completed"}}</small> @endif
-                                  @break
-                          
-                              @default
-                              @if($youth->target ==$count2 ) <small class="badge badge-success">{{"Completed"}}</small> @elseif( $youth->target <= $count2) <small class="badge badge-success">{{"Completed"}}</small> @else <small class="badge badge-danger">{{"Not Completed"}}</small> @endif
-                          @endswitch
+                          @if($youth->report=='Job Interviews/Placements')
+                                      @if($youth->target ==$count2 + $individual ) <small class="badge badge-success">{{"Completed"}}</small> @elseif( $youth->target <= $count2 + $individual) <small class="badge badge-success">{{"Completed"}}</small> @else <small class="badge badge-danger">{{"Not Completed"}}</small> @endif
+                         @else
+                                     @if($youth->target ==$count2 ) <small class="badge badge-success">{{"Completed"}}</small> @elseif( $youth->target <= $count2) <small class="badge badge-success">{{"Completed"}}</small> @else <small class="badge badge-danger">{{"Not Completed"}}</small> @endif
+                                @endif
                           
                             
 
@@ -257,7 +315,7 @@
    $('#status').on('change', function () {
           const regExSearch = '^' + this.value + '$';
           table2.columns(6).search(regExSearch, true, false).draw();
-          table3.columns(6).search(regExSearch, true, false).draw();
+          table3.columns(8).search(regExSearch, true, false).draw();
           var info2 = $('#example2').DataTable().page.info();
           var info3 = $('#example3').DataTable().page.info();
           $('#row_count').text(info2.recordsDisplay+ ' rows filtered out of  ' +info2.recordsTotal);

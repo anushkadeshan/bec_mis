@@ -139,7 +139,28 @@
                         <i class="fa fa-dollar-sign"></i>Total Cost
                       </a>
                   	</div>
-                    <div  class="row" style="background-color: #CFCFCF">
+                    <div  class="row">
+                      @cannot('branch')
+                        <div class="col-md-12">
+                          <table id="example3" class="table row-border table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Branch Name</th>
+                                    <th>Programs</th>
+                                    <th>Total Male</th>
+                                    <th>Total Female</th>
+                                    <th>PWD Male</th>
+                                    <th>PWD Female</th>
+                                    <th>Program Cost</th>
+                                </tr>
+                                <tbody> 
+                                </tbody>
+                            </thead>        
+                        </table>
+                          
+                        </div>
+                        @endcan
                         <div class="col-md-12">
                           <div id="curve_chart" style=" height: 500px"></div>
                           
@@ -288,7 +309,7 @@ var dataTable = $("#example").DataTable({
 
       dom: 'Bfrtip',
             buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+                'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
             ],
 
       "createdRow": function ( row, data, index ) {
@@ -326,6 +347,17 @@ var dataTable = $("#example").DataTable({
  
     $( this.footer() ).html( sum );
 } );
+
+  var dataTable2 = $("#example3").DataTable({
+      dom: 'Bfrtip',
+            buttons: [
+                
+            ],
+
+            "bFilter": false,
+            "bPaginate": false,
+            "info":     false
+    });
 	var date = new Date();
 
     $('.input-group').datepicker({
@@ -349,6 +381,7 @@ var dataTable = $("#example").DataTable({
    {
   
   dataTable.clear().draw();
+  dataTable2.clear().draw();
    var count = 1;
    var male_sum = 0;
    var female_sum = 0;
@@ -359,8 +392,17 @@ var dataTable = $("#example").DataTable({
    var mg_sum = 0;
    var fg_sum = 0;
    var cost_sum = 0;
-  $.each(data, function(index, value) {
-    console.log(value);
+   var count2 = 1;
+   $.each(data.summary, function(index, value2) {
+    console.log(value2);
+    
+    // use data table row.add, then .draw for table refresh
+    dataTable2.row.add([count2++,value2.name,value2.total, value2.total_male, value2.total_female, value2.pwd_male,value2.pwd_female,value2.program_cost.toLocaleString()]).draw();
+
+   });
+
+  $.each(data.data, function(index, value) {
+    
     // use data table row.add, then .draw for table refresh
     dataTable.row.add([count++, value.program_date, value.total_male, value.total_female, value.pwd_male,value.pwd_female,value.fathers, value.mothers, value.male_gurdians, value.female_gurdians, value.ext,'<div class="btn-group"><button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button></div>',value.verified]).draw();
 
@@ -386,7 +428,7 @@ var dataTable = $("#example").DataTable({
       } 
   });
    
-   $('#total_records').text(data.length);
+   $('#total_records').text(data.data.length);
    $('#total_male1').text(male_sum);
    $('#total_female1').text(female_sum);
    $('#total_fathers').text(fathers_sum);
@@ -396,6 +438,8 @@ var dataTable = $("#example").DataTable({
    $('#total_mg').text(mg_sum);
    $('#total_fg').text(fg_sum);
    $('#total_cost').text(cost_sum.toLocaleString());
+
+
     
    }
   });

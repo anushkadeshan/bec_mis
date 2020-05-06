@@ -236,6 +236,14 @@ class MentoringController extends Controller
                         ->select('mentoring.*','branches.*','mentoring.id as m_id','resourse_people.*','resourse_people.name as r_name')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                    $summary  = DB::table('mentoring') 
+                        ->join('branches','branches.id','=','mentoring.branch_id')
+                        ->where('branch_id',$request->branch)
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->select('branches.name',DB::raw('count(*) as total'), DB::raw('sum(total_male) as total_male'), DB::raw('sum(total_female) as total_female'), DB::raw('sum(pwd_male) as pwd_male'), DB::raw('sum(pwd_female) as pwd_female'), DB::raw('sum(program_cost) as program_cost'))
+                        ->groupBy('branch_id')
+                        ->get();
                 }
                 else{
                     
@@ -249,6 +257,13 @@ class MentoringController extends Controller
                         ->select('mentoring.*','branches.*','mentoring.id as m_id','resourse_people.*','resourse_people.name as r_name')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                        $summary  = DB::table('mentoring') 
+                        ->join('branches','branches.id','=','mentoring.branch_id')
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->select('branches.name',DB::raw('count(*) as total'), DB::raw('sum(total_male) as total_male'), DB::raw('sum(total_female) as total_female'), DB::raw('sum(pwd_male) as pwd_male'), DB::raw('sum(pwd_female) as pwd_female'), DB::raw('sum(program_cost) as program_cost'))
+                        ->groupBy('branch_id')
+                        ->get();
                     }
                     else{
                         $data = DB::table('mentoring') 
@@ -259,6 +274,8 @@ class MentoringController extends Controller
                         ->select('mentoring.*','branches.*','mentoring.id as m_id','resourse_people.*','resourse_people.name as r_name')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                        $summary = null;
                     }
                 }
                 
@@ -274,6 +291,12 @@ class MentoringController extends Controller
                         ->select('mentoring.*','branches.*','mentoring.id as m_id','resourse_people.*','resourse_people.name as r_name')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                    $summary  = DB::table('mentoring') 
+                        ->join('branches','branches.id','=','mentoring.branch_id')
+                        ->select('branches.name',DB::raw('count(*) as total'), DB::raw('sum(total_male) as total_male'), DB::raw('sum(total_female) as total_female'), DB::raw('sum(pwd_male) as pwd_male'), DB::raw('sum(pwd_female) as pwd_female'), DB::raw('sum(program_cost) as program_cost'))
+                        ->groupBy('branch_id')
+                        ->get();
                 }
                 else{
                     $data = DB::table('mentoring') 
@@ -283,10 +306,15 @@ class MentoringController extends Controller
                         ->where('mentoring.branch_id','=',$branch_id)
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                    $summary = null;
                 }
                 
             }
-                return response()->json($data);
+                return response()->json(array(
+                        'data' => $data,
+                        'summary' => $summary
+                    ));
         }
     
         

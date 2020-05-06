@@ -171,6 +171,14 @@ class PesUnitController extends Controller
                         ->select('pes_units.*','branches.*','pes_units.id as m_id','branches.name as branch_name','program_date as meeting_date')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                    $summary = DB::table('pes_units') 
+                        ->join('branches','branches.id','=','pes_units.branch_id')
+                        ->select('branches.name',DB::raw('count(*) as total'), DB::raw('sum(male_18_24+male_25_30+male_30) as total_male'), DB::raw('sum(female_18_24+female_25_30+female_30) as total_female'))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->where('branch_id',$request->branch)
+                        ->groupBy('branch_id')
+                        ->get();
                 }
                 else{
                     
@@ -183,6 +191,15 @@ class PesUnitController extends Controller
                         //->where('pes_units.branch_id','=',$branch_id)
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                    $summary = DB::table('pes_units') 
+                        ->join('branches','branches.id','=','pes_units.branch_id')
+                        ->select('branches.name',DB::raw('count(*) as total'), DB::raw('sum(male_18_24+male_25_30+male_30) as total_male'), DB::raw('sum(female_18_24+female_25_30+female_30) as total_female'))
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->groupBy('branch_id')
+                        ->get();
+
+
                     }
                     else{
                     $data = DB::table('pes_units') 
@@ -192,6 +209,9 @@ class PesUnitController extends Controller
                         ->where('pes_units.branch_id','=',$branch_id)
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                    $summary = null;
+                        
                     }
                 }
                 
@@ -206,6 +226,13 @@ class PesUnitController extends Controller
                             ->select('pes_units.*','branches.*','pes_units.id as m_id','branches.name as branch_name','program_date as meeting_date')
                             ->orderBy('program_date', 'desc')
                             ->get();
+
+                    $summary = DB::table('pes_units') 
+                        ->join('branches','branches.id','=','pes_units.branch_id')
+                        ->select('branches.name',DB::raw('count(*) as total'), DB::raw('sum(male_18_24+male_25_30+male_30) as total_male'), DB::raw('sum(female_18_24+female_25_30+female_30) as total_female'))
+                        ->groupBy('branch_id')
+                        ->get();
+
                 }
                 else{
                     $data = DB::table('pes_units') 
@@ -215,9 +242,15 @@ class PesUnitController extends Controller
                         ->orderBy('program_date', 'desc')                     
 
                         ->get();
+
+                    $summary = null;
+
                 }
             }
-                return response()->json($data);
+                return response()->json(array(
+                    'data' => $data,
+                    'summary' => $summary
+                ));
         }
     
         

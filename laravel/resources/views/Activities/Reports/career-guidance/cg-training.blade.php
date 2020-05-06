@@ -5,11 +5,11 @@
     <section class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
-          <div class="col-md-6">
+          <div class="col-md-8">
                       
             <h3>Training on Career counselling for GND level officers <small class="badge badge-success"> {{count($meetings)}}</small></h3>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-4">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{Route('home')}}">Dashboard</a></li>
               <li class="breadcrumb-item"><a href="{{url('m&e-reports')}}">Reports</a></li>
@@ -122,6 +122,28 @@
                         <i class="fa fa-dollar-sign"></i>Total Cost
                       </a>
                     </div>
+
+                    @cannot('branch')
+                        <div class="col-md-12">
+                          <table id="example10" class="table row-border table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Branch</th>
+                                        <th>No of Trainings</th>
+                                        <th>Total Male</th>
+                                        <th>Total Female</th>
+                                        <th>Total Participants</th>
+                                        <th>Total Cost</th>
+                                    </tr>
+                                    <tbody> 
+                                    </tbody>
+                                </thead>        
+                            </table>
+                          
+                        </div>
+                        @endcan
+
                     <div class="card card-success">
                     <div  class="card-header">
                      Participation
@@ -227,10 +249,29 @@ $(document).ready(function() {
 var dataTable = $("#example").DataTable({
       dom: 'Bfrtip',
             buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+                'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
             ],
     });
   
+  var dataTable2 = $("#example10").DataTable({
+      dom: 'Bfrtip',
+            buttons: [
+                
+            ],
+
+            "bFilter": false,
+            "bPaginate": false,
+            "info":     false,
+
+            'columnDefs': [
+            {
+                "targets": [6], // your case first column
+                "className": "text-right",
+                "width": "4%"
+           }],
+
+    });
+
   var date = new Date();
 
     $('.input-group').datepicker({
@@ -267,7 +308,15 @@ var dataTable = $("#example").DataTable({
    var pwd_m_sum = 0;
    var pwd_f_sum = 0;
    var cost_sum = 0;
-  $.each(data, function(index, value) {
+
+   dataTable2.clear().draw();
+    var count2 = 1;
+    $.each(data.summary, function(index, value2) {
+    // use data table row.add, then .draw for table refresh
+    dataTable2.row.add([count2++, value2.name, value2.total, value2.male, value2.female, parseFloat(value2.male)+parseFloat(value2.female), parseFloat(value2.cost).toLocaleString()]).draw();
+    });
+
+  $.each(data.data, function(index, value) {
     console.log(value);
     // use data table row.add, then .draw for table refresh
     dataTable.row.add([count++, value.program_date, value.total_male, value.total_female, value.pwd_male,value.pwd_female,value.venue, value.branch_name,'<div class="btn-group"><button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button><a href="{{url('reports-me/cg-training')}}/'+value.m_id+'/edit"><button type="button" name="view" class="btn btn-success btn-flat btn-sm"><i class="fa fa-edit"></i></button></a></div>']).draw();
@@ -286,7 +335,7 @@ var dataTable = $("#example").DataTable({
       } 
   });
    
-   $('#total_records').text(data.length);
+   $('#total_records').text(data.data.length);
    $('#total_male1').text(male_sum);
    $('#total_female1').text(female_sum);
    $('#total_p_male').text(pwd_m_sum);
@@ -397,7 +446,7 @@ google.charts.load('current', {'packages':['corechart']});
           title: '',
           curveType: 'function',
           chartArea:{
-          left:25,
+          left:45,
           top: 20,
           bottom:20,
           },

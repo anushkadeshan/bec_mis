@@ -4,11 +4,21 @@
     <div class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
-          <div class="col-sm-6">
+          <div class="col-sm-2">
             <h1 class="m-0 text-dark">Dashboard</h1>
           </div>
+          <div class="col-sm-10">
+            
+          </div>
+          <div class="col-sm-3">
+            <span class="info-box-text text-danger">Corona Live Status - Local: </span>
+          </div>
+          <div class="col-sm-9">
+            <marquee onmouseover="this.stop();" onmouseout="this.start();"><span>Updated Date and Time : {{$corona->data->update_date_time }} </span> | <span class="text-info">Total Cases : {{$corona->data->local_total_cases }} </span> | <span class="text-danger">Total Deaths : {{$corona->data->local_deaths }} </span>| <span class="text-warning">Total suspected : {{$corona->data->local_total_number_of_individuals_in_hospitals }} </span> | <span class="text-success">Total Recovered : {{$corona->data->local_recovered }}</span></marquee>
+          </div>
         </div>
-      </div>
+      </div><!-- Codes by HTMLcodes.ws -->
+
     </div>
     <!-- /.content-header -->
 
@@ -752,7 +762,7 @@
                           @endforeach
 
                            @foreach ($youths as $youth)
-                           <?php $count2 = DB::table($youth->table_name_youth)->join($youth->table_name,$youth->table_name.'.id','=',$youth->table_name_youth.'.'.$youth->table_name_youth_id)->where($youth->table_name.'.branch_id',$youth->branch_id)->whereIn(DB::raw('YEAR(program_date)'), [2018,2019] )->count(); $individual = DB::table('placement_individual')->where('branch_id',$youth->branch_id)->count()?>
+                           <?php $count2 = DB::table($youth->table_name_youth)->join($youth->table_name,$youth->table_name.'.id','=',$youth->table_name_youth.'.'.$youth->table_name_youth_id)->where($youth->table_name.'.branch_id',$youth->branch_id)->whereIn(DB::raw('YEAR(program_date)'), [2018,2019,2020] )->count(); $individual = DB::table('placement_individual')->where('branch_id',$youth->branch_id)->count()?>
                            @if($count2<$youth->target)
                            <tr class="employer{{$youth->id}}">
                               <td> Add Youths for {{ $youth->report }}</td>
@@ -760,12 +770,15 @@
                               
                               <td> @if($youth->report=='Job Interviews/Placements') {{ $count2 + $individual }} @else{{$count2}}@endif</td>
 
-                              <td>{{ $youth->target-$count2 }}</td>
-
-                              
-                              
+                              <td>@if($youth->report=='Job Interviews/Placements'){{$youth->target - ($count2 + $individual) }} @else{{ $youth->target-$count2 }}@endif</td>
                               <td>
-                                  @if($youth->target ==$count2 ) <small class="badge badge-success">{{"Completed"}}</small> @elseif( $youth->target <= $count2) <small class="badge badge-success">{{"Completed"}}</small> @else <small class="badge badge-danger">{{"Not Completed"}}</small> @endif
+                                @if($youth->report=='Job Interviews/Placements')
+                                      @if($youth->target ==$count2 + $individual ) <small class="badge badge-success">{{"Completed"}}</small> @elseif( $youth->target <= $count2 + $individual) <small class="badge badge-success">{{"Completed"}}</small> @else <small class="badge badge-danger">{{"Not Completed"}}</small> @endif
+                                @else
+                                     @if($youth->target ==$count2 ) <small class="badge badge-success">{{"Completed"}}</small> @elseif( $youth->target <= $count2) <small class="badge badge-success">{{"Completed"}}</small> @else <small class="badge badge-danger">{{"Not Completed"}}</small> @endif
+                                @endif
+
+                                 
                               </td>
                           </tr>
                           @endif
@@ -1355,14 +1368,14 @@
 
             function drawChart() {
         var data = google.visualization.arrayToDataTable([
-          ['Branch', 'Youths', 'CG','Soft Skills','VT','Prof','Jobs','BSS'],
-          ['Nuwara Eliya', {{$count_NE_youth}}, {{$count_NE_cg}}, {{$count_NE_soft_skills}}, {{$count_NE_vt}},  {{$count_NE_prof}}, {{$count_NE_jobs}},{{$count_NE_bss}}],
-          ['Trincomalee', {{$count_TRIN_youth}}, {{$count_TRIN_cg}}, {{$count_TRIN_soft_skills}} , {{$count_TRIN_vt}},  {{$count_TRIN_prof}}, {{$count_TRIN_jobs}},{{$count_TRIN_bss}}],
-          ['Kegalle', {{$count_KEG_youth}}, {{$count_KEG_cg}}, {{$count_KEG_soft_skills}}, {{$count_KEG_vt}}, {{$count_KEG_prof}}, {{$count_KEG_jobs}},{{$count_KEG_bss}}],
-          ['Ginigathhena', {{$count_GINI_youth}}, {{$count_GINI_cg}}, {{$count_GINI_soft_skills}}, {{$count_GINI_vt}},  {{$count_GINI_prof}}, {{$count_GINI_jobs}},{{$count_GINI_bss}}],
-          ['Battacalao', {{$count_BAT_youth}}, {{$count_BAT_cg}}, {{$count_BAT_soft_skills}}, {{$count_BAT_vt}},  {{$count_BAT_prof}}, {{$count_BAT_jobs}},{{$count_BAT_bss}}],
-          ['Anuradhapura', {{$count_ANU_youth}}, {{$count_ANU_cg}}, {{$count_ANU_soft_skills}}, {{$count_ANU_vt}}, {{$count_ANU_prof}}, {{$count_ANU_jobs}},{{$count_ANU_bss}}],
-          ['Mullaitivu', {{$count_MUL_youth}}, {{$count_MUL_cg}}, {{$count_MUL_soft_skills}}, {{$count_MUL_vt}},  {{$count_MUL_prof}}, {{$count_MUL_jobs}},{{$count_MUL_bss}}],
+          ['Branch',  'CG','Soft Skills','VT','Prof','Jobs','BSS'],
+          ['Nuwara Eliya', {{$count_NE_cg}}, {{$count_NE_soft_skills}}, {{$count_NE_vt}},  {{$count_NE_prof}}, {{$count_NE_jobs}},{{$count_NE_bss}}],
+          ['Trincomalee',  {{$count_TRIN_cg}}, {{$count_TRIN_soft_skills}} , {{$count_TRIN_vt}},  {{$count_TRIN_prof}}, {{$count_TRIN_jobs}},{{$count_TRIN_bss}}],
+          ['Kegalle',  {{$count_KEG_cg}}, {{$count_KEG_soft_skills}}, {{$count_KEG_vt}}, {{$count_KEG_prof}}, {{$count_KEG_jobs}},{{$count_KEG_bss}}],
+          ['Ginigathhena',  {{$count_GINI_cg}}, {{$count_GINI_soft_skills}}, {{$count_GINI_vt}},  {{$count_GINI_prof}}, {{$count_GINI_jobs}},{{$count_GINI_bss}}],
+          ['Battacalao',  {{$count_BAT_cg}}, {{$count_BAT_soft_skills}}, {{$count_BAT_vt}},  {{$count_BAT_prof}}, {{$count_BAT_jobs}},{{$count_BAT_bss}}],
+          ['Anuradhapura',  {{$count_ANU_cg}}, {{$count_ANU_soft_skills}}, {{$count_ANU_vt}}, {{$count_ANU_prof}}, {{$count_ANU_jobs}},{{$count_ANU_bss}}],
+          ['Mullaitivu',  {{$count_MUL_cg}}, {{$count_MUL_soft_skills}}, {{$count_MUL_vt}},  {{$count_MUL_prof}}, {{$count_MUL_jobs}},{{$count_MUL_bss}}],
 
         ]);
 
@@ -1458,14 +1471,14 @@
 
             function drawChart() {
         var data = google.visualization.arrayToDataTable([
-          ['Branch', 'Youths', 'CG','Soft Skills','VT','Prof','Jobs','BSS'],
-          ['Nuwara Eliya', {{$count_NE_youth}}, {{$count_NE_cg}}, {{$count_NE_soft_skills}}, {{$count_NE_vt}},  {{$count_NE_prof}}, {{$count_NE_jobs}},{{$count_NE_bss}}],
-          ['Trincomalee', {{$count_TRIN_youth}}, {{$count_TRIN_cg}}, {{$count_TRIN_soft_skills}} , {{$count_TRIN_vt}},  {{$count_TRIN_prof}}, {{$count_TRIN_jobs}},{{$count_TRIN_bss}}],
-          ['Kegalle', {{$count_KEG_youth}}, {{$count_KEG_cg}}, {{$count_KEG_soft_skills}}, {{$count_KEG_vt}}, {{$count_KEG_prof}}, {{$count_KEG_jobs}},{{$count_KEG_bss}}],
-          ['Ginigathhena', {{$count_GINI_youth}}, {{$count_GINI_cg}}, {{$count_GINI_soft_skills}}, {{$count_GINI_vt}},  {{$count_GINI_prof}}, {{$count_GINI_jobs}},{{$count_GINI_bss}}],
-          ['Battacalao', {{$count_BAT_youth}}, {{$count_BAT_cg}}, {{$count_BAT_soft_skills}}, {{$count_BAT_vt}},  {{$count_BAT_prof}}, {{$count_BAT_jobs}},{{$count_BAT_bss}}],
-          ['Anuradhapura', {{$count_ANU_youth}}, {{$count_ANU_cg}}, {{$count_ANU_soft_skills}}, {{$count_ANU_vt}}, {{$count_ANU_prof}}, {{$count_ANU_jobs}},{{$count_ANU_bss}}],
-          ['Mullaitivu', {{$count_MUL_youth}}, {{$count_MUL_cg}}, {{$count_MUL_soft_skills}}, {{$count_MUL_vt}},  {{$count_MUL_prof}}, {{$count_MUL_jobs}},{{$count_MUL_bss}}],
+          ['Branch',  'CG','Soft Skills','VT','Prof','Jobs','BSS'],
+          ['Nuwara Eliya', {{$count_NE_cg}}, {{$count_NE_soft_skills}}, {{$count_NE_vt}},  {{$count_NE_prof}}, {{$count_NE_jobs}},{{$count_NE_bss}}],
+          ['Trincomalee',  {{$count_TRIN_cg}}, {{$count_TRIN_soft_skills}} , {{$count_TRIN_vt}},  {{$count_TRIN_prof}}, {{$count_TRIN_jobs}},{{$count_TRIN_bss}}],
+          ['Kegalle',  {{$count_KEG_cg}}, {{$count_KEG_soft_skills}}, {{$count_KEG_vt}}, {{$count_KEG_prof}}, {{$count_KEG_jobs}},{{$count_KEG_bss}}],
+          ['Ginigathhena',  {{$count_GINI_cg}}, {{$count_GINI_soft_skills}}, {{$count_GINI_vt}},  {{$count_GINI_prof}}, {{$count_GINI_jobs}},{{$count_GINI_bss}}],
+          ['Battacalao',  {{$count_BAT_cg}}, {{$count_BAT_soft_skills}}, {{$count_BAT_vt}},  {{$count_BAT_prof}}, {{$count_BAT_jobs}},{{$count_BAT_bss}}],
+          ['Anuradhapura',  {{$count_ANU_cg}}, {{$count_ANU_soft_skills}}, {{$count_ANU_vt}}, {{$count_ANU_prof}}, {{$count_ANU_jobs}},{{$count_ANU_bss}}],
+          ['Mullaitivu',  {{$count_MUL_cg}}, {{$count_MUL_soft_skills}}, {{$count_MUL_vt}},  {{$count_MUL_prof}}, {{$count_MUL_jobs}},{{$count_MUL_bss}}],
 
         ]);
 
@@ -1515,7 +1528,6 @@
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
           ['Activity', 'Progress', { role: 'style' }],
-          ['No of Youths', {{$count_youth}},'#b87333'],
           ['CG', {{$count_cg}},'silver'],
           ['Soft Skills', {{$count_soft_skills}},'silver'],
           ['VT', {{$count_vt}},'silver'],

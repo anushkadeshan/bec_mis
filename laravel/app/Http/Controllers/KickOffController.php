@@ -332,12 +332,28 @@ class KickOffController extends Controller
                         ->orderBy('program_date', 'desc')
                         ->get();
 
+                    $summaryK = DB::table('kickoffs') 
+                        ->join('branches','branches.id','=','kickoffs.branch_id')
+                        ->where('branch_id',$request->branch)
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->select('branches.name',DB::raw('count(*) as total'), DB::raw('sum(total_male) as total_male'), DB::raw('sum(total_female) as total_female'), DB::raw('sum(program_cost) as program_cost'), DB::raw('sum(no_of_forms) as no_of_forms'), DB::raw('sum(no_of_selected_youth) as no_of_selected_youth'))
+                        ->groupBy('branch_id')
+                        ->get();
+
                     $hhs = DB::table('households') 
                         ->join('branches','branches.id','=','households.branch_id')
                         ->select('households.*','branches.*','households.id as m_id','branches.name as branch_name')
-                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
                         ->where('branch_id',$request->branch)
                         ->orderBy('meeting_date', 'desc')
+                        ->get();
+
+                    $summaryH = DB::table('households') 
+                        ->join('branches','branches.id','=','households.branch_id')
+                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->where('branch_id',$request->branch)
+                        ->select('branches.name',DB::raw('count(*) as total'), DB::raw('sum(total_male) as total_male'), DB::raw('sum(total_female) as total_female'), DB::raw('sum(no_of_forms) as no_of_forms'), DB::raw('sum(no_of_selected_youth) as no_of_selected_youth'))
+                        ->groupBy('branch_id')
                         ->get();
                 }
                 else{
@@ -353,12 +369,28 @@ class KickOffController extends Controller
                         ->orderBy('program_date', 'desc')
                         ->get();
 
+                    $summaryK = DB::table('kickoffs') 
+                        ->join('branches','branches.id','=','kickoffs.branch_id')
+                        ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                        ->select('branches.name',DB::raw('count(*) as total'), DB::raw('sum(total_male) as total_male'), DB::raw('sum(total_female) as total_female'), DB::raw('sum(program_cost) as program_cost'), DB::raw('sum(no_of_forms) as no_of_forms'), DB::raw('sum(no_of_selected_youth) as no_of_selected_youth'))
+                        ->groupBy('branch_id')
+                        ->get();
+
                     $hhs = DB::table('households') 
                         ->join('branches','branches.id','=','households.branch_id')
                         ->select('households.*','branches.*','households.id as m_id','branches.name as branch_name')
                         ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
                         ->orderBy('meeting_date', 'desc')
                         ->get();
+
+                    $summaryH = DB::table('households') 
+                        ->join('branches','branches.id','=','households.branch_id')
+                        ->whereBetween('meeting_date', array($request->dateStart, $request->dateEnd))
+                        ->select('branches.name',DB::raw('count(*) as total'), DB::raw('sum(total_male) as total_male'), DB::raw('sum(total_female) as total_female'),  DB::raw('sum(no_of_forms) as no_of_forms'), DB::raw('sum(no_of_selected_youth) as no_of_selected_youth'))
+                        ->groupBy('branch_id')
+                        ->get();
+
+
 
                     }
                     else{
@@ -378,6 +410,9 @@ class KickOffController extends Controller
                         ->where('households.branch_id','=',$branch_id)
                         ->orderBy('meeting_date', 'desc')
                         ->get();
+
+                        $summaryK = null;
+                        $summaryH = null;
                     }
                 }
                 
@@ -393,10 +428,23 @@ class KickOffController extends Controller
                         ->select('kickoffs.*','branches.*','kickoffs.id as m_id','resourse_people.*','resourse_people.name as r_name','branches.name as branch_name')
                         ->orderBy('program_date', 'desc')
                         ->get();
+
+                $summaryK = DB::table('kickoffs') 
+                        ->join('branches','branches.id','=','kickoffs.branch_id')
+                        ->select('branches.name',DB::raw('count(*) as total'), DB::raw('sum(total_male) as total_male'), DB::raw('sum(total_female) as total_female'), DB::raw('sum(program_cost) as program_cost'), DB::raw('sum(no_of_forms) as no_of_forms'), DB::raw('sum(no_of_selected_youth) as no_of_selected_youth'))
+                        ->groupBy('branch_id')
+                        ->get();
+
                 $hhs = DB::table('households') 
                         ->join('branches','branches.id','=','households.branch_id')
                         ->select('households.*','branches.*','households.id as m_id','branches.name as branch_name')
                         ->orderBy('meeting_date', 'desc')
+                        ->get();
+
+                $summaryH = DB::table('households') 
+                        ->join('branches','branches.id','=','households.branch_id')
+                        ->select('branches.name',DB::raw('count(*) as total'), DB::raw('sum(total_male) as total_male'), DB::raw('sum(total_female) as total_female'), DB::raw('sum(no_of_forms) as no_of_forms'), DB::raw('sum(no_of_selected_youth) as no_of_selected_youth'))
+                        ->groupBy('branch_id')
                         ->get();
                 }
 
@@ -415,12 +463,17 @@ class KickOffController extends Controller
                         ->where('households.branch_id','=',$branch_id)
                         ->orderBy('meeting_date', 'desc')
                         ->get();
+
+                    $summaryK = null;
+                    $summaryH = null;
                 }
             }
                 
                 return response()->json(array(
                     'kick' => $data,
                     'hhs' => $hhs,
+                    'summaryH' => $summaryH,
+                    'summaryK' => $summaryK
                 ));
                 //return response()->json($data);
         }
@@ -475,13 +528,15 @@ class KickOffController extends Controller
                   ->where('kickoff_id',$id)
                   ->select('kickoff_photos.images')
                   ->get();
+        $headers = ["Content-Type"=>"application/zip"];
         foreach($photos as $photo){
             //echo $photo->images;
             $headers = ["Content-Type"=>"application/zip"];
             //$paths = storage_path('activities/files/mentoring/images/'.$photo->image.'');
             $zipper = Zipper::make(storage_path('activities/files/kick-off/images/'.$id.'.zip'))->add(storage_path('activities/files/kick-off/images/'.$photo->images.''))->close();
-        }
             return response()->download(storage_path('activities/files/kick-off/images/'.$id.'.zip','photos',$headers)); 
+        }
+            
 
         //$photos_array = $photos->toArray();
         //dd($photos);

@@ -5,6 +5,7 @@ namespace App\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use App\Todo;
 class TaskCreated extends Notification
@@ -22,6 +23,7 @@ class TaskCreated extends Notification
         $this->tasks = $tasks;
     }
 
+
     /**
      * Get the notification's delivery channels.
      *
@@ -30,7 +32,7 @@ class TaskCreated extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['broadcast','mail'];
     }
 
     /**
@@ -61,10 +63,17 @@ class TaskCreated extends Notification
      * @param  mixed  $notifiable
      * @return array
      */
-    public function toArray($notifiable)
+    public function broadcastType()
+    {
+        return 'broadcast.message';
+    }
+
+    public function toBroadcast($notifiable)
     {
         return [
-            //
+            'title' => $this->tasks->task,
+            'due' => $this->tasks->task,
+
         ];
     }
 }

@@ -2,11 +2,14 @@
 @section('content')
 <div class="container-fluid">
 	<br>
+  @if($cg_youths->target > $youths)
   <div class="alert alert-warning alert-dismissible">
       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+
         <h5><i class="fas fa-exclamation-triangle"></i> Alert!</h5>
         You have to add more <strong>{{$cg_youths->target - $youths}} </strong> Base Line Applications against your Career Guidance Progress <strong>({{$cg_youths->target }} )</strong> in 2018 and 2019 years. Please Add rest of Baseline applications ASAP.
   </div>
+  @endif
     <section class="content">
 	    	<div class="row">
           <div class="col-12">
@@ -40,6 +43,7 @@
                    					<label for="nic">4. NIC: &nbsp;&nbsp;</label>
                    					<input type="text" id="nic" name="nic" class="form-control">
                    				</div>
+                          <ul class="list-group" id="result"></ul>
                           <div class="form-group">
                             <label for="nic">7. Phone Numbers: &nbsp;&nbsp; <small>(seperete with comma)</small></label>
                             <input type="text" id="phone" name="phone" class="form-control">
@@ -1828,6 +1832,7 @@ $(document).ready(function () {
 
         $("#completed_at").attr('max', year + "-" + month + "-" + day);
 });
+
 </script>
 <style type="text/css" media="screen">
 	#autocomplete, #following, #followed, #family {
@@ -2130,6 +2135,7 @@ $(document).ready(function () {
     -webkit-transform: rotate(-405deg);
   }
 }
+
 
 </style>
 @endsection
