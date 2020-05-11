@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\URL;
 use App\Audit;
 use App\User;
 use App\Notifications\CompletionReport;
+use App\Notifications\CountYouth;
 
 class CarrerGuidanceController extends Controller
 {
@@ -30,6 +31,8 @@ class CarrerGuidanceController extends Controller
     }
 
     public function insert(Request $request){
+        $added_by = Auth::user()->name;
+
     	$validator = Validator::make($request->all(),[
                 'program_cost'  => 'required',
                 'total_male'  => 'required',
@@ -172,6 +175,17 @@ class CarrerGuidanceController extends Controller
                 $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin','management' ]);})->get();
                 foreach ($notifyTo as $notifyUser) {
                     $notifyUser->notify(new CompletionReport($reports));
+                }
+
+                $youth_data = array(
+                    'added_by' => $added_by,
+                    'youth_count' => $number3,
+                    'type' => 'Career guidance'
+                );
+
+                $notifyToo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin','management','branch' ]);})->get();
+                foreach ($notifyToo as $notifyUserr) {
+                    $notifyUserr->notify(new CountYouth($youth_data));
                 }
         }
 
@@ -701,8 +715,21 @@ class CarrerGuidanceController extends Controller
 
     public function add_youths(Request $request){
 
+        $added_by = Auth::user()->name;
+
         $participants = DB::table('cg_youths')
                         ->insert(['youth_id'=>$request->youth_id,'career_field1'=>$request->career_field1,'career_field2'=>$request->career_field2,'career_field3'=> $request->career_field3, 'career_guidances_id'=>$request->m_id]);
+        
+        $youth_data = array(
+            'added_by' => $added_by,
+            'youth_count' => 1,
+            'type' => 'Career guidance'
+        );
+
+        $notifyToo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin','management','branch' ]);})->get();
+        foreach ($notifyToo as $notifyUserr) {
+            $notifyUserr->notify(new CountYouth($youth_data));
+        }
 
     }
 

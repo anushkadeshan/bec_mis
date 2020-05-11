@@ -32,10 +32,12 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
                  // ->hourly();
-        $schedule->command('backup:clean')->daily()->at('22:17')->timezone('Asia/Colombo')
+        $schedule->command('backup:clean')->twiceDaily(14, 1)->timezone('Asia/Colombo')
                  ->withoutOverlapping();
-       $schedule->command('backup:run')->daily()->at('22:20')->timezone('Asia/Colombo')
+
+       $schedule->command('backup:run')->twiceDaily(13, 23)->timezone('Asia/Colombo')
                  ->withoutOverlapping();
+                 
         $schedule->command('notify:course_finished')
                  ->dailyAt('9:07')
                  ->timezone('Asia/Colombo')
@@ -47,7 +49,7 @@ class Kernel extends ConsoleKernel
                  ->withoutOverlapping();    
 
         $schedule->command('notify:gvt_finished')
-                 ->dailyAt('12:24')
+                 ->dailyAt('16:22')
                  ->timezone('Asia/Colombo')
                  ->withoutOverlapping();   
 
@@ -68,7 +70,7 @@ class Kernel extends ConsoleKernel
 
 
         $schedule->command('notify:push')
-                  ->twiceDaily(10, 4)
+                  ->twiceDaily(10, 16)
                  ->timezone('Asia/Colombo')
                  ->withoutOverlapping();
 

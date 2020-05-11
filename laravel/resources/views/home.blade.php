@@ -14,7 +14,7 @@
             <span class="info-box-text text-danger">Corona Live Status - Local: </span>
           </div>
           <div class="col-sm-9">
-            <marquee onmouseover="this.stop();" onmouseout="this.start();"><span>Updated Date and Time : {{$corona->data->update_date_time }} </span> | <span class="text-info">Total Cases : {{$corona->data->local_total_cases }} </span> | <span class="text-danger">Total Deaths : {{$corona->data->local_deaths }} </span>| <span class="text-warning">Total suspected : {{$corona->data->local_total_number_of_individuals_in_hospitals }} </span> | <span class="text-success">Total Recovered : {{$corona->data->local_recovered }}</span></marquee>
+            <marquee onmouseover="this.stop();" onmouseout="this.start();"><span>Updated Date and Time : {{$corona->data->update_date_time }} </span> | <span class="text-info">Total Cases : {{$corona->data->local_total_cases }} </span> | <span class="text-danger">Total Deaths : {{$corona->data->local_deaths }} </span>| <span class="text-warning">Total suspected : {{$corona->data->local_total_number_of_individuals_in_hospitals }} </span> | <span class="text-success">Total Recovered : {{$corona->data->local_recovered }}</span> | <span class="text-primary">Today Cases : {{$corona->data->local_new_cases }}</span></marquee>
           </div>
         </div>
       </div><!-- Codes by HTMLcodes.ws -->

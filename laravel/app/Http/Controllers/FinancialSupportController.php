@@ -35,7 +35,7 @@ class FinancialSupportController extends Controller
           'district' => 'required',
           'dm_name' =>'required',	
           'review_report' => 'required',
-          'mou_report' => 'mimes:jpeg,jpg,png,gif,svg,pdf',
+          'mou_report' => 'mimes:jpeg,jpg,png,gif,svg,pdf,docx,doc',
           'institute_id' => 'required',
           'course_id' => 'required'
       ]);

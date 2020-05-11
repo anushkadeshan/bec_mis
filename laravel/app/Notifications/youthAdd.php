@@ -30,7 +30,7 @@ class youthAdd extends Notification
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ['database','broadcast'];
     }
 
     /**
@@ -54,6 +54,18 @@ class youthAdd extends Notification
      * @return array
      */
     public function toDatabase($notifiable)
+    {
+        return [
+            'youth' => $this->youth
+        ];
+    }
+
+    public function broadcastType()
+    {
+        return 'broadcast.youthAdd';
+    }
+
+    public function toBroadcast($notifiable)
     {
         return [
             'youth' => $this->youth

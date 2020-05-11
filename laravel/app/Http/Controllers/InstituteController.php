@@ -31,13 +31,18 @@ class InstituteController extends Controller
             ]);
     	if($validator->passes()){
               $added_by = auth()->user()->id;
+              $added_user = auth()->user()->name;
               $data = $request->all();
               $institute = Institute::create($data+['added_by'=>$added_by]);
 
-              $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['admin' , 'branch','youth']);})->get();
+              $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['admin' , 'branch','youth','management']);})->get();
 
+              $notifyData = array(
+                'added_by' => $added_user,
+                'institute' => $institute
+              );
               foreach ($notifyTo as $notifyUser) {
-                     $notifyUser->notify(new instituteAdd($institute));
+                     $notifyUser->notify(new instituteAdd($notifyData));
               }
 
     	}

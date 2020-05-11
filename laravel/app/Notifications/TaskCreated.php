@@ -20,7 +20,7 @@ class TaskCreated extends Notification
      */
     public function __construct($tasks)
     {
-        $this->tasks = $tasks;
+        $this->tasks = $tasks; 
     }
 
 
@@ -47,7 +47,7 @@ class TaskCreated extends Notification
         $due_date = $this->tasks->due_date;
         $url = url('/home');
         return (new MailMessage)
-                ->subject('New Task is assigned.')
+                ->subject('New Task : '.$title.'.')
                 ->greeting('Hello Dear Team!')
                 ->line('This is to inform you that you were assigned to new task.')
                 ->line('Please pay your attention to complete that task before the due date.')
@@ -65,15 +65,15 @@ class TaskCreated extends Notification
      */
     public function broadcastType()
     {
-        return 'broadcast.message';
+        return 'broadcast.TaskCreated';
     }
 
     public function toBroadcast($notifiable)
     {
         return [
-            'title' => $this->tasks->task,
-            'due' => $this->tasks->task,
-
+            'title' => $this->tasks->task, 
+            'due' => $this->tasks->due_date,
+ 
         ];
     }
 }

@@ -12,16 +12,16 @@ class instituteAdd extends Notification
 {
     use Queueable;
 
-    public $institute;
+    public $notifyData;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Institute $institute)
+    public function __construct($notifyData)
     {
-        $this->institute = $institute;
+        $this->notifyData = $notifyData;
     }
 
     /**
@@ -32,7 +32,7 @@ class instituteAdd extends Notification
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ['database','broadcast'];
     }
 
     /**
@@ -44,7 +44,7 @@ class instituteAdd extends Notification
     public function toDatabase($notifiable)
     {
         return [
-          'institute' => $this->institute      
+          'institute' => $this->notifyData      
         ];
     }
 
@@ -54,10 +54,15 @@ class instituteAdd extends Notification
      * @param  mixed  $notifiable
      * @return array
      */
-    public function toArray($notifiable)
+    public function broadcastType(){
+        
+        return 'broadcast.instituteAdd';
+    }
+
+    public function toBroadcast($notifiable)
     {
         return [
-            //
+            'data' => $this->notifyData
         ];
     }
 }

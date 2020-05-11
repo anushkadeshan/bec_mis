@@ -178,11 +178,11 @@
                     <img src="{{ URL::asset('images/institute.png')}}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
                     <div class="media-body">
                         <h3 class="dropdown-item-title">
-                        {{ $notification->data['institute']['name'] }}
+                        {{ $notification->data['institute']['institute']['name'] }}
                         <span class="float-right text-sm text-muted"><i class="fa fa-star"></i></span>
                         </h3>
                         <p class="text-sm">A Training Institute was added.</p>
-                        <p class="text-sm text-muted"><i class="fas fa-clock"></i> {{ $notification->data['institute']['created_at'] }}</p>
+                        <p class="text-sm text-muted"><i class="fas fa-clock"></i> {{ $notification->data['institute']['institute']['created_at'] }}</p>
                     </div>
                     </div>
                     <!-- Message End -->
@@ -296,6 +296,7 @@
     @yield('content')    
 
     <!-- REQUIRED SCRIPTS -->
+    <script src="{{ asset('js/app.js') }}"></script>
 
     <!-- jquery -->
     <script src="{{ asset('vendors/jquery/dist/jquery.min.js') }}"></script>
@@ -405,6 +406,36 @@
 
   gtag('config', 'UA-50704959-3');
 </script>
+<script src="https://js.pusher.com/4.1/pusher.min.js"></script>
+  <script>
+    // push notify 
+  var userId = $('meta[name="userId"]').attr('content');
+    Echo.private('App.User.' + userId)
+    .notification((notification) => {
+      switch(notification.type) {
+        case "broadcast.TaskCreated":
+            toastr.info('on or before '+notification.due, notification.title,  {closeButton: true, timeOut: 5000000});
+        break;
+
+        case "broadcast.FamilyAdd":
+          toastr.info(notification.added_by,'Family Details added by ', {closeButton: true, timeOut: 5000000});
+        break;
+
+        case "broadcast.YouthCount":
+          toastr.warning('added by '+notification.data.added_by, notification.data.youth_count+' '+notification.data.type+' Youth/s' , {closeButton: true, timeOut: 5000000});
+        break;
+
+        case "broadcast.instituteAdd":
+          toastr.warning('added by '+notification.data.added_by, 'Institute '+notification.data.institute.name, {closeButton: true, timeOut: 5000000});
+        break;
+        
+        default:
+        toastr.info(notification.youth.name, 'New Baseline Form Added ' , {closeButton: true, timeOut: 5000000}); 
+      }
+        
+    });
+
+  </script>
 @yield('scripts')
 @livewireScripts
 </body>

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use DB;
 use Session;
+use App\Notifications\FamilyAdd;
+use App\User;
 
 class FamilyController extends Controller
 {
@@ -51,6 +53,12 @@ class FamilyController extends Controller
 
               $family_id = $family->id;
               Session::put('family_id', $family_id);
+
+              //send notofications 
+               $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['admin']);})->get();
+               foreach ($notifyTo as $notifyUser) {
+                   $notifyUser->notify(new FamilyAdd($added_by));
+               }
 
         }
 
