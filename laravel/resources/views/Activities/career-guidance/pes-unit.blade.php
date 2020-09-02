@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('title','CIC Units Identification |')
 @section('content')
 <div class="container-fluid">
 

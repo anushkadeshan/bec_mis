@@ -88,6 +88,10 @@ class ProvideSoftskillController extends Controller
                     if($number>0){
                         for($i=0; $i<$number; $i++){
                             $participants = DB::table('provide_soft_skills_youths')->insert(['youth_id'=>$request->youth_id[$i],'provide_softskill_id'=>$provide_softskill_id,'created_at' => date('Y-m-d H:i:s')]);
+                            if($request->end_date > date("Y-m-d")){
+                                $last_id = DB::getPdo()->lastInsertId();
+                                DB::table('provide_soft_skills_youths')->where('id',$last_id)->update(['current_status'=> 1]);
+                            }
                         }
 
                     }
@@ -117,8 +121,6 @@ class ProvideSoftskillController extends Controller
                 foreach ($notifyTo as $notifyUser) {
                     $notifyUser->notify(new CompletionReport($reports));
                 }
-
-                
             }
             else{
                 return response()->json(['error' => $validator->errors()->all()]);
@@ -169,6 +171,17 @@ class ProvideSoftskillController extends Controller
         $ongoing = DB::table('provide_soft_skills')
                    ->where('end_date', '>', $today->format('Y-m-d'))
                    ->count();
+
+         //Current Status
+        $youths = DB::table('provide_soft_skills_youths')
+                  ->join('youths','youths.id','=','provide_soft_skills_youths.youth_id')
+                  ->join('provide_soft_skills','provide_soft_skills.id','=','provide_soft_skills_youths.provide_softskill_id')
+                  ->join('families','families.id','=','youths.family_id')
+                  ->join('branches','branches.id','=','provide_soft_skills.branch_id')
+                  ->select('families.*','provide_soft_skills_youths.*','branches.*','youths.*','youths.name as youth_name','provide_soft_skills.*','provide_soft_skills_youths.current_status as cs')
+                  ->get();
+
+        
         }
         else{
             $meetings = DB::table('provide_soft_skills')
@@ -217,9 +230,19 @@ class ProvideSoftskillController extends Controller
                    ->where('end_date', '>', $today->format('Y-m-d'))
                     ->where('provide_soft_skills.branch_id','=',$branch_id)
                    ->count();
+
+        //Current Status
+        $youths = DB::table('provide_soft_skills_youths')
+                  ->join('youths','youths.id','=','provide_soft_skills_youths.youth_id')
+                  ->join('provide_soft_skills','provide_soft_skills.id','=','provide_soft_skills_youths.provide_softskill_id')
+                  ->join('families','families.id','=','youths.family_id')
+                  ->join('branches','branches.id','=','provide_soft_skills.branch_id')
+                  ->where('provide_soft_skills.branch_id','=',$branch_id)
+                  ->select('families.*','provide_soft_skills_youths.*','branches.*','youths.*','youths.name as youth_name','provide_soft_skills.*','provide_soft_skills_youths.current_status as cs')
+                  ->get();
         }
         
-        return view('Activities.Reports.Skill-Development.soft-skill')->with(['meetings'=>$meetings,'branches'=>$branches,'participants2018'=>$participants2018,'participants2019'=>$participants2019,'participants2020'=>$participants2020,'participants2021'=>$participants2021,'institutes'=>$institutes,'ongoing' => $ongoing]);
+        return view('Activities.Reports.Skill-Development.soft-skill')->with(['meetings'=>$meetings,'branches'=>$branches,'participants2018'=>$participants2018,'participants2019'=>$participants2019,'participants2020'=>$participants2020,'participants2021'=>$participants2021,'institutes'=>$institutes,'ongoing' => $ongoing,'youths'=>$youths]);
     }
 
     public function fetch(Request $request){
@@ -422,7 +445,6 @@ class ProvideSoftskillController extends Controller
             'url' => url()->current(),
             'ip_address' => request()->ip(),
             'user_agent' => $request->header('User-Agent'),
-
         );
 
         $reports = Audit::create($audit);
@@ -437,9 +459,25 @@ class ProvideSoftskillController extends Controller
     }
 
     public function add_youth(Request $request){
-
+        if($request->edate > date("Y-m-d")){
+            $current_status = 1;
+        }
+        else{
+            $current_status = null;
+        }
+        /*
+        $youths = DB::table('provide_soft_skills_youths')
+                        ->join('provide_soft_skills','provide_soft_skills.id','=','provide_soft_skills_youths.provide_softskill_id')
+                        ->where('end_date','>', date("Y-m-d"))
+                        ->select('provide_soft_skills_youths.*','provide_soft_skills.end_date as end_date')
+                        ->get();
+        //dd($youths);
+        foreach ($youths as $y ) {
+            DB::table('provide_soft_skills_youths')->where('id',$y->id)->update(['current_status'=>1]);
+        }
+        */
         $participants = DB::table('provide_soft_skills_youths')
-                        ->insert(['youth_id'=>$request->youth_id,'provide_softskill_id' => $request->m_id]);
+                        ->insert(['youth_id'=>$request->youth_id,'provide_softskill_id' => $request->m_id,'current_status'=> $current_status]);
 
     }
 
@@ -460,7 +498,7 @@ class ProvideSoftskillController extends Controller
                     ->join('youths','youths.id','=','provide_soft_skills_youths.youth_id')
                     ->join('branches','branches.id','=','provide_soft_skills.branch_id')
                     ->join('institutes','institutes.id','=','provide_soft_skills.institute_id')
-                    ->select('provide_soft_skills.*','branches.*','provide_soft_skills.id as m_id','provide_soft_skills.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date','youths.name as youth_name','provide_soft_skills_youths.*')
+                    ->select('provide_soft_skills.*','branches.*','provide_soft_skills.id as m_id','provide_soft_skills.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date','youths.name as youth_name','provide_soft_skills_youths.*','youths.nic as nic')
                     ->get();
         $institutes = DB::table('provide_soft_skills')
                    ->join('institutes','institutes.id','=','provide_soft_skills.institute_id')
@@ -475,7 +513,7 @@ class ProvideSoftskillController extends Controller
                     ->join('provide_soft_skills','provide_soft_skills.id','=','provide_soft_skills_youths.provide_softskill_id')
                     ->join('branches','branches.id','=','provide_soft_skills.branch_id')
                     ->join('institutes','institutes.id','=','provide_soft_skills.institute_id')
-                    ->select('provide_soft_skills.*','branches.*','provide_soft_skills.id as m_id','provide_soft_skills.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date','youths.name as youth_name','provide_soft_skills_youths.*')
+                    ->select('provide_soft_skills.*','branches.*','provide_soft_skills.id as m_id','provide_soft_skills.institute_id as i_id','institutes.*','institutes.name as institute_name','branches.name as branch_name','program_date as meeting_date','youths.name as youth_name','provide_soft_skills_youths.*','youths.nic as nic')
                     ->where('provide_soft_skills.branch_id',$branch_id)
                     ->get();
 
@@ -527,5 +565,53 @@ class ProvideSoftskillController extends Controller
                     ->get();
         //dd($not_placed);
         return view('mail-notifications.soft_whereNotInJob')->with(['youths'=>$not_placed]);
+    }
+
+    public function change_current_status($value,$id){
+        
+        switch ($value) {
+            case 1:
+                return response()->json(['msg' => 'Sorry. You Can not Select This Status. Youth has already finished the course. ', 'code' => '401']);
+                break;
+            case 2:
+                return response()->json(['msg' => 'Sorry. You Can not Select This Status. System automatically set it when youth in a course that we supported ', 'code' => '401']);
+                break;
+            case 3:
+                return response()->json(['msg' => 'Successfully Updated Status. ', 'code' => '200']);
+                break;
+            case 4:
+                return response()->json(['msg' => 'Sorry. You Can not Select This Status. System will automatically set this when youth are placed in job ', 'code' => '401']);
+                break;
+            case 5:
+                $query = DB::table('provide_soft_skills_youths')->where('youth_id',$id)->update(['current_status'=>$value]);
+                if($query){
+                    return response()->json(['msg' => 'Successfully Updated Status. ', 'code' => '200']);
+                }
+                break;
+            case 6:
+                $query = DB::table('provide_soft_skills_youths')->where('youth_id',$id)->update(['current_status'=>$value]);
+                if($query){
+                    return response()->json(['msg' => 'Successfully Updated Status. ', 'code' => '200']);
+                }
+                break;
+            case 7:
+                $query = DB::table('provide_soft_skills_youths')->where('youth_id',$id)->update(['current_status'=>$value]);
+                if($query){
+                    return response()->json(['msg' => 'Successfully Updated Status. ', 'code' => '200']);
+                }
+                break;
+            default:
+                # code...
+                break;
+        }
+    }
+
+    public function add_status_course(Request $request)
+    {
+        $query = DB::table('provide_soft_skills_youths')->where('youth_id',$request->youth_id)->update(['current_status'=>3,'following_course_id'=>$request->following_course_id,'following_course_end_date'=> $request->following_course_end_date]);
+        dd($query,$request->all());
+        if($query){
+            return response()->json(['msg' => 'Successfully Updated Status. ', 'code' => '200']);
+        }
     }
 }

@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('title','Completion Reports |')
 @section('content')
 @cannot('management')
 @cannot('me-dashboard')
@@ -130,7 +131,7 @@
 @endcan
   <div class="card card-success">
     <div class="card-header">
-      <h3 class="card-title">Completion Reports to be added ( from 2018 to 2020 ) <span  class="badge badge-success float-right" id="row_count"></span></h3>
+      <h3 class="card-title">Completion Reports to be added ( from 2018 ) <span  class="badge badge-success float-right" id="row_count"></span></h3>
     </div>
     <div class="card-body">
    <table id="example2" class="table row-border table-hover ">
@@ -139,11 +140,11 @@
                         <th>#</th>
                         @cannot('branch')<th>Branch</th> @endcan
                         <th>Report</th>
-                        <th>Reports to be entered</th>
+                       {{-- <th>Reports to be entered</th>--}} 
                         <th>Reports entered</th>
                         <th>Today Added</th>
                         
-                        <th>Status</th>
+                        {{--<th>Status</th>--}}
 
                     </tr>
                 </thead> 
@@ -154,14 +155,14 @@
                         <td>{{ $no++ }}</td>
                         @cannot('branch')<th>{{ $report->name }}</th> @endcan
                         <td>{{ $report->report }}</td>
-                        <td>{{ $report->target }}</td>
+                        {{--<td>{{ $report->target }}</td>--}}
                         <td><?php $count = DB::table($report->table_name)->where('branch_id',$report->branch_id)->count(); ?> {{ $count }}</td>
                         <td><?php $count2 = DB::table($report->table_name)->where('branch_id',$report->branch_id)->whereIn(DB::raw('YEAR(program_date)'), [2018,2019,2020] )->whereDate($report->table_name.'.created_at', '=', date('Y-m-d'))->count(); ?> {{ $count2 }}</td>
                         
                         
-                        <td>
+                        {{--<td>
                             @if($count< $report->target) <small class="badge badge-danger">{{"Not Completed"}}</small> @else <small class="badge badge-success">{{"Completed"}}</small> @endif
-                        </td>
+                        </td>--}}
                     </tr>
                     @endforeach
                 <tbody>        
@@ -171,7 +172,7 @@
     <hr>
   <div class="card card-success">
     <div class="card-header">
-        <h3 class="card-title">Youths to be added from Completion Reports( from 2018 to 2020 ) <span  class="badge badge-success float-right" id="row_count1"></span></h3>
+        <h3 class="card-title">Youths to be added from Completion Reports( from 2018 ) <span  class="badge badge-success float-right" id="row_count1"></span></h3>
      </div>
     <div class="card-body"> 
    <table id="example3" class="table row-border table-hover ">
@@ -180,12 +181,12 @@
                         <th>#</th>
                          @cannot('branch')<th>Branch</th> @endcan
                         <th>Report</th>
-                        <th>Youths to be entered</th>
+                        {{--<th>Youths to be entered</th>--}}
                         <th>Youths Added</th>
                         <th>Today Added</th>
                         <th>This Week Added</th>
                         <th>Last Week Added</th>
-                        <th>Status</th>
+                        {{--<th>Status</th>--}}
 
                     </tr>
                 </thead> 
@@ -204,7 +205,7 @@
                      <tr class="employer{{$youth->id}}">
                         <td>{{ $no++ }}</td>
                         @cannot('branch')<th>{{ $youth->name }}</th> @endcan
-                        <td>{{ $youth->report }}</td>
+                        {{--<td>{{ $youth->report }}</td>--}}
                         <td>{{ $youth->target }}</td>
                         
                         <td>
@@ -265,7 +266,7 @@
 
                         
                         
-                        <td>
+                        {{--<td>
                           @if($youth->report=='Job Interviews/Placements')
                                       @if($youth->target ==$count2 + $individual ) <small class="badge badge-success">{{"Completed"}}</small> @elseif( $youth->target <= $count2 + $individual) <small class="badge badge-success">{{"Completed"}}</small> @else <small class="badge badge-danger">{{"Not Completed"}}</small> @endif
                          @else
@@ -274,7 +275,7 @@
                           
                             
 
-                        </td>
+                        </td>--}}
                     </tr>
                     @endforeach
                 <tbody>        

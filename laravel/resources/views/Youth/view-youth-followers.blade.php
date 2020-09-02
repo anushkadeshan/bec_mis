@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('title','View Youth Followers |')
 @section('content')
 <div class="container-fluid">
     <div class="card">

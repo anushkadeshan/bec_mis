@@ -1,4 +1,5 @@
 @extends('layouts.reports')
+@section('title','CIC Identification |')
 @section('content')
 <div class="container-fluid">
     <!-- Content Header (Page header) -->

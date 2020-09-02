@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('title','Work Place Awareness |')
 @section('content')
 <div class="container-fluid">
 

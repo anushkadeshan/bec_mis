@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('title','Kikck Offs |')
 @section('content')
 <div class="container-fluid">
 

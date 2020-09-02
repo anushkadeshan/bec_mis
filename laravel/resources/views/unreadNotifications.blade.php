@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('title','Unread Notifications |')
 @section('content')
 <div class="card">
     <div class="card-header row">

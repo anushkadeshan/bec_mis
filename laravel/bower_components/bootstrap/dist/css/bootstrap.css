@@ -2388,6 +2388,7 @@ fieldset:disabled a.btn {
   border-color: #6c757d;
 }
 
+
 .btn-secondary:not(:disabled):not(.disabled):active, .btn-secondary:not(:disabled):not(.disabled).active,
 .show > .btn-secondary.dropdown-toggle {
   color: #fff;

@@ -1,4 +1,5 @@
 @extends('layouts.reports')
+@section('title','Job Placement |')
 @section('content')
 <div class="container-fluid">
     <!-- Content Header (Page header) -->
@@ -418,6 +419,7 @@ var dataTable3 = $("#example10").DataTable({
 var dataTable4 = $("#example11").DataTable({
       dom: 'Bfrtip',
             buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
                 
             ],
 

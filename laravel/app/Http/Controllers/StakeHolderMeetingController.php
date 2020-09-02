@@ -109,7 +109,7 @@ class StakeHolderMeetingController extends Controller
 
                 $reports = Audit::create($audit);
 
-                $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin','management' ]);})->get();
+                $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin' ]);})->get();
                 foreach ($notifyTo as $notifyUser) {
                     $notifyUser->notify(new CompletionReport($reports));
                 }

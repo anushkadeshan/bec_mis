@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('title','Partner Training |')
 @section('content')
 <div class="container-fluid">
 

@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('title','Incooperate Soft Skills |')
 @section('content')
 <div class="container-fluid">
 

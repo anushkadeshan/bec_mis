@@ -272,11 +272,39 @@
                   <td>{{$youth->career_field1}}</td>
                   <td>{{$youth->career_field2}}</td>
                   <td>{{$youth->career_field3}}</td>
-                  <td><button type="button" class="btn btn-success btn-flat btn-sm" data-id="{{$youth->cg_youths_id}}" data-name="{{$youth->name}}" data-career_field1="{{$youth->career_field1}}" data-career_field2="{{$youth->career_field2}}" data-career_field3="{{$youth->career_field3}}" id="edit3"><i class="fas fa-edit"></i></button></td>
+                  <td><button type="button" class="btn btn-success btn-flat btn-sm" data-id="{{$youth->cg_youths_id}}" data-name="{{$youth->name}}" data-career_field1="{{$youth->career_field1}}" data-career_field2="{{$youth->career_field2}}" data-career_field3="{{$youth->career_field3}}" id="edit3"><i class="fas fa-edit"></i></button>
+                  <button type="button" class="btn btn-danger btn-flat btn-sm" id="deleteYouth" data-id="{{$youth->cg_youths_id}}"><i class="fas fa-trash"></i></button>
+                  
+                  </td>
                 </tr>
                 @endforeach
               </tbody>
             </table>
+           <!-- Modal -->
+            <div class="modal fade" id="deleteModel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header" style="background-color: #f15e5e;color: white;">
+                    <h5 class="modal-title" id="exampleModalLabel">Are you sure ?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <p>Do you really want to delete this youth from career guidance. ? This process cannot be undone.</p>
+                    
+                  </div>
+                  <div class="modal-footer">
+                    <form role="form" method="get" id="deleteForm">
+                      {{ csrf_field() }}
+                    <input type="hidden" id="delete_id" name="delete_id">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="delete-youth" class="btn btn-danger">Yes Delete</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="modal fade" id="updateModel2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -716,6 +744,14 @@
         
     });
 
+  $(document).on('click', '#deleteYouth', function(){
+        var id = $(this).data('id');
+        $('#delete_id').val($(this).data('id'));
+                
+        $('#deleteModel').modal('show');
+        
+    });
+
    //update youth
    $(document).ready(function(){
      $(document).on('click' , '#update-youth' ,function (){
@@ -824,6 +860,45 @@
               toastr.success('Succesfully updated the report ! ', 'Congratulations', {timeOut: 5000});
             $("#myForm3")[0].reset();
             location.reload();
+
+
+            }
+            else{
+             printValidationErrors(data.error);
+              
+            }         
+        },
+
+            error: function (jqXHR, exception) {    
+                console.log(jqXHR);
+                toastr.error('Error !', 'Something Error')
+            },
+        });
+    });
+  });
+
+
+  //delete youth
+   $(document).ready(function(){
+     $(document).on('click' , '#delete-youth' ,function (){
+        var form = $('#deleteForm');
+        $.ajax({
+            type: 'POST',
+            url: SITE_URL + '/activity/cg/delete-youth',
+                      
+            data: form.serialize(),
+
+            beforeSend: function(){
+              $('#loading').show();
+            },
+            complete: function(){
+              $('#loading').hide();
+            },          
+            success: function(data) {
+              if($.isEmptyObject(data.error)){              
+              toastr.success('Succesfully deleted youth ! ', 'Congratulations', {timeOut: 5000});
+            location.reload();
+              
 
 
             }

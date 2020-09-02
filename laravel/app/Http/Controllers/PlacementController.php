@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\URL;
 use App\Audit;
 use App\User;
 use App\Notifications\CompletionReport;
+use App\Notifications\CountYouth;
 
 class PlacementController extends Controller
 {
@@ -75,8 +76,8 @@ class PlacementController extends Controller
     			'title_of_action' => $request->title_of_action,
     			'activity_code' => $request->activity_code,
     			'program_date'	=>$request->program_date,
-	        'time_start'=>$request->time_start,
-	        'time_end' =>$request->time_end,
+	            'time_start'=>$request->time_start,
+	            'time_end' =>$request->time_end,
     			'venue'	=> $request->venue,
     			'program_cost' => $request->program_cost,
     			'attendance_youths' => $input['attendance_youths'],
@@ -138,7 +139,7 @@ class PlacementController extends Controller
 
                 $reports = Audit::create($audit); 
 
-                $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin','management' ]);})->get();
+                $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin' ]);})->get();
                 foreach ($notifyTo as $notifyUser) {
                     $notifyUser->notify(new CompletionReport($reports));
                 }
@@ -165,6 +166,7 @@ class PlacementController extends Controller
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
                         ->where(DB::raw('YEAR(program_date)'), '=', '2018' )
                         ->first();
+
                         //->groupBy(function ($val) {
                                 // Carbon::parse($val->program_date)->format('Y');
                         //});
@@ -318,6 +320,7 @@ class PlacementController extends Controller
         }                                   
         //dd($participants2018);
         $branches = DB::table('branches')->get();
+        
         return view('Activities.Reports.Job-Linking.placements')->with(['meetings'=>$meetings,'branches'=>$branches,'participants2018'=>$participants2018,'participants2019'=>$participants2019,'participants2020'=>$participants2020,'participants2021'=>$participants2021,'salary1'=>$salary1,'salary2'=>$salary2,'salary3'=>$salary3,'salary4'=>$salary4,'salary5'=>$salary5,'salary6'=>$salary6]);
     }
 
@@ -360,6 +363,16 @@ class PlacementController extends Controller
                         ->where('branch_id',$request->branch)
                         ->groupBy('branch_id')
                         ->get();
+
+                    $summaryI =DB::table('placement_individual') 
+                    ->join('branches','branches.id','=','placement_individual.branch_id')
+                    ->join('youths','youths.id','=','placement_individual.youth_id')
+                    ->select('branches.name', DB::raw('count(*) as total'), DB::raw("COUNT((CASE WHEN gender = 'male' THEN gender END)) as male"), DB::raw("COUNT((CASE WHEN gender = 'female' THEN gender END)) as female"))
+                    ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                    ->where('placement_individual.branch_id',$request->branch)
+                    ->groupBy('placement_individual.branch_id')
+                    ->get();
+
                 }
                 else{
                     if(is_null($branch_id)){
@@ -590,6 +603,7 @@ class PlacementController extends Controller
     }
 
 public function insert_individual(Request $request){
+      $added_by = Auth::user()->name;
       $validator = Validator::make($request->all(),[
         'program_date'  => 'required',
         'district' => 'required',
@@ -622,6 +636,10 @@ public function insert_individual(Request $request){
         $placements = DB::table('placement_individual')->insert($data);
         $individual_id = DB::getPdo()->lastInsertId();
 
+        $soft = DB::table('provide_soft_skills_youths')->where('youth_id',$request->youth_id)->first();
+        if($soft){
+            DB::table('provide_soft_skills_youths')->where('youth_id',$request->youth_id)->update(['current_status'=>4]);
+        }
 
                 $audit = array(
                     'user_type' => 'App\User',
@@ -640,6 +658,17 @@ public function insert_individual(Request $request){
                 $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin','management' ]);})->get();
                 foreach ($notifyTo as $notifyUser) {
                     $notifyUser->notify(new CompletionReport($reports));
+                }
+
+                $youth_data = array(
+                    'added_by' => $added_by,
+                    'youth_count' => 1,
+                    'type' => 'Individually Placed'
+                );
+
+                $notifyToo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin','management' ]);})->get();
+                foreach ($notifyToo as $notifyUserr) {
+                    $notifyUserr->notify(new CountYouth($youth_data));
                 }
 
                 
@@ -892,6 +921,31 @@ public function insert_individual(Request $request){
       return view('Activities.Reports.Job-Linking.youths')->with(['youths'=> $youths,'branches'=>$branches,'employers'=>$employers,'bss_youths'=>$bss]);
 
       
+    }
+
+    public function placement_duplicates(){
+        $branch_id = Auth::user()->branch;
+        if(is_null($branch_id)){
+            $duplicates = DB::table('placement_individual')
+                        ->select('placement_individual.youth_id', 'youths.*', 'branches.name as branch_name', DB::raw('COUNT(*) as `count`'),DB::raw('COUNT(DISTINCT employer_id) as `emp`'))
+                        ->join('youths','youths.id','placement_individual.youth_id')
+                        ->join('branches','branches.id','youths.branch_id')
+                        ->groupBy('youth_id')
+                        ->havingRaw('COUNT(*) > 1')
+                        ->get();
+        }
+        else{
+          $duplicates = DB::table('placement_individual')
+                        ->select('placement_individual.youth_id', 'youths.*', 'branches.name as branch_name', DB::raw('COUNT(*) as `count`'))
+                        ->join('youths','youths.id','placement_individual.youth_id')
+                        ->join('branches','branches.id','youths.branch_id')
+                        ->groupBy('youth_id')
+                        ->where('youths.branch_id',$branch_id)
+                        ->havingRaw('COUNT(*) > 1')
+                        ->get();
+        }
+
+        return view('audit.placement_duplicates')->with(['youths'=> $duplicates]);
     }
 
 }

@@ -243,9 +243,12 @@ class AuthServiceProvider extends ServiceProvider
          return $user->hasAccess(['verify-report']);
          });
 
-
         Gate::define('management', function($user){
          return $user->hasAccess(['management']);
+         });
+
+        Gate::define('duplicates', function($user){
+         return $user->hasAccess(['duplicates']);
          });
         
     }

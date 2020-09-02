@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('title','Stake Holder Meetings |')
 @section('content')
 <div class="container-fluid">
 

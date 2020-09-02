@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('title','Individual Placements |')
 @section('content')
 <div class="container-fluid">
 
@@ -122,7 +123,7 @@
 	          		<div class="col-md-4">
 	          			<div class="form-group">
 						    <label for="dm_name">11. Salary</label>
-						    <input type="text" name="salary" class="form-control position-list">
+						    <input type="number" name="salary" class="form-control position-list">
 						</div>
 	          		</div>
 	          	</div>

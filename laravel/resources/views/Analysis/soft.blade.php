@@ -65,13 +65,13 @@
    
     <hr>
     <div class="row">
-      <div class="col-sm-4 col-md-10">
+      <div class="col-sm-4 col-md-6">
        
        <span>Date From : </span> <span id="date1" class="text-primary"></span> <span> to : </span> <span id="date2" class="text-primary"></span> 
       </div>
-      <div class="col-sm-4 col-md-2">
+      <div class="col-sm-4 col-md-6">
        <span style="float: right" class="text-right"><a href="{{ URL::to('reports-me/skill/soft-skill') }}"><button type="button" class="btn btn-success btn-flat"><i class="fas fa-file-invoice"> View Full Report</i></button></a></span>
-       
+       <span style="float: right; margin-right: 5px" class="text-right"><a href="{{ URL::to('view_soft_youths') }}"><button type="button" class="btn btn-info btn-flat"><i class="fas fa-file-invoice"> Youth Progress After Soft Skills</i></button></a></span>
       </div>
     </div>
     <br>

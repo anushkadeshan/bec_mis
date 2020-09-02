@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('title','Baselines |')
 @section('content')
 
 <div class="container-fluid">

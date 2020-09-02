@@ -14,8 +14,6 @@ class AnalysisController extends Controller
     	return view('Analysis.dashboard')->with(['branches'=>$branches]);		
     }
 
-
-
     public function fetch_job(Request $request){
     	$branch_id = Auth::user()->branch;
     	//if click filter button
@@ -2972,6 +2970,7 @@ public function fetch_soft(Request $request){
 public function financial(){
 
 	$branches = DB::table('branches')->get();
+	
 	return view('Analysis.financial')->with(['branches'=>$branches]);		
 }
 

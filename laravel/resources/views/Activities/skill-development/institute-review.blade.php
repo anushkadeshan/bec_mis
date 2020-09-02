@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('title','Institutes Review |')
 @section('content')
 <div class="container-fluid">
 

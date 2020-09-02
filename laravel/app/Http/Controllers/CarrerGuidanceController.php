@@ -172,7 +172,7 @@ class CarrerGuidanceController extends Controller
 
                 $reports = Audit::create($audit);
 
-                $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin','management' ]);})->get();
+                $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin' ]);})->get();
                 foreach ($notifyTo as $notifyUser) {
                     $notifyUser->notify(new CompletionReport($reports));
                 }
@@ -183,7 +183,7 @@ class CarrerGuidanceController extends Controller
                     'type' => 'Career guidance'
                 );
 
-                $notifyToo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin','management','branch' ]);})->get();
+                $notifyToo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin','management' ]);})->get();
                 foreach ($notifyToo as $notifyUserr) {
                     $notifyUserr->notify(new CountYouth($youth_data));
                 }
@@ -397,7 +397,7 @@ class CarrerGuidanceController extends Controller
                         ->join('career_guidances','career_guidances.id','=','cg_youths.career_guidances_id')
                         ->join('youths','youths.id','=','cg_youths.youth_id')
                         ->join('branches','branches.id','=','career_guidances.branch_id')
-                        ->select('branches.name', 'career_guidances.*','gender',DB::raw('COUNT(DISTINCT cg_youths.career_guidances_id) as progs'),DB::raw("COUNT( ( CASE WHEN gender = 'male' THEN cg_youths.youth_id END ) ) AS male"),DB::raw("COUNT( ( CASE WHEN gender = 'female' THEN cg_youths.youth_id END ) ) AS female"),DB::raw('sum(program_cost) as cost'))
+                        ->select('branches.name', 'career_guidances.*','gender',DB::raw('COUNT(DISTINCT cg_youths.career_guidances_id) as progs'),DB::raw("COUNT( ( CASE WHEN gender = 'male' THEN cg_youths.youth_id END ) ) AS male"),DB::raw("COUNT( ( CASE WHEN gender = 'female' THEN cg_youths.youth_id END ) ) AS female"),DB::raw('sum( distinct program_cost) as cost'))
                         ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->where('career_guidances.branch_id','=',$request->branch)
                         ->groupBy('career_guidances.branch_id')
@@ -432,7 +432,7 @@ class CarrerGuidanceController extends Controller
                         ->join('career_guidances','career_guidances.id','=','cg_youths.career_guidances_id')
                         ->join('youths','youths.id','=','cg_youths.youth_id')
                         ->join('branches','branches.id','=','career_guidances.branch_id')
-                        ->select('branches.name', 'career_guidances.*','gender',DB::raw('COUNT(DISTINCT cg_youths.career_guidances_id) as progs'),DB::raw("COUNT( ( CASE WHEN gender = 'male' THEN cg_youths.youth_id END ) ) AS male"),DB::raw("COUNT( ( CASE WHEN gender = 'female' THEN cg_youths.youth_id END ) ) AS female"),DB::raw('sum(program_cost) as cost'))
+                        ->select('branches.name', 'career_guidances.*','gender',DB::raw('COUNT(DISTINCT cg_youths.career_guidances_id) as progs'),DB::raw("COUNT( ( CASE WHEN gender = 'male' THEN cg_youths.youth_id END ) ) AS male"),DB::raw("COUNT( ( CASE WHEN gender = 'female' THEN cg_youths.youth_id END ) ) AS female"),DB::raw('sum(distinct program_cost) as cost'))
                         ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->groupBy('career_guidances.branch_id')
                         ->get();
@@ -486,7 +486,7 @@ class CarrerGuidanceController extends Controller
                         ->join('career_guidances','career_guidances.id','=','cg_youths.career_guidances_id')
                         ->join('youths','youths.id','=','cg_youths.youth_id')
                         ->join('branches','branches.id','=','career_guidances.branch_id')
-                        ->select('branches.name', 'career_guidances.*','gender',DB::raw('COUNT(DISTINCT cg_youths.career_guidances_id) as progs'),DB::raw("COUNT( ( CASE WHEN gender = 'male' THEN cg_youths.youth_id END ) ) AS male"),DB::raw("COUNT( ( CASE WHEN gender = 'female' THEN cg_youths.youth_id END ) ) AS female"),DB::raw('sum(program_cost) as cost'))
+                        ->select('branches.name', 'career_guidances.*','gender',DB::raw('COUNT(DISTINCT cg_youths.career_guidances_id) as progs'),DB::raw("COUNT( ( CASE WHEN gender = 'male' THEN cg_youths.youth_id END ) ) AS male"),DB::raw("COUNT( ( CASE WHEN gender = 'female' THEN cg_youths.youth_id END ) ) AS female"),DB::raw('sum( distinct program_cost) as cost'))
                         ->groupBy('career_guidances.branch_id')
                         ->get();
 
@@ -522,8 +522,6 @@ class CarrerGuidanceController extends Controller
                 //echo "<script>console.log('Debug Objects: " . $data1 . "' );</script>";
                 //dd($data1);
         }
-    
-        
 
     }
 
@@ -726,7 +724,7 @@ class CarrerGuidanceController extends Controller
             'type' => 'Career guidance'
         );
 
-        $notifyToo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin','management','branch' ]);})->get();
+        $notifyToo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin','management' ]);})->get();
         foreach ($notifyToo as $notifyUserr) {
             $notifyUserr->notify(new CountYouth($youth_data));
         }
@@ -781,6 +779,7 @@ class CarrerGuidanceController extends Controller
                     ->join('branches','branches.id','=','career_guidances.branch_id')
                     ->select('cg_youths.*','youths.*','youths.id as youth_id','branches.*','career_guidances.*','youths.name as youth_name')
                     ->get();
+        
 
         }
         else{
@@ -792,6 +791,8 @@ class CarrerGuidanceController extends Controller
                     ->select('cg_youths.*','youths.*','youths.id as youth_id','branches.*','career_guidances.*','youths.name as youth_name')
                     ->get();
         }
+        
+    
         $branches = DB::table('branches')->get();
 
         return view('Youth.youth-prgress')->with(['youths'=>$cg_youths,'branches'=> $branches]);
@@ -961,6 +962,50 @@ class CarrerGuidanceController extends Controller
         //dd($photos);
        // Zipper::make('mydir/photos.zip')->add($paths);
        // return response()->download(('mydir/photos.zip')); 
+    }
+
+    public function cg_duplicates(){
+        $branch_id = Auth::user()->branch;
+        if(is_null($branch_id)){
+            $duplicates = DB::table('cg_youths')
+                        ->select('cg_youths.youth_id', 'youths.*', 'branches.name as branch_name', DB::raw('COUNT(*) as `count`'))
+                        ->join('youths','youths.id','cg_youths.youth_id')
+                        ->join('branches','branches.id','youths.branch_id')
+                        ->groupBy('youth_id')
+                        ->havingRaw('COUNT(*) > 1')
+                        ->get();
+        }
+        else{
+            $duplicates = DB::table('cg_youths')
+                        ->select('cg_youths.youth_id', 'youths.*', 'branches.name as branch_name', DB::raw('COUNT(*) as `count`'))
+                        ->join('youths','youths.id','cg_youths.youth_id')
+                        ->join('branches','branches.id','youths.branch_id')
+                        ->groupBy('youth_id')
+                        ->where('youths.branch_id',$branch_id)
+                        ->havingRaw('COUNT(*) > 1')
+                        ->get();
+        }
+        
+        return view('audit.cg_duplicates')->with(['youths'=> $duplicates]);
+    }
+
+    public function delete_youth(Request $request){
+        $youth = DB::table('cg_youths')->where('id',$request->delete_id)->first();
+        DB::table('cg_youths')->where('id',$request->delete_id)->delete();
+
+        $audit = array(
+            'user_type' => 'App\User',
+            'user_id' => Auth::user()->id,
+            'event' => 'deleted',
+            'auditable_type' => 'career_guidances',
+            'auditable_id' => $youth->id,
+            'url' => url()->current(),
+            'ip_address' => request()->ip(),
+            'user_agent' => $request->header('User-Agent'),
+
+        );
+
+        $insert = Audit::create($audit);
     }
 
     

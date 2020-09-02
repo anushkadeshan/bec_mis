@@ -49,7 +49,6 @@ class SoftSkillCompleted extends Command
                         ->where('provide_soft_skills.branch_id','=', $notifyUser->branch)
                         ->get(); 
 
-                    
                    if($youths->count()==0){
                      echo nl2br ("No data to send an email");  
                     }

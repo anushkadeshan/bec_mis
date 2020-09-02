@@ -1,4 +1,5 @@
 @extends('layouts.reports')
+@section('title','Institiutes Review |')
 @section('content')
 <div class="container-fluid">
     <!-- Content Header (Page header) -->

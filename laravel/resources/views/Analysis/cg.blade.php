@@ -51,8 +51,9 @@
       <div class="col-sm-4 col-md-2">
        <a href="{{url('/reports-me/cg/cg')}}" >
         <div class="color-palette-set">
-          <div class="bg-success disabled color-palette"><span> &nbsp; Career Guidance <span id="count-cg" style="float: right"> &nbsp;</span></span></div>
+          <div class="bg-success disabled color-palette"><span> &nbsp; Career Guidances <span id="count-cg" style="float: right"> &nbsp;</span></span></div>
           <div class="bg-success color-palette">&nbsp; Male : <span id="cg-m"></span> , Female : <span id="cg-f"></span></div>
+          <div class="bg-success disabled color-palette"><span> &nbsp; Total Participants<span id="total-cg" style="float: right"> &nbsp;</span></span></div>
         </div>
         </a>
       </div>
@@ -61,6 +62,8 @@
         <div class="color-palette-set">
           <div class="bg-warning disabled color-palette"><span> &nbsp; Stake Holder Meetings<span id="count-st" style="float: right"></span></div>
           <div class="bg-warning color-palette">&nbsp; Male : <span id="st-m"></span> , Female : <span id="st-f"></span></div>
+          <div class="bg-warning disabled color-palette"><span> &nbsp; Total Participants<span id="total-st" style="float: right"></span></div>
+        
         </div>
         </a>
       </div>
@@ -70,6 +73,7 @@
         <div class="color-palette-set">
           <div class="bg-danger disabled color-palette"><span> &nbsp; Kikk Offs <span id="count-kk" style="float: right"> &nbsp;</span></span></div>
           <div class="bg-danger color-palette">&nbsp; Male : <span id="kk-m"></span> , Female : <span id="kk-f"></span></div>
+          <div class="bg-danger disabled color-palette"><span> &nbsp; Total Participants<span id="total-kk" style="float: right"></span></div>
         </div>
        </a>
       </div>
@@ -78,6 +82,7 @@
         <div class="color-palette-set">
           <div class="bg-info disabled color-palette"><span> &nbsp; HHS<span id="count-hh" style="float: right"> &nbsp;</span></span></div>
           <div class="bg-info color-palette">&nbsp; Male : <span id="hh-m"></span> , Female : <span id="hh-f"></span></div>
+          <div class="bg-info disabled color-palette"><span> &nbsp; Total Participants<span id="total-hh" style="float: right"></span></div>
         </div>
       </a>
       </div>
@@ -86,6 +91,7 @@
         <div class="color-palette-set">
           <div class="bg-gray disabled color-palette"><span> &nbsp; TOT on CG<span id="count-tot" style="float: right"> &nbsp;</span></span></div>
           <div class="bg-gray color-palette">&nbsp; Male : <span id="tot-m"></span> , Female : <span id="tot-f"></span></div>
+          <div class="bg-gray disabled color-palette"><span> &nbsp; Total Participants<span id="total-tot" style="float: right"></span></div>
         </div>
       </a>
       </div>
@@ -98,6 +104,7 @@
         <div class="color-palette-set">
           <div class="bg-info disabled color-palette"><span> &nbsp; Training on GND level Officers<span id="count-gnd" style="float: right"> &nbsp;</span></span></div>
           <div class="bg-info color-palette">&nbsp; Male : <span id="gnd-m"></span> , Female : <span id="gnd-f"></span></div>
+          <div class="bg-info disabled color-palette"><span> &nbsp; Total Participants<span id="total-gnd" style="float: right"></span></div>
         </div>
       </a>
       </div>
@@ -106,13 +113,15 @@
    
     <hr>
     <div class="row">
-      <div class="col-sm-4 col-md-10">
+      <div class="col-sm-4 col-md-8">
        
        <span>Date From : </span> <span id="date1" class="text-primary"></span> <span> to : </span> <span id="date2" class="text-primary"></span> 
       </div>
-      <div class="col-sm-4 col-md-2">
-       <span style="float: right" class="text-right"><a href="{{ URL::to('reports-me/cg/cg') }}"><button type="button" class="btn btn-success btn-flat"><i class="fas fa-file-invoice"> View Full Report</i></button></a></span>
+      <div class="col-sm-4 col-md-4">
        
+        
+       <span style="float: right" class="text-right"><a href="{{ URL::to('reports-me/cg/cg') }}"><button type="button" class="btn btn-success btn-flat"><i class="fas fa-file-invoice"> View Full Report</i></button></a></span>
+       <span style="float: right; margin-right: 5px" class="text-right"><a target="_blank" href="{{ URL::to('youth_progress') }}"><button type="button" class="btn btn-info btn-flat"><i class="fas fa-file-invoice"> Youth Progress After CG</i></button></a></span>
       </div>
     </div>
     <br>
@@ -220,27 +229,33 @@ fetch_data();
        
     $('#cg-m').text(data.cg_male);
     $('#cg-f').text(data.cg_female);
+    $('#total-cg').text((data.cg_female+data.cg_male));
     $('#count-cg').text(data.cg_count+'\xa0\xa0');
 
     $('#st-m').text(data.stake.total_male);
     $('#st-f').text(data.stake.total_female);
     $('#count-st').text(data.stake.count+'\xa0\xa0');
+    $('#total-st').text(parseInt(data.stake.total_female)+parseInt(data.stake.total_male)+'\xa0\xa0');
 
     $('#kk-m').text(data.kickoffs.total_male);
     $('#kk-f').text(data.kickoffs.total_female);
     $('#count-kk').text(data.kickoffs.count+'\xa0\xa0');
+    $('#total-kk').text(parseInt(data.kickoffs.total_female)+parseInt(data.kickoffs.total_male)+'\xa0\xa0');
 
     $('#hh-m').text(data.households.total_male);
     $('#hh-f').text(data.households.total_female);
     $('#count-hh').text(data.households.count+'\xa0\xa0');
+    $('#total-hh').text(parseInt(data.households.total_female)+parseInt(data.households.total_male)+'\xa0\xa0');
 
     $('#tot-m').text(data.tot_cg.total_male);
     $('#tot-f').text(data.tot_cg.total_female);
     $('#count-tot').text(data.count_tot+'\xa0\xa0');
+    $('#total-tot').text(parseInt(data.tot_cg.total_female)+parseInt(data.tot_cg.total_male)+'\xa0\xa0');
 
     $('#gnd-m').text(data.cg_trainings.total_male);
     $('#gnd-f').text(data.cg_trainings.total_female);
     $('#count-gnd').text(data.cg_trainings.count+'\xa0\xa0');
+    $('#total-gnd').text(parseInt(data.cg_trainings.total_female)+parseInt(data.cg_trainings.total_male)+'\xa0\xa0');
 
 
     if(data.date1 === null){
@@ -301,14 +316,15 @@ fetch_data();
 
         var emp_array = data.requirement;
         
-        var dataRows2 = [['',  null, null]];
+        var dataRows2 = [['',  null, null,null]];
         for (var i = 0; i < emp_array.length; i++) {
          // alert(emp_array[i].total_male);
-          dataRows2.push([emp_array[i].requirement,  emp_array[i].total_male,  emp_array[i].total_female]);
+          dataRows2.push([emp_array[i].requirement,  emp_array[i].total_male,  emp_array[i].total_female, parseInt(emp_array[i].total_female)+parseInt(emp_array[i].total_male)]);
         }
         data3.addColumn('string', 'Requirements');
-        data3.addColumn('string', 'Total Male');
-        data3.addColumn('string', 'Total Female');
+        data3.addColumn('string', ' Male');
+        data3.addColumn('string', ' Female');
+        data3.addColumn('number', ' Total');
         data3.addRows(dataRows2);
     
 

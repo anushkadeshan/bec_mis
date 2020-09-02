@@ -20,6 +20,9 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\softSkills_notInJob',
         'App\Console\Commands\courseSupport_notInJob',
         'App\Console\Commands\sendPushNotifications',
+        'App\Console\Commands\CommandWeeklyReport',
+        'App\Console\Commands\SendMonthlyReport',
+        'App\Console\Commands\SendYearToDateReport',
     ];
 
     /**
@@ -32,7 +35,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
                  // ->hourly();
-        $schedule->command('backup:clean')->twiceDaily(14, 1)->timezone('Asia/Colombo')
+        $schedule->command('backup:clean')->dailyAt('22:55')->timezone('Asia/Colombo')
                  ->withoutOverlapping();
 
        $schedule->command('backup:run')->twiceDaily(13, 23)->timezone('Asia/Colombo')
@@ -73,6 +76,26 @@ class Kernel extends ConsoleKernel
                   ->twiceDaily(10, 16)
                  ->timezone('Asia/Colombo')
                  ->withoutOverlapping();
+
+        $schedule->command('Report:Week')
+                  ->weekly()->sundays()->at('23:54')
+                 ->timezone('Asia/Colombo')
+                 ->withoutOverlapping();
+        
+        $schedule->command('Report:Month')
+                  ->weekly()->sundays()->at('23:54')
+                 ->timezone('Asia/Colombo')
+                 ->withoutOverlapping();
+        
+        $schedule->command('Report:Month')->dailyAt('23:51')->timezone('Asia/Colombo')
+                 ->withoutOverlapping()->when(function () {
+                    return \Carbon\Carbon::now()->endOfMonth()->isToday();
+        });    
+        
+        $schedule->command('Report:Cumalative')->dailyAt('23:45')->timezone('Asia/Colombo')
+                 ->withoutOverlapping()->when(function () {
+                    return \Carbon\Carbon::now()->endOfMonth()->isToday();
+        });
 
     }
 

@@ -290,6 +290,7 @@
 						      <td><button type="button" class="btn btn-success btn-flat" id="add2">Add</button></td>
 						      {{csrf_field()}}
               				  <input type="hidden" id="r_id" name="m_id" value="{{$meeting->m_id}}">
+              				  <input type="hidden" id="edate" name="edate" value="{{$meeting->end_date}}">
 						      </form>
 						    </tr>
 						    

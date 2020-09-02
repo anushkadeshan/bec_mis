@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('title','Add Family |')
 @section('content')
 <div class="container-fluid">
     <section class="content">
@@ -172,6 +173,8 @@ $(document).ready(function(){
         });
       }
 });
+
+
 </script>
 <style type="text/css" media="screen">
 	#autocomplete {

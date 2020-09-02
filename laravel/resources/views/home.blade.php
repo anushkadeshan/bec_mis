@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('title','Home |')
 @section('content')
 <!-- Content Header (Page header) -->
     <div class="content-header">
@@ -10,12 +11,15 @@
           <div class="col-sm-10">
             
           </div>
+          {{--
           <div class="col-sm-3">
-            <span class="info-box-text text-danger">Corona Live Status - Local: </span>
+            <span class="info-box-text text-danger">Covid 19 Live Status - Local: </span>
           </div>
           <div class="col-sm-9">
-            <marquee onmouseover="this.stop();" onmouseout="this.start();"><span>Updated Date and Time : {{$corona->data->update_date_time }} </span> | <span class="text-info">Total Cases : {{$corona->data->local_total_cases }} </span> | <span class="text-danger">Total Deaths : {{$corona->data->local_deaths }} </span>| <span class="text-warning">Total suspected : {{$corona->data->local_total_number_of_individuals_in_hospitals }} </span> | <span class="text-success">Total Recovered : {{$corona->data->local_recovered }}</span> | <span class="text-primary">Today Cases : {{$corona->data->local_new_cases }}</span></marquee>
+            
+            <marquee onmouseover="this.stop();" onmouseout="this.start();"><span>Updated Date and Time : {{$corona->data->update_date_time }} </span> | <span class="text-info">Total Cases : {{$corona->data->local_total_cases }} </span> | <span class="text-danger">Total Deaths : {{$corona->data->local_deaths }} </span>| <span class="text-warning">Total suspected : {{$corona->data->local_total_number_of_individuals_in_hospitals }} </span> | <span class="text-success">Total Recovered : {{$corona->data->local_recovered }}</span> | <span class="text-primary">Today Cases : {{$corona->data->local_new_cases }}</span></marquee> 
           </div>
+          --}}
         </div>
       </div><!-- Codes by HTMLcodes.ws -->
 
@@ -214,7 +218,7 @@
         		<!-- MAP & BOX PANE -->
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Last Hour Active Users</h3>
+                <h3 class="card-title">Last 8 Hour Active Users</h3>
                 <div class="card-tools">
                   
                 </div>
@@ -291,7 +295,13 @@
                         <div class="progress-bar bg-danger" style="width:  <?php $total_soft = ($actual_soft_skills/$total_soft)*100; ?> {{$total_soft}}%"></div>
                       </div>
                     </div>
-
+                    <div class="progress-group">
+                      <span class="progress-text">GVT Course Supports</span>
+                      <span class="float-right"><b>{{$count_gvt}}</b>/{{$total_gvt}}</span>
+                      <div class="progress progress-sm">
+                        <div class="progress-bar bg-info" style="width: <?php $total_gvtt = ($count_gvt/$total_vt)*100; ?> {{$total_gvtt}}%"></div>
+                      </div>
+                    </div>
                     <!-- /.progress-group -->
                     <div class="progress-group">
                       <span class="progress-text">Vocational Training</span>
@@ -659,7 +669,7 @@
 			              </div>
 			              <!-- /.card-header -->
 			              <div class="card-body">
-			              	<div id="columnchart_material" style="height: 300px;"></div>
+			              	<div id="columnchart_material" style="height: 210px;"></div>
 			              </div>
 			        	</div>
 		        	</div>
@@ -788,13 +798,14 @@
                     <!-- /.card-body -->
                   </div>
                 </div>
+          
             </div>
-
+            <br>
              <div class="row">
                 <div class="col-md-12">
                   <div class="card">
                     <div class="card-header">
-                      <h3 class="card-title">Tasks</h3>
+                      <h3 class="card-title">Tasks By Management</h3>
                       <div class="card-tools">
                         <span class="badge badge-success"></span>
                       </div>
@@ -824,7 +835,61 @@
                 </div>
           
         </div>
-		        <div class="row">
+        <div class="row">
+          <div class="col-12 col-sm-6 col-md-6">
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title">Course Following Details</h3>
+                  </div>
+                  <div class="card-body">
+                      <table class="table row-border table-hover">
+                        <thead>
+                          <tr>
+                          <td></td>
+                          <td>Total Youths</td>
+                          <td>Ongoing</td>
+                          <td>Dropouts</td>
+                          </tr>
+                          
+                        </thead>
+                    <tbody>
+                          <tr tabindex="0" onmousedown="window.location='{{Route('reports-me/skill/gvt-support')}}';">
+                          <td>Directed to Government VT</td>
+                          <td align="center"><span class="badge badge-pill badge-primary">{{$course_supports}}</span></td>
+                          <td align="center"><span class="badge badge-pill badge-warning">{{$gvt_ongoing->status}}</span></td>
+                          <td align="center"><span class="badge badge-pill badge-danger">{{$gvt_ongoing->gvt_drop}}</span></td>
+                        </tr>
+                        <tr tabindex="0" onmousedown="window.location='{{url('reports-me/skill/soft-skill')}}';">
+                          <td>Soft Skills</td>
+                          <td align="center"> <span class="badge badge-pill badge-primary">{{$count_soft_skills}}</span></td>
+                          <td align="center"><span class="badge badge-pill badge-warning">{{$soft_ongoing->status}}</span></td>
+                          <td align="center"><span class="badge badge-pill badge-danger">{{$soft_ongoing->soft_drop}}</span></td>
+                        </tr>
+                        <tr tabindex="0" onmousedown="window.location='{{url('reports-me/skill/financial')}}';">
+                          <td>Financially Assisted - VT</td>
+                          <td align="center"><span class="badge badge-pill badge-primary">{{$count_vt}}</span></td>
+                          <td align="center"><span class="badge badge-pill badge-warning">{{$vt_ongoing->status}}</span></td>
+                          <td align="center"><span class="badge badge-pill badge-danger">{{$vt_ongoing->vt_drop}}</span></td>
+                        </tr>
+                         <tr tabindex="0" onmousedown="window.location='{{url('reports-me/skill/financial')}}';">
+                          <td>Financially assisted - Prof</td>
+                          <td align="center"><span class="badge badge-pill badge-primary">{{$count_prof}}</span></td>
+                          <td align="center"><span class="badge badge-pill badge-warning">{{$prof_ongoing->status}}</span></td>
+                          <td align="center"><span class="badge badge-pill badge-danger">{{$prof_ongoing->prof_drop}}</span></td>
+                        </tr>
+                        <tr>
+                          <td>Total</td>
+                          <td align="center">{{$count_prof+$count_vt+$count_soft_skills+$course_supports}}</td>
+                          <td align="center">{{$prof_ongoing->status+$vt_ongoing->status+$soft_ongoing->status+$gvt_ongoing->status}}</td>
+                          <td align="center">{{$prof_ongoing->prof_drop+$vt_ongoing->vt_drop+$soft_ongoing->soft_drop+$gvt_ongoing->gvt_drop}}</td>
+                        </tr>
+                    <tbody>        
+                </table>
+                  </div>
+              </div>
+            </div>
+        </div>
+		    <div class="row">
 
         	<div class="col-12 col-sm-6 col-md-6">
         		<!-- MAP & BOX PANE -->
@@ -1186,12 +1251,27 @@
         <div class="row">
           <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box">
-              <span class="info-box-icon bg-info elevation-1"><i class="fas fa-file-alt"></i></span>
+              <span class="info-box-icon bg-default elevation-1"><i class="far fa-address-book"></i></span>
 
               <div class="info-box-content">
-                <span class="info-box-text">Total Reports</span>
+                <span class="info-box-text">Total Baselines</span>
                 <span class="info-box-number">
-                 {{$total_reports->count()}}
+                 {{number_format($total_youths)}}
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+              <span class="info-box-icon bg-info elevation-1"><i class="fas fa-users"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Total CG Youths</span>
+                <span class="info-box-number">
+                 {{number_format($actual_cg)}}
                 </span>
               </div>
               <!-- /.info-box-content -->
@@ -1201,13 +1281,61 @@
           <!-- /.col -->
           <div class="col-12 col-sm-6 col-md-3">
             <div class="info-box mb-3">
-              <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-file-signature"></i></span>
+              <span class="info-box-icon bg-success elevation-1"><i class="fas fa-door-open"></i></span>
 
               <div class="info-box-content">
-                <span class="info-box-text">Total Reports Today</span>
+                <span class="info-box-text">Gvt. Directed Youths</span>
                 <span class="info-box-number">
                   @if(Auth::check())
-                    {{$total_reports_day}}
+                    {{number_format($course_supports)}}
+                  @endif
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box mb-3">
+              <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-laptop"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Soft Skills Youths</span>
+                <span class="info-box-number">
+                  @if(Auth::check())
+                    {{number_format($actual_soft_skills)}}
+                  @endif
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box mb-3">
+              <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-funnel-dollar"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Financial Assistance</span>
+                <span class="info-box-number">
+                  @if(Auth::check())
+                    {{number_format($actual_vt+$actual_prof)}}
+                  @endif
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box mb-3">
+              <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-briefcase"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Job Placements</span>
+                <span class="info-box-number">
+                  @if(Auth::check())
+                    {{number_format($actual_jobs)}}
                   @endif
                 </span>
               </div>
@@ -1256,9 +1384,9 @@
 
         
           <div class="col-12 col-sm-6 col-md-6">
-            <div class="card">
+            <div class="card card-primary">
                 <div class="card-header">
-                  <h3 class="card-title">Goal Completion    <a href="{{Route('youth_progress')}}"><span  class="badge badge-success float-right" id="row_count">View Report</span></a></h3>
+                  <h3 class="card-title">Goal Completion    <a href="{{Route('youth_progress')}}"><span  class="badge badge-warning float-right" id="row_count">View Report</span></a></h3>
                   <div class="card-tools">
                     
                   </div>
@@ -1280,6 +1408,14 @@
                       <span class="float-right"><b>{{$actual_soft_skills}}</b>/{{$total_soft}}</span>
                       <div class="progress progress-sm">
                         <div class="progress-bar bg-danger" style="width:  <?php $total_soft = ($actual_soft_skills/$total_soft)*100; ?> {{$total_soft}}%"></div>
+                      </div>
+                    </div>
+
+                    <div class="progress-group">
+                      <span class="progress-text">GVT Course Supports</span>
+                      <span class="float-right"><b>{{$course_supports}}</b>/{{$total_gvt}}</span>
+                      <div class="progress progress-sm">
+                        <div class="progress-bar bg-info" style="width: <?php $total_gvtt = ($course_supports/$total_vt)*100; ?> {{$total_gvtt}}%"></div>
                       </div>
                     </div>
 
@@ -1314,35 +1450,52 @@
               </div>
               </div>
               <div class="col-12 col-sm-6 col-md-6">
-                <div class="card">
+                <div class="card card-success">
                   <div class="card-header">
-                    <h3 class="card-title">M and E Reports</h3>
+                    <h3 class="card-title">Course Following Details</h3>
                   </div>
                   <div class="card-body">
-                      <table id="example3" class="table row-border table-hover">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Report</th>
-                            <th>Branch</th>
-                            <th>Created At</th>
-                        </tr>
-                    </thead> 
+                      <table class="table row-border table-hover">
+                        <thead>
+                          <tr>
+                          <td></td>
+                          <td>Total Youths</td>
+                          <td>Ongoing</td>
+                          <td>Dropouts</td>
+                          </tr>
+                          
+                        </thead>
                     <tbody>
-                        <?php  $no=1; ?>
-                        @foreach ($total_reports as $total_report)
-                        <tr class="task">
-                            <td>{{ $no++ }}</td>
-                            <td>
-                              <?php $string = $total_report->auditable_type;
-                                    $replaced = str_replace("_", " ", $string);?>
-                              {{ ucwords($replaced) }}
-                            </td>
-                            <td>{{ $total_report->branch_name }}</td>
-                            <td>{{ $total_report->created_at }}</td>
-                       
+                          <tr tabindex="0" onmousedown="window.location='{{Route('reports-me/skill/gvt-support')}}';">
+                          <td>Directed to Government VT</td>
+                          <td align="center"><span class="badge badge-pill badge-primary">{{$course_supports}}</span></td>
+                          <td align="center"><span class="badge badge-pill badge-warning">{{$gvt_ongoing->status}}</span></td>
+                          <td align="center"><span class="badge badge-pill badge-danger">{{$gvt_ongoing->gvt_drop}}</span></td>
                         </tr>
-                        @endforeach
+                        <tr tabindex="0" onmousedown="window.location='{{url('reports-me/skill/soft-skill')}}';">
+                          <td>Soft Skills</td>
+                          <td align="center"> <span class="badge badge-pill badge-primary">{{$actual_soft_skills}}</span></td>
+                          <td align="center"><span class="badge badge-pill badge-warning">{{$soft_ongoing->status}}</span></td>
+                          <td align="center"><span class="badge badge-pill badge-danger">{{$soft_ongoing->soft_drop}}</span></td>
+                        </tr>
+                        <tr tabindex="0" onmousedown="window.location='{{url('reports-me/skill/financial')}}';">
+                          <td>Financially Assisted - VT</td>
+                          <td align="center"><span class="badge badge-pill badge-primary">{{$actual_vt}}</span></td>
+                          <td align="center"><span class="badge badge-pill badge-warning">{{$vt_ongoing->status}}</span></td>
+                          <td align="center"><span class="badge badge-pill badge-danger">{{$vt_ongoing->vt_drop}}</span></td>
+                        </tr>
+                         <tr tabindex="0" onmousedown="window.location='{{url('reports-me/skill/financial')}}';">
+                          <td>Financially assisted - Prof</td>
+                          <td align="center"><span class="badge badge-pill badge-primary">{{$actual_prof}}</span></td>
+                          <td align="center"><span class="badge badge-pill badge-warning">{{$prof_ongoing->status}}</span></td>
+                          <td align="center"><span class="badge badge-pill badge-danger">{{$prof_ongoing->prof_drop}}</span></td>
+                        </tr>
+                        <tr>
+                          <td>Total</td>
+                          <td align="center">{{$actual_prof+$actual_vt+$actual_soft_skills+$course_supports}}</td>
+                          <td align="center">{{$prof_ongoing->status+$vt_ongoing->status+$soft_ongoing->status+$gvt_ongoing->status}}</td>
+                          <td align="center">{{$prof_ongoing->prof_drop+$vt_ongoing->vt_drop+$soft_ongoing->soft_drop+$gvt_ongoing->gvt_drop}}</td>
+                        </tr>
                     <tbody>        
                 </table>
                   </div>

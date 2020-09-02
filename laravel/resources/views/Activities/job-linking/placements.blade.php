@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('title','Job Fairs and Placements |')
 @section('content')
 <div class="container-fluid">
 

@@ -70,13 +70,13 @@
    
     <hr>
     <div class="row">
-      <div class="col-sm-4 col-md-10">
+      <div class="col-sm-4 col-md-6">
        
        <span>Date From : </span> <span id="date1" class="text-primary"></span> <span> to : </span> <span id="date2" class="text-primary"></span> 
       </div>
-      <div class="col-sm-4 col-md-2">
+      <div class="col-sm-4 col-md-6">
        <span style="float: right" class="text-right"><a href="{{ URL::to('reports-me/skill/financial') }}"><button type="button" class="btn btn-success btn-flat"><i class="fas fa-file-invoice"> View Full Report</i></button></a></span>
-       
+       <span style="float: right; margin-right: 5px" class="text-right"><a href="{{ URL::to('financial-youth') }}"><button type="button" class="btn btn-info btn-flat"><i class="fas fa-file-invoice"> Youth Progress After Course finished</i></button></a></span>
       </div>
     </div>
     <br>
@@ -313,15 +313,17 @@ fetch_data();
         
         $('.courses').text(emp_array.length);
         $('#count-courses').text(emp_array.length);
-        var dataRows2 = [['',  null, null]];
+        var dataRows2 = [['',  null, null,null]];
         for (var i = 0; i < emp_array.length; i++) {
          // alert(emp_array[i].total_male);
-          dataRows2.push([emp_array[i].course_name,  emp_array[i].male,  emp_array[i].female]);
+          dataRows2.push([emp_array[i].course_name,  emp_array[i].male,  emp_array[i].female,  emp_array[i].female+emp_array[i].male]);
         }
-        data3.addColumn('string', 'Course');
-        data3.addColumn('number', 'Total Male');
-        data3.addColumn('number', 'Total Female');
-        data3.addRows(dataRows2);
+
+          data3.addColumn('string', 'Course');
+          data3.addColumn('number', 'Male');
+          data3.addColumn('number', 'Female');
+          data3.addColumn('number', 'Total');
+          data3.addRows(dataRows2);
     
 
         var table = new google.visualization.Table(document.getElementById('table_div'));

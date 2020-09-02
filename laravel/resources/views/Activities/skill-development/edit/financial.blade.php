@@ -285,7 +285,8 @@
 						      <td><input type="number" name="installments" class="form-control position-list"></td>
 						      <td><button type="button" class="btn btn-success btn-flat" id="add2">Add</button></td>
 						      <input type="hidden" id="r_id" name="m_id" value="{{$meeting->m_id}}">
-
+              				  <input type="hidden" id="edate" name="edate" value="{{$meeting->end_date}}">
+							  
 	           				  {{csrf_field()}}
 						      </form>
 						    </tr>
@@ -544,7 +545,7 @@ $(document).ready(function(){
               if($.isEmptyObject(data.error)){              
               toastr.success('Succesfully added a youth ! ', 'Congratulations', {timeOut: 5000});
               $("#add-youth")[0].reset();
-              location.reload();
+             location.reload();
 
 
             }

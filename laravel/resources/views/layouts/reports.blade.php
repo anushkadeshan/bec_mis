@@ -22,6 +22,7 @@
     <link href="{{asset('vendors/adminLTE/css/adminlte.min.css')}}" rel="stylesheet">
     <!-- Data Tables -->
     <link href="{{asset('vendors/datatables/dataTables.bootstrap4.css')}}" rel="stylesheet">
+    <link href="https://cdn.datatables.net/fixedheader/3.1.7/css/fixedHeader.dataTables.min.css" rel="stylesheet">
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <!-- icheck checkboxes -->
@@ -344,7 +345,11 @@
             dom: 'Bfrtip',
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
-            ]
+            ],
+
+            fixedHeader: {
+            header: true,
+            }
         } );
        } );
 
@@ -395,6 +400,7 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/fixedheader/3.1.7/js/dataTables.fixedHeader.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.colVis.min.js"></script>
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50704959-3"></script>
@@ -408,29 +414,39 @@
 </script>
 <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
   <script>
+  $(document).ready(function() {
+ $("#youths_table").DataTable({
+      dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
+            ],
+    });
+  });
     // push notify 
   var userId = $('meta[name="userId"]').attr('content');
     Echo.private('App.User.' + userId)
     .notification((notification) => {
+        var today = new Date();
+      var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
       switch(notification.type) {
         case "broadcast.TaskCreated":
             toastr.info('on or before '+notification.due, notification.title,  {closeButton: true, timeOut: 5000000});
         break;
 
         case "broadcast.FamilyAdd":
-          toastr.info(notification.added_by,'Family Details added by ', {closeButton: true, timeOut: 5000000});
+          toastr.info(notification.added_by+' at '+time,'Family Details added by ', {closeButton: true, timeOut: 5000000});
         break;
 
         case "broadcast.YouthCount":
-          toastr.warning('added by '+notification.data.added_by, notification.data.youth_count+' '+notification.data.type+' Youth/s' , {closeButton: true, timeOut: 5000000});
+          toastr.info('added by '+notification.data.added_by+ ' at '+time, notification.data.youth_count+' '+notification.data.type+' Youth/s' , {closeButton: true, timeOut: 5000000});
         break;
 
         case "broadcast.instituteAdd":
-          toastr.warning('added by '+notification.data.added_by, 'Institute '+notification.data.institute.name, {closeButton: true, timeOut: 5000000});
+          toastr.success('added by '+notification.data.added_by+' at '+time, 'Institute '+notification.data.institute.name, {closeButton: true, timeOut: 5000000});
         break;
-        
+
         default:
-        toastr.info(notification.youth.name, 'New Baseline Form Added ' , {closeButton: true, timeOut: 5000000}); 
+        toastr.info(notification.youth.name+'at '+time, 'New Baseline Form Added ' , {closeButton: true, timeOut: 5000000}); 
       }
         
     });

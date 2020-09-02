@@ -85,7 +85,7 @@ class EmployerController extends Controller
         //$data['message'] = 'hellO welcome';
 
                 $data = array(
-                    'message' => 'Course is added',
+                    'message' => 'Employer is added',
                   'name' => $request->name
               );
 

@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('title','View Youth Profile |')
 @section('content')
 
 <!-- Content Header (Page header) -->
@@ -517,6 +518,7 @@
         <div class="timeline-body text-muted">
           @if(!is_null($financial))
           <ul class="list-group list-group-flush">
+            @foreach($financial as $financial)
             <li class="list-group-item"><strong>Institute : </strong><span>{{$financial->institute_name}}</span></li>
             <li class="list-group-item"><strong>Course Name : </strong><span>{{$financial->course_name}}</span></li>
             <li class="list-group-item"><strong>Course Type : </strong><span>{{$financial->course_type}}</span></li>
@@ -543,6 +545,8 @@
             @if($financial->dropout==1)<li class="list-group-item"><strong>Reason to Dropout : </strong><span>{{$financial->reoson_to_dropout}}</span></li>@endif
             <li class="list-group-item"><strong>Approved Ammount : </strong><span>{{$financial->approved_amount}}</span></li>
             <li class="list-group-item"><strong>Installments : </strong><span>{{$financial->installments}}</span></li>
+            <hr>
+            @endforeach
           </ul>
           @else
           No data Available
@@ -605,7 +609,7 @@
     <!-- /.timeline-label -->
     <!-- timeline item -->
     <li>
-      @if(!is_null($placement) || !is_null($individual))<i class="fa fa-briefcase bg-default"></i>@else <i class="fa fa-briefcase bg-success"></i>@endif
+      @if(is_null($placement) || is_null($individual))<i class="fa fa-briefcase bg-default"></i>@else <i class="fa fa-briefcase bg-success"></i>@endif
       <div class="timeline-item">
         
         <h3 class="timeline-header">Job Placement <span  style="float: right" class="text-success">@if(!is_null($placement) || !is_null($individual))<i class="far fa-check-circle"></i>@endif</span></h3>

@@ -1,4 +1,5 @@
  @extends('layouts.reports')
+@section('title','Soft Skills Youths |')
 @section('content')
 <div class="container-fluid">
     <div class="row">
@@ -82,6 +83,7 @@
                     <tr>
                         <th>ID</th>
                         <th>Name</th>
+                        <th>NIC</th>
                         <th>Directed Date</th>
                         <th>Institute</th>
                         <th>Course Start</th>
@@ -98,6 +100,7 @@
                     <tr>
                         <td>{{ $no++ }}</td>
                         <td>{{ $youth->youth_name }}</td>
+                        <td>{{ $youth->nic }}</td>
                         <td>{{ $youth->meeting_date }}</td>
                         <td>{{ $youth->institute_name }}</td>
                         <td>{{ $youth->start_date }}</td>

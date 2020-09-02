@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
      <meta name="csrf-token" content="{{ csrf_token() }}">
      <meta name="userId" content="{{ Auth::check() ? Auth::user()->id : '' }}">
-    <title>Dashboard - BEC MIS</title>
+    <title>@yield('title')  BEC MIS</title>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <!-- Ionicons -->
@@ -22,6 +22,7 @@
     <link href="{{asset('vendors/adminLTE/css/adminlte.min.css')}}" rel="stylesheet">
     <!-- Data Tables -->
     <link href="{{asset('vendors/datatables/dataTables.bootstrap4.css')}}" rel="stylesheet">
+    <link href="https://cdn.datatables.net/fixedheader/3.1.7/css/fixedHeader.dataTables.min.css" rel="stylesheet">
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <!-- icheck checkboxes -->
@@ -317,7 +318,16 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           @can('userList',Auth::User())
-          <li class="nav-header">System</li>
+          <li class="nav-header"></li>
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link" style="background-color: #008080; color: #fff">
+              <i class="nav-icon fa fa-cogs"></i>
+              <p>
+                System
+                <i class="right fa fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
           <li class="nav-item">
             
             <a href="{{Route('users')}}" class="nav-link">
@@ -345,7 +355,7 @@
                 <span class="badge badge-info right"></span>
               </p>
             </a>
-          </li>
+          </li> 
           <li class="nav-item">
             <a href="{{url('log-viewer')}}" class="nav-link" target="_blank">
              <i class="nav-icon fas fa-exclamation-triangle text-warning"></i>
@@ -355,6 +365,8 @@
               </p>
             </a>
           </li>
+          </ul>
+        </li>
           @endcan
           
          
@@ -362,7 +374,7 @@
           
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link active">
-              <i class="nav-icon fa fa-cogs"></i>
+              <i class="nav-icon fas fa-file-contract"></i>
               <p>
                 Completion Reports
                 <i class="right fa fa-angle-left"></i>
@@ -371,7 +383,7 @@
             <ul class="nav nav-treeview">
               @can('add-M&E-reports')
               <li class="nav-item">
-                <a href="{{url('/completion-reports')}}" class="nav-link">
+                <a href="{{url('/completion-reports')}}" class="nav-link active">
                   <i class="fas fa-plus-square nav-icon text-primary"></i>
                   <p class="text-primary">Add Reports</p>
                 </a>
@@ -379,7 +391,7 @@
               @endcan
               @if( Gate::check('management') || Gate::check('me-dashboard') )
               <li class="nav-item">
-                <a href="{{url('completion-reports')}}" class="nav-link">
+                <a href="{{url('completion-reports')}}" class="nav-link  active">
                  <i class="nav-icon fas fa-exclamation-triangle text-warning"></i>
                   <p>
                     Reports Updation 
@@ -390,7 +402,7 @@
               @endif
               @can('admin')
               <li class="nav-item">
-                <a href="{{url('/completion_targets')}}" class="nav-link">
+                <a href="{{url('/completion_targets')}}" class="nav-link active">
                   <i class="fas fa-plus-square nav-icon text-primary"></i>
                   <p class="text-primary">Add Completion Targets</p>
                 </a>
@@ -399,21 +411,21 @@
               @can('view-M&E-reports')
               
               <li class="nav-item">
-                <a href="{{url('m&e-reports')}}" class="nav-link">
-                 <i class="fas fa-file-contract nav-icon text-warning"></i>
-                  <p class="text-warning"> View M & E Reports</p>
+                <a href="{{url('m&e-reports')}}" class="nav-link active">
+                 <i class="fas fa-file-contract nav-icon text-info"></i>
+                  <p class="text-info"> View M & E Reports</p>
                 </a>
               </li>
               
               <li class="nav-item">
-                <a href="{{url('resource-people')}}" class="nav-link">
+                <a href="{{url('resource-people')}}" class="nav-link active">
                  <i class="fas fa-user nav-icon text-success"></i>
                   <p class="text-success">Resourse People Pool</p>
                 </a>
               </li>
               
               <li class="nav-item">
-                <a href="{{url('stake-holders')}}" class="nav-link">
+                <a href="{{url('stake-holders')}}" class="nav-link active">
                  <i class="fas fa-user nav-icon text-danger"></i>
                   <p class="text-danger">Stake Holders Pool</p>
                 </a>
@@ -422,6 +434,72 @@
               
             </ul>
           </li>
+          <br>
+          @endcan
+          @can('view-reports')
+            
+           <li class="nav-item has-treeview">
+            <a href="#" class="nav-link" style="background-color: #10DE6E; color: #fff">
+              <i class=" nav-icon fas fa-chart-pie"></i>
+              <p>
+                Progress Analysis
+                <i class="right fa fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{Route('analysis-cg')}}" class="nav-link active">
+                  <i class="fas fa-users nav-icon"></i>
+                  <p>Career Guidance</p>
+                </a>
+            </li>
+            <li class="nav-item has-treeview">
+            <a href="#" class="nav-link" style="background-color: #66FEAB; color: #000">
+             <i class="fas fa-user-graduate nav-icon"></i>
+              <p>
+                Skill Development
+                <i class="right fa fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{{Route('analysis-gvt')}}" class="nav-link active">
+                      <i class="fas fa-door-open nav-icon"></i>
+                      <p>Gvt. Course Support</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{Route('analysis-financial')}}" class="nav-link active">
+                      <i class="fas fa-funnel-dollar nav-icon"></i>
+                      <p>Financial Assistance</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{Route('analysis-soft')}}" class="nav-link active">
+                      <i class="fas fa-laptop nav-icon"></i>
+                      <p>Soft Skills</p>
+                    </a>
+                </li>
+            </ul>
+            </li>
+            
+            <li class="nav-item">
+                <a href="{{Route('analysis-job')}}" class="nav-link active">
+                 <i class=" nav-icon fas fa-briefcase"></i>
+                  <p>Placements</p>
+                </a>
+            </li>
+            </ul>
+          </li>
+          @endcan
+          @can('view-reports')
+            <li class="nav-item">
+                <a href="{{Route('reports/index')}}" class="nav-link" style="background-color: #FE6666; color: #fff">
+                  <i class="fas fa-file-invoice nav-icon"></i>
+                  <p>Base Line Reports</p>
+                </a>
+            </li>
+          
           @endcan
           @can('view-youth-profile')
           <li class="nav-header">Profile Details</li>
@@ -454,7 +532,7 @@
           </li>
           @endcan
           @can('view-Employer')
-          <li class="nav-header">Employment</li>
+          <li class="nav-header">Employers and Vacancies</li>
           @endcan
 
           @can('view-Employer')  
@@ -484,7 +562,7 @@
           </li>
           @endcan
           @can('apply-vacancy')
-          <li class="nav-header">Employment</li>
+          <li class="nav-header">Employers and Vacancies</li>
           @endcan
           @can('view-vacancies')
           <li class="nav-item">
@@ -529,7 +607,7 @@
           @endcan
           @cannot('youth')
           @can('view-institute')
-          <li class="nav-header">Skill Developments</li>
+          <li class="nav-header">Institutes and Courses</li>
           <li class="nav-item">
                 <a href="{{Route('institutes/view')}}" class="nav-link">
                   <i class="fas fa-school nav-icon"></i>
@@ -544,28 +622,8 @@
             </li>
           @endcan 
           @endcan
-          @can('view-reports')
-          <li class="nav-header">Progress Analysis Reports</li>
-
-            <li class="nav-item">
-                <a href="{{Route('analysis-job')}}" class="nav-link active">
-                  <i class="fas fa-file-invoice nav-icon"></i>
-                  <p>Placement Analysis</p>
-                </a>
-            </li>
           
-          @endcan
-          @can('view-reports')
-          <li class="nav-header">Base Line Reports</li>
-
-            <li class="nav-item">
-                <a href="{{Route('reports/index')}}" class="nav-link active">
-                  <i class="fas fa-file-invoice nav-icon"></i>
-                  <p>View Reports</p>
-                </a>
-            </li>
           
-          @endcan
            @if( Gate::check('me-dashboard') || Gate::check('admin') ) ) 
             <li class="nav-item">
                 <a href="{{url('baselines')}}" class="nav-link active">
@@ -588,7 +646,44 @@
                   <p>Search Courses</p>
                 </a>
             </li>
-          @endcan  
+          @endcan 
+         @can('duplicates')
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link" style="background-color: #fff; color: #000">
+             <i class="fas fa-copy nav-icon"></i>
+              <p>
+                Youth Duplicates
+                <i class="right fa fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{{url('cg-duplicates')}}" class="nav-link ">
+                      <i class="fas fa-copy nav-icon"></i>
+                      <p>Career Guidance</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{url('finacial-support-duplicates')}}" class="nav-link ">
+                      <i class="fas fa-copy nav-icon"></i>
+                      <p>Financial Assistance</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{url('soft-duplicates')}}" class="nav-link ">
+                      <i class="fas fa-copy nav-icon"></i>
+                      <p>Soft Skills</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{url('placement-duplicates')}}" class="nav-link ">
+                      <i class="fas fa-copy nav-icon"></i>
+                      <p>Job Placement</p>
+                    </a>
+                </li>
+            </ul>
+            </li> 
+            @endcan
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
@@ -705,6 +800,7 @@
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.colVis.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/fixedheader/3.1.7/js/dataTables.fixedHeader.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50704959-3"></script>
@@ -723,7 +819,7 @@
     });
     var channel = pusher.subscribe('user-channel');
     channel.bind('App\\Events\\userLogin', function(data) {
-        toastr.error(data.name, data.message, {closeButton: true, timeOut: 5000000});
+        toastr.info(data.name, data.message, {closeButton: true, timeOut: 5000000});
       //alert(data.message);
     });
 
@@ -735,25 +831,27 @@
   var userId = $('meta[name="userId"]').attr('content');
     Echo.private('App.User.' + userId)
     .notification((notification) => {
+      var today = new Date();
+      var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
       switch(notification.type) {
         case "broadcast.TaskCreated":
             toastr.info('on or before '+notification.due, notification.title,  {closeButton: true, timeOut: 5000000});
         break;
 
         case "broadcast.FamilyAdd":
-          toastr.info(notification.added_by,'Family Details added by ', {closeButton: true, timeOut: 5000000});
+          toastr.info(notification.added_by+' at '+time,'Family Details added by ', {closeButton: true, timeOut: 5000000});
         break;
 
         case "broadcast.YouthCount":
-          toastr.warning('added by '+notification.data.added_by, notification.data.youth_count+' '+notification.data.type+' Youth/s' , {closeButton: true, timeOut: 5000000});
+          toastr.info('added by '+notification.data.added_by+ ' at '+time, notification.data.youth_count+' '+notification.data.type+' Youth/s' , {closeButton: true, timeOut: 5000000});
         break;
 
         case "broadcast.instituteAdd":
-          toastr.success('added by '+notification.data.added_by, 'Institute '+notification.data.institute.name, {closeButton: true, timeOut: 5000000});
+          toastr.success('added by '+notification.data.added_by+' at '+time, 'Institute '+notification.data.institute.name, {closeButton: true, timeOut: 5000000});
         break;
-        
+
         default:
-        toastr.info(notification.youth.name, 'New Baseline Form Added ' , {closeButton: true, timeOut: 5000000}); 
+        toastr.info(notification.youth.name+'at '+time, 'New Baseline Form Added ' , {closeButton: true, timeOut: 5000000}); 
       }
         
     });

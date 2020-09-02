@@ -1,4 +1,5 @@
 @extends('layouts.reports')
+@section('title','Soft Skills |')
 @section('content')
 <div class="container-fluid">
     <!-- Content Header (Page header) -->
@@ -164,6 +165,110 @@
                                 </thead>        
                             </table>
                           
+                        </div>
+                        @endcan
+                        @can('admin')
+                        <div class="card card-success">
+                          <div  class="card-header">
+                            Current Status of Soft Skill Youth
+                          </div>
+                          <div  class="card-body">
+                            <table id="youths_table" class="table row-border table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Youth ID</th>
+                                        <th>Youth Name</th>
+                                        <th>Contacts</th>
+                                        <th>Course Status</th>
+                                        <th>Current Status</th>
+                                        <th>Branch</th>
+                                    </tr>
+                                    <tbody> 
+
+                                      @foreach($youths as $youth)
+                                       <tr>
+                                          <td>{{$youth->youth_id}}</td>
+                                          <td><a href="{{ URL::to('youth/' . $youth->youth_id . '/view') }}">{{$youth->youth_name}}</a></td>
+                                          <td>{{$youth->phone}}</td>
+                                          <td>
+                                          @switch($youth->dropout)
+                                              @case(1)
+                                                  <small class="badge badge-danger">{{"Dropout"}}</small>
+                                              @break
+                                              @case(0)
+                                                  @if($youth->end_date < date("Y-m-d"))
+                                                      <small class="badge badge-warning">{{"Finished"}}</small>
+                                                  @else
+                                                      <small class="badge badge-success">{{"Ongoing"}}</small>
+                                                  @endif
+                                              @break
+                                              @default
+                                              
+                                          @endswitch
+                                          </td>
+                                          <td>
+                                          
+                                              @php
+                                                $job =  DB::table('placement_individual')->where('youth_id',$youth->youth_id)->first();
+                                                $vt =  DB::table('finacial_supports_youths')
+                                                     ->join('finacial_supports','finacial_supports.id','=','finacial_supports_youths.finacial_support_id')
+                                                     ->where('end_date', '>', date("Y-m-d"))
+                                                     ->where('youth_id',$youth->youth_id)->first();
+                                              @endphp
+                                            <select
+                                              @if($youth->end_date > date("Y-m-d")|| !is_null($job)||!is_null($vt)) disabled @endif
+                                              name="current_status" id="current_status" class="form-control" onchange="updateStatus(this.value,{{$youth->youth_id}})">
+                                              <option @if($youth->cs==5) selected @endif value="5">No Job</option>
+                                              <option @if($youth->end_date > date("Y-m-d")) selected @endif value="1">Still Following Course</option>
+                                              <option @if(!is_null($vt)) selected @endif value="2">Following Course-BEC Supported</option>
+                                              <option @if($youth->cs==3) selected @endif value="3">Following Course-BEC Not Supported</option>
+                                              <option @if(!is_null($job)) selected @endif value="4">On the Job</option>
+                                              <option @if($youth->cs==6) selected @endif value="6">Not Contactable</option>
+                                              <option @if($youth->cs==7) selected @endif value="7">Permanatly Quit from Career Path</option>
+                                            </select>
+                                            
+                                          </td>
+                                          <td>{{$youth->ext}}</td>
+                                        </tr>
+                                      @endforeach
+                                      <!-- Modal -->
+                                            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                              <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                  <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLongTitle">Add Following Course and Completion Date</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                      <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                  </div>
+                                                  <div class="modal-body">
+                                                  <form action="" id="following_course">
+                                                  {{csrf_field()}}
+                                                  <div class="form-group">
+                                                  <label for="dm_name">Course Name</label>
+                                                    <input data-toggle="tooltip" data-placement="top" title="Search course name and select" type="text" id="course_name" name="res_id" class="form-control" placeholder="Search Name of Course">
+                                                    <div id="course_list"></div>
+                                                        <input type="hidden" id="course_id" name="following_course_id" value="">
+                                                        <input type="hidden" id="status_youth_id" name="youth_id" value="">
+                                                  </div>
+                                                    <div class="form-group">
+                                                    <label for="">Expected Course Completion Date</label>
+                                                      <input type="date" class="form-control" name="following_course_end_date">
+                                                    </div>
+                                                  
+                                                  </div>
+                                                  <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                                  </div>
+                                                  </form>
+                                                </div>
+                                              </div>
+                                            </div>
+                                    </tbody>
+                                </thead>        
+                            </table>
+                          </div>   
                         </div>
                         @endcan
                     <div class="card card-success">
@@ -409,6 +514,70 @@
 <script src="{{ asset('js/printThis.js') }}" ></script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script>
+ $(document).ready(function(){
+//search resourse Person
+       $('#course_name').keyup(function(){ 
+              var query = $(this).val();
+              if(query != '')
+              {
+               var _token = $('input[name="_token"]').val();
+               $.ajax({
+                url: SITE_URL + '/support-courseList',
+                method:"POST",
+                data:{query:query, _token:_token},
+                success:function(data){
+                 $('#course_list').fadeIn();  
+                 $('#course_list').html(data);
+                }
+               });
+              }
+          });
+
+          $(document).on('click', '#course li', function(){  
+            $('#course_list').fadeOut(); 
+              $('#course_name').val($(this).text()); 
+              $('#start_date').focus(); 
+
+              var ins_id = $(this).attr('id');
+              $('#course_id').val(ins_id);
+               
+          });  
+});
+function updateStatus(value,id) {
+  if(value==3){
+    courseDetails(value,id);
+  }
+  else{
+    var _token = '{{csrf_field()}}';
+    $.ajax({
+      type: 'GET',
+      url: SITE_URL + '/change-soft-status/'+value+'/'+id,
+    
+      success: function(data) {
+        if(data.code==401){
+          toastr.error(data.msg, 'Oops!', {timeOut: 5000});
+        }        
+        else{
+          toastr.success(data.msg, 'Great!', {timeOut: 5000});
+        }
+
+  },
+
+      error: function (jqXHR, exception) {    
+          console.log(jqXHR);
+          toastr.error('Error !', 'Something Error')
+      },
+  });
+  }
+}
+
+function courseDetails(value,id) {
+  $('#status_youth_id').val(id);
+
+  $('#exampleModalCenter').modal('show');
+
+}
+
 
 $(document).ready(function() {
 
@@ -419,9 +588,11 @@ var dataTable = $("#example").DataTable({
             ],
     });
 
+
 var dataTable2 = $("#example10").DataTable({
       dom: 'Bfrtip',
             buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
                 
             ],
 
@@ -702,7 +873,44 @@ google.charts.load('current', {'packages':['corechart']});
         chart.draw(data, options);
       }
 
+$(document).ready(function(){
+     $("#following_course").on('submit' ,function (e){
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: SITE_URL + '/soft-status/course-follow',   
+            data: new FormData(this),
+            contentType: false,
+              cache: false,
+            processData:false,
+            beforeSend: function(){
+              $('#loading').show();
+            },
+            complete: function(){
+              $('#loading').hide();
+            },          
+            success: function(data) {
+              if($.isEmptyObject(data.error)){              
+              toastr.success('Succesfully updated Status and Course Details ! ', 'Congratulations', {timeOut: 5000});
+			        $("#following_course")[0].reset();
+              $('#exampleModalCenter').modal('hide');
 
+            }
+            else{
+            $('#loading').hide();
+               toastr.error('', 'Something Error !');	
+             printValidationErrors(data.error);
+              
+            }         
+        },
+
+            error: function (jqXHR, exception) {    
+                console.log(jqXHR);
+                toastr.error('Error !', 'Something Error')
+            },
+        });
+    });
+  });
 </script>
 <style>
   th { font-size: 15px; }
@@ -715,5 +923,32 @@ google.charts.load('current', {'packages':['corechart']});
 }
 
 
+</style>
+<style type="text/css" media="screen">
+  #autocomplete, #institute, #course, #youths,#review_reports {
+    position: absolute;
+    z-index: 1000;
+    cursor: default;
+    padding: 0;
+    margin-top: 2px;
+    list-style: none;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    -webkit-border-radius: 5px;
+       -moz-border-radius: 5px;
+            border-radius: 5px;
+    -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+       -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+#autocomplete,  #institute, #course, #youths, #review_reports> li {
+  padding: 3px 20px;
+}
+#autocomplete, #institute, #course, #youths, #review_reports > li.ui-state-focus {
+  background-color: #DDD;
+}
+.ui-helper-hidden-accessible {
+  display: none;
+}
 </style>
 @endsection

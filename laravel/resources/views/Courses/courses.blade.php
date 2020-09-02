@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('title','Courses |')
 @section('content')
 <div class="container-fluid">
 	<div class="card">
@@ -45,7 +46,7 @@
                         <td>{{ $no++ }}</td>
                         <td>{{ $course->name }}</td>
                         <td>{{ $course->duration }}</td>
-                        <td>{{ $course->course_fee }}</td>
+                        <td align="right">{{ number_format($course->course_fee,2,".",",") }}</td>
                         <td>{{ $course->course_type }}</td>
                         <td>{{ $course->standard }}</td>
                         <td>{{ $course->course_time }}</td>

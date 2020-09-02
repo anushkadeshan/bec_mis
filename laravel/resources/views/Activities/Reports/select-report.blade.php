@@ -1,4 +1,5 @@
 @extends('layouts.reports')
+@section('title','View Completion Reports |')
 @section('content')
 <div class="container-fluid">
 	<br>

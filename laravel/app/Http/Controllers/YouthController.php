@@ -982,8 +982,6 @@ public function update_following_course(Request $request){
                   'nature_job' => $request->nature_job,
                   'youth_id' => $request->youth_id,
 
-
-
               );
             
               $data2 = array(
@@ -1535,7 +1533,7 @@ public function update_following_course(Request $request){
             ->join('courses','courses.id','=','finacial_supports.course_id')
             ->select('finacial_supports_youths.*','finacial_supports.*','institutes.name as institute_name','courses.name as course_name','courses.*')
             ->where('finacial_supports_youths.youth_id',$id)
-            ->first();
+            ->get();
 
       $partner = DB::table('partner_trainings_youth')
             ->join('partner_trainings','partner_trainings.id','=','partner_trainings_youth.partner_trainings_id')
@@ -1611,5 +1609,17 @@ public function update_following_course(Request $request){
     }
 
    
+    public function families_pci()
+    {
+        $data = DB::table('finacial_supports_youths')
+                ->join('youths','youths.id','=','finacial_supports_youths.youth_id')
+                ->join('families','families.id','=','youths.family_id')
+                ->join('branches','branches.id','=','youths.branch_id')
+                ->select('finacial_supports_youths.*','youths.*','youths.name as youth_name','families.*','branches.*','families.id as fam')
+                ->whereNotNull('families.total_members')
+                ->get();
 
+   // dd($data);
+        return view('Youth.family-pci')->with(['data'=> $data]);
+    }
 }

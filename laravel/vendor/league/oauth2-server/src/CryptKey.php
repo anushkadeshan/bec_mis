@@ -43,7 +43,7 @@ class CryptKey
         if (strpos($keyPath, 'file://') !== 0) {
             $keyPath = 'file://' . $keyPath;
         }
-
+        /*
         if (!file_exists($keyPath) || !is_readable($keyPath)) {
             throw new LogicException(sprintf('Key path "%s" does not exist or is not readable', $keyPath));
         }
@@ -59,7 +59,7 @@ class CryptKey
                 ), E_USER_NOTICE);
             }
         }
-
+        */
         $this->keyPath = $keyPath;
         $this->passPhrase = $passPhrase;
     }

@@ -1,4 +1,5 @@
 @extends('layouts.reports')
+@section('title','Finacially Assisted Youths |')
 @section('content')
 <div class="container-fluid">
     <div class="row">
@@ -99,6 +100,7 @@
                         <th>Name</th>
                         <th>Institute</th>
                         <th>Course</th>
+                        <th>Type</th>
                         <th>Course Start</th>
                         <th>Course End</th>
                         <th>Course Status</th>
@@ -115,6 +117,7 @@
                         <td>{{ $youth->youth_name }}</td>
                         <td>{{ $youth->institute_name }}</td>
                         <td>{{ $youth->course_name }}</td>
+                        <td>{{ $youth->course_type }}</td>
                         <td>{{ $youth->start_date }}</td>
                         <td>{{ $youth->end_date }}</td>
                         <td>
@@ -181,17 +184,17 @@
           $('#row_count').text(info.recordsDisplay+ ' youths filtered out of  ' +info.recordsTotal);
       } );
     $('#smart_phone').on('change', function () {
-          table2.columns(6).search( this.value ).draw();
-          var info = $('#example2').DataTable().page.info();
-          $('#row_count').text(info.recordsDisplay+ ' youths filtered out of  ' +info.recordsTotal);
-      } );
-      $('#training').on('change', function () {
           table2.columns(7).search( this.value ).draw();
           var info = $('#example2').DataTable().page.info();
           $('#row_count').text(info.recordsDisplay+ ' youths filtered out of  ' +info.recordsTotal);
       } );
-      $('#branch_id').on('change', function () {
+      $('#training').on('change', function () {
           table2.columns(8).search( this.value ).draw();
+          var info = $('#example2').DataTable().page.info();
+          $('#row_count').text(info.recordsDisplay+ ' youths filtered out of  ' +info.recordsTotal);
+      } );
+      $('#branch_id').on('change', function () {
+          table2.columns(9).search( this.value ).draw();
           var info = $('#example2').DataTable().page.info();
           $('#row_count').text(info.recordsDisplay+ ' youths filtered out of  ' +info.recordsTotal);
       } );
