@@ -1,5 +1,8 @@
 @extends('layouts.main')
+@section('title',''.$vacancy->title.' |')
 @section('content')
+
+
 <div class="container-fluid" >
 	<section class="content-header">
  
@@ -174,7 +177,7 @@
               toastr.success('Succesfully apply for the vacancy ! ', 'Congratulations', {timeOut: 5000});
             }
             else{
-            toastr.error('Error !', ""+data.error+"",{closeButton: true});
+            toastr.error('Error !', ""+data.error+"");
               
             }         
         },

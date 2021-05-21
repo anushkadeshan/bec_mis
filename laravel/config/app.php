@@ -168,7 +168,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         //App\Providers\DropboxFilesystemServiceProvider::class
-        
+
         //BackupManager\Laravel\Laravel55ServiceProvider::class,
         //Barryvdh\DomPDF\ServiceProvider::class,
 
@@ -223,6 +223,7 @@ return [
         'Activity' => Kim\Activity\ActivityFacade::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'Zipper' => Chumper\Zipper\Zipper::class
+
 
     ],
 

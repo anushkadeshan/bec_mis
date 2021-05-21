@@ -1,4 +1,5 @@
 @extends('layouts.reports')
+@section('title','Finacially Assisted Youths |')
 @section('content')
 <div class="container-fluid">
     <div class="row">
@@ -9,7 +10,7 @@
                 </div>
                 <div class="card-body">
                   <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false" style="background-color: #5E6971; color: white;">
-                    
+
                     <li class="nav-item">
                     <a class="nav-link">
                         <div class="form-group">
@@ -19,11 +20,11 @@
                                 @foreach($courses as $course)
                                 <option>{{$course->course_name}}</option>
                                 @endforeach
-                                
+
                               </select>
                             </div>
                     </a>
-                  </li> 
+                  </li>
                   <li class="nav-item">
                     <a class="nav-link">
                         <div class="form-group">
@@ -33,11 +34,11 @@
                                 @foreach($institutes as $institute)
                                 <option>{{$institute->institute_name}}</option>
                                 @endforeach
-                                
+
                               </select>
                             </div>
                     </a>
-                  </li> 
+                  </li>
                   <li class="nav-item">
                     <a class="nav-link">
                         <div class="form-group">
@@ -47,7 +48,7 @@
                                 <option>Finished</option>
                                 <option>Ongoing</option>
                                 <option>Dropout</option>
-                                
+
                               </select>
                             </div>
                     </a>
@@ -61,11 +62,11 @@
                                 <option value="">All</option>
                                 <option value="1">Yes</option>
                                 <option value="0">No</option>
-                                
+
                               </select>
-                        </div> 
+                        </div>
                     </a>
-                  </li>  
+                  </li>
                   @cannot('branch')
                   <li class="nav-item">
                     <a class="nav-link">
@@ -80,7 +81,7 @@
                       </div>
                     </a>
                   </li>
-                  @endcan                 
+                  @endcan
                   </ul>
                 </div>
               </div>
@@ -91,14 +92,17 @@
             <h3 class="card-title">Youth Information whom Financially supported <small class="badge badge-success"> {{count($youths)}}</small><span  class="badge badge-success float-right" id="row_count"></span></h3>
         </div>
         <!-- /.card-header -->
-        <div class="card-body">  
+        <div class="card-body">
             <table id="example2" class="table table-bordered table-striped">
                 <thead>
                     <tr>
                         <th>ID</th>
                         <th>Name</th>
+                        <th>Gender</th>
                         <th>Institute</th>
                         <th>Course</th>
+                        <th>Type</th>
+                        <th>Program Date</th>
                         <th>Course Start</th>
                         <th>Course End</th>
                         <th>Course Status</th>
@@ -106,15 +110,18 @@
                         @cannot('branch')<th>Branch</th>@endcan
                         <th></th>
                     </tr>
-                </thead> 
+                </thead>
                 <tbody>
                     <?php $no=1 ?>
                     @foreach ($youths as $youth)
                     <tr>
                         <td>{{ $no++ }}</td>
                         <td>{{ $youth->youth_name }}</td>
+                        <td>{{ $youth->gender }}</td>
                         <td>{{ $youth->institute_name }}</td>
                         <td>{{ $youth->course_name }}</td>
+                        <td>{{ $youth->course_type }}</td>
+                        <td>{{ $youth->program_date }}</td>
                         <td>{{ $youth->start_date }}</td>
                         <td>{{ $youth->end_date }}</td>
                         <td>
@@ -130,12 +137,12 @@
                                     @endif
                                 @break
                                 @default
-                                        
+
                             @endswitch
-                            
+
                         </td>
                         <td align="center">
-                            <?php 
+                            <?php
                                 $placement = DB::table('placements_youths')->where('youth_id',$youth->youth_id)->first();
                                 $ind = DB::table('placement_individual')->where('youth_id',$youth->youth_id)->first();
                             ?>
@@ -148,17 +155,17 @@
                         </a></td>
                     </tr>
                     @endforeach
-                <tbody>        
-            </table>      
-            
+                <tbody>
+            </table>
+
         </div>
-    </div>    
+    </div>
         </div>
 
-        
+
     </div>
-      
- 
+
+
 </div>
 @endsection
 @section('scripts')
@@ -181,17 +188,17 @@
           $('#row_count').text(info.recordsDisplay+ ' youths filtered out of  ' +info.recordsTotal);
       } );
     $('#smart_phone').on('change', function () {
-          table2.columns(6).search( this.value ).draw();
-          var info = $('#example2').DataTable().page.info();
-          $('#row_count').text(info.recordsDisplay+ ' youths filtered out of  ' +info.recordsTotal);
-      } );
-      $('#training').on('change', function () {
           table2.columns(7).search( this.value ).draw();
           var info = $('#example2').DataTable().page.info();
           $('#row_count').text(info.recordsDisplay+ ' youths filtered out of  ' +info.recordsTotal);
       } );
-      $('#branch_id').on('change', function () {
+      $('#training').on('change', function () {
           table2.columns(8).search( this.value ).draw();
+          var info = $('#example2').DataTable().page.info();
+          $('#row_count').text(info.recordsDisplay+ ' youths filtered out of  ' +info.recordsTotal);
+      } );
+      $('#branch_id').on('change', function () {
+          table2.columns(9).search( this.value ).draw();
           var info = $('#example2').DataTable().page.info();
           $('#row_count').text(info.recordsDisplay+ ' youths filtered out of  ' +info.recordsTotal);
       } );

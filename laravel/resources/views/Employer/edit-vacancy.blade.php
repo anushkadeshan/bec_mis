@@ -1,5 +1,7 @@
 @extends('layouts.main')
+@section('title','Edit -'.$vacancy->title.' |')
 @section('content')
+
 <div class="container-fluid">
     <section class="content">
     	<form action="{{ URL::to('vacancy/update') }}" method="post" id="vacancy">

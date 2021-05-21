@@ -1,5 +1,7 @@
 @extends('layouts.main')
+@section('title',''.$institute->name.' |')
 @section('content')
+
 <div class="container-fluid" >
 	<section class="content-header">
  
@@ -24,9 +26,11 @@
         			<h2 class="card-title">{{$institute->name}} - {{$institute->location}}</h2> 
 
         		</div>
+            @can('add-institute')
             <div class="col-md-6 text-right">
                 <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#addModel">Add Courses Provided</button>
             </div>
+            @endcan
         	</div>
         </div>
         <!-- /.card-header --> 

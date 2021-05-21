@@ -1,4 +1,5 @@
 @extends('layouts.reports')
+@section('title','GVT Course Support Youths |')
 @section('content')
 <div class="container-fluid">
     <div class="row">

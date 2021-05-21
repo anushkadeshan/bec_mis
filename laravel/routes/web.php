@@ -67,11 +67,11 @@ Route::get('/vacancies', 'VacancyController@index')->name('vacancies')->middlewa
 Route::get('/new-vacancy', 'VacancyController@show')->name('new-vacancy')->middleware('can:create-vacancies');
 Route::post('/locationList', 'VacancyController@locationList')->name('locationList');
 Route::post('/add-vacancy', 'VacancyController@store')->name('add-vacancy')->middleware('can:create-vacancies');
-Route::get('/vacancy/{id}/edit', 'VacancyController@edit')->name('edit-vacancy')->middleware('can:edit-vacancies'); 
-Route::post('/vacancy/update', 'VacancyController@update')->name('update-vacancy')->middleware('can:edit-vacancies'); 
-Route::post('/vacancy/delete', 'VacancyController@delete')->name('delete-vacancy')->middleware('can:delete-vacancies'); 
-Route::post('/vacancy/apply', 'VacancyController@apply')->name('apply-vacancy')->middleware('can:apply-vacancy'); 
-Route::get('/vacancy/{id}/view', 'VacancyController@view')->name('view-vacancy')->middleware('can:view-vacancies'); 
+Route::get('/vacancy/{id}/edit', 'VacancyController@edit')->name('edit-vacancy')->middleware('can:edit-vacancies');
+Route::post('/vacancy/update', 'VacancyController@update')->name('update-vacancy')->middleware('can:edit-vacancies');
+Route::post('/vacancy/delete', 'VacancyController@delete')->name('delete-vacancy')->middleware('can:delete-vacancies');
+Route::post('/vacancy/apply', 'VacancyController@apply')->name('apply-vacancy')->middleware('can:apply-vacancy');
+Route::get('/vacancy/{id}/view', 'VacancyController@view')->name('view-vacancy')->middleware('can:view-vacancies');
 
 //youth routes
 Route::get('/youth/family/add', 'FamilyController@index')->name('youth/family/add')->middleware('can:add-youth');
@@ -93,8 +93,8 @@ Route::post('/youth/add-no-jobs', 'YouthController@create_no_jobs')->name('youth
 Route::post('/youth/add-self', 'YouthController@create_self')->name('youth/add-self')->middleware('can:add-youth');
 Route::post('/youth/add-feedback', 'YouthController@create_feedback')->name('youth/add-feedback')->middleware('can:add-youth');
 Route::post('youth/add-language', 'YouthController@create_language')->name('youth/add-language')->middleware('can:add-youth');
-Route::get('/youth/{id}/edit', 'YouthController@edit')->name('edit-youth')->middleware('can:edit-youth'); 
-Route::get('/youth/{id}/view', 'YouthController@profile_view_by_branch')->name('view-youth')->middleware('can:view-youths-profile'); 
+Route::get('/youth/{id}/edit', 'YouthController@edit')->name('edit-youth')->middleware('can:edit-youth');
+Route::get('/youth/{id}/view', 'YouthController@profile_view_by_branch')->name('view-youth')->middleware('can:view-youths-profile');
 Route::post('/youth/update-personal', 'YouthController@update_personal')->name('youth/update-personal')->middleware('can:edit-youth');
 Route::post('/youth/update-results', 'ResultController@update_results')->name('youth/update-results')->middleware('can:edit-youth');
 Route::post('/youth/update-language', 'YouthController@update_language')->name('youth/update-language')->middleware('can:edit-youth');
@@ -106,19 +106,23 @@ Route::post('/youth/add-new-course', 'YouthController@add_new_course')->name('yo
 Route::post('/youth/update-no-jobs', 'YouthController@update_no_jobs')->name('youth/update-no-jobs')->middleware('can:edit-youth');
 Route::post('/youth/update-self', 'YouthController@update_self')->name('youth/update-self')->middleware('can:edit-youth');
 
-Route::post('/youth/delete-youth', 'YouthController@delete')->name('/youth/delete-youth')->middleware('can:delete-youth');  
-Route::post('/youth/application/status', 'YouthController@application_status')->name('/youth/application/status'); 
- 
-Route::post('/youth/search', 'YouthController@search')->name('/youth/search')->middleware('can:search-youth'); 
+Route::post('/youth/delete-youth', 'YouthController@delete')->name('/youth/delete-youth')->middleware('can:delete-youth');
+Route::post('/youth/application/status', 'YouthController@application_status')->name('/youth/application/status');
+
+Route::post('/youth/search', 'YouthController@search')->name('/youth/search')->middleware('can:search-youth');
+Route::get('/family-pci', 'YouthController@families_pci')->name('family-pci');
+Route::get('/families', 'FamilyController@families')->name('families');
+Route::get('/family/{id}/edit', 'FamilyController@edit')->name('families.edit');
+Route::post('/youth/update-family', 'FamilyController@update')->name('families.update');
 
 
 //family routes
-Route::post('/districts', 'FamilyController@get_districts')->name('districts'); 
+Route::post('/districts', 'FamilyController@get_districts')->name('districts');
 Route::get('/ds-division', function(){
 	$district = Input::get('district');
 	$ds_divisions = DB::table('dsd_office')->where('District','=', $district)->get();
 	return Response::json($ds_divisions);
-}); 
+});
 
 Route::get('/gn-division', function(){
 	$ds_division = Input::get('ds_division');
@@ -128,17 +132,17 @@ Route::get('/gn-division', function(){
 
 });
 
-Route::post('/gn-division', 'FamilyController@get_gn')->name('gn-division')->middleware('can:view-vacancies'); 
+Route::post('/gn-division', 'FamilyController@get_gn')->name('gn-division')->middleware('can:view-vacancies');
 Route::post('/youth/add-family', 'FamilyController@create')->name('family/add')->middleware('can:add-youth');
 
 
 //Institutes  routes
 Route::get('/institutes/view', 'InstituteController@index')->name('institutes/view')->middleware('can:view-institute');
-Route::post('/institutes/add-institute', 'InstituteController@insert')->name('/institutes/add-institute')->middleware('can:edit-institute'); 
-Route::post('/institutes/update-institute', 'InstituteController@update')->name('/institutes/update-institute')->middleware('can:add-institute'); 
-Route::post('/institutes/delete-institute', 'InstituteController@delete')->name('/institutes/delete-institute')->middleware('can:delete-institute'); 
-Route::get('/institute/{id}/view', 'InstituteController@view')->name('view-institute')->middleware('can:view-institute'); 
-Route::post('/institutes/add-courses', 'InstituteController@update_courses')->name('/institutes/add-course')->middleware('can:add-institute'); 
+Route::post('/institutes/add-institute', 'InstituteController@insert')->name('/institutes/add-institute')->middleware('can:edit-institute');
+Route::post('/institutes/update-institute', 'InstituteController@update')->name('/institutes/update-institute')->middleware('can:add-institute');
+Route::post('/institutes/delete-institute', 'InstituteController@delete')->name('/institutes/delete-institute')->middleware('can:delete-institute');
+Route::get('/institute/{id}/view', 'InstituteController@view')->name('view-institute')->middleware('can:view-institute');
+Route::post('/institutes/add-courses', 'InstituteController@update_courses')->name('/institutes/add-course')->middleware('can:add-institute');
 
 //Courses  routes
 Route::get('/courses/view', 'CourseController@index')->name('courses/view')->middleware('can:view-course');
@@ -198,7 +202,7 @@ Route::get('/home/admin', 'DashboardController@admin')->name('home/admin')->midd
 
 Route::get('/completion-reports', 'ProgressController@completion_reports')->middleware('can:view-M&E-reports');
 
-Route::get('/education', function () {	
+Route::get('/education', function () {
     return view('Activities.education.landing-page');
 });
 
@@ -448,6 +452,7 @@ Route::post('/activity/cg/update-youth', 'CarrerGuidanceController@update_youths
 Route::post('/activity/cg/add-youth-cg', 'CarrerGuidanceController@add_youths')->middleware('can:edit-M&E-reports');
 Route::post('/activity/cg/update-req', 'CarrerGuidanceController@update_req')->middleware('can:edit-M&E-reports');
 Route::post('/activity/cg/update-cts', 'CarrerGuidanceController@update_cts')->middleware('can:edit-M&E-reports');
+Route::post('/activity/cg/delete-youth', 'CarrerGuidanceController@delete_youth')->middleware('can:edit-M&E-reports');
 
 Route::get('/reports-me/kick-off/{id}/edit', 'KickOffController@edit')->middleware('can:edit-M&E-reports');
 Route::post('/activities/career-guidance/kick-off-edit', 'KickOffController@update')->middleware('can:edit-M&E-reports');
@@ -536,6 +541,22 @@ Route::get('/course-supports-not-in-job/{branch}/{date}', 'CourseSupportControll
 Route::get('/files-to-backup', 'HomeController@backups');
 Route::get('/download-backup/{filename}', 'HomeController@backup');
 
+//cg duplicates
+Route::get('/cg-duplicates', 'CarrerGuidanceController@cg_duplicates');
+Route::get('/finacial-support-duplicates', 'FinancialSupportController@financial_duplicates');
+Route::get('/soft-duplicates', 'ProvideSoftskillController@soft_skills_duplicates');
+Route::get('/placement-duplicates', 'PlacementController@placement_duplicates');
+Route::get('/financial_and_gvt', 'CourseSupportController@financial_and_gvt');
 
 
 });
+
+Route::get('/firebase', 'Firebase\FireBaseController@index')->name('firebase.index');
+Route::get('/firebase-users', 'Firebase\FireBaseController@authUsers')->name('firebase.users');
+Route::get('/firebase-staff', 'Firebase\FireBaseController@staff')->name('firebase.staff');
+Route::get('/firebase-sessions', 'Firebase\FireBaseController@sessions')->name('firebase.sessions');
+Route::get('/firebase-sessions/view/{uid}/{id}', 'Firebase\FireBaseController@ViewSession');
+Route::post('/firebase-disableUser', 'Firebase\FireBaseController@disableUsers');
+Route::get('/firebase-deleteUser/{uid}', 'Firebase\FireBaseController@deleteUsers');
+
+Route::get('/firebase-sessions/staff/{uid}', 'Firebase\FireBaseController@StaffSessions');

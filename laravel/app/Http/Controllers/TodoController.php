@@ -17,16 +17,16 @@ class TodoController extends Controller
     	return view('tasks')->with(['tasks'=>$tasks]);
     }
 
-    public function add(Request $request){
-    	$data = $request->all();
-    	$tasks = Todo::create($data);
+            public function add(Request $request){
+            	$data = $request->all();
+            	$tasks = Todo::create($data);
 
-    	//send notofications 
-        $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', [ 'admin' ]);})->get();
-        foreach ($notifyTo as $notifyUser) {
-            $notifyUser->notify(new TaskCreated($tasks));
-        }
-    }
+            	//send notofications
+                $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', [ 'admin']);})->get();
+                foreach ($notifyTo as $notifyUser) {
+                    $notifyUser->notify(new TaskCreated($tasks));
+                }
+            }
 
      public function update(Request $request){
     	$id = $request->id;

@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('title','Career Guidance |')
 @section('content')
 <div class="container-fluid"	>
 		<!-- Content Header (Page header) -->

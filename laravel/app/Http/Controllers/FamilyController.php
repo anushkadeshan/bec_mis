@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use DB;
 use Session;
+use App\Notifications\FamilyAdd;
+use App\User;
 
 class FamilyController extends Controller
 {
@@ -52,6 +54,12 @@ class FamilyController extends Controller
               $family_id = $family->id;
               Session::put('family_id', $family_id);
 
+              //send notofications 
+               $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['admin']);})->get();
+               foreach ($notifyTo as $notifyUser) {
+                   $notifyUser->notify(new FamilyAdd($added_by));
+               }
+
         }
 
         else{
@@ -76,10 +84,7 @@ class FamilyController extends Controller
      * @param  \App\Family  $family
      * @return \Illuminate\Http\Response
      */
-    public function show(Family $family)
-    {
-        //
-    }
+    
 
     /**
      * Show the form for editing the specified resource.
@@ -87,9 +92,17 @@ class FamilyController extends Controller
      * @param  \App\Family  $family
      * @return \Illuminate\Http\Response
      */
-    public function edit(Family $family)
+    public function edit($id)
     {
-        //
+        $family = DB::table('families')
+                  ->join('dsd_office','dsd_office.ID','=','families.ds_division')
+                  ->join('gn_office','gn_office.GN_ID','=','families.gn_division')
+                  ->where('families.id',$id)
+                  ->first();
+       $districts = DB::table('districts')->get();
+
+
+        return view('Youth.edit-family')->with(['family'=> $family,'districts'=>$districts]);
     }
 
     /**
@@ -99,9 +112,20 @@ class FamilyController extends Controller
      * @param  \App\Family  $family
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Family $family)
+    public function update(Request $request)
     {
-        //
+        $family = Family::find($request->family_id);
+              $family->district = $request->district;
+              $family->ds_division = $request->ds_division;
+              $family->gn_division = $request->gn_division;
+              $family->head_of_household = $request->head_of_household;
+              $family->nic_head_of_household = $request->nic_head_of_household;
+              $family->address = $request->address;
+              $family->family_type = $request->family_type;
+              $family->total_income = $request->total_income;
+              $family->total_members = $request->total_members;
+              $family->save();
+
     }
 
     /**
@@ -110,8 +134,32 @@ class FamilyController extends Controller
      * @param  \App\Family  $family
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Family $family)
+    public function families()
     {
-        //
+        $branch = auth()->user()->branch;
+
+        if(is_null($branch)){
+        $data = DB::table('youths')
+                ->join('families','families.id','=','youths.family_id')
+                ->join('dsd_office','dsd_office.ID','=','families.ds_division')
+                ->join('gn_office','gn_office.GN_ID','=','families.gn_division')
+                ->join('branches','branches.id','=','youths.branch_id')
+                ->select('youths.*','youths.name as youth_name','families.*','branches.*','families.id as fam','dsd_office.*','gn_office.*','youths.id as youth_id')
+                ->get();
+        }
+        else{
+            $data = DB::table('youths')
+                ->join('families','families.id','=','youths.family_id')
+                ->join('dsd_office','dsd_office.ID','=','families.ds_division')
+                ->join('gn_office','gn_office.GN_ID','=','families.gn_division')
+                ->join('branches','branches.id','=','youths.branch_id')
+                ->select('youths.*','youths.name as youth_name','families.*','branches.*','families.id as fam','dsd_office.*','gn_office.*','youths.id as youth_id')
+                ->where('youths.branch_id',$branch)
+                ->get();
+
+        }   
+
+   // dd($data);
+        return view('Youth.families')->with(['data'=> $data]);
     }
 }

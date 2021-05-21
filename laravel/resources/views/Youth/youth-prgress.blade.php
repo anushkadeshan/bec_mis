@@ -1,4 +1,5 @@
  @extends('layouts.reports')
+@section('title','Youth Progress |')
 @section('content')
 <div class="container-fluid">
     <br>
@@ -10,7 +11,7 @@
                 </div>
                 <div class="card-body">
                   <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false" style="background-color: #5E6971; color: white;">
-                    
+
                     <li class="nav-item">
                     <a class="nav-link">
                         <div class="form-group">
@@ -19,11 +20,11 @@
                                 <option value="">All</option>
                                 <option value="1">Yes</option>
                                 <option value="0">No</option>
-                                
+
                               </select>
                             </div>
                     </a>
-                  </li> 
+                  </li>
                   <li class="nav-item">
                     <a class="nav-link">
                         <div class="form-group">
@@ -32,7 +33,7 @@
                                 <option value="">All</option>
                                 <option value="1">Yes</option>
                                 <option value="0">No</option>
-                                
+
                               </select>
                             </div>
                     </a>
@@ -46,11 +47,11 @@
                                 <option value="">All</option>
                                 <option value="1">Yes</option>
                                 <option value="0">No</option>
-                                
+
                               </select>
-                        </div> 
+                        </div>
                     </a>
-                  </li>  
+                  </li>
                   <li class="nav-item">
                     <a class="nav-link">
                         <div class="form-group">
@@ -60,9 +61,22 @@
                                 <option value="1">Yes</option>
                                 <option value="0">No</option>
                               </select>
-                            </div> 
+                            </div>
                     </a>
-                  </li> 
+                  </li>
+
+                  <li class="nav-item">
+                    <a class="nav-link">
+                        <div class="form-group">
+                              <label for="when"> Is Youth BSS Beneficiary  ?</label>
+                              <select name="bss" id="bss" class="form-control">
+                                <option value="">All</option>
+                                <option value="1">Yes</option>
+                                <option value="0">No</option>
+                              </select>
+                            </div>
+                    </a>
+                  </li>
                   @cannot('branch')
                   <li class="nav-item">
                     <a class="nav-link">
@@ -77,7 +91,7 @@
                       </div>
                     </a>
                   </li>
-                  @endcan                 
+                  @endcan
                   </ul>
                 </div>
               </div>
@@ -88,7 +102,7 @@
                     <h3 class="card-title">Youth Progress who completed Career Guidance <small class="badge badge-success"> {{count($youths)}}</small> <span  class="badge badge-success float-right" id="row_count"></span></h3>
                 </div>
                 <!-- /.card-header -->
-                <div class="card-body">  
+                <div class="card-body">
                     <table id="example" class="table table-striped">
                         <thead>
                             <tr>
@@ -104,9 +118,12 @@
                                 <th>VT</th>
                                 <th>Job</th>
                                 @cannot('branch')<th>Branch</th>@endcan
+                                <th>BSS</th>
+                                <th>VT</th>
+                                <th>Prof</th>
                                 <th>Action</th>
                             </tr>
-                        </thead> 
+                        </thead>
                         <tbody>
                             <?php $no=1 ?>
                             @foreach ($youths as $youth)
@@ -115,25 +132,25 @@
                                 <td>{{ $youth->youth_name }} @if($youth->bss==1) <span  class="badge badge-primary">BSS</span> @endif</td>
                                 <td>{{ $youth->program_date }}</td>
                                 <td align="center">
-                                    <?php 
-                                        $soft = DB::table('provide_soft_skills_youths')->where('youth_id',$youth->youth_id)->first();
+                                    <?php
+                                        $soft = DB::table('provide_soft_skills_youths')->where('youth_id',$youth->youth_id)->distinct('youth_id')->first();
                                     ?>
                                     @if(!is_null($soft))<span class="text-center text-success"><i class="fas fa-check-circle"></i></span> @else <span class="text-center text-danger"><i class="fas fa-times-circle"></i></span> @endif
                                 </td>
                                 <td align="center">
-                                    <?php 
+                                    <?php
                                         $gvt = DB::table('course_supports_youth')->where('youth_id',$youth->youth_id)->first();
                                     ?>
                                     @if(!is_null($gvt))<span class="text-center text-success"><i class="fas fa-check-circle"></i></span> @else <span class="text-center text-danger"><i class="fas fa-times-circle"></i></span> @endif
                                 </td>
                                <td align="center">
-                                    <?php 
+                                    <?php
                                         $vt = DB::table('finacial_supports_youths')->where('youth_id',$youth->youth_id)->first();
                                     ?>
                                     @if(!is_null($vt))<span class="text-center text-success"><i class="fas fa-check-circle"></i></span> @else <span class="text-center text-danger"><i class="fas fa-times-circle"></i></span> @endif
                                 </td>
                                 <td align="center">
-                                    <?php 
+                                    <?php
                                         $placement = DB::table('placements_youths')->where('youth_id',$youth->youth_id)->first();
                                         $ind = DB::table('placement_individual')->where('youth_id',$youth->youth_id)->first();
                                     ?>
@@ -141,7 +158,7 @@
                                 </td>
                                 <!-- filtering -->
                                 <td align="center">
-                                    @if(!is_null($soft)) {{1}}@else {{0}}@endif 
+                                    @if(!is_null($soft)) {{1}}@else {{0}}@endif
                                 </td>
                                 <td align="center">
                                     @if(!is_null($gvt)) {{1}}@else {{0}}@endif
@@ -152,19 +169,39 @@
                                 <td align="center">
                                     @if(!is_null($placement)||!is_null($ind)) {{1}}@else {{0}} @endif
                                 </td>
+
                                 @cannot('branch')<td>{{ $youth->ext }}</td>@endcan
+                                <td>{{$youth->bss}}</td>
+                                <td>
+                                    @php
+                                        $vt1 = DB::table('finacial_supports_youths')->join('finacial_supports','finacial_supports.id','=','finacial_supports_youths.finacial_support_id')
+                                        ->join('courses','courses.id','=','finacial_supports.course_id')
+                                        ->where('courses.course_type','Vocational Training')
+                                        ->where('youth_id',$youth->youth_id)->first();
+                                    @endphp
+                                     @if(!is_null($vt1)) {{1}}@else {{0}}@endif
+                                </td>
+                                <td>
+                                    @php
+                                        $prof = DB::table('finacial_supports_youths')->join('finacial_supports','finacial_supports.id','=','finacial_supports_youths.finacial_support_id')
+                                        ->join('courses','courses.id','=','finacial_supports.course_id')
+                                        ->where('courses.course_type','Proffessional Training')
+                                        ->where('youth_id',$youth->youth_id)->first();
+                                    @endphp
+                                     @if(!is_null($prof)) {{1}}@else {{0}}@endif
+                                </td>
                                 <td><a href="{{ URL::to('youth/' . $youth->youth_id . '/view') }}#tab_4" target="_blank">
                                             <button type="button" id="view-youth" data-id="{{$youth->youth_id}}" class="btn btn-block btn-warning btn-flat btn-sm" ><i class="fas fa-eye"></i> </button>
                                 </a></td>
                             </tr>
                             @endforeach
-                        <tbody>        
-                    </table>      
-                    
+                        <tbody>
+                    </table>
+
                 </div>
-            </div> 
-        </div>  
-    </div>   
+            </div>
+        </div>
+    </div>
 </div>
 @endsection
 @section('scripts')
@@ -205,6 +242,11 @@ $(document).ready(function() {
             {
                 "targets": [ 10 ],
                 "visible": false
+            },
+
+            {
+                "targets": [ 12 ],
+                "visible": false
             }
         ],
 
@@ -239,6 +281,12 @@ $(document).ready(function() {
 
        $('#branch_id').on('change', function () {
           table.columns(11).search( this.value ).draw();
+          var info = $('#example').DataTable().page.info();
+          $('#row_count').text(info.recordsDisplay+ ' youths filtered out of  ' +info.recordsTotal);
+      } );
+
+      $('#bss').on('change', function () {
+          table.columns(12).search( this.value ).draw();
           var info = $('#example').DataTable().page.info();
           $('#row_count').text(info.recordsDisplay+ ' youths filtered out of  ' +info.recordsTotal);
       } );

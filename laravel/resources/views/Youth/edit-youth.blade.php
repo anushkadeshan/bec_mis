@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('title','Edith Youth |')
 @section('content')
 <div class="container-fluid">
 	<br>
@@ -157,8 +158,8 @@
                         <div class="input-group">
                         
                         <input type="text" id="fam_id" name="fam_id" class="form-control" value="{{ $youth->family->head_of_household}}" placeholder="Enter Name of Household">
-                        <div style="cursor: pointer" onclick="window.open('{{Route('youth/family/add')}}', '_blank');" class="input-group-prepend">
-                          <span data-toggle="tooltip" data-placement="top" title="Add family to list" class="input-group-text"><i style="color: blue;" class="fa fa-plus"></i></span>
+                        <div style="cursor: pointer" onclick="window.open('{{url('family/' . $youth->family->id . '/edit')}}', '_blank');" class="input-group-prepend">
+                          <span data-toggle="tooltip" data-placement="top" title="Update Family Details" class="input-group-text"><i style="color: blue;" class="fa fa-edit"></i></span>
                         </div>  
                       </div>
                       <div id="familyList"></div>

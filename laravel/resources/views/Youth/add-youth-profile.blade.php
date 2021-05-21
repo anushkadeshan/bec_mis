@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('title','Add Youth Profile |')
 @section('content')
 <div class="container-fluid">
 	<br>

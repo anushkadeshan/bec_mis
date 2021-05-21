@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('title','Provide Soft Skills |')
 @section('content')
 <div class="container-fluid">
 
@@ -110,12 +111,9 @@
 								<option value="">Select Option</option>
 								<option value="Yes">Yes</option>
 								<option value="No">No</option>
-								
     					   </select>
 						</div>
 	            	</div>
-	            	
-	            	
 	            </div>
 	            <div class="row">
 	            	<div class="col-md-4">

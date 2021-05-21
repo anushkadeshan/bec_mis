@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('title',''.$course->name.' |')
 @section('content')
 <div class="container-fluid" >
 	<section class="content-header">
@@ -25,7 +26,7 @@
 
         		</div>
         		<div class="col-md-6 text-right">
-        		@cannot('youth')	<button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#addModel">Add institutes to course</button> @endcan
+        		@can('add-course')	<button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#addModel">Add institutes to course</button> @endcan
         		</div>
         	</div>
         </div>

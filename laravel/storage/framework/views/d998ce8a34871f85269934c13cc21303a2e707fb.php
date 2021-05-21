@@ -1,0 +1,263 @@
+
+<?php $__env->startSection('title','Regional Meeting |'); ?>
+<?php $__env->startSection('content'); ?>
+<div class="container-fluid">
+
+<div class="row">
+	  <div class="col-12">
+	    <!-- Custom Tabs -->
+	    <div class="card">
+	      <div class="card-header d-flex p-0">
+	        <h3 class="card-title p-3">Completion Report for attending BMIC regional meeting</h3>
+	        <ul class="nav nav-pills ml-auto p-2" id="tabs">
+	          <li class="nav-item"><a class="nav-link active" href="#tab_1" data-toggle="tab">Genaral</a></li>
+	          <li class="nav-item"><a class="nav-link" href="#tab_2" data-toggle="tab">Participants</a></li>
+	        </ul>
+	      </div><!-- /.card-header -->
+	      <div class="card-body">
+	      	<form name="regional_meeting" id="regional_meeting">
+	        <div class="tab-content">
+	          <div class="tab-pane active" id="tab_1">
+	          	<div class="row">
+	          		<div class="col-md-4">
+	          			<div class="form-group">
+						    <label for="district">1. District</label>
+						    <select name="district" id="district" class="form-control" data-dependent="dsd">
+								<option value="">Select Option</option>
+								<?php $__currentLoopData = $districts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $district): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+								<option  value="<?php echo e($district->name_en); ?>"><?php echo e($district->name_en); ?></option>
+								<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+    					   </select>
+						</div>
+	          		</div>
+	          		<div class="col-md-4">
+	          			<div class="form-group">
+						    <label for="dsd">2. DSD (Leave blank if not relevant)</label>
+						    <select name="dsd[]" id="dsd" class="form-control" multiple>
+								<option value="">Select Option</option>
+								
+    					   </select>
+						</div>
+	          		</div>
+	          		<div class="col-md-4">
+	          			<div class="form-group">
+						    <label for="dm_name">3. District Manager</label>
+						    <select name="dm_name" id="dm_name" class="form-control">
+								<option value="">Select Option</option>
+								<?php $__currentLoopData = $managers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $manager): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+								<option value="<?php echo e($manager->manager); ?>"><?php echo e($manager->manager); ?></option>
+								<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+    					   </select>
+						</div>
+	          		</div>
+	          	</div>
+	            <div class="row">
+	            	<div class="col-md-8">
+	            		<div class="form-group">
+						    <label for="dm_name">4. Title of the Action</label>
+						    <select name="title_of_action" id="title_of_action" class="form-control" readonly>
+								<option value="">Select Option</option>
+								<?php $__currentLoopData = $activities; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $activity): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+								<option <?php if($activity->activity=='BMIC Cluster level awareness of BSS program and awareness through schools'): ?> selected <?php endif; ?> value="<?php echo e($activity->activity); ?>"><?php echo e($activity->activity); ?></option>
+								<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+    					   </select>
+						</div>
+	            	</div>
+	            	<div class="col-md-4">
+	            		<div class="form-group">
+						    <label for="dm_name">5. Activity code as per the Logframe</label>
+						    <select name="activity_code" id="activity_code" class="form-control" readonly>
+								<option value="">Select Option</option>
+								<?php $__currentLoopData = $activities; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $activity): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+								<option <?php if($activity->code=='1.1.1'): ?> selected <?php endif; ?> value="<?php echo e($activity->code); ?>"><?php echo e($activity->code); ?></option>
+								<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+    					   </select>
+						</div>
+	            	</div>
+	            </div>
+	            <div class="row">
+	            	<div class="col-md-3">
+	            		<div class="form-group">
+						    <label for="dm_name">6. Meeting Date</label>
+						    <input type="date" name="meeting_date" id="meeting_date" class="form-control">
+						</div>
+	            	</div>
+	            	<div class="col-md-3">
+	            		<div class="form-group">
+						    <label for="dm_name">7. Time Start</label>
+						    <input type="time" name="time_start" id="time_start" class="form-control">
+						</div>
+	            	</div>
+	            	<div class="col-md-3">
+	            		<div class="form-group">
+						    <label for="dm_name">8. Time End</label>
+						    <input type="time" name="time_end" id="time_end" class="form-control">
+						</div>
+	            	</div>
+	            	<div class="col-md-3">
+	            		<div class="form-group">
+						    <label for="dm_name">9. Venue</label>
+						    <input type="text" name="venue" id="venue" class="form-control">
+						</div>
+	            	</div>
+	            </div>	
+	            <div class="row">
+	            	<div class="col-md-12">
+	            		<div class="form-group">
+						    <label for="dm_name">10. Matters discussed</label>
+						    <textarea class="textarea" name="matters" placeholder="Place some text here"
+                          style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
+						</div>
+	            	</div>	            	
+	            </div>
+	            <div class="row">
+	            	<div class="col-md-6">
+	            		<div class="form-group">
+						    <label for="dm_name">11. Decisions agreed (If any)</label>
+						    <textarea name="decisions" rows="4"  class="form-control"></textarea>
+						</div>
+	            	</div>	
+	            	<div class="col-md-6">
+	            		<div class="form-group">
+						    <label for="dm_name">12. Matters to be further followed up</label>
+						    <textarea name="decisions_to_followed" rows="4" class="form-control"></textarea>
+						</div>
+	            	</div>            	
+	            </div>
+	           <button type="button" class="btn btn-primary" id="participants">Add Participants</button>
+	          </div>
+	          <!-- /.tab-pane -->
+	          
+	          <div class="tab-pane" id="tab_2">
+	          	<div class="form-group">
+  
+	          			<table class="table table-borderless" id="dynamic_field">
+						  <thead>
+						    <tr>
+						      <th scope="col">Name</th>
+						      <th scope="col">Position</th>
+						      <th scope="col">Branch</th>
+						      <th scope="col"></th>
+						    </tr>
+						  </thead>
+						  <tbody>
+						    <tr>
+						      <th><input type="text" name="name[]" class="form-control name-list"></th>
+						      <td><input type="text" name="position[]" class="form-control position-list"></td>
+						      <td><input type="text" name="branch[]" class="form-control branch-list"></td>
+						      <td><button type="button" class="btn btn-success btn-flat" id="add">Add More</button></td>
+						    </tr>
+						    
+						  </tbody>
+						</table>
+						<?php echo e(csrf_field()); ?>
+
+						<button type="button" name="button" id="submit" class="btn btn-info btn-flat"><i style="display:none" id="loading" class="fa fa-spinner fa-lg faa-spin animated"></i> &nbsp;&nbsp;Submit</button>
+	          	</div>
+	            
+	          </div>
+
+	        </div>
+	        </form>
+	        <!-- /.tab-content -->
+	      </div><!-- /.card-body -->
+	    </div>
+	    <!-- ./card -->
+	  </div>
+	  <!-- /.col -->
+	</div>
+	
+</div>
+<?php $__env->stopSection(); ?>
+<?php $__env->startSection('scripts'); ?>
+<script>
+	$(document).ready(function(){
+   	  $(document).on('change','#district',function(e){
+   	  		
+   	  		var district = e.target.value;
+   	  		$.get('/ds-division?district=' +district, function(data){
+   	  			//success
+   	  			console.log(data);
+   	  			$('#dsd').empty();
+
+   	  			$.each(data, function(index, dsObj){
+   	  				$('#dsd').append('<option value="'+dsObj.DSD_Name+'">'+dsObj.DSD_Name+'</option>');
+
+   	  			});
+   	  		});
+   	  });
+
+   	  $(document).on('click','#participants', function(){
+   	  	$('#tabs a[href="#tab_2"]').tab('show');
+   	  });
+   	});
+
+$(document).ready(function(){  
+      var i=1;  
+      $('#add').click(function(){  
+           i++;  
+           $('#dynamic_field').append('<tr id="row'+i+'"><td><input type="text" name="name[]" class="form-control name_list" /></td><td><input type="text" name="position[]" class="form-control position-list"></td>						      <td><input type="text" name="branch[]" class="form-control branch-list"></td><td><button type="button" name="remove" id="'+i+'" class="btn btn-danger btn-flat btn_remove">X</button></td></tr>');  
+      });  
+      $(document).on('click', '.btn_remove', function(){  
+           var button_id = $(this).attr("id");   
+           $('#row'+button_id+'').remove();  
+      });   
+ });
+
+ $(document).ready(function(){
+     $(document).on('click' , '#submit' ,function (){
+        var form = $('#regional_meeting');
+        $.ajax({
+            type: 'POST',
+            url: SITE_URL + '/activity/education/add-meeting',
+                      
+            data: form.serialize(),
+
+            beforeSend: function(){
+              $('#loading').show();
+            },
+            complete: function(){
+              $('#loading').hide();
+            },          
+            success: function(data) {
+              if($.isEmptyObject(data.error)){              
+              toastr.success('Succesfully Add the report ! ', 'Congratulations', {timeOut: 5000});
+			  $("#regional_meeting")[0].reset();
+
+            }
+            else{
+             printValidationErrors(data.error);
+              
+            }         
+        },
+
+            error: function (jqXHR, exception) {    
+                console.log(jqXHR);
+                toastr.error('Error !', 'Something Error')
+            },
+        });
+    });
+  });
+ function printValidationErrors(msg){
+        $.each(msg, function(key,value){
+        	toastr.error('Validation Error !', ""+value+"");
+        });
+    }
+
+  <?php if(session('error')): ?>
+  toastr.error('<?php echo e(session('error')); ?>')
+  <?php endif; ?>  
+</script>
+<script src="<?php echo e(asset('js/bootstrap3-wysihtml5.all.min.js')); ?>"></script>
+<script>
+  $(function () {
+    // bootstrap WYSIHTML5 - text editor
+
+    $('.textarea').wysihtml5({
+      toolbar: { fa: true },
+      size: 'default'
+    })
+  })
+</script>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.main', \Illuminate\Support\Arr::except(get_defined_vars(), array('__data', '__path')))->render(); ?>

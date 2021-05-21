@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('title','House Hold Surveys |')
 @section('content')
 <div class="container-fluid">
 

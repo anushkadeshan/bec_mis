@@ -1,4 +1,5 @@
 @extends('layouts.reports')
+@section('title','Soft Skills |')
 @section('content')
 <div class="container-fluid">
     <!-- Content Header (Page header) -->
@@ -6,7 +7,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-md-8">
-                      
+
             <h4>Soft Skills Training <small class="badge badge-success"> {{count($meetings)}}</small></h4>
           </div>
           <div class="col-md-4">
@@ -29,9 +30,9 @@
         </div>
         <div class="card-body">
           <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false" style="background-color: #5E6971; color: white;">
-            
-          <?php $branch_id = Auth::user()->branch; ?> 
-          @if(is_null($branch_id)) 
+
+          <?php $branch_id = Auth::user()->branch; ?>
+          @if(is_null($branch_id))
           <li class="nav-item">
             <a class="nav-link">
                 <div class="form-group">
@@ -44,13 +45,13 @@
                 </select>
               </div>
             </a>
-          </li> 
+          </li>
           @else
-          <input type="hidden" name="branch_id" value="{{$branch_id}}"> 
+          <input type="hidden" name="branch_id" value="{{$branch_id}}">
           @endif
           <li class="nav-item">
             <a class="nav-link">
-                
+
              <div class="input-group date" data-provide="datepicker">
           <input type="text" class="form-control" id="dateStart" data-date-end-date="0d" placeholder="From">
          <div class="input-group-addon">
@@ -82,14 +83,14 @@
                 </select>
               </div>
             </a>
-          </li> 
+          </li>
         -->
           <li class="nav-item">
               <a class="nav-link">
                 <button type="button" name="filter" id="filter" class="btn btn-primary btn-flat"><i id="loading" class="fas fa-filter"></i> Filter <i style="display:none" id="loading" class="fa fa-spinner fa-lg faa-spin animated"></i></button>
                 <button type="button" name="refresh" id="refresh" class="btn btn-default btn-flat">Refresh</button>
               </a>
-          </li>               
+          </li>
           </ul>
         </div>
       </div>
@@ -113,7 +114,7 @@
                 <div class="tab-content">
                   <div class="tab-pane active" id="tab_1">
                     <div>
-                    
+
                       <a class="btn btn-app zoom">
                         <span class="badge bg-warning" id="total_records"></span>
                         <i class="fa fa-graduation-cap"></i>Courses
@@ -159,27 +160,128 @@
                                         <th>Youths still in Courses</th>
                                         <th>Total Cost</th>
                                     </tr>
-                                    <tbody> 
+                                    <tbody>
                                     </tbody>
-                                </thead>        
+                                </thead>
                             </table>
-                          
+
                         </div>
                         @endcan
+                        <div class="card card-success">
+                          <div  class="card-header">
+                            Current Status of Soft Skill Youth
+                          </div>
+                          <div  class="card-body">
+                            <table id="youths_table" class="table row-border table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Youth ID</th>
+                                        <th>Youth Name</th>
+                                        <th>Contacts</th>
+                                        <th>Course Status</th>
+                                        <th>Current Status</th>
+                                        <th>Branch</th>
+                                    </tr>
+                                    <tbody>
+
+                                      @foreach($youths as $youth)
+                                       <tr>
+                                          <td>{{$youth->youth_id}}</td>
+                                          <td><a href="{{ URL::to('youth/' . $youth->youth_id . '/view') }}">{{$youth->youth_name}}</a></td>
+                                          <td>{{$youth->phone}}</td>
+                                          <td>
+                                          @switch($youth->dropout)
+                                              @case(1)
+                                                  <small class="badge badge-danger">{{"Dropout"}}</small>
+                                              @break
+                                              @case(0)
+                                                  @if($youth->end_date < date("Y-m-d"))
+                                                      <small class="badge badge-warning">{{"Finished"}}</small>
+                                                  @else
+                                                      <small class="badge badge-success">{{"Ongoing"}}</small>
+                                                  @endif
+                                              @break
+                                              @default
+
+                                          @endswitch
+                                          </td>
+                                          <td>
+
+                                              @php
+                                                $job =  DB::table('placement_individual')->where('youth_id',$youth->youth_id)->first();
+                                                $vt =  DB::table('finacial_supports_youths')
+                                                     ->join('finacial_supports','finacial_supports.id','=','finacial_supports_youths.finacial_support_id')
+                                                     ->where('end_date', '>', date("Y-m-d"))
+                                                     ->where('youth_id',$youth->youth_id)->first();
+                                              @endphp
+                                            <select
+                                              @if($youth->end_date > date("Y-m-d")|| !is_null($job)||!is_null($vt)|| $youth->cs == 2) disabled @endif
+                                              name="current_status" id="current_status" class="form-control" onchange="updateStatus(this.value,{{$youth->youth_id}})">
+                                              <option @if($youth->cs==5) selected @endif value="5">No Job</option>
+                                              <option @if($youth->end_date > date("Y-m-d")) selected @endif value="1">Still Following Course</option>
+                                              <option @if(!is_null($vt) || $youth->cs == 2) selected @endif value="2">Following Course-BEC Supported</option>
+                                              <option @if($youth->cs==3) selected @endif value="3">Following Course-BEC Not Supported</option>
+                                              <option @if(!is_null($job)) selected @endif value="4">On the Job</option>
+                                              <option @if($youth->cs==6) selected @endif value="6">Not Contactable</option>
+                                            </select>
+
+                                          </td>
+                                          <td>{{$youth->ext}}</td>
+                                        </tr>
+                                      @endforeach
+                                      <!-- Modal -->
+                                            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                              <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                  <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLongTitle">Add Following Course and Completion Date</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                      <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                  </div>
+                                                  <div class="modal-body">
+                                                  <form action="" id="following_course">
+                                                  {{csrf_field()}}
+                                                  <div class="form-group">
+                                                  <label for="dm_name">Course Name</label>
+                                                    <input data-toggle="tooltip" data-placement="top" title="Search course name and select" type="text" id="course_name" name="res_id" class="form-control" placeholder="Search Name of Course">
+                                                    <div id="course_list"></div>
+                                                        <input type="hidden" id="course_id" name="following_course_id" value="">
+                                                        <input type="hidden" id="status_youth_id" name="youth_id" value="">
+                                                  </div>
+                                                    <div class="form-group">
+                                                    <label for="">Expected Course Completion Date</label>
+                                                      <input type="date" class="form-control" name="following_course_end_date">
+                                                    </div>
+
+                                                  </div>
+                                                  <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                                  </div>
+                                                  </form>
+                                                </div>
+                                              </div>
+                                            </div>
+                                    </tbody>
+                                </thead>
+                            </table>
+                          </div>
+                        </div>
                     <div class="card card-success">
                     <div  class="card-header">
                      Enrolled Youths to soft skill training <a href="{{Route('view_soft_youths')}}"><span  class="badge badge-warning float-right" id="row_count">View Youth Report</span></a>
                     </div>
                     <div  class="card-body">
-                    
+
                     <div class="row">
                         <div class="col-md-12">
                           <div id="curve_chart" style=" height: 400px"></div>
-                          
+
                         </div>
-                    </div>  
-                      
-                    </div>   
+                    </div>
+
+                    </div>
                     </div>
                   </div>
                   <!-- /.tab-pane -->
@@ -196,12 +298,11 @@
                             <th>Cost</th>
                             <th>Branch</th>
                             <th>Action</th>
-                          
                         </tr>
-                        <tbody> 
+                        <tbody>
                         </tbody>
-                    </thead>        
-                 </table>   
+                    </thead>
+                 </table>
               {{ csrf_field() }}
                   </div>
                   <!-- /.tab-pane -->
@@ -261,8 +362,8 @@
                               <li class="list-group-item border-0"><strong>Branch: </strong><span id="branch"></span></li>
                             </ul>
                           </div>
-                        </div>  
-                      </div>  
+                        </div>
+                      </div>
                       <div class="col-md-6">
                         <div class="card card-success card-outline">
                           <div class="card-header">
@@ -277,15 +378,15 @@
                                           <th>Name </th>
                                           <th>Phone</th>
                                       </tr>
-                                      <tbody> 
+                                      <tbody>
                                       </tbody>
-                                      
-                                  </thead>        
-                                </table> 
+
+                                  </thead>
+                                </table>
                         <button type="button hidden-print" id="print" class="btn btn-success btn-flat"><i class="fas fa-print"></i>  Print</button>
                         <button type="button" id="review_id" name="file_name" class="btn btn-primary btn-flat" data-id="" data-attendance=""><i class="fas fa-download"></i> Review Report</button>
-                        <a id="link2" href="" target="_blank">  <button type="button" id="download_a" name="file_name" class="btn btn-warning btn-flat" data-id="" data-attendance=""><i class="fas fa-download"></i> MOU Report</button></a> 
-                        {{ csrf_field() }}  
+                        <a id="link2" href="" target="_blank">  <button type="button" id="download_a" name="file_name" class="btn btn-warning btn-flat" data-id="" data-attendance=""><i class="fas fa-download"></i> MOU Report</button></a>
+                        {{ csrf_field() }}
                          </div>
                        </div>
                       </div>
@@ -358,8 +459,8 @@
                               <li class="list-group-item border-0"><strong>Branch: </strong><span id="branch1"></span></li>
                             </ul>
                           </div>
-                        </div>  
-                      </div>  
+                        </div>
+                      </div>
                       <div class="col-md-12">
                         <div class="card card-success card-outline">
                           <div class="card-header">
@@ -377,14 +478,14 @@
                                           <th># Students Currently following</th>
                                           <th># Students passed out</th>
                                       </tr>
-                                      <tbody> 
+                                      <tbody>
                                       </tbody>
-                                      
-                                  </thead>        
-                                </table> 
+
+                                  </thead>
+                                </table>
                         <button type="button hidden-print" id="print" class="btn btn-success btn-flat"><i class="fas fa-print"></i>  Print</button>
-                        
-                        {{ csrf_field() }}  
+
+                        {{ csrf_field() }}
                          </div>
                        </div>
                       </div>
@@ -409,6 +510,70 @@
 <script src="{{ asset('js/printThis.js') }}" ></script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script>
+ $(document).ready(function(){
+//search resourse Person
+       $('#course_name').keyup(function(){
+              var query = $(this).val();
+              if(query != '')
+              {
+               var _token = $('input[name="_token"]').val();
+               $.ajax({
+                url: SITE_URL + '/support-courseList',
+                method:"POST",
+                data:{query:query, _token:_token},
+                success:function(data){
+                 $('#course_list').fadeIn();
+                 $('#course_list').html(data);
+                }
+               });
+              }
+          });
+
+          $(document).on('click', '#course li', function(){
+            $('#course_list').fadeOut();
+              $('#course_name').val($(this).text());
+              $('#start_date').focus();
+
+              var ins_id = $(this).attr('id');
+              $('#course_id').val(ins_id);
+
+          });
+});
+function updateStatus(value,id) {
+  if(value==3){
+    courseDetails(value,id);
+  }
+  else{
+    var _token = '{{csrf_field()}}';
+    $.ajax({
+      type: 'GET',
+      url: SITE_URL + '/change-soft-status/'+value+'/'+id,
+
+      success: function(data) {
+        if(data.code==401){
+          toastr.error(data.msg, 'Oops!', {timeOut: 5000});
+        }
+        else{
+          toastr.success(data.msg, 'Great!', {timeOut: 5000});
+        }
+
+  },
+
+      error: function (jqXHR, exception) {
+          console.log(jqXHR);
+          toastr.error('Error !', 'Something Error')
+      },
+  });
+  }
+}
+
+function courseDetails(value,id) {
+  $('#status_youth_id').val(id);
+
+  $('#exampleModalCenter').modal('show');
+
+}
+
 
 $(document).ready(function() {
 
@@ -419,10 +584,12 @@ var dataTable = $("#example").DataTable({
             ],
     });
 
+
 var dataTable2 = $("#example10").DataTable({
       dom: 'Bfrtip',
             buttons: [
-                
+                'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
+
             ],
 
             "bFilter": false,
@@ -465,7 +632,7 @@ var dataTable2 = $("#example10").DataTable({
    },
    success:function(data)
    {
-  
+
   dataTable.clear().draw();
    var count = 1;
    var male_sum = 0;
@@ -501,9 +668,9 @@ var dataTable2 = $("#example10").DataTable({
           pwd_f_sum += parseFloat(total_p_female);
           cost_sum += parseFloat(total_cost);
 
-      } 
+      }
   });
-   
+
    $('#total_records').text(data.data.length);
    $('#total_male1').text(male_sum);
    $('#total_female1').text(female_sum);
@@ -511,7 +678,7 @@ var dataTable2 = $("#example10").DataTable({
    $('#total_p_female').text(pwd_f_sum);
    $('#total_cost').text(cost_sum.toLocaleString());
 
-    
+
    }
   });
 
@@ -523,7 +690,7 @@ var dataTable2 = $("#example10").DataTable({
   if(dateStart != '' &&  dateEnd != '')
   {
    fetch_data(dateStart, dateEnd, branch /*,institute*/);
-  
+
   }
   else
   {
@@ -545,7 +712,7 @@ var dataTable2 = $("#example10").DataTable({
 $('body').on('click', '.btn_view', function () {
 
       var meeting_id = $(this).data('id');
-       
+
 
       $.get("{{ url('reports-me/skill/soft-skill') }}" +'/' + meeting_id +'/view', function (data) {
           $('#tabs a[href="#tab_3"]').tab('show');
@@ -567,10 +734,10 @@ $('body').on('click', '.btn_view', function () {
           $('#total_female').text(data.meeting.total_female);
           $('#pwd_male').text(data.meeting.pwd_male);
           $('#pwd_female').text(data.meeting.pwd_female);
-          $('#branch').text(data.meeting.branch_name); 
+          $('#branch').text(data.meeting.branch_name);
 
           $('#review_id').data("id",data.meeting.review_report);
-          
+
 
           var mou = data.meeting.mou_report;
           var url2 = SITE_URL+ '/download/soft-skill/'+mou;
@@ -586,14 +753,14 @@ $('body').on('click', '.btn_view', function () {
 
           for(var count = 0; count < data.youths.length; count++)
           {
-            
+
            output1 += '<tr>';
            output1 += '<td>' + (count+1) + '</td>';
            output1 += '<td><a target="_blank" href="'+SITE_URL+'/youth/'+ data.youths[count].youth_id +'/view">' + data.youths[count].name + '</a></td>';
            output1 += '<td>' + data.youths[count].phone + '</td></tr>';
           }
           $('#example2 tbody').html(output1);
- 
+
       })
 
    });
@@ -602,7 +769,7 @@ $('body').on('click', '#review_id', function () {
 
       var meeting_id = $(this).data('id');
      // alert(meeting_id);
-       
+
 
       $.get("{{ url('reports-me/skill/institute-review') }}" +'/' + meeting_id +'/view', function (data) {
           $('#tabs a[href="#tab_4"]').tab('show');
@@ -630,9 +797,9 @@ $('body').on('click', '#review_id', function () {
           $('#soft').text(data.meeting.soft_skill);
           $('#agree').text(data.meeting.agreement_soft_skill);
           $('#gaps').text(data.meeting.gaps);
-          $('#branch1').text(data.meeting.branch_name); 
+          $('#branch1').text(data.meeting.branch_name);
 
-         
+
 
           var institute = data.meeting.i_id;
           var url3 = SITE_URL+ '/institute/'+institute+'/view';
@@ -644,7 +811,7 @@ $('body').on('click', '#review_id', function () {
 
           for(var count = 0; count < data.courses.length; count++)
           {
-            
+
            output1 += '<tr>';
            output1 += '<td>' + (count+1) + '</td>';
            output1 += '<td><a target="_blank" href="'+SITE_URL+'/courses/'+ data.courses[count].course_id +'/view">' + data.courses[count].name + '</a></td>';
@@ -654,7 +821,7 @@ $('body').on('click', '#review_id', function () {
            output1 += '<td>' + data.courses[count].passed_out + '</td></tr>';
           }
           $('#example3 tbody').html(output1);
- 
+
       })
 
    });
@@ -666,10 +833,10 @@ $('#print').click(function () {
     });
 });
 
-  
+
 google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(drawChart);
-      
+
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
           ['Year', 'Total Male', 'Total Female','PWD Male','PWD Female'],
@@ -677,7 +844,7 @@ google.charts.load('current', {'packages':['corechart']});
           ['2019',  @if($participants2019->total_male==null) {{0}} @else {{$participants2019->total_male}} @endif , @if($participants2019->total_female==null) {{0}} @else {{$participants2019->total_female}}@endif, @if($participants2019->pwd_male==null) {{0}} @else{{$participants2019->pwd_male}}@endif,@if($participants2019->pwd_female==null) {{0}} @else{{$participants2019->pwd_female}}@endif],
           ['2020',  @if($participants2020->total_male==null) {{0}} @else {{$participants2020->total_male}} @endif , @if($participants2020->total_female==null) {{0}} @else {{$participants2020->total_female}}@endif, @if($participants2020->pwd_male==null) {{0}} @else{{$participants2020->pwd_male}}@endif,@if($participants2020->pwd_female==null) {{0}} @else{{$participants2020->pwd_female}}@endif],
           ['2021',  @if($participants2021->total_male==null) {{0}} @else {{$participants2021->total_male}} @endif , @if($participants2021->total_female==null) {{0}} @else {{$participants2021->total_female}}@endif, @if($participants2021->pwd_male==null) {{0}} @else{{$participants2021->pwd_male}}@endif,@if($participants2021->pwd_female==null) {{0}} @else{{$participants2021->pwd_female}}@endif],
-          
+
         ]);
 
         var options = {
@@ -698,11 +865,48 @@ google.charts.load('current', {'packages':['corechart']});
         };
 
         var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
-        
+
         chart.draw(data, options);
       }
 
+$(document).ready(function(){
+     $("#following_course").on('submit' ,function (e){
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: SITE_URL + '/soft-status/course-follow',
+            data: new FormData(this),
+            contentType: false,
+              cache: false,
+            processData:false,
+            beforeSend: function(){
+              $('#loading').show();
+            },
+            complete: function(){
+              $('#loading').hide();
+            },
+            success: function(data) {
+              if($.isEmptyObject(data.error)){
+              toastr.success('Succesfully updated Status and Course Details ! ', 'Congratulations', {timeOut: 5000});
+			        $("#following_course")[0].reset();
+              $('#exampleModalCenter').modal('hide');
 
+            }
+            else{
+            $('#loading').hide();
+               toastr.error('', 'Something Error !');
+             printValidationErrors(data.error);
+
+            }
+        },
+
+            error: function (jqXHR, exception) {
+                console.log(jqXHR);
+                toastr.error('Error !', 'Something Error')
+            },
+        });
+    });
+  });
 </script>
 <style>
   th { font-size: 15px; }
@@ -715,5 +919,32 @@ google.charts.load('current', {'packages':['corechart']});
 }
 
 
+</style>
+<style type="text/css" media="screen">
+  #autocomplete, #institute, #course, #youths,#review_reports {
+    position: absolute;
+    z-index: 1000;
+    cursor: default;
+    padding: 0;
+    margin-top: 2px;
+    list-style: none;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    -webkit-border-radius: 5px;
+       -moz-border-radius: 5px;
+            border-radius: 5px;
+    -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+       -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+#autocomplete,  #institute, #course, #youths, #review_reports> li {
+  padding: 3px 20px;
+}
+#autocomplete, #institute, #course, #youths, #review_reports > li.ui-state-focus {
+  background-color: #DDD;
+}
+.ui-helper-hidden-accessible {
+  display: none;
+}
 </style>
 @endsection

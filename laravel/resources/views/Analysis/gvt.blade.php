@@ -70,13 +70,14 @@
    
     <hr>
     <div class="row">
-      <div class="col-sm-4 col-md-10">
+      <div class="col-sm-4 col-md-6">
        
        <span>Date From : </span> <span id="date1" class="text-primary"></span> <span> to : </span> <span id="date2" class="text-primary"></span> 
       </div>
-      <div class="col-sm-4 col-md-2">
+      <div class="col-sm-4 col-md-6">
        <span style="float: right" class="text-right"><a href="{{ URL::to('reports-me/skill/gvt-support') }}"><button type="button" class="btn btn-success btn-flat"><i class="fas fa-file-invoice"> View Full Report</i></button></a></span>
-       
+
+       <span style="float: right; margin-right: 5px" class="text-right"><a href="{{ URL::to('view_gvt_youths') }}"><button type="button" class="btn btn-info btn-flat"><i class="fas fa-file-invoice"> Youth Progress After Course Finished<</i></button></a></span>
       </div>
     </div>
     <br>
@@ -452,7 +453,7 @@ fetch_data();
       for (var i = 0; i < array_s.length; i++) {
         dataRows.push([array_s[i].DSD_Name, parseFloat(array_s[i].total)]);
       }
-        var dataa1 = google.visualization.arrayToDataTable(dataRows);
+       // var dataa1 = google.visualization.arrayToDataTable(dataRows);
 
         var options1 = {
           chart: {
@@ -469,12 +470,11 @@ fetch_data();
           legend: { position: 'none'},
         };
 
-        var chart1 = new google.charts.Bar(document.getElementById('barchart_material'));
+        var chart1 = new google.visualization.BarChart(document.getElementById('barchart_material'));
+        //var chart1 = new google.charts.Bar(document.getElementById('barchart_material'));
 
-        chart1.draw(dataa1, google.charts.Bar.convertOptions(options1));
+        chart1.draw(dataa1, options1);
       }
-
-
    }
   });
 

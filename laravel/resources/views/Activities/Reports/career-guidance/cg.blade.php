@@ -1,4 +1,5 @@
 @extends('layouts.reports')
+@section('title','Career Guidances |')
 @section('content')
 <div class="container-fluid">
     <!-- Content Header (Page header) -->
@@ -359,14 +360,14 @@ $(document).ready(function() {
 var dataTable = $("#example").DataTable({
       dom: 'Bfrtip',
             buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
+               
             ],
     });
 
 var dataTable3 = $("#example10").DataTable({
       dom: 'Bfrtip',
             buttons: [
-                
+                'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
             ],
 
             "bFilter": false,

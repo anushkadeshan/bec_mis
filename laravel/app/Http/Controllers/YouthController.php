@@ -35,7 +35,7 @@ class YouthController extends Controller
                   ->select('youths.*','youths.name as youth_name','branches.*','youths.id as youth_id')
                   ->latest()
                   ->get();
-        
+
       }
       else{
         $youths = Youth::with('family')
@@ -43,11 +43,11 @@ class YouthController extends Controller
                   ->join('branches','branches.id','=','youths.branch_id')
                   ->select('youths.*','youths.name as youth_name','branches.*','youths.id as youth_id')
                   ->latest()
-                  ->get(); 
+                  ->get();
       }
       //dd($youths->toArray());
       return view('Youth.view-youth')->with(['youths'=> $youths,'districts'=> $districts]);
-    } 
+    }
 
     public function create(){
       $course_categories = DB::table('course_categories')->get();
@@ -55,7 +55,7 @@ class YouthController extends Controller
 
       $branch_id = Auth::user()->branch;
 
-      if(is_null($branch_id)){    
+      if(is_null($branch_id)){
 
         $cg_youths = DB::table('completion_targets')
                   ->join('branches','branches.id','=','completion_targets.branch_id')
@@ -77,7 +77,7 @@ class YouthController extends Controller
         $youths = Youth::where('branch_id',$branch_id)->count();
 
       }
-       
+
     	return view('Youth.add-youth')->with(['course_categories'=> $course_categories, 'branches' => $branches,'cg_youths'=> $cg_youths,'youths'=>$youths]);
     }
 
@@ -126,14 +126,14 @@ class YouthController extends Controller
                   'youth_id' => $youth->id
                 );
 
-                $progres = Progress::create($data1);
+               // $progres = Progress::create($data1);
 
                 Session::forget('youth_id');
                 $youth_id = $youth->id;
                 Session::put('youth_id', $youth_id);
-                
 
-                //send notofications 
+
+                //send notofications
                 $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['admin']);})->get();
                 foreach ($notifyTo as $notifyUser) {
                     $notifyUser->notify(new youthAdd($youth));
@@ -206,7 +206,7 @@ class YouthController extends Controller
               else{
                 $intresting_courses= json_encode($request->intresting_courses);
               }
-             
+
               $data = array(
                   'intresting_business' => $request->intresting_business,
                   'need_help' => $request->need_help,
@@ -242,7 +242,7 @@ class YouthController extends Controller
 
     public function create_following_course(Request $request){
       $validator = Validator::make($request->all(),[
-                
+
                 'youth_id' => 'required',
                 'course_id' => 'required',
                 'completed_at' => 'required',
@@ -262,8 +262,8 @@ class YouthController extends Controller
               else{
                 $industry= json_encode($request->industry);
               }
-              
-             
+
+
 
               $data = array(
                   'course_id' => $request->course_id,
@@ -367,7 +367,7 @@ class YouthController extends Controller
                 return response()->json(['error' => $validator->errors()->all()]);
             }
     }
-    
+
 
     public function create_self(Request $request){
       $validator = Validator::make($request->all(),[
@@ -384,7 +384,7 @@ class YouthController extends Controller
 
 
               );
-            
+
               $data2 = array(
                 'bank_account' => $request->bank_account,
                 'smart_phone' => $request->smart_phone,
@@ -417,10 +417,10 @@ class YouthController extends Controller
 
 
               );
-            
-          
+
+
                 $youth_feedback = DB::table('youth_feedback')->insert($data);
-                
+
 
             }
             else{
@@ -429,7 +429,7 @@ class YouthController extends Controller
     }
 
     public function create_language(Request $request){
-      
+
 
               $data = array(
                   'reading_tamil' => $request->has('reading_tamil'),
@@ -442,7 +442,7 @@ class YouthController extends Controller
                   'speaking_sinhala' => $request->has('speaking_sinhala'),
                   'speaking_english' => $request->has('speaking_english'),
                   'youth_id' => $request->youth_id,
-              );          
+              );
                 $language = DB::table('language')->insert($data);
     }
 
@@ -488,7 +488,7 @@ class YouthController extends Controller
 
           case 'Temporary Job After Vocational/Prof Training':
           $intresting_jobs = IntrestingJob::with('youth')->whereyouth_id($id)->first();
-          
+
           $intresting_business = DB::table('intresting_business')->whereyouth_id($id)->first();
           $youth_common_details = DB::table('youth_common_details')->whereyouth_id($id)->first();
           $jobs_details = null;
@@ -497,7 +497,7 @@ class YouthController extends Controller
 
           case 'Temporary Job without Vocational/Prof Training':
           $intresting_jobs = IntrestingJob::with('youth')->whereyouth_id($id)->first();
-          
+
           $intresting_business = DB::table('intresting_business')->whereyouth_id($id)->first();
           $youth_common_details = DB::table('youth_common_details')->whereyouth_id($id)->first();
           $jobs_details = null;
@@ -512,26 +512,26 @@ class YouthController extends Controller
                   ->select('youths_courses.*','courses.*','courses.id as course_id', 'youths_courses.id as ys_id')
                   ->first();
           $intresting_jobs = IntrestingJob::with('youth')->whereyouth_id($id)->first();
-          
+
           $intresting_business = DB::table('intresting_business')->whereyouth_id($id)->first();
           $youth_common_details = DB::table('youth_common_details')->whereyouth_id($id)->first();
           $jobs_details = null;
-          
+
           break;
 
           case 'Self Employed':
           $intresting_jobs = IntrestingJob::with('youth')->whereyouth_id($id)->first();
-          
+
           $youth_common_details = DB::table('youth_common_details')->whereyouth_id($id)->first();
           $jobs_details = DB::table('jobs_details')->whereyouth_id($id)->where('nature_job','Self Employed')->first();
           $following_course = null;
           $intresting_business = null;
-          
+
           break;
-        
+
         default:
           $intresting_jobs = IntrestingJob::with('youth')->whereyouth_id($id)->first();
-          
+
           $intresting_business = DB::table('intresting_business')->whereyouth_id($id)->first();
           $youth_common_details = DB::table('youth_common_details')->whereyouth_id($id)->first();
           $jobs_details = null;
@@ -612,7 +612,7 @@ class YouthController extends Controller
                   'speaking_sinhala' => $request->has('speaking_sinhala'),
                   'speaking_english' => $request->has('speaking_english'),
                   'youth_id' => $request->youth_id,
-              );          
+              );
                 $language = DB::table('language')->insert($data);
             }
     }
@@ -624,7 +624,7 @@ public function update_followed_course(Request $request){
             ]);
 
             if($validator->passes()){
-              
+
               $followed_courses = DB::table('youths_courses')->whereid($request->id)->update(['provided_by_bec'=> $request->provided_by_bec, 'course_id' => $request->course_id,'completed_at'=> $request->completed_at,'status'=> $request->status]);
 
             }
@@ -649,7 +649,7 @@ public function update_followed_course(Request $request){
             );
 
             if($validator->passes()){
-              
+
               $followed_courses = DB::table('youths_courses')->insert($data);
 
             }
@@ -686,7 +686,7 @@ public function update_followed_course(Request $request){
                       array('title' => $title, 'employer_name' => $employer_name, 'career_plan' => $career_plan, 'step_forward' => $step_forward,'description' => $description, 'nature_job' => $nature_job,'youth_id'=> $youth_id )
                 );
                 }
-                
+
 
             }
             else{
@@ -697,7 +697,7 @@ public function update_followed_course(Request $request){
 
 public function update_tempory_jobs(Request $request){
       $validator = Validator::make($request->all(),[
-                
+
                 'youth_id' => 'required',
             ]);
 
@@ -761,20 +761,20 @@ public function update_tempory_jobs(Request $request){
                 }
 
                 if (DB::table('intresting_business')->where('id', '=', $request->i_business_id)->exists()) {
-                    $intresting_business = DB::table('intresting_business')->whereid($request->i_business_id)->update($data);  
+                    $intresting_business = DB::table('intresting_business')->whereid($request->i_business_id)->update($data);
                 }
                 else{
-                    $common = DB::table('intresting_business')->insert($data);     
+                    $common = DB::table('intresting_business')->insert($data);
 
                 }
                 if (DB::table('youth_common_details')->where('id', '=', $request->common_details_id)->exists()) {
-                    $common = DB::table('youth_common_details')->whereid($request->common_details_id)->update($data2);     
+                    $common = DB::table('youth_common_details')->whereid($request->common_details_id)->update($data2);
                 }
                 else{
-                    $common = DB::table('youth_common_details')->insert($data2);     
-                    
+                    $common = DB::table('youth_common_details')->insert($data2);
+
                 }
-                
+
 
             }
             else{
@@ -784,7 +784,7 @@ public function update_tempory_jobs(Request $request){
 
 public function update_following_course(Request $request){
       $validator = Validator::make($request->all(),[
-                
+
                 'course_id' => 'required',
                 'completed_at' => 'required',
                 'youth_id' => 'required',
@@ -838,7 +838,7 @@ public function update_following_course(Request $request){
                   'need_help' => $request->need_help,
                   'type_of_help' => $request->type_of_help,
                   'youth_id' => $request->youth_id,
-                  
+
 
 
               );
@@ -852,28 +852,28 @@ public function update_following_course(Request $request){
                 }
 
                 if (DB::table('intresting_business')->where('id', '=', $request->i_business_id)->exists()) {
-                    $intresting_business = DB::table('intresting_business')->whereid($request->i_business_id)->update($data3);  
+                    $intresting_business = DB::table('intresting_business')->whereid($request->i_business_id)->update($data3);
                 }
                 else{
-                    $common = DB::table('intresting_business')->insert($data3);     
+                    $common = DB::table('intresting_business')->insert($data3);
 
                 }
                 if (DB::table('youth_common_details')->where('id', '=', $request->common_details_id)->exists()) {
-                    $common = DB::table('youth_common_details')->whereid($request->common_details_id)->update($data2);     
+                    $common = DB::table('youth_common_details')->whereid($request->common_details_id)->update($data2);
                 }
                 else{
-                    $common = DB::table('youth_common_details')->insert($data2);     
-                    
+                    $common = DB::table('youth_common_details')->insert($data2);
+
                 }
                 echo "<script>console.log('Debug Objects: " . $request->youth_following_course_id . "' );</script>";
                 if (DB::table('youths_courses')->where('id', '=', $request->youth_following_course_id)->exists()) {
-                    $course = DB::table('youths_courses')->whereid($request->youth_following_course_id)->update($data);     
+                    $course = DB::table('youths_courses')->whereid($request->youth_following_course_id)->update($data);
                 }
                 else{
-                    $course = DB::table('youths_courses')->insert($data);     
-                    
+                    $course = DB::table('youths_courses')->insert($data);
+
                 }
-                
+
 
             }
             else{
@@ -883,7 +883,7 @@ public function update_following_course(Request $request){
 
     public function update_no_jobs(Request $request){
       $validator = Validator::make($request->all(),[
-                
+
                   'youth_id' => 'required',
 
             ]);
@@ -948,21 +948,21 @@ public function update_following_course(Request $request){
                 }
 
                 if (DB::table('intresting_business')->where('id', '=', $request->i_business_id)->exists()) {
-                    $intresting_business = DB::table('intresting_business')->whereid($request->i_business_id)->update($data);  
+                    $intresting_business = DB::table('intresting_business')->whereid($request->i_business_id)->update($data);
                 }
                 else{
-                    $intresting_business = DB::table('intresting_business')->insert($data);     
+                    $intresting_business = DB::table('intresting_business')->insert($data);
 
                 }
 
                 if (DB::table('youth_common_details')->where('id', '=', $request->common_details_id)->exists()) {
-                    $common = DB::table('youth_common_details')->whereid($request->common_details_id)->update($data2);     
+                    $common = DB::table('youth_common_details')->whereid($request->common_details_id)->update($data2);
                 }
                 else{
-                    $common = DB::table('youth_common_details')->insert($data2);     
-                    
+                    $common = DB::table('youth_common_details')->insert($data2);
+
                 }
-                
+
 
             }
             else{
@@ -982,10 +982,8 @@ public function update_following_course(Request $request){
                   'nature_job' => $request->nature_job,
                   'youth_id' => $request->youth_id,
 
-
-
               );
-            
+
               $data2 = array(
                 'bank_account' => $request->bank_account,
                 'smart_phone' => $request->smart_phone,
@@ -995,20 +993,20 @@ public function update_following_course(Request $request){
               );
 
                 if (DB::table('jobs_details')->where('id', '=', $request->jobs_detials_id)->exists()) {
-                    $self = DB::table('jobs_details')->whereid($request->jobs_detials_id)->update($data);  
+                    $self = DB::table('jobs_details')->whereid($request->jobs_detials_id)->update($data);
                 }
                 else{
-                    $self = DB::table('jobs_details')->insert($data);     
+                    $self = DB::table('jobs_details')->insert($data);
 
                 }
                 if (DB::table('youth_common_details')->where('id', '=', $request->common_details_id)->exists()) {
-                    $common = DB::table('youth_common_details')->whereid($request->common_details_id)->update($data2);     
+                    $common = DB::table('youth_common_details')->whereid($request->common_details_id)->update($data2);
                 }
                 else{
-                    $common = DB::table('youth_common_details')->insert($data2);     
-                    
+                    $common = DB::table('youth_common_details')->insert($data2);
+
                 }
-                
+
             }
             else{
                 return response()->json(['error' => $validator->errors()->all()]);
@@ -1031,7 +1029,7 @@ public function update_following_course(Request $request){
       else{
         $course_categories = DB::table('course_categories')->get();
         $branches = DB::table('branches')->get();
-       
+
         return view('Youth.add-youth-profile')->with(['course_categories'=> $course_categories, 'branches' => $branches]);
       }
     }
@@ -1082,7 +1080,7 @@ public function update_following_course(Request $request){
 
           case 'Temporary Job After Vocational/Prof Training':
           $intresting_jobs = IntrestingJob::with('youth')->whereyouth_id($id)->first();
-          
+
           $intresting_business = DB::table('intresting_business')->whereyouth_id($id)->first();
           $youth_common_details = DB::table('youth_common_details')->whereyouth_id($id)->first();
           $jobs_details = null;
@@ -1091,7 +1089,7 @@ public function update_following_course(Request $request){
 
           case 'Temporary Job without Vocational/Prof Training':
           $intresting_jobs = IntrestingJob::with('youth')->whereyouth_id($id)->first();
-          
+
           $intresting_business = DB::table('intresting_business')->whereyouth_id($id)->first();
           $youth_common_details = DB::table('youth_common_details')->whereyouth_id($id)->first();
           $jobs_details = null;
@@ -1106,26 +1104,26 @@ public function update_following_course(Request $request){
                   ->select('youths_courses.*','courses.*','courses.id as course_id', 'youths_courses.id as ys_id')
                   ->first();
           $intresting_jobs = IntrestingJob::with('youth')->whereyouth_id($id)->first();
-          
+
           $intresting_business = DB::table('intresting_business')->whereyouth_id($id)->first();
           $youth_common_details = DB::table('youth_common_details')->whereyouth_id($id)->first();
           $jobs_details = null;
-          
+
           break;
 
           case 'Self Employed':
           $intresting_jobs = IntrestingJob::with('youth')->whereyouth_id($id)->first();
-          
+
           $youth_common_details = DB::table('youth_common_details')->whereyouth_id($id)->first();
           $jobs_details = DB::table('jobs_details')->whereyouth_id($id)->where('nature_job','Self Employed')->first();
           $following_course = null;
           $intresting_business = null;
-          
+
           break;
-        
+
         default:
           $intresting_jobs = IntrestingJob::with('youth')->whereyouth_id($id)->first();
-          
+
           $intresting_business = DB::table('intresting_business')->whereyouth_id($id)->first();
           $youth_common_details = DB::table('youth_common_details')->whereyouth_id($id)->first();
           $jobs_details = null;
@@ -1143,7 +1141,7 @@ public function update_following_course(Request $request){
     }
 
     public function profile_view(){
-    
+
       $user_id = Auth::id();
       if (Youth::where('user_id', $user_id)->exists()) {
         $youth = Youth::where('user_id',$user_id)->first();
@@ -1157,7 +1155,7 @@ public function update_following_course(Request $request){
                     ->join('dsd_office','dsd_office.ID','=','families.ds_division')
                     ->join('gn_office','gn_office.GN_ID','=','families.gn_division')
                     ->first();
-                    
+
       $results = DB::table('results')->whereyouth_id($id)->first();
       $language = DB::table('language')->whereyouth_id($id)->first();
 
@@ -1195,7 +1193,7 @@ public function update_following_course(Request $request){
 
           case 'Temporary Job After Vocational/Prof Training':
           $intresting_jobs = IntrestingJob::with('youth')->whereyouth_id($id)->first();
-          
+
           $intresting_business = DB::table('intresting_business')->whereyouth_id($id)->first();
           $youth_common_details = DB::table('youth_common_details')->whereyouth_id($id)->first();
           $jobs_details = null;
@@ -1205,10 +1203,10 @@ public function update_following_course(Request $request){
                         ->first();
           if(!is_null($intresting_courses)){
           $courses_ids = json_decode($intresting_courses->intresting_courses);
-          
+
           //dd($courses_ids);
 
-          $courses = DB::table('course_categories') 
+          $courses = DB::table('course_categories')
                     ->whereIn('id', $courses_ids)
                     ->get();
           }
@@ -1219,7 +1217,7 @@ public function update_following_course(Request $request){
 
           case 'Temporary Job without Vocational/Prof Training':
           $intresting_jobs = IntrestingJob::with('youth')->whereyouth_id($id)->first();
-          
+
           $intresting_business = DB::table('intresting_business')->whereyouth_id($id)->first();
           $youth_common_details = DB::table('youth_common_details')->whereyouth_id($id)->first();
           $jobs_details = null;
@@ -1229,7 +1227,7 @@ public function update_following_course(Request $request){
                         ->first();
           if(!is_null($intresting_courses)){
           $courses_ids = json_decode($intresting_courses->intresting_courses);
-          
+
           //dd($courses_ids);
 
           $courses = DB::table('course_categories')
@@ -1251,7 +1249,7 @@ public function update_following_course(Request $request){
                   ->select('youths_courses.*','courses.*','courses.id as course_id', 'youths_courses.id as ys_id','courses_institutes.*','institutes.*','institutes.name as institute_name','courses.name as course_name')
                   ->first();
           $intresting_jobs = IntrestingJob::with('youth')->whereyouth_id($id)->first();
-          
+
           $intresting_business = DB::table('intresting_business')->whereyouth_id($id)->first();
           $youth_common_details = DB::table('youth_common_details')->whereyouth_id($id)->first();
           $jobs_details = null;
@@ -1260,7 +1258,7 @@ public function update_following_course(Request $request){
                         ->first();
           if(!is_null($intresting_courses)){
           $courses_ids = json_decode($intresting_courses->intresting_courses);
-          
+
           //dd($courses_ids);
 
           $courses = DB::table('course_categories')
@@ -1270,12 +1268,12 @@ public function update_following_course(Request $request){
           else{
             $courses = null;
           }
-          
+
           break;
 
           case 'Self Employed':
           $intresting_jobs = IntrestingJob::with('youth')->whereyouth_id($id)->first();
-          
+
           $youth_common_details = DB::table('youth_common_details')->whereyouth_id($id)->first();
           $jobs_details = DB::table('jobs_details')->whereyouth_id($id)->where('nature_job','Self Employed')->first();
           $following_course = null;
@@ -1285,7 +1283,7 @@ public function update_following_course(Request $request){
                         ->first();
           if(!is_null($intresting_courses)){
           $courses_ids = json_decode($intresting_courses->intresting_courses);
-          
+
           //dd($courses_ids);
 
           $courses = DB::table('course_categories')
@@ -1295,12 +1293,12 @@ public function update_following_course(Request $request){
           else{
             $courses = null;
           }
-          
+
           break;
-        
+
         default:
           $intresting_jobs = IntrestingJob::with('youth')->whereyouth_id($id)->first();
-          
+
           $intresting_business = DB::table('intresting_business')->whereyouth_id($id)->first();
           $youth_common_details = DB::table('youth_common_details')->whereyouth_id($id)->first();
           $jobs_details = null;
@@ -1310,7 +1308,7 @@ public function update_following_course(Request $request){
                         ->first();
           if(!is_null($intresting_courses)){
           $courses_ids = json_decode($intresting_courses->intresting_courses);
-          
+
           //dd($courses_ids);
 
           $courses = DB::table('course_categories')
@@ -1319,18 +1317,18 @@ public function update_following_course(Request $request){
           }
           else{
             $courses = null;
-          } 
+          }
           break;
       }
 
       return view('Youth.view-youth-profile')->with(['course_categories'=> $course_categories, 'branches' => $branches, 'youth' => $youth_data, 'followed_courses' => $followed_courses, 'results' => $results, 'language' => $language, 'jobs_details' =>$jobs_details, 'intresting_jobs' => $intresting_jobs, 'intresting_business' => $intresting_business,'youth_common_details' => $youth_common_details,'following_course' => $following_course, 'intresting_courses'=> $courses ]);
-        
+
       }
 
       else{
         return redirect('youth/profile-add')->with('error', 'Please create your profile first.');
       }
-      
+
     }
 
     public function profile_view_by_branch($id){
@@ -1388,7 +1386,7 @@ public function update_following_course(Request $request){
                         ->first();
           if(!is_null($intresting_courses)){
           $courses_ids = json_decode($intresting_courses->intresting_courses);
-          
+
           //dd($courses_ids);
 
           $courses = DB::table('course_categories')
@@ -1411,7 +1409,7 @@ public function update_following_course(Request $request){
                         ->first();
           if(!is_null($intresting_courses)){
           $courses_ids = json_decode($intresting_courses->intresting_courses);
-          
+
           //dd($courses_ids);
 
           $courses = DB::table('course_categories')
@@ -1438,7 +1436,7 @@ public function update_following_course(Request $request){
                   ->first();
           $intresting_jobs = IntrestingJob::with('youth')->whereyouth_id($id)
           ->first();
-          
+
           $intresting_business = DB::table('intresting_business')->whereyouth_id($id)->first();
           $youth_common_details = DB::table('youth_common_details')->whereyouth_id($id)->first();
           $jobs_details = null;
@@ -1447,7 +1445,7 @@ public function update_following_course(Request $request){
                         ->first();
           if(!is_null($intresting_courses)){
           $courses_ids = json_decode($intresting_courses->intresting_courses);
-          
+
           //dd($courses_ids);
 
           $courses = DB::table('course_categories')
@@ -1457,7 +1455,7 @@ public function update_following_course(Request $request){
           else{
             $courses = null;
           }
-          
+
           break;
 
           case 'Self Employed':
@@ -1467,7 +1465,7 @@ public function update_following_course(Request $request){
                         ->first();
           if(!is_null($intresting_courses)){
           $courses_ids = json_decode($intresting_courses->intresting_courses);
-          
+
           //dd($courses_ids);
 
           $courses = DB::table('course_categories')
@@ -1481,9 +1479,9 @@ public function update_following_course(Request $request){
           $jobs_details = DB::table('jobs_details')->whereyouth_id($id)->where('nature_job','Self Employed')->first();
           $following_course = null;
           $intresting_business = null;
-          
+
           break;
-        
+
         default:
           $intresting_jobs = IntrestingJob::with('youth')->whereyouth_id($id)->first();
           $intresting_courses = DB::table('intresting_jobs')
@@ -1491,7 +1489,7 @@ public function update_following_course(Request $request){
                         ->first();
           if(!is_null($intresting_courses)){
           $courses_ids = json_decode($intresting_courses->intresting_courses);
-          
+
           //dd($courses_ids);
 
           $courses = DB::table('course_categories')
@@ -1519,7 +1517,7 @@ public function update_following_course(Request $request){
             ->join('institutes','institutes.id','=','provide_soft_skills.institute_id')
             ->where('provide_soft_skills_youths.youth_id',$id)
             ->first();
-            
+
 
       $gvt = DB::table('course_supports_youth')
             ->join('course_supports','course_supports.id','=','course_supports_youth.course_support_id')
@@ -1535,7 +1533,7 @@ public function update_following_course(Request $request){
             ->join('courses','courses.id','=','finacial_supports.course_id')
             ->select('finacial_supports_youths.*','finacial_supports.*','institutes.name as institute_name','courses.name as course_name','courses.*')
             ->where('finacial_supports_youths.youth_id',$id)
-            ->first();
+            ->get();
 
       $partner = DB::table('partner_trainings_youth')
             ->join('partner_trainings','partner_trainings.id','=','partner_trainings_youth.partner_trainings_id')
@@ -1557,9 +1555,9 @@ public function update_following_course(Request $request){
             ->first();
 
       return view('Youth.view-youth-profile')->with(['course_categories'=> $course_categories, 'branches' => $branches, 'youth' => $youth_data, 'followed_courses' => $followed_courses, 'results' => $results, 'language' => $language, 'jobs_details' =>$jobs_details, 'intresting_jobs' => $intresting_jobs, 'intresting_business' => $intresting_business,'youth_common_details' => $youth_common_details,'following_course' => $following_course,'intresting_courses'=> $courses, 'cg' => $cg, 'soft'=> $soft, 'gvt'=> $gvt, 'financial' => $financial, 'partner'=> $partner,'placement' => $placement, 'individual' => $individual ]);
-        
-      
-      
+
+
+
     }
 
     public function applications(){
@@ -1599,7 +1597,7 @@ public function update_following_course(Request $request){
         $change_date = date('Y-m-d');
 
         //echo "<script>console.log( 'Debug Objects: " . $role_id . "' );</script>";
-        
+
 
         $data = array(
             'status' => $status,
@@ -1610,6 +1608,18 @@ public function update_following_course(Request $request){
 
     }
 
-   
 
+    public function families_pci()
+    {
+        $data = DB::table('finacial_supports_youths')
+                ->join('youths','youths.id','=','finacial_supports_youths.youth_id')
+                ->join('families','families.id','=','youths.family_id')
+                ->join('branches','branches.id','=','youths.branch_id')
+                ->select('finacial_supports_youths.*','youths.*','youths.name as youth_name','families.*','branches.*','families.id as fam')
+                ->whereNotNull('families.total_members')
+                ->get();
+
+   // dd($data);
+        return view('Youth.family-pci')->with(['data'=> $data]);
+    }
 }

@@ -1,4 +1,5 @@
 @extends('layouts.reports')
+@section('title','TVEC Meetings |')
 @section('content')
 <div class="container-fluid">
     <!-- Content Header (Page header) -->
@@ -142,7 +143,7 @@
                             <th>Total Male</th>
                             <th>Total Female</th>
                             <th>Institutes</th>
-                            <th>Branch</th>
+                            <th>Venue</th>
                             <th>Action</th>
                           
                         </tr>
@@ -278,7 +279,7 @@ var dataTable = $("#example").DataTable({
   $.each(data, function(index, value) {
     console.log(value);
     // use data table row.add, then .draw for table refresh
-    dataTable.row.add([count++, value.program_date, value.total_male, value.total_female, value.total_institutes, value.branch_name,'<button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button>']).draw();
+    dataTable.row.add([count++, value.program_date, value.total_male, value.total_female, value.total_institutes, value.venue,'<button type="button" name="view" data-id="'+value.m_id+'" class="btn btn-warning btn-flat btn-sm btn_view"><i class="fa fa-eye"></i></button>']).draw();
 
      var total_male = value.total_male;
      var total_female = value.total_female;

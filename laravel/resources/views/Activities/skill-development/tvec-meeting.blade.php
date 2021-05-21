@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('title','TVEC Meeting |')
 @section('content')
 <div class="container-fluid">
 
@@ -21,8 +22,7 @@
 	          		<div class="col-md-4">
 	          			<div class="form-group">
 						    <label for="district">1. District</label>
-						    <select name="district" id="district" class="form-control" data-dependent="dsd">
-								<option value="">Select Option</option>
+						    <select name="district[]" id="district" class="form-control" data-dependent="dsd" multiple>
 								@foreach($districts as $district)
 								<option value="{{ $district->name_en}}">{{ $district->name_en }}</option>
 								@endforeach
@@ -33,7 +33,6 @@
 	          			<div class="form-group">
 						    <label for="dsd">2. DSD (Leave blank if not relevant)</label>
 						    <select name="dsd[]" id="dsd" class="form-control" multiple>
-								<option value="">Select Option</option>
 								
     					   </select>
 						</div>

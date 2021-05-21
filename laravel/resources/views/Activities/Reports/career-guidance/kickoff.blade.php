@@ -1,4 +1,5 @@
 @extends('layouts.reports')
+@section('title','Kick Offs |')
 @section('content')
 <div class="container-fluid">
     <!-- Content Header (Page header) -->

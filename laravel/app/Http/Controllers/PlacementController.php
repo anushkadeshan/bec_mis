@@ -11,10 +11,11 @@ use Illuminate\Support\Facades\URL;
 use App\Audit;
 use App\User;
 use App\Notifications\CompletionReport;
+use App\Notifications\CountYouth;
 
 class PlacementController extends Controller
 {
-    
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -25,7 +26,7 @@ class PlacementController extends Controller
     	$managers = DB::table('branches')->select('manager')->distinct()->get();
     	$activities = DB::table('activities')->get();
 
-      
+
     	return view('Activities.job-linking.placements')->with(['districts'=> $districts,'managers'=>$managers,'activities'=>$activities]);
     }
 
@@ -51,7 +52,7 @@ class PlacementController extends Controller
     	$validator = Validator::make($request->all(),[
     		'program_date'  => 'required',
     		'district' => 'required',
-            'dm_name' =>'required',	
+            'dm_name' =>'required',
             'employer_id' => 'required'
     	]);
 
@@ -75,14 +76,14 @@ class PlacementController extends Controller
     			'title_of_action' => $request->title_of_action,
     			'activity_code' => $request->activity_code,
     			'program_date'	=>$request->program_date,
-	        'time_start'=>$request->time_start,
-	        'time_end' =>$request->time_end,
+	            'time_start'=>$request->time_start,
+	            'time_end' =>$request->time_end,
     			'venue'	=> $request->venue,
     			'program_cost' => $request->program_cost,
     			'attendance_youths' => $input['attendance_youths'],
-    			'attendance_employers' => $input['attendance_employers'], 
+    			'attendance_employers' => $input['attendance_employers'],
     			'branch_id' => $branch_id,
-    			'created_at' => date('Y-m-d H:i:s')	
+    			'created_at' => date('Y-m-d H:i:s')
     		);
 
     		$placements = DB::table('placements')->insert($data);
@@ -109,7 +110,7 @@ class PlacementController extends Controller
 
                 }
 
-                
+
                 else{
                     return response()->json(['error' => 'Submit Employer details.']);
                 }
@@ -136,9 +137,9 @@ class PlacementController extends Controller
 
                 );
 
-                $reports = Audit::create($audit); 
+                $reports = Audit::create($audit);
 
-                $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin','management' ]);})->get();
+                $notifyTo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin' ]);})->get();
                 foreach ($notifyTo as $notifyUser) {
                     $notifyUser->notify(new CompletionReport($reports));
                 }
@@ -161,80 +162,81 @@ class PlacementController extends Controller
         //dd($mentorings);
 
         $participants2018 = DB::table('placements_employers')
-                            ->join('placements','placements.id','=','placements_employers.placements_id')                        
+                            ->join('placements','placements.id','=','placements_employers.placements_id')
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
                         ->where(DB::raw('YEAR(program_date)'), '=', '2018' )
                         ->first();
+
                         //->groupBy(function ($val) {
                                 // Carbon::parse($val->program_date)->format('Y');
                         //});
                         //->groupBy(DB::raw("year(program_date)"))
-                        
-           $participants2019 = DB::table('placements_employers') 
-                            ->join('placements','placements.id','=','placements_employers.placements_id')                      
+
+           $participants2019 = DB::table('placements_employers')
+                            ->join('placements','placements.id','=','placements_employers.placements_id')
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
                         ->where(DB::raw('YEAR(program_date)'), '=', '2019' )
-                        ->first();            
+                        ->first();
             $participants2020 = DB::table('placements_employers')
-                            ->join('placements','placements.id','=','placements_employers.placements_id')                        
+                            ->join('placements','placements.id','=','placements_employers.placements_id')
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
                         ->where(DB::raw('YEAR(program_date)'), '=', '2020' )
-                        ->first();   
-            $participants2021 = DB::table('placements_employers')   
-                            ->join('placements','placements.id','=','placements_employers.placements_id')        
+                        ->first();
+            $participants2021 = DB::table('placements_employers')
+                            ->join('placements','placements.id','=','placements_employers.placements_id')
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
                         ->where(DB::raw('YEAR(program_date)'), '=', '2021' )
-                        ->first();  
+                        ->first();
 
-  
-            $salary1 = (DB::table('placements_youths')   
+
+            $salary1 = (DB::table('placements_youths')
                        ->whereBetween('salary',[0, 4999])
-                       ->count())+(DB::table('placement_individual')   
+                       ->count())+(DB::table('placement_individual')
                        ->whereBetween('salary',[0, 4999])
-                       ->count());  
+                       ->count());
 
-            $salary2 = DB::table('placements_youths')   
+            $salary2 = DB::table('placements_youths')
                        ->whereBetween('salary',[5000, 9999])
-                       ->count()+(DB::table('placement_individual')   
+                       ->count()+(DB::table('placement_individual')
                        ->whereBetween('salary',[5000, 9999])
-                       ->count()); 
+                       ->count());
 
-            $salary3 = DB::table('placements_youths')   
+            $salary3 = DB::table('placements_youths')
                        ->whereBetween('salary',[10000, 14999])
-                       ->count()+(DB::table('placement_individual')   
+                       ->count()+(DB::table('placement_individual')
                        ->whereBetween('salary',[10000, 14999])
-                       ->count()); 
+                       ->count());
 
-            $salary4 = DB::table('placements_youths')   
+            $salary4 = DB::table('placements_youths')
                        ->whereBetween('salary',[15000, 19999])
-                       ->count()+(DB::table('placement_individual')   
+                       ->count()+(DB::table('placement_individual')
                        ->whereBetween('salary',[15000, 19999])
-                       ->count());  
+                       ->count());
 
-            $salary5 = DB::table('placements_youths')   
+            $salary5 = DB::table('placements_youths')
                        ->whereBetween('salary',[20000, 24999])
-                       ->count()+(DB::table('placement_individual')   
+                       ->count()+(DB::table('placement_individual')
                        ->whereBetween('salary',[20000, 24999])
-                       ->count()); 
+                       ->count());
 
-            $salary6 = DB::table('placements_youths')   
+            $salary6 = DB::table('placements_youths')
                        ->where('salary','>=', 25000)
-                       ->count()+(DB::table('placement_individual')   
+                       ->count()+(DB::table('placement_individual')
                        ->where('salary','>=', 25000)
-                       ->count());            
+                       ->count());
         }
         else{
           $meetings = DB::table('placements')
                       //->leftjoin('mentoring_gvt_officials','mentoring_gvt_officials.mentoring_id','=','mentoring.id')
                       ->join('branches','branches.id','=','placements.branch_id')
                       ->where('placements.branch_id','=',$branch_id)
-                      ->get();                        
+                      ->get();
 
         //dd($mentorings);
 
         $participants2018 = DB::table('placements_employers')
                             ->join('placements','placements.id','=','placements_employers.placements_id')
-                            ->where('placements.branch_id','=',$branch_id)                        
+                            ->where('placements.branch_id','=',$branch_id)
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
                         ->where(DB::raw('YEAR(program_date)'), '=', '2018' )
                         ->first();
@@ -242,82 +244,83 @@ class PlacementController extends Controller
                                 // Carbon::parse($val->program_date)->format('Y');
                         //});
                         //->groupBy(DB::raw("year(program_date)"))
-                        
-           $participants2019 = DB::table('placements_employers') 
-                            ->join('placements','placements.id','=','placements_employers.placements_id')   
-                            ->where('placements.branch_id','=',$branch_id)                   
+
+           $participants2019 = DB::table('placements_employers')
+                            ->join('placements','placements.id','=','placements_employers.placements_id')
+                            ->where('placements.branch_id','=',$branch_id)
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
                         ->where(DB::raw('YEAR(program_date)'), '=', '2019' )
-                        ->first();            
+                        ->first();
             $participants2020 = DB::table('placements_employers')
-                            ->join('placements','placements.id','=','placements_employers.placements_id') 
-                            ->where('placements.branch_id','=',$branch_id)                      
+                            ->join('placements','placements.id','=','placements_employers.placements_id')
+                            ->where('placements.branch_id','=',$branch_id)
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
                         ->where(DB::raw('YEAR(program_date)'), '=', '2020' )
-                        ->first();   
-            $participants2021 = DB::table('placements_employers')   
-                            ->join('placements','placements.id','=','placements_employers.placements_id')     
-                            ->where('placements.branch_id','=',$branch_id)   
+                        ->first();
+            $participants2021 = DB::table('placements_employers')
+                            ->join('placements','placements.id','=','placements_employers.placements_id')
+                            ->where('placements.branch_id','=',$branch_id)
                         ->select(DB::raw("SUM(total_male) as total_male"),DB::raw("SUM(total_female) as total_female"),DB::raw("SUM(pwd_male) as pwd_male"),DB::raw("SUM(pwd_female) as pwd_female"))
                         ->where(DB::raw('YEAR(program_date)'), '=', '2021' )
-                        ->first();  
+                        ->first();
 
-            $salary1 = DB::table('placements_youths')  
-                      ->join('placements','placements.id','=','placements_youths.placements_id') 
-                      ->where('placements.branch_id','=',$branch_id) 
+            $salary1 = DB::table('placements_youths')
+                      ->join('placements','placements.id','=','placements_youths.placements_id')
+                      ->where('placements.branch_id','=',$branch_id)
                        ->whereBetween('salary',[0, 4999])
                        ->count()+(DB::table('placement_individual')
-                       ->where('placement_individual.branch_id','=',$branch_id)   
+                       ->where('placement_individual.branch_id','=',$branch_id)
                        ->whereBetween('salary',[0, 4999])
-                       ->count());  
+                       ->count());
 
-            $salary2 = DB::table('placements_youths')   
-                      ->join('placements','placements.id','=','placements_youths.placements_id') 
-                      ->where('placements.branch_id','=',$branch_id) 
+            $salary2 = DB::table('placements_youths')
+                      ->join('placements','placements.id','=','placements_youths.placements_id')
+                      ->where('placements.branch_id','=',$branch_id)
                        ->whereBetween('salary',[5000, 9999])
-                       ->count()+(DB::table('placement_individual')   
-                       ->where('placement_individual.branch_id','=',$branch_id)   
+                       ->count()+(DB::table('placement_individual')
+                       ->where('placement_individual.branch_id','=',$branch_id)
                        ->whereBetween('salary',[5000, 9999])
-                       ->count()); 
+                       ->count());
 
-            $salary3 = DB::table('placements_youths')   
-                      ->join('placements','placements.id','=','placements_youths.placements_id') 
-                      ->where('placements.branch_id','=',$branch_id) 
+            $salary3 = DB::table('placements_youths')
+                      ->join('placements','placements.id','=','placements_youths.placements_id')
+                      ->where('placements.branch_id','=',$branch_id)
                        ->whereBetween('salary',[10000, 14999])
-                       ->count()+(DB::table('placement_individual')   
-                       ->where('placement_individual.branch_id','=',$branch_id)   
+                       ->count()+(DB::table('placement_individual')
+                       ->where('placement_individual.branch_id','=',$branch_id)
                        ->whereBetween('salary',[10000, 14999])
-                       ->count()); 
+                       ->count());
 
-            $salary4 = DB::table('placements_youths')   
-                      ->join('placements','placements.id','=','placements_youths.placements_id') 
-                      ->where('placements.branch_id','=',$branch_id) 
+            $salary4 = DB::table('placements_youths')
+                      ->join('placements','placements.id','=','placements_youths.placements_id')
+                      ->where('placements.branch_id','=',$branch_id)
                        ->whereBetween('salary',[15000, 19999])
-                       ->count()+(DB::table('placement_individual')   
-                       ->where('placement_individual.branch_id','=',$branch_id)   
+                       ->count()+(DB::table('placement_individual')
+                       ->where('placement_individual.branch_id','=',$branch_id)
                        ->whereBetween('salary',[15000, 19999])
-                       ->count());  
+                       ->count());
 
-            $salary5 = DB::table('placements_youths')   
-                      ->join('placements','placements.id','=','placements_youths.placements_id') 
-                      ->where('placements.branch_id','=',$branch_id) 
+            $salary5 = DB::table('placements_youths')
+                      ->join('placements','placements.id','=','placements_youths.placements_id')
+                      ->where('placements.branch_id','=',$branch_id)
                        ->whereBetween('salary',[20000, 24999])
-                       ->count()+(DB::table('placement_individual')   
-                       ->where('placement_individual.branch_id','=',$branch_id)   
+                       ->count()+(DB::table('placement_individual')
+                       ->where('placement_individual.branch_id','=',$branch_id)
                        ->whereBetween('salary',[20000, 24999])
-                       ->count()); 
+                       ->count());
 
-            $salary6 = DB::table('placements_youths')   
-                      ->join('placements','placements.id','=','placements_youths.placements_id') 
-                      ->where('placements.branch_id','=',$branch_id) 
+            $salary6 = DB::table('placements_youths')
+                      ->join('placements','placements.id','=','placements_youths.placements_id')
+                      ->where('placements.branch_id','=',$branch_id)
                        ->where('salary','>=', 25000)
-                       ->count()+(DB::table('placement_individual')   
-                       ->where('placement_individual.branch_id','=',$branch_id)   
+                       ->count()+(DB::table('placement_individual')
+                       ->where('placement_individual.branch_id','=',$branch_id)
                        ->where('salary','>=', 25000)
                        ->count());
-        }                                   
+        }
         //dd($participants2018);
         $branches = DB::table('branches')->get();
+
         return view('Activities.Reports.Job-Linking.placements')->with(['meetings'=>$meetings,'branches'=>$branches,'participants2018'=>$participants2018,'participants2019'=>$participants2019,'participants2020'=>$participants2020,'participants2021'=>$participants2021,'salary1'=>$salary1,'salary2'=>$salary2,'salary3'=>$salary3,'salary4'=>$salary4,'salary5'=>$salary5,'salary6'=>$salary6]);
     }
 
@@ -329,7 +332,7 @@ class PlacementController extends Controller
             if($request->dateStart != '' && $request->dateEnd != '')
             {
                 if($request->branch !=''){
-                    $data1 = DB::table('placements') 
+                    $data1 = DB::table('placements')
                         ->join('branches','branches.id','=','placements.branch_id')
                         ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->where('placements.branch_id',$request->branch)
@@ -353,18 +356,28 @@ class PlacementController extends Controller
                         ->orderBy('program_date', 'desc')
                         ->get();
 
-                    $summaryJ =DB::table('placements') 
+                    $summaryJ =DB::table('placements')
                         ->join('branches','branches.id','=','placements.branch_id')
                         ->select('branches.name', DB::raw('count(*) as total'), DB::raw('sum(program_cost) as cost'))
                         ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->where('branch_id',$request->branch)
                         ->groupBy('branch_id')
                         ->get();
+
+                    $summaryI =DB::table('placement_individual')
+                    ->join('branches','branches.id','=','placement_individual.branch_id')
+                    ->join('youths','youths.id','=','placement_individual.youth_id')
+                    ->select('branches.name', DB::raw('count(*) as total'), DB::raw("COUNT((CASE WHEN gender = 'male' THEN gender END)) as male"), DB::raw("COUNT((CASE WHEN gender = 'female' THEN gender END)) as female"))
+                    ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
+                    ->where('placement_individual.branch_id',$request->branch)
+                    ->groupBy('placement_individual.branch_id')
+                    ->get();
+
                 }
                 else{
                     if(is_null($branch_id)){
 
-                    $data1 = DB::table('placements') 
+                    $data1 = DB::table('placements')
                         ->join('branches','branches.id','=','placements.branch_id')
                         ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->select('placements.*','branches.*','placements.id as m_id','branches.name as branch_name')
@@ -385,14 +398,14 @@ class PlacementController extends Controller
                         ->orderBy('program_date', 'desc')
                         ->get();
 
-                    $summaryJ =DB::table('placements') 
+                    $summaryJ =DB::table('placements')
                         ->join('branches','branches.id','=','placements.branch_id')
                         ->select('branches.name', DB::raw('count(*) as total'), DB::raw('sum(program_cost) as cost'))
                         ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                         ->groupBy('branch_id')
                         ->get();
 
-                    $summaryI =DB::table('placement_individual') 
+                    $summaryI =DB::table('placement_individual')
                         ->join('branches','branches.id','=','placement_individual.branch_id')
                         ->join('youths','youths.id','=','placement_individual.youth_id')
                         ->select('branches.name', DB::raw('count(*) as total'), DB::raw("COUNT((CASE WHEN gender = 'male' THEN gender END)) as male"), DB::raw("COUNT((CASE WHEN gender = 'female' THEN gender END)) as female"))
@@ -402,17 +415,17 @@ class PlacementController extends Controller
 
                     }
                     else{
-                      $data1 = DB::table('placements') 
+                      $data1 = DB::table('placements')
                         ->join('branches','branches.id','=','placements.branch_id')
                         ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
-                        ->where('placements.branch_id','=',$branch_id) 
+                        ->where('placements.branch_id','=',$branch_id)
                         ->select('placements.*','branches.*','placements.id as m_id','branches.name as branch_name')
                         ->orderBy('program_date', 'desc')
                         ->get();
 
                         $data2 = DB::table('placements_employers')
                              ->join('placements','placements.id','=','placements_employers.placements_id')
-                            ->where('placements.branch_id','=',$branch_id) 
+                            ->where('placements.branch_id','=',$branch_id)
                             ->whereBetween('program_date', array($request->dateStart, $request->dateEnd))
                             ->get();
 
@@ -430,13 +443,13 @@ class PlacementController extends Controller
                       $summaryI = null;
                     }
                 }
-                
+
             }
         else
             {
                 if(is_null($branch_id)){
-                
-                $data1 = DB::table('placements') 
+
+                $data1 = DB::table('placements')
                         ->join('branches','branches.id','=','placements.branch_id')
                         ->select('placements.*','branches.*','placements.id as m_id','branches.name as branch_name')
                         ->orderBy('program_date', 'desc')
@@ -454,13 +467,13 @@ class PlacementController extends Controller
                         ->orderBy('program_date', 'desc')
                         ->get();
 
-                $summaryJ =DB::table('placements') 
+                $summaryJ =DB::table('placements')
                         ->join('branches','branches.id','=','placements.branch_id')
                         ->select('branches.name', DB::raw('count(*) as total'), DB::raw('sum(program_cost) as cost'))
                         ->groupBy('branch_id')
                         ->get();
 
-                 $summaryI =DB::table('placement_individual') 
+                 $summaryI =DB::table('placement_individual')
                         ->join('branches','branches.id','=','placement_individual.branch_id')
                         ->join('youths','youths.id','=','placement_individual.youth_id')
                         ->select('branches.name', DB::raw('count(*) as total'), DB::raw("COUNT((CASE WHEN gender = 'male' THEN gender END)) as male"), DB::raw("COUNT((CASE WHEN gender = 'female' THEN gender END)) as female"))
@@ -469,16 +482,16 @@ class PlacementController extends Controller
 
                 }
                 else{
-                  $data1 = DB::table('placements') 
+                  $data1 = DB::table('placements')
                         ->join('branches','branches.id','=','placements.branch_id')
-                        ->where('placements.branch_id','=',$branch_id) 
+                        ->where('placements.branch_id','=',$branch_id)
                         ->select('placements.*','branches.*','placements.id as m_id','branches.name as branch_name')
                         ->orderBy('program_date', 'desc')
                         ->get();
 
                         $data2 = DB::table('placements_employers')
                                 ->join('placements','placements.id','=','placements_employers.placements_id')
-                                ->where('placements.branch_id','=',$branch_id) 
+                                ->where('placements.branch_id','=',$branch_id)
                                 ->get();
 
                   $placements = DB::table('placement_individual')
@@ -496,7 +509,7 @@ class PlacementController extends Controller
                 }
             }
 
-                return response()->json(array( 
+                return response()->json(array(
                     'data1' => $data1,
                     'data2' => $data2,
                     'placements' => $placements,
@@ -527,12 +540,12 @@ class PlacementController extends Controller
        // dd($meeting);
         //dd($participants);
 
-        return response()->json(array( 
+        return response()->json(array(
             'meeting' => $meeting,
             'employers' => $employers,
             'youths' => $youths,
         ));
-        
+
 
     }
 
@@ -570,16 +583,16 @@ class PlacementController extends Controller
         $headers = ["Content-Type"=>"application/zip"];
         foreach($photos as $photo){
             //echo $photo->images;
-            
+
             //$paths = storage_path('activities/files/mentoring/images/'.$photo->image.'');
             $zipper = Zipper::make(storage_path('activities/files/job-linking/placements/images/'.$id.'.zip'))->add(storage_path('activities/files/job-linking/placements/images/'.$photo->images.''))->close();
         }
-            return response()->download(storage_path('activities/files/job-linking/placements/images/'.$id.'.zip','photos',$headers)); 
+            return response()->download(storage_path('activities/files/job-linking/placements/images/'.$id.'.zip','photos',$headers));
 
         //$photos_array = $photos->toArray();
         //dd($photos);
        // Zipper::make('mydir/photos.zip')->add($paths);
-       // return response()->download(('mydir/photos.zip')); 
+       // return response()->download(('mydir/photos.zip'));
     }
 
     public function individual(){
@@ -590,10 +603,11 @@ class PlacementController extends Controller
     }
 
 public function insert_individual(Request $request){
+      $added_by = Auth::user()->name;
       $validator = Validator::make($request->all(),[
         'program_date'  => 'required',
         'district' => 'required',
-            'dm_name' =>'required', 
+            'dm_name' =>'required',
             'employer_id' => 'required',
             'youth_id' => 'required',
             'salary' => 'numeric'
@@ -616,12 +630,19 @@ public function insert_individual(Request $request){
           'vacancy' => $request->vacancy,
           'salary' => $request->salary,
           'branch_id' => $branch_id,
-          'created_at' => date('Y-m-d H:i:s') 
+          'created_at' => date('Y-m-d H:i:s')
         );
 
         $placements = DB::table('placement_individual')->insert($data);
         $individual_id = DB::getPdo()->lastInsertId();
 
+        $soft = DB::table('provide_soft_skills_youths')->where('youth_id',$request->youth_id)->first();
+                DB::table('course_supports_youth')->where('youth_id', $request->youth_id)->update(['current_status' => 4]);
+                DB::table('finacial_supports_youths')->where('youth_id', $request->youth_id)->update(['current_status' => 4]);
+
+        if($soft){
+            DB::table('provide_soft_skills_youths')->where('youth_id',$request->youth_id)->update(['current_status'=>4]);
+        }
 
                 $audit = array(
                     'user_type' => 'App\User',
@@ -642,7 +663,18 @@ public function insert_individual(Request $request){
                     $notifyUser->notify(new CompletionReport($reports));
                 }
 
-                
+                $youth_data = array(
+                    'added_by' => $added_by,
+                    'youth_count' => 1,
+                    'type' => 'Individually Placed'
+                );
+
+               $notifyToo = User::whereHas('roles', function($q){$q->whereIn('slug', ['me', 'admin','management' ]);})->get();
+               foreach ($notifyToo as $notifyUserr) {
+                   $notifyUserr->notify(new CountYouth($youth_data));
+               }
+
+
 
       }
 
@@ -664,7 +696,7 @@ public function insert_individual(Request $request){
         //dd($participants);
 
         return response()->json($placements);
-        
+
 
     }
 
@@ -696,19 +728,19 @@ public function insert_individual(Request $request){
 
         $validator = Validator::make($request->all(),[
                 'program_date'  =>'required',
-                
+
             ]);
 
         if($validator->passes()){
         // echo "<script>console.log( 'Debug Objects: " . $meeting_date . "' );</script>";
 
-        $data1 = array(   
+        $data1 = array(
           'program_date'  =>$request->program_date,
           'time_start'=>$request->time_start,
           'time_end' =>$request->time_end,
           'venue' => $request->venue,
-          'program_cost' => $request->program_cost, 
-            
+          'program_cost' => $request->program_cost,
+
         );
         //dd($data1);
         DB::table('placements')->whereid($request->m_id)->update($data1);
@@ -729,7 +761,7 @@ public function insert_individual(Request $request){
     }
 
 
-    
+
 
     else{
         return response()->json(['error' => $validator->errors()->all()]);
@@ -785,19 +817,19 @@ public function insert_individual(Request $request){
 
         $validator = Validator::make($request->all(),[
                 'program_date'  =>'required',
-                
+
             ]);
 
         if($validator->passes()){
         // echo "<script>console.log( 'Debug Objects: " . $meeting_date . "' );</script>";
 
-        $data1 = array(   
+        $data1 = array(
           'program_date'  =>$request->program_date,
           'employer_id' => $request->employer_id,
           'youth_id' => $request->youth_id,
           'type_of_support' => $request->type_of_support,
           'vacancy' => $request->vacancy,
-          'salary' => $request->salary,            
+          'salary' => $request->salary,
         );
         //dd($data1);
         DB::table('placement_individual')->whereid($request->m_id)->update($data1);
@@ -818,7 +850,7 @@ public function insert_individual(Request $request){
     }
 
 
-    
+
 
     else{
         return response()->json(['error' => $validator->errors()->all()]);
@@ -839,7 +871,7 @@ public function insert_individual(Request $request){
               ->join('placements','placements.id','=','placements_youths.placements_id')
               ->select('name')
               ->distinct('name')
-              ->get();  
+              ->get();
 
               $employers = $employer_i->merge($employers2);
 
@@ -866,7 +898,7 @@ public function insert_individual(Request $request){
 
       //get bss api data
        $url = 'https://www.becsystems.org/BSS/Api_Controller/index';
-        
+
         $options = array('http' => array(
             'method'  => 'GET',
         ));
@@ -876,7 +908,7 @@ public function insert_individual(Request $request){
         $bss = json_decode($response);
 
         //$json = json_decode(file_get_contents('http://testingbec.southeastasia.cloudapp.azure.com/api/person/'));
-    
+
         //echo $response;
         //dd($response);
       //$nics = array_column($bss, 'NIC');
@@ -888,13 +920,37 @@ public function insert_individual(Request $request){
     //  $bbb = DB::table('placement_individual')->get();
 
     //  $bss2 = $bss->toArray();
-     
+
       return view('Activities.Reports.Job-Linking.youths')->with(['youths'=> $youths,'branches'=>$branches,'employers'=>$employers,'bss_youths'=>$bss]);
 
-      
+
+    }
+
+    public function placement_duplicates(){
+        $branch_id = Auth::user()->branch;
+        if(is_null($branch_id)){
+            $duplicates = DB::table('placement_individual')
+                        ->select('placement_individual.youth_id', 'youths.*', 'branches.name as branch_name', DB::raw('COUNT(*) as `count`'),DB::raw('COUNT(DISTINCT employer_id) as `emp`'))
+                        ->join('youths','youths.id','placement_individual.youth_id')
+                        ->join('branches','branches.id','youths.branch_id')
+                        ->groupBy('youth_id')
+                        ->havingRaw('COUNT(*) > 1')
+                        ->get();
+        }
+        else{
+          $duplicates = DB::table('placement_individual')
+                        ->select('placement_individual.youth_id', 'youths.*', 'branches.name as branch_name', DB::raw('COUNT(*) as `count`'))
+                        ->join('youths','youths.id','placement_individual.youth_id')
+                        ->join('branches','branches.id','youths.branch_id')
+                        ->groupBy('youth_id')
+                        ->where('youths.branch_id',$branch_id)
+                        ->havingRaw('COUNT(*) > 1')
+                        ->get();
+        }
+
+        return view('audit.placement_duplicates')->with(['youths'=> $duplicates]);
     }
 
 }
 
 
-  

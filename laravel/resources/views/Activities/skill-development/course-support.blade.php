@@ -1,4 +1,5 @@
 @extends('layouts.main')
+@section('title','GVT Course Supports |')
 @section('content')
 <div class="container-fluid">
 

@@ -22,6 +22,7 @@
     <link href="{{asset('vendors/adminLTE/css/adminlte.min.css')}}" rel="stylesheet">
     <!-- Data Tables -->
     <link href="{{asset('vendors/datatables/dataTables.bootstrap4.css')}}" rel="stylesheet">
+    <link href="https://cdn.datatables.net/fixedheader/3.1.7/css/fixedHeader.dataTables.min.css" rel="stylesheet">
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <!-- icheck checkboxes -->
@@ -31,7 +32,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">
     <link href="{{asset('vendors/font-awesome-animation/dist/font-awesome-animation.min.css')}}" rel="stylesheet">
-    
+
     <style>
       /*----------------------- Preloader -----------------------*/
       body.preloader-site {
@@ -62,9 +63,8 @@
 
         th { font-size: 15px; }
         td { font-size: 14px; }
-        
+
     </style>
-    @livewireStyles
     </head>
     <body class="hold-transition sidebar-mini">
     <div class="preloader-wrapper">
@@ -92,7 +92,7 @@
                 } elseif ($hour < 12) {
                   $greetings = "Good Morning";
                 }
-                    echo $greetings;  ?>!  <strong class="text-primary">  {{ Auth::user()->name }} </strong> </a> 
+                    echo $greetings;  ?>!  <strong class="text-primary">  {{ Auth::user()->name }} </strong> </a>
             </li>
             <li class="nav-item d-none d-sm-inline-block">
                 <a href="{{Route('home')}}" class="nav-link">Home</a>
@@ -178,11 +178,11 @@
                     <img src="{{ URL::asset('images/institute.png')}}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
                     <div class="media-body">
                         <h3 class="dropdown-item-title">
-                        {{ $notification->data['institute']['name'] }}
+                        {{ $notification->data['institute']['institute']['name'] }}
                         <span class="float-right text-sm text-muted"><i class="fa fa-star"></i></span>
                         </h3>
                         <p class="text-sm">A Training Institute was added.</p>
-                        <p class="text-sm text-muted"><i class="fas fa-clock"></i> {{ $notification->data['institute']['created_at'] }}</p>
+                        <p class="text-sm text-muted"><i class="fas fa-clock"></i> {{ $notification->data['institute']['institute']['created_at'] }}</p>
                     </div>
                     </div>
                     <!-- Message End -->
@@ -236,7 +236,7 @@
                         {{ $notification->data['vacancy']['title'] }}
                         <span class="float-right text-sm text-muted"><i class="fa fa-star"></i></span>
                         </h3>
-                        
+
                         <p class="text-sm text-muted"><i class="fas fa-clock"></i> {{ $notification->data['vacancy']['created_at'] }}</p>
                     </div>
                     </div>
@@ -255,7 +255,7 @@
                         <span class="float-right text-sm text-muted"><i class="fa fa-star"></i></span>
                         </h3>
                         <p class="text-sm">Selected a youth to hire.</p>
-                        
+
                         <p class="text-sm text-muted"><i class="fas fa-clock"></i> {{ $notification->data['employer']['created_at'] }}</p>
                     </div>
                     </div>
@@ -277,8 +277,8 @@
             </li>
             @endif
             <!-- Notifications Dropdown Menu -->
-           
-            
+
+
             {{-- Notification finish--}}
             <li>
                 <a class="nav-link" href="{{ route('logout') }}" onclick="event.preventDefault();
@@ -293,25 +293,26 @@
             </ul>
         </nav>
 
-    @yield('content')    
+    @yield('content')
 
     <!-- REQUIRED SCRIPTS -->
+    <script src="{{ asset('js/app.js') }}"></script>
 
     <!-- jquery -->
     <script src="{{ asset('vendors/jquery/dist/jquery.min.js') }}"></script>
     <!-- iCheck 1.0.1 -->
     <script src="{{ asset('vendors/iCheck/icheck.js') }}"></script>
-    <!-- Bootstrap 4 --> 
+    <!-- Bootstrap 4 -->
     <script src="{{ asset('vendors/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 
     <script src="{{ asset('vendors/bootstrap/dist/js/bootstrap-validate.js') }}"></script>
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <script src="{{ asset('js/bootstrap-select.min.js') }}"></script>
-    
+
     <!-- AdminLTE App -->
     <script src="{{ asset('vendors/adminLTE/js/adminlte.js') }}"></script>
-    
+
     <!-- OPTIONAL SCRIPTS -->
     <script src="{{ asset('vendors/adminLTE/js/demo.js') }}"></script>
     <!-- Data Tables -->
@@ -335,15 +336,19 @@
     <script src="{{ asset('vendors/adminLTE/js/dashboard2.js') }}"></script>
     <script type="text/javascript"  src="{{ asset('js/popover.js') }}"></script>
     <script type="text/javascript"  src="{{ asset('js/bootstrap-confirmation.min.js') }}"></script>
-    
+
     <script>
-      
+
       $(document).ready(function() {
         $('#example1').DataTable( {
             dom: 'Bfrtip',
             buttons: [
                 'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
-            ]
+            ],
+
+            fixedHeader: {
+            header: true,
+            }
         } );
        } );
 
@@ -358,7 +363,7 @@
         var SITE_URL = "{{URL::to('/')}}";
       </script>
       <script type="text/javascript"  src="{{ asset('js/ajax.js') }}"></script>
-      
+
       <script>
       // Example starter JavaScript for disabling form submissions if there are invalid fields
       (function() {
@@ -394,6 +399,7 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/fixedheader/3.1.7/js/dataTables.fixedHeader.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.6.1/js/buttons.colVis.min.js"></script>
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-50704959-3"></script>
@@ -405,6 +411,46 @@
 
   gtag('config', 'UA-50704959-3');
 </script>
+<script src="https://js.pusher.com/4.1/pusher.min.js"></script>
+  <script>
+  $(document).ready(function() {
+ $("#youths_table").DataTable({
+      dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print', 'colvis'
+            ],
+    });
+  });
+    // push notify
+  var userId = $('meta[name="userId"]').attr('content');
+    Echo.private('App.User.' + userId)
+    .notification((notification) => {
+        var today = new Date();
+      var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+      switch(notification.type) {
+        case "broadcast.TaskCreated":
+            toastr.info('on or before '+notification.due, notification.title,  {closeButton: true, timeOut: 5000000});
+        break;
+
+        case "broadcast.FamilyAdd":
+          toastr.info(notification.added_by+' at '+time,'Family Details added by ', {closeButton: true, timeOut: 5000000});
+        break;
+
+        case "broadcast.YouthCount":
+          toastr.info('added by '+notification.data.added_by+ ' at '+time, notification.data.youth_count+' '+notification.data.type+' Youth/s' , {closeButton: true, timeOut: 5000000});
+        break;
+
+        case "broadcast.instituteAdd":
+          toastr.success('added by '+notification.data.added_by+' at '+time, 'Institute '+notification.data.institute.name, {closeButton: true, timeOut: 5000000});
+        break;
+
+        default:
+        toastr.info(notification.youth.name+'at '+time, 'New Baseline Form Added ' , {closeButton: true, timeOut: 5000000});
+      }
+
+    });
+
+  </script>
 @yield('scripts')
 @livewireScripts
 </body>

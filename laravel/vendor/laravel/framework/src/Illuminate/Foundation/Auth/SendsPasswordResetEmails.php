@@ -25,6 +25,7 @@ trait SendsPasswordResetEmails
      */
     public function sendResetLinkEmail(Request $request)
     {
+
         $this->validateEmail($request);
 
         // We will send the password reset link to this user. Once we have attempted
